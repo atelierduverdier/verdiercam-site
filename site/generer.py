@@ -60,6 +60,14 @@ PAGES = [
                        "une seule fenêtre. Linux et Windows. Sortie prochaine.",
     },
     {
+        'contenu': 'premiers-pas.html',
+        'sortie': 'premiers-pas.html',
+        'titre': "VerdierCAM — Premiers pas, une plaque du croquis au G-code",
+        'description': "Onze étapes avec une capture du vrai logiciel : ouvrir VerdierCAM en "
+                       "mode Débutant, tracer une plaque percée, la coter, choisir les "
+                       "opérations et la fraise, simuler, puis exporter le G-code.",
+    },
+    {
         'contenu': '404.html',
         'sortie': '404.html',
         'titre': "VerdierCAM — page introuvable",
@@ -67,12 +75,15 @@ PAGES = [
     },
 ]
 
-# Les ancres sont précédées de RACINE : la 404 peut être servie à n'importe
-# quelle profondeur, ses liens partent alors de « / ».
+# Les ancres sont précédées de RACINE : seule la page d'accueil vit à la
+# racine du site, donc elle seule porte les sections #parcours, #usinage…
+# Toutes les autres pages (« Premiers pas », la 404, qui peut être servie à
+# n'importe quelle profondeur) y renvoient par un chemin ABSOLU.
 NAV = [
     ('#parcours', 'Le parcours'),
     ('#usinage', 'Opérations'),
     ('#modes', 'Modes'),
+    ('premiers-pas.html', 'Premiers pas'),
     ('#sortie', 'Sortie'),
     ('#questions', 'Questions'),
 ]
@@ -154,6 +165,18 @@ IMAGES = {
     'gravure25d_schema': '25d-schema',
     'gravure25d_bois': '25d-bois',
     'pilotage_pupitre': 'pupitre',
+    # La page « Premiers pas » : onze étapes, une plaque percée du croquis au G-code.
+    'pp_01_accueil': 'pp-accueil',
+    'pp_02_brut': 'pp-brut',
+    'pp_03_tracer': 'pp-tracer',
+    'pp_04_trous': 'pp-trous',
+    'pp_05_cotes': 'pp-cotes',
+    'pp_06_usinage': 'pp-usinage',
+    'pp_07_fraise': 'pp-fraise',
+    'pp_08_profondeurs': 'pp-profondeurs',
+    'pp_09_parcours': 'pp-parcours',
+    'pp_10_simulation': 'pp-simulation',
+    'pp_11_export': 'pp-export',
 }
 LARGEUR = 1920
 
@@ -395,7 +418,9 @@ def main() -> None:
     oiseau = oiseau_en_ligne()
 
     for page in PAGES:
-        racine = '/' if page['sortie'] == '404.html' else ''
+        # Seule la page d'accueil vit à la racine : les autres (404, Premiers
+        # pas) partent toujours de « / », où que le site les serve.
+        racine = '' if page['sortie'] == 'index.html' else '/'
         corps = (CONTENU / page['contenu']).read_text(encoding='utf-8')
         corps = injecter_verdiercam(corps, faits, page['contenu'])
         corps = corps.replace('{{TASSE}}', TASSE).replace('{{OISEAU}}', oiseau)

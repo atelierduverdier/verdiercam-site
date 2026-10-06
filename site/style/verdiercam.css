@@ -359,6 +359,25 @@ section.teinte + section.teinte { border-top: 0; }
 .js .apparait { opacity: 0; transform: translateY(18px); transition: opacity .7s, transform .7s cubic-bezier(.2,.7,.2,1); }
 .js .apparait.vu { opacity: 1; transform: none; }
 
+/* --- Premiers pas : le sommaire des onze étapes, et la page elle-même - */
+/* Les étapes réutilisent .fonction / .texte / figure.capture / .fenetre, déjà faites pour
+   « Le parcours » et les autres sections : rien de neuf à dessiner là. Ici, seulement le
+   sommaire du haut (une liste de pastilles numérotées) et la phrase sur le futur manuel. */
+.pp-heros { padding-bottom: clamp(32px, 5vw, 56px); }
+.pp-intro { max-width: 46rem; }
+.pp-intro .accroche { font-size: clamp(1.06rem, 1.6vw, 1.2rem); color: var(--encre-2); max-width: 40rem; margin: 18px 0 0; }
+.pp-sommaire { list-style: none; margin: 30px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.pp-sommaire a { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; color: var(--encre);
+  background: var(--carte); border: 1px solid var(--trait-2); border-radius: 999px; padding: 6px 16px 6px 6px;
+  font-size: .92rem; transition: border-color .2s, transform .15s; }
+.pp-sommaire a:hover { border-color: var(--orange); transform: translateY(-1px); }
+.pp-sommaire a span { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px;
+  border-radius: 50%; background: var(--orange-clair); color: var(--orange-encre); font: 500 .7rem var(--mono); flex: none; }
+.pp-etape + .pp-etape { border-top: 1px solid var(--trait); }
+.pp-etape.teinte + .pp-etape.teinte { border-top: 0; }
+.pp-manuel { font-style: italic; color: var(--encre-3); }
+@media (max-width: 480px) { .pp-sommaire { gap: 8px; } .pp-sommaire a { font-size: .86rem; padding: 5px 13px 5px 5px; } }
+
 /* --- Moins de mouvement : tout est là, rien ne bouge ------------------ */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
