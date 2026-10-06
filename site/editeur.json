@@ -1,9 +1,8 @@
 {
-  "_lisezmoi": "Les informations de l'éditeur, injectées dans les pages légales ({{editeur.xxx}}). Un champ vide s'affiche « À REMPLIR » dans l'aperçu, et publier.py REFUSE d'envoyer le site tant qu'il en reste un. À remplir par Christophe : nom tel qu'il figure au répertoire SIRENE, adresse de l'entreprise, téléphone (obligatoire pour la vente à distance, art. L221-5 et R111-1 du code de la consommation), SIRET, médiateur de la consommation choisi, lien de paiement (Stripe ou autre). « vente_ouverte » : false tant qu'on ne vend pas — les pages Acheter, Conditions de vente et Licence ne sont alors pas publiées, ni le médiateur (obligatoire seulement pour vendre).",
+  "_lisezmoi": "Les informations de l'éditeur, injectées dans les pages légales ({{editeur.xxx}}). Un champ vide s'affiche « À REMPLIR » dans l'aperçu, et publier.py REFUSE d'envoyer le site tant qu'il en reste un. À remplir par Christophe : nom tel qu'il figure au répertoire SIRENE, adresse de l'entreprise, SIRET, médiateur de la consommation choisi, lien de paiement (Stripe ou autre). « vente_ouverte » : false tant qu'on ne vend pas — les pages Acheter, Conditions de vente et Licence ne sont alors pas publiées, ni le médiateur (obligatoire seulement pour vendre).",
   "vente_ouverte": false,
   "nom": "VERDIER Christophe",
   "adresse": "107 rue du mont Flambé 14400 Crouay",
-  "telephone": "0674829540",
   "email": "contact@verdiercam.fr",
   "siret": "48177324000025",
   "mediateur_nom": "",
