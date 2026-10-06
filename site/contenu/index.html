@@ -11,12 +11,17 @@
      ORDRE DE LA PAGE : ce qu'on voit d'abord, la sortie ensuite, les
      questions pratiques à la fin et repliées. -->
 
+<!-- L'ouverture : l'oiseau du logo se dessine comme un parcours d'usinage,
+     puis le nom apparaît. Le dessin est lu dans le logiciel (OISEAU_JS et
+     oiseau_en_ligne() dans site/generer.py). -->
 <div class="hero">
+  <div class="wrap ouverture">
+    {{OISEAU}}
+    <p class="nom-produit">Verdier<b>CAM</b></p>
+  </div>
   <div class="wrap">
     <div class="hero-grid">
       <div>
-        <img class="logo-produit" src="{{RACINE}}logo-verdiercam.svg" alt="VerdierCAM"
-             width="72" height="72">
         <div class="badges">
           <span class="badge">CAO <b>+</b> FAO</span>
           <span class="badge"><b>{{verdiercam.familles}}</b> familles d'opérations</span>

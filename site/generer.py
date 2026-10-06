@@ -102,6 +102,16 @@ CSS_LOCAL = """<style>
 .cols.familles{grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));margin:26px 0}
 .panel ul{margin:.4em 0 0;padding-left:1.1em}
 .panel li{margin:.3em 0}
+/* L'OUVERTURE : l'oiseau du logo, dessiné comme un parcours (voir OISEAU_JS). */
+.ouverture{padding:0 0 34px;text-align:center}
+.ouverture .oiseau{display:block;width:min(300px,62vw);height:auto;margin:0 auto;overflow:visible}
+.ouverture .fraise{fill:#fff;opacity:0;filter:drop-shadow(0 0 6px #ff8a00) drop-shadow(0 0 14px #ff6d00)}
+.ouverture .rapide{fill:none;stroke:var(--fg-3);stroke-width:3;stroke-dasharray:2 10;opacity:0}
+.nom-produit{font-size:clamp(2.4rem,7vw,3.6rem);font-weight:800;letter-spacing:-.02em;margin:.15em 0 0;
+  color:var(--fg);transition:opacity .9s,transform .9s}
+.nom-produit b{color:#ff8a00;font-weight:800}
+.ouverture.anime .nom-produit{opacity:0;transform:translateY(10px)}
+.ouverture.fini .nom-produit{opacity:1;transform:none}
 </style>"""
 
 
@@ -278,6 +288,83 @@ def injecter_verdiercam(texte: str, faits: dict, nom: str) -> str:
     return re.sub(r'\{\{verdiercam\.(\w+)\}\}', lambda m: faits[m.group(1)], texte)
 
 
+# --- L'oiseau qui se dessine --------------------------------------------
+# Le logo, LU dans les ressources du logiciel et collé dans la page : ses
+# traits deviennent le parcours d'une fraise. Sans JavaScript, ou quand le
+# visiteur a demandé moins d'animations, il s'affiche simplement entier —
+# l'animation n'est posée que par le script, jamais par la feuille de style.
+def oiseau_en_ligne() -> str:
+    s = chemins.VERDIERCAM_LOGO.read_text(encoding='utf-8')
+    s = re.sub(r'<!--.*?-->', '', s, flags=re.S)
+    m = re.search(r'<svg[^>]*viewBox="([^"]+)"[^>]*>(.*)</svg>', s, re.S)
+    if not m or '<path' not in m.group(2):
+        sys.exit(f"generer : logo illisible — {chemins.VERDIERCAM_LOGO}")
+    vue, dedans = m.group(1), m.group(2).strip()
+    # Les traits (dans le groupe sans remplissage) deviennent des passes ; le
+    # plein, qui suit le dernier trait, se pose à la fin comme une poche vidée.
+    dedans = re.sub(r'<path (d="[^"]*"/>)', r'<path class="passe" \1', dedans)
+    dedans = re.sub(r'<path (d="[^"]*" fill=)', r'<path class="plein" \1', dedans)
+    # La fraise et ses rapides vivent DANS le groupe transformé : mêmes
+    # coordonnées que les traits, getPointAtLength les y place sans calcul.
+    dernier = dedans.rfind('</g>')
+    dedans = (dedans[:dernier] + '<path class="rapide" d="M0 0"/>'
+              '<circle class="fraise" r="13" cx="0" cy="0"/>' + dedans[dernier:])
+    return (f'<svg class="oiseau" viewBox="{vue}" role="img" '
+            f'aria-label="L\'oiseau de VerdierCAM">{dedans}</svg>')
+
+
+OISEAU_JS = """<script>
+// L'oiseau se dessine comme un parcours d'usinage : chaque trait du logo est
+// une passe, menée à vitesse constante (comme une avance) par une fraise
+// lumineuse ; entre deux passes, un rapide en pointillés. Le plein vient en
+// dernier, comme une poche. Rien de tout cela si le visiteur a demandé moins
+// d'animations : l'oiseau reste entier, tel que la page l'a servi.
+(function(){
+  var bloc=document.querySelector('.ouverture'); if(!bloc) return;
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var passes=[].slice.call(bloc.querySelectorAll('.passe'));
+  var plein=bloc.querySelector('.plein'), fraise=bloc.querySelector('.fraise'),
+      rapide=bloc.querySelector('.rapide');
+  if(!passes.length||!fraise||!passes[0].getTotalLength) return;
+  var AVANCE=900, RAPIDE=2600;        // unités du dessin par seconde
+  var etapes=[], t=0, avant=null;
+  passes.forEach(function(p){
+    var L=p.getTotalLength(), debut=p.getPointAtLength(0);
+    p.style.strokeDasharray=L+' '+L; p.style.strokeDashoffset=L;
+    if(avant){var dx=debut.x-avant.x, dy=debut.y-avant.y, d=Math.sqrt(dx*dx+dy*dy);
+      etapes.push({rapide:true,de:avant,a:debut,t0:t,t1:t+d/RAPIDE}); t+=d/RAPIDE;}
+    etapes.push({p:p,L:L,t0:t,t1:t+L/AVANCE}); t+=L/AVANCE;
+    avant=p.getPointAtLength(L);
+  });
+  if(plein){plein.style.opacity=0; plein.style.transition='opacity .5s';}
+  bloc.classList.add('anime');
+  var total=t, depart=null;
+  function poser(x,y){fraise.setAttribute('cx',x); fraise.setAttribute('cy',y);}
+  function image(ms){
+    if(depart===null) depart=ms;
+    var s=(ms-depart)/1000-0.35;          // un temps d'arrêt, broche lancée
+    fraise.style.opacity=s<0?0:1;
+    etapes.forEach(function(e){
+      var k=Math.max(0,Math.min(1,(s-e.t0)/(e.t1-e.t0)));
+      if(e.rapide){
+        if(s>=e.t0&&s<e.t1){var x=e.de.x+(e.a.x-e.de.x)*k, y=e.de.y+(e.a.y-e.de.y)*k;
+          poser(x,y); rapide.setAttribute('d','M'+e.de.x+' '+e.de.y+'L'+x+' '+y);
+          rapide.style.opacity=.9;}
+        else if(s>=e.t1) rapide.style.opacity=0;
+      } else {
+        e.p.style.strokeDashoffset=e.L*(1-k);
+        if(s>=e.t0&&s<e.t1){var q=e.p.getPointAtLength(e.L*k); poser(q.x,q.y);}
+      }
+    });
+    if(s<total) requestAnimationFrame(image);
+    else{ fraise.style.transition='opacity .6s'; fraise.style.opacity=0;
+          if(plein) plein.style.opacity=1; bloc.classList.add('fini'); }
+  }
+  requestAnimationFrame(image);
+})();
+</script>"""
+
+
 # --- Les gabarits --------------------------------------------------------
 def remplir(gabarit: str, valeurs: dict, nom: str) -> str:
     """Remplit les {{MARQUES}} d'un gabarit. Une marque restante arrête tout."""
@@ -365,6 +452,8 @@ def main() -> None:
         corps = (CONTENU / page['contenu']).read_text(encoding='utf-8')
         corps = injecter_verdiercam(corps, faits, page['contenu'])
         corps = corps.replace('{{TASSE}}', TASSE)
+        if '{{OISEAU}}' in corps:
+            corps = corps.replace('{{OISEAU}}', oiseau_en_ligne())
         corps = empreinter(corps, empreintes, page['contenu'])
         # Toutes les pages sont à la racine : le préfixe est vide. La 404, elle,
         # peut être servie à n'importe quelle profondeur — d'où « / ».
@@ -381,7 +470,8 @@ def main() -> None:
                  + '\n' + corps + '\n'
                  + remplir(pied, {
                      'RACINE': racine, 'SOUS_TITRE': 'VerdierCAM', 'RESUME': page['resume'],
-                     'LIENS': liens_pied(), 'ANNEE': ANNEE, 'LOCAL_JS': '', 'LOGO': logo,
+                     'LIENS': liens_pied(), 'ANNEE': ANNEE,
+                     'LOCAL_JS': OISEAU_JS if 'class="oiseau"' in corps else '', 'LOGO': logo,
                      'COMPTEUR_PREFIXE': compteur_prefixe()}, 'pied.html'))
         reste = re.findall(r'\{\{[^}]*\}\}', texte)
         if reste:
