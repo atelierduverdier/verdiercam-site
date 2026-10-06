@@ -83,8 +83,8 @@ b, strong { font-weight: 600; }
           mask-image: radial-gradient(70% 60% at 50% 40%, #000 30%, transparent 100%); }
 
 /* --- La barre du haut ------------------------------------------------- */
-.barre { position: sticky; top: 0; z-index: 50; background: rgba(253,252,250,.78);
-  backdrop-filter: saturate(1.4) blur(14px); -webkit-backdrop-filter: saturate(1.4) blur(14px);
+.barre { position: sticky; top: 0; z-index: 50; background: rgba(253,252,250,.94);
+  backdrop-filter: saturate(1.4) blur(18px); -webkit-backdrop-filter: saturate(1.4) blur(18px);
   border-bottom: 1px solid transparent; transition: border-color .3s; }
 .barre.defile { border-bottom-color: var(--trait); }
 .barre-dedans { display: flex; align-items: center; gap: 24px; height: 68px; }
