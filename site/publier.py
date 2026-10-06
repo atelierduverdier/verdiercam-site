@@ -31,6 +31,14 @@ def main() -> None:
     r = subprocess.run([sys.executable, str(RACINE / 'site' / 'generer.py')], cwd=RACINE)
     if r.returncode != 0:
         sys.exit("publier : la génération a échoué — rien n'est poussé.")
+    # Un champ de site/editeur.json resté vide s'affiche « À REMPLIR » : une page
+    # légale incomplète ne part pas en ligne.
+    incompletes = [f.name for f in PUBLIC.glob('*.html')
+                   if 'class="a-remplir"' in f.read_text(encoding='utf-8')]
+    if incompletes:
+        sys.exit("publier : « À REMPLIR » dans " + ', '.join(incompletes)
+                 + " — compléter site/editeur.json. Rien n'est poussé.")
+
     if '--sec' in sys.argv:
         print("(--sec : génération seule, rien n'est poussé)")
         return

@@ -67,6 +67,45 @@ PAGES = [
                        "mode Débutant, tracer une plaque percée, la coter, choisir les "
                        "opérations et la fraise, simuler, puis exporter le G-code.",
     },
+    # Les pages légales. Celles marquées « vente » ne partent en ligne que si
+    # editeur.json dit « vente_ouverte » : publier des conditions de vente et un
+    # bouton d'achat pour un logiciel qu'on ne vend pas encore serait trompeur.
+    {
+        'contenu': 'mentions-legales.html',
+        'sortie': 'mentions-legales.html',
+        'titre': "VerdierCAM — mentions légales",
+        'description': "Éditeur, hébergeur et informations légales du site verdiercam.fr.",
+    },
+    {
+        'contenu': 'confidentialite.html',
+        'sortie': 'confidentialite.html',
+        'titre': "VerdierCAM — confidentialité",
+        'description': "Ce que verdiercam.fr sait de ses visiteurs et de ses clients : aucun cookie, "
+                       "une mesure d'audience sans cookie, et les données d'une commande.",
+    },
+    {
+        'contenu': 'cgv.html',
+        'sortie': 'cgv.html',
+        'vente': True,
+        'titre': "VerdierCAM — conditions générales de vente",
+        'description': "Conditions de vente de la licence VerdierCAM : licence perpétuelle, mises à "
+                       "jour, droit de rétractation, garanties, médiation.",
+    },
+    {
+        'contenu': 'licence.html',
+        'sortie': 'licence.html',
+        'vente': True,
+        'titre': "VerdierCAM — licence d'utilisation",
+        'description': "La licence d'utilisation de VerdierCAM : ce qu'elle permet, ce qu'elle interdit.",
+    },
+    {
+        'contenu': 'acheter.html',
+        'sortie': 'acheter.html',
+        'vente': True,
+        'titre': "VerdierCAM — acheter une licence",
+        'description': "Acheter une licence VerdierCAM : licence perpétuelle à votre nom, un an de "
+                       "mises à jour compris.",
+    },
     {
         'contenu': '404.html',
         'sortie': '404.html',
@@ -92,7 +131,45 @@ LIENS_PIED = [
     ('mailto:contact@verdiercam.fr', 'contact@verdiercam.fr'),
     ('https://ko-fi.com/atelierduverdier', 'Ko-fi'),
     ('https://atelierduverdier.fr', 'Atelier du Verdier'),
+    ('{{RACINE}}mentions-legales.html', 'Mentions légales'),
+    ('{{RACINE}}confidentialite.html', 'Confidentialité'),
 ]
+# Seulement quand la vente est ouverte.
+LIENS_PIED_VENTE = [
+    ('{{RACINE}}cgv.html', 'Conditions de vente'),
+    ('{{RACINE}}licence.html', 'Licence'),
+]
+
+
+# --- L'éditeur : les informations que seul Christophe peut donner ---------
+# Lues dans site/editeur.json. Un champ vide n'arrête PAS la génération —
+# l'aperçu doit rester possible pendant qu'on le remplit — mais il s'affiche
+# en rouge « À REMPLIR », et publier.py refuse d'envoyer une page qui en porte.
+EDITEUR = SITE / 'editeur.json'
+A_REMPLIR = 'class="a-remplir"'
+
+
+def lire_editeur() -> dict:
+    import json
+    return json.loads(EDITEUR.read_text(encoding='utf-8'))
+
+
+def injecter_editeur(texte: str, editeur: dict, nom: str) -> str:
+    def remplacer(m):
+        cle = m.group(1)
+        if cle not in editeur:
+            sys.exit(f"generer : {nom} — clé « editeur.{cle} » absente de {EDITEUR.name}")
+        valeur = str(editeur[cle]).strip()
+        return (html.escape(valeur, quote=True) if valeur
+                else f'<mark {A_REMPLIR}>À REMPLIR : {cle}</mark>')
+    return re.sub(r'\{\{editeur\.(\w+)\}\}', remplacer, texte)
+
+
+def blocs_de_vente(texte: str, ouverte: bool) -> str:
+    """Garde ou retire les passages entre <!--vente--> et <!--/vente-->."""
+    if ouverte:
+        return texte.replace('<!--vente-->', '').replace('<!--/vente-->', '')
+    return re.sub(r'<!--vente-->.*?<!--/vente-->', '', texte, flags=re.S)
 
 # La tasse de Ko-fi, au trait.
 TASSE = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" '
@@ -417,18 +494,33 @@ def main() -> None:
     gabarit = (GABARITS / 'page.html').read_text(encoding='utf-8')
     oiseau = oiseau_en_ligne()
 
+    editeur = lire_editeur()
+    vente = bool(editeur.get('vente_ouverte'))
+    liens_pied = LIENS_PIED + (LIENS_PIED_VENTE if vente else [])
+    a_remplir = []
+
     for page in PAGES:
+        if page.get('vente') and not vente:
+            continue
         # Seule la page d'accueil vit à la racine : les autres (404, Premiers
         # pas) partent toujours de « / », où que le site les serve.
         racine = '' if page['sortie'] == 'index.html' else '/'
         corps = (CONTENU / page['contenu']).read_text(encoding='utf-8')
+        corps = blocs_de_vente(corps, vente)
+        corps = corps.replace('{{CLASSE_ACHAT}}', '' if editeur.get('lien_paiement') else 'sans-lien')
+        if not editeur.get('lien_paiement'):
+            corps = corps.replace('href="{{editeur.lien_paiement}}"', 'href="#"')
+        corps = injecter_editeur(corps, editeur, page['contenu'])
+        if A_REMPLIR in corps:
+            a_remplir.append(page['sortie'])
         corps = injecter_verdiercam(corps, faits, page['contenu'])
         corps = corps.replace('{{TASSE}}', TASSE).replace('{{OISEAU}}', oiseau)
         corps = empreinter(corps, captures, page['contenu'], racine)
         corps = corps.replace('{{RACINE}}', racine)
         url = f"https://{DOMAINE}/" + ('' if page['sortie'] == 'index.html' else page['sortie'])
         nav = '\n      '.join(f'<a href="{racine}{h}">{html.escape(t)}</a>' for h, t in NAV)
-        liens = '\n      '.join(f'<a href="{h}">{html.escape(t)}</a>' for h, t in LIENS_PIED)
+        liens = '\n      '.join(f'<a href="{h.replace("{{RACINE}}", racine)}">{html.escape(t)}</a>'
+                                 for h, t in liens_pied)
         texte = remplir(gabarit, {
             'TITRE': page['titre'],
             'DESCRIPTION': injecter_verdiercam(page['description'], faits, page['contenu']),
@@ -440,6 +532,10 @@ def main() -> None:
         (PUBLIC / page['sortie']).write_text(texte, encoding='utf-8')
         print(f"  {page['sortie']:<14} {len(texte.encode()):>7} o")
 
+    print(f"  vente {'OUVERTE' if vente else 'fermée (Acheter, CGV, Licence non publiées)'}")
+    if a_remplir:
+        print(f"  ! À REMPLIR dans site/editeur.json — pages concernées : {', '.join(a_remplir)}"
+              f" (publier.py refusera)")
     poids = sum(f.stat().st_size for f in PUBLIC.rglob('*') if f.is_file())
     print(f"\nVerdierCAM {faits['version']} · {faits['familles']} familles — "
           f"public/ pèse {poids // 1024} Ko")

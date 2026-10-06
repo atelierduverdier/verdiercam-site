@@ -388,3 +388,42 @@ section.teinte + section.teinte { border-top: 0; }
   .defile { display: none; }
   .machines { display: flex; }
 }
+
+
+/* =========================================================================
+   Pages légales et page d'achat (06/10/2026)
+   ========================================================================= */
+.page-legale { padding-bottom: 8px; }
+.page-legale h1 { font-size: clamp(2rem, 5vw, 3rem); }
+section.legal { padding-top: 24px; }
+.legal-texte { max-width: 46rem; }
+.legal-texte h2 { font-size: 1.25rem; margin: 2.2em 0 .6em; letter-spacing: -.01em; }
+.legal-texte h2:first-child { margin-top: 0; }
+.legal-texte p, .legal-texte li { color: var(--encre-2); }
+.legal-texte ul { padding-left: 1.2em; }
+.legal-texte li { margin: .35em 0; }
+.legal-texte .muet, .legal-date { color: var(--encre-3); font-size: .92rem; }
+.formulaire-type { border: 1px dashed var(--trait-2); border-radius: 14px; padding: 18px 22px;
+  background: var(--carte); }
+.a-remplir { background: #ffe1d6; color: #9b1c00; font: 500 .85em var(--mono);
+  padding: .1em .4em; border-radius: 5px; }
+
+/* La page d'achat : le bouton ne s'active que les deux cases cochées — en CSS
+   (:has), donc même sans JavaScript ; le script ne fait que l'annoncer. */
+.achat { background: var(--carte); border: 1px solid var(--trait); border-radius: 22px;
+  padding: clamp(20px, 4vw, 36px); box-shadow: var(--ombre); }
+.achat-resume { list-style: none; padding: 0; margin: 0 0 22px; display: grid; gap: 8px; }
+.achat-resume li { padding-left: 26px; position: relative; color: var(--encre-2); }
+.achat-resume li::before { content: "✓"; position: absolute; left: 4px; color: var(--orange-encre); font-weight: 600; }
+.case { display: flex; gap: 12px; align-items: flex-start; margin: 14px 0; cursor: pointer;
+  padding: 14px 16px; border: 1px solid var(--trait); border-radius: 14px; background: var(--fond); }
+.case input { width: 20px; height: 20px; margin-top: 2px; flex: none; accent-color: var(--orange); }
+.case span { color: var(--encre-2); font-size: .97rem; }
+.achat .payer { margin-top: 10px; opacity: .45; pointer-events: none; filter: grayscale(.3); }
+.achat:has(#accepte-conditions:checked):has(#renonce-retractation:checked) .payer {
+  opacity: 1; pointer-events: auto; filter: none; }
+.achat .payer-aide { color: var(--encre-3); font-size: .9rem; margin-top: 10px; }
+.achat .payer-bientot { display: none; }
+.achat.sans-lien .payer { opacity: .45 !important; pointer-events: none !important; }
+.achat.sans-lien .payer-aide { display: none; }
+.achat.sans-lien .payer-bientot { display: block; color: var(--encre-2); margin-top: 12px; }

@@ -1,0 +1,80 @@
+<!-- La page d'achat. Le RENONCEMENT AU DROIT DE RÉTRACTATION (art. L221-28 13° du code de la
+     consommation) doit être exprès et préalable : deux cases à cocher, non cochées d'office, sans
+     lesquelles le bouton de paiement reste inactif.
+
+     Le verrou est en CSS (`:has()`), il tient donc sans JavaScript ; le script ne fait que dire à un
+     lecteur d'écran que le bouton est devenu actif. MAIS une case sur notre page ne prouve rien :
+     la preuve du renoncement se garde chez le prestataire de paiement — voir README.md, « Vendre »
+     (case « conditions » obligatoire sur la page de paiement, texte du renoncement dans le courriel
+     de confirmation, art. L221-13).
+
+     Tant que site/editeur.json n'a pas de « lien_paiement », le bouton dit « Bientôt disponible » et
+     ne mène nulle part : le générateur pose alors la classe `sans-lien`. -->
+
+<div class="heros papier page-legale">
+  <div class="cadre">
+    <p class="surtitre">Acheter</p>
+    <h1>Votre licence VerdierCAM</h1>
+    <p class="accroche">Licence perpétuelle, à votre nom, un an de mises à jour compris.</p>
+  </div>
+</div>
+
+<section class="legal">
+  <div class="cadre legal-texte">
+
+    <div class="achat {{CLASSE_ACHAT}}">
+      <ul class="achat-resume">
+        <li><b>Licence perpétuelle</b> — la version achetée fonctionne pour toujours.</li>
+        <li><b>Un an de mises à jour</b> compris, puis un renouvellement facultatif.</li>
+        <li><b>À votre nom</b>, jusqu'à {{editeur.installations}} ordinateurs pour vous seul.</li>
+        <li><b>Linux et Windows</b>, livré par téléchargement, avec votre clé, par courriel.</li>
+        <li>Prix toutes taxes comprises — TVA non applicable, art. 293 B du CGI.</li>
+      </ul>
+
+      <p>
+        <b>Avant d'acheter</b>, vérifiez que votre ordinateur convient (64 bits, Linux ou Windows, carte
+        graphique compatible Vulkan) et lisez les <a href="cgv.html">conditions générales de vente</a>
+        et la <a href="licence.html">licence d'utilisation</a>.
+      </p>
+
+      <label class="case">
+        <input type="checkbox" id="accepte-conditions" name="accepte-conditions">
+        <span>J'ai lu et j'accepte les <a href="cgv.html">conditions générales de vente</a> et la
+          <a href="licence.html">licence d'utilisation</a>.</span>
+      </label>
+
+      <label class="case">
+        <input type="checkbox" id="renonce-retractation" name="renonce-retractation">
+        <span>Je demande à recevoir VerdierCAM <b>immédiatement</b>, avant la fin du délai de rétractation
+          de quatorze jours, et je reconnais <b>renoncer expressément à mon droit de rétractation</b> dès
+          que le lien de téléchargement et la clé me seront fournis
+          (<a href="cgv.html#retractation">article 7 des conditions</a>).</span>
+      </label>
+
+      <a class="bouton bouton-plein payer" href="{{editeur.lien_paiement}}" aria-disabled="true">Payer en ligne</a>
+      <p class="payer-aide">Le bouton s'active quand les deux cases sont cochées.</p>
+      <p class="payer-bientot">VerdierCAM n'est pas encore en vente : le bouton s'ouvrira à la sortie.
+        <a href="index.html#sortie">Être prévenu</a>.</p>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  // Le verrou est en CSS ; ceci ne fait que tenir aria-disabled à jour pour les lecteurs d'écran,
+  // et bloquer le clic sur un navigateur trop ancien pour :has().
+  (function () {
+    var bloc = document.querySelector('.achat'), bouton = bloc && bloc.querySelector('.payer');
+    if (!bouton) return;
+    var cases = bloc.querySelectorAll('input[type=checkbox]');
+    function etat() {
+      var ok = !bloc.classList.contains('sans-lien');
+      cases.forEach(function (c) { ok = ok && c.checked; });
+      bouton.setAttribute('aria-disabled', ok ? 'false' : 'true');
+      return ok;
+    }
+    cases.forEach(function (c) { c.addEventListener('change', etat); });
+    bouton.addEventListener('click', function (e) { if (!etat()) e.preventDefault(); });
+    etat();
+  })();
+</script>
