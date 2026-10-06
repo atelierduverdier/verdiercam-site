@@ -2,14 +2,18 @@
      Elle peut l'être à n'importe quelle profondeur : ses liens partent de
      « / » (le générateur pose RACINE à « / » pour elle seule). -->
 
-<div class="heros" style="padding-bottom:120px">
-  <div class="cadre">
-    {{OISEAU}}
-    <h1>Cette page n'existe pas</h1>
-    <p class="accroche">L'adresse ne mène à aucune page de verdiercam.fr.</p>
-    <div class="actions">
-      <a class="bouton bouton-plein" href="{{RACINE}}">Retour à l'accueil</a>
-      <a class="bouton bouton-clair" href="{{RACINE}}#sortie">La sortie</a>
+<div class="heros papier heros-404">
+  <div class="cadre heros-haut">
+    <div class="heros-texte">
+      {{OISEAU}}
+      <p class="etiquette"><i></i> Erreur 404</p>
+      <h1>Cette page <em>n'existe pas</em>.</h1>
+      <p class="accroche">L'adresse ne mène à aucune page de verdiercam.fr. La fraise est
+        remontée, rien n'a été coupé.</p>
+      <div class="actions">
+        <a class="bouton bouton-plein" href="{{RACINE}}">Retour à l'accueil</a>
+        <a class="bouton bouton-clair" href="{{RACINE}}#sortie">La sortie</a>
+      </div>
     </div>
   </div>
 </div>

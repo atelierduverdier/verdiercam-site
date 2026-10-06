@@ -1,6 +1,6 @@
 // verdiercam.js — ce que la page fait d'elle-même. Tout y est facultatif :
 // sans script, la page est entière (l'oiseau dessiné, les blocs visibles,
-// les vidéos avec leurs boutons).
+// les vidéos avec leurs boutons, les quatre jalons tous en encre pleine).
 (function () {
   'use strict';
   var doc = document.documentElement;
@@ -12,38 +12,75 @@
   function filet() { if (barre) barre.classList.toggle('defile', window.scrollY > 8); }
   window.addEventListener('scroll', filet, { passive: true }); filet();
 
-  // Les blocs apparaissent quand ils entrent dans la fenêtre ; les vidéos
-  // jouent quand on les voit, et s'arrêtent quand on les quitte.
-  var blocs = document.querySelectorAll('.apparait');
-  var videos = document.querySelectorAll('video[data-auto]');
-  // Mesuré au défilement, et non par IntersectionObserver : un saut direct à
+  // --- L'apparition des blocs ---------------------------------------------
+  // Mesurée au défilement, et non par IntersectionObserver : un saut direct à
   // une ancre (ou un onglet en arrière-plan) laissait des blocs ENTIERS
   // invisibles — un texte qui peut rester caché ne se cache pas du tout.
   // Tout ce qui est au-dessus du bas de la fenêtre se montre, y compris ce
-  // qu'on a sauté.
+  // qu'on a sauté ; et passé deux secondes, tout se montre, quoi qu'il arrive.
+  var blocs = [].slice.call(document.querySelectorAll('.apparait'));
   function montrer() {
-    var bas = window.innerHeight * 0.94;
+    var bas = window.innerHeight * 0.96;
     blocs.forEach(function (b) {
       if (!b.classList.contains('vu') && b.getBoundingClientRect().top < bas) b.classList.add('vu');
     });
   }
-  window.addEventListener('scroll', montrer, { passive: true });
-  window.addEventListener('resize', montrer);
-  window.addEventListener('load', montrer);
-  montrer();
-  if ('IntersectionObserver' in window) {
-    if (!calme) {
-      var lecteur = new IntersectionObserver(function (entrees) {
-        entrees.forEach(function (e) {
-          if (e.isIntersecting) { var p = e.target.play(); if (p && p.catch) p.catch(function () {}); }
-          else e.target.pause();
-        });
-      }, { threshold: .35 });
-      videos.forEach(function (v) { lecteur.observe(v); });
-    }
+  function toutMontrer() { blocs.forEach(function (b) { b.classList.add('vu'); }); }
+  if (calme) toutMontrer();
+  else {
+    window.addEventListener('scroll', montrer, { passive: true });
+    window.addEventListener('resize', montrer);
+    window.addEventListener('load', montrer);
+    window.addEventListener('hashchange', function () { setTimeout(montrer, 50); });
+    window.addEventListener('pageshow', montrer);
+    montrer();
+    setTimeout(toutMontrer, 2000);
   }
 
-  // La visionneuse : un clic sur une capture l'agrandit.
+  // --- Les vidéos jouent quand on les voit, s'arrêtent quand on les quitte --
+  var videos = document.querySelectorAll('video[data-auto]');
+  if ('IntersectionObserver' in window && !calme) {
+    var lecteur = new IntersectionObserver(function (entrees) {
+      entrees.forEach(function (e) {
+        if (e.isIntersecting) { var p = e.target.play(); if (p && p.catch) p.catch(function () {}); }
+        else e.target.pause();
+      });
+    }, { threshold: .35 });
+    videos.forEach(function (v) { lecteur.observe(v); });
+  }
+
+  // --- Le parcours : le jalon qui correspond à la vue au milieu de l'écran --
+  // Les jalons restent fixés à gauche pendant que les vues défilent ; celui
+  // de la vue la plus proche du centre prend l'orange. Sans script, les
+  // quatre sont en encre pleine (rien n'est atténué par la CSS seule).
+  var jalons = [].slice.call(document.querySelectorAll('.jalons > li'));
+  var vues = [].slice.call(document.querySelectorAll('.vues > .vue'));
+  if (jalons.length && jalons.length === vues.length) {
+    doc.classList.add('jalonne');
+    var courant = -1;
+    function jalonner() {
+      var centre = window.innerHeight * 0.5, meilleur = 0, dist = Infinity;
+      vues.forEach(function (v, i) {
+        var r = v.getBoundingClientRect(), d = Math.abs((r.top + r.bottom) / 2 - centre);
+        if (d < dist) { dist = d; meilleur = i; }
+      });
+      if (meilleur !== courant) {
+        courant = meilleur;
+        jalons.forEach(function (j, i) { j.classList.toggle('actif', i === meilleur); });
+      }
+    }
+    window.addEventListener('scroll', jalonner, { passive: true });
+    window.addEventListener('resize', jalonner);
+    jalonner();
+    // Un clic sur un jalon amène sa vue.
+    jalons.forEach(function (j, i) {
+      j.addEventListener('click', function () {
+        vues[i].scrollIntoView({ behavior: calme ? 'auto' : 'smooth', block: 'center' });
+      });
+    });
+  }
+
+  // --- La visionneuse : un clic sur une capture l'agrandit ------------------
   var vis = document.querySelector('.visionneuse');
   if (vis) {
     var grande = vis.querySelector('img');
@@ -57,10 +94,10 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') vis.hidden = true; });
   }
 
-  // L'oiseau se dessine comme un parcours d'usinage : chaque trait du logo
-  // est une passe, menée à vitesse constante (comme une avance) par une
-  // fraise lumineuse ; entre deux passes, un rapide en pointillés. Le plein
-  // vient en dernier, comme une poche.
+  // --- L'oiseau se dessine comme un parcours d'usinage ----------------------
+  // Chaque trait du logo est une passe, menée à vitesse constante (comme une
+  // avance) par une fraise lumineuse ; entre deux passes, un rapide en
+  // pointillés. Le plein vient en dernier, comme une poche.
   var oiseau = document.querySelector('.oiseau');
   if (!oiseau || calme) return;
   var passes = [].slice.call(oiseau.querySelectorAll('.passe'));

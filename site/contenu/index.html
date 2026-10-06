@@ -8,59 +8,121 @@
 
      Chaque affirmation de cette page a été vérifiée dans le code du
      logiciel avant d'être écrite. Une fonction ajoutée ici sans l'avoir
-     vue dans le code est une promesse, pas une description. -->
+     vue dans le code est une promesse, pas une description.
 
-<div class="heros">
-  <div class="cadre">
-    {{OISEAU}}
-    <div class="etiquette"><i></i> Version {{verdiercam.version}} · sortie prochaine</div>
-    <h1>Du croquis au copeau, <em>dans une seule fenêtre</em></h1>
-    <p class="accroche">
-      VerdierCAM dessine la pièce, calcule les parcours, simule la matière
-      enlevée et pilote la défonceuse. Pensé dans un atelier de menuiserie,
-      pour le bois d'abord — et éprouvé sur une vraie machine.
-    </p>
-    <div class="actions">
-      <a class="bouton bouton-plein" href="#sortie">Être prévenu de la sortie</a>
-      <a class="bouton bouton-clair" href="#croquis">Voir ce qu'il sait faire</a>
+     La page se lit comme une planche de dessin : un papier quadrillé,
+     des cotes, des repères numérotés en mono — et l'orange de l'oiseau
+     pour le parcours de la fraise. -->
+
+<div class="heros papier">
+  <div class="cadre heros-haut">
+    <div class="heros-texte">
+      {{OISEAU}}
+      <p class="etiquette"><i></i> Version {{verdiercam.version}} · sortie prochaine</p>
+      <h1>Du croquis <em>au copeau</em>, dans une seule fenêtre.</h1>
+      <p class="accroche">
+        VerdierCAM dessine la pièce, calcule les parcours, simule la matière enlevée
+        et pilote la défonceuse. Pensé dans un atelier de menuiserie, pour le bois
+        d'abord — et éprouvé sur une vraie machine.
+      </p>
+      <div class="actions">
+        <a class="bouton bouton-plein" href="#sortie">Être prévenu de la sortie</a>
+        <a class="bouton bouton-clair" href="#parcours">Voir le parcours <span aria-hidden="true">↓</span></a>
+      </div>
     </div>
-    <ul class="fiche">
+    <ul class="fiche" aria-label="En bref">
       <li>Linux et Windows</li>
       <li>{{verdiercam.familles}} familles d'opérations</li>
       <li>Français et anglais</li>
-      <li>Sans abonnement</li>
+      <li>Licence perpétuelle, sans abonnement</li>
     </ul>
-    <figure class="vitrine fenetre">
-      <img src="{{RACINE}}captures/drakkar.webp" width="1920" height="1080"
-           alt="VerdierCAM en simulation : un drakkar sculpté en bas-relief dans un brut de bois, tiré d'une photo par le relief par IA. L'arbre des opérations à gauche, la simulation en bas.">
-    </figure>
+  </div>
+
+  <div class="cadre large">
+    <div class="vitrine apparait">
+      <figure class="fenetre fenetre-heros">
+        <img src="{{RACINE}}captures/drakkar.webp" width="1920" height="1080" fetchpriority="high"
+             alt="VerdierCAM en simulation : un drakkar sculpté en bas-relief dans un brut de bois, tiré d'une photo par le relief par IA. L'arbre des opérations à gauche, la simulation en bas.">
+      </figure>
+      <figure class="loupe">
+        <img src="{{RACINE}}captures/drakkar-detail.webp" width="1200" height="675" loading="lazy"
+             alt="Gros plan sur le relief simulé : la proue du drakkar et les vagues, creusées dans le bois avec sa veinure">
+        <figcaption>Le relief simulé, veinure comprise. Calculé <b>sur votre ordinateur</b>, sans connexion.</figcaption>
+      </figure>
+    </div>
+    <p class="cote">Capture réelle de la version {{verdiercam.version}}</p>
   </div>
 </div>
 
-<section id="etablis">
+<section class="chiffres" aria-label="En quelques chiffres">
   <div class="cadre">
-    <div class="tete centre apparait">
-      <span class="surtitre">Une fenêtre, quatre établis</span>
-      <h2>Le même document, du premier trait au dernier copeau</h2>
+    <ul>
+      <li><b>{{verdiercam.familles}}</b><span>familles d'opérations</span></li>
+      <li><b>8</b><span>commandes numériques servies</span></li>
+      <li><b>2</b><span>systèmes, Linux et Windows</span></li>
+      <li><b>0</b><span>abonnement</span></li>
+      <li><b>0</b><span>connexion nécessaire</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="parcours" class="papier">
+  <div class="cadre">
+    <div class="tete apparait">
+      <span class="surtitre">Le parcours</span>
+      <h2>Quatre établis, un seul document</h2>
       <p>Pas d'export entre deux logiciels, pas de fichier intermédiaire à rouvrir quand
-        une cote change. On corrige le croquis, les parcours se recalculent.</p>
+        une cote change. On corrige le croquis, les parcours se recalculent, la simulation
+        suit, la machine reçoit le bon programme.</p>
     </div>
-    <div class="etapes apparait">
-      <div class="etape">
-        <h3>Croquis</h3>
-        <p>Tracer, contraindre, coter. Importer un SVG, un DXF ou une esquisse FreeCAD.</p>
-      </div>
-      <div class="etape">
-        <h3>Usinage</h3>
-        <p>Choisir les formes, l'opération, la fraise. Les parcours se calculent en tâche de fond.</p>
-      </div>
-      <div class="etape">
-        <h3>Simulation</h3>
-        <p>Voir le bois se creuser, passe après passe, avant de lancer la machine.</p>
-      </div>
-      <div class="etape">
-        <h3>Pilotage</h3>
-        <p>Envoyer le programme à une machine GRBL ou grblHAL, depuis la même fenêtre.</p>
+
+    <div class="parcours">
+      <ol class="jalons" aria-label="Les quatre établis">
+        <li><span class="num">01</span><h3>Croquis</h3>
+          <p>Tracer, contraindre, coter. Importer un SVG, un DXF ou une esquisse FreeCAD.</p></li>
+        <li><span class="num">02</span><h3>Usinage</h3>
+          <p>Choisir les formes, l'opération, la fraise. Les parcours se calculent en tâche de fond.</p></li>
+        <li><span class="num">03</span><h3>Simulation</h3>
+          <p>Voir le bois se creuser, passe après passe, avant de lancer la machine.</p></li>
+        <li><span class="num">04</span><h3>Pilotage</h3>
+          <p>Envoyer le programme à une machine GRBL ou grblHAL, depuis la même fenêtre.</p></li>
+      </ol>
+
+      <div class="vues">
+        <figure class="vue apparait">
+          <span class="num">01 · Croquis</span>
+          <div class="fenetre">
+            <video src="{{RACINE}}captures/clip-cote.mp4" poster="{{RACINE}}captures/clip-cote.webp"
+                   width="1920" height="1080" muted loop playsinline controls preload="none" data-auto
+                   aria-label="Tracé d'une forme dans VerdierCAM : la longueur et l'angle se tapent au clavier pendant le tracé"></video>
+          </div>
+          <figcaption>La cote se tape <b>pendant le tracé</b> : la longueur, Tab, l'angle, Entrée.</figcaption>
+        </figure>
+        <figure class="vue apparait">
+          <span class="num">02 · Usinage</span>
+          <div class="fenetre">
+            <img src="{{RACINE}}captures/cadre-parcours.webp" width="1920" height="1080" loading="lazy"
+                 alt="Un cadre en bois en vue 3D, avec les parcours d'ébauche en orange et de finition en bleu tracés sur le brut">
+          </div>
+          <figcaption>Un cadre : poche, profils, ébauche puis finition à la cote. L'ébauche en orange, la finition en bleu, sur le brut en 3D.</figcaption>
+        </figure>
+        <figure class="vue apparait">
+          <span class="num">03 · Simulation</span>
+          <div class="fenetre">
+            <video src="{{RACINE}}captures/clip-simulation.mp4" poster="{{RACINE}}captures/clip-simulation.webp"
+                   width="1920" height="1080" muted loop playsinline controls preload="none" data-auto
+                   aria-label="Simulation d'usinage dans VerdierCAM : la fraise creuse le brut de bois passe après passe"></video>
+          </div>
+          <figcaption>La matière se creuse en direct, avec la <b>veinure du bois</b>. Lecture, pause, vitesse : on revient sur n'importe quelle passe.</figcaption>
+        </figure>
+        <figure class="vue apparait">
+          <span class="num">04 · Pilotage</span>
+          <div class="fenetre">
+            <img src="{{RACINE}}captures/pupitre.webp" width="1920" height="1080" loading="lazy"
+                 alt="Le pupitre de pilotage de VerdierCAM : le brut en 3D au centre, les positions et les boutons de jog à droite, le bouton ARRÊT en rouge">
+          </div>
+          <figcaption>Le pupitre : positions, jog, broche et arrêt, à côté de la pièce. <kbd>Ctrl</kbd> + <kbd>.</kbd> arrête la machine, de partout.</figcaption>
+        </figure>
       </div>
     </div>
   </div>
@@ -76,10 +138,14 @@
           arcs tenus par des contraintes. On tire un point, le solveur fait suivre le reste.
           On tape une cote, la pièce prend la bonne taille.</p>
         <ul class="coches">
-          <li><b>Raccourcis de FreeCAD</b> : <code>G L</code> pour une ligne, <code>K D</code> pour une distance, <code>C</code> pour une coïncidence.</li>
+          <li><b>Les raccourcis de FreeCAD</b> : <kbd>G</kbd><kbd>L</kbd> pour une ligne,
+            <kbd>K</kbd><kbd>D</kbd> pour une distance, <kbd>C</kbd> pour une coïncidence.</li>
           <li><b>La planche fait partie du dessin</b> : on cote depuis un bord, et ce qui en dépend suit.</li>
-          <li><b>Import SVG, DXF et FreeCAD</b> — et le dessin importé reste un croquis qui se contraint.</li>
-          <li><b>Texte</b> aux polices monotrait, ou dans toutes les polices TrueType et OpenType du poste.</li>
+          <li><b>Une expression dans tous les champs</b> : <code>240/2</code>, <code>W/2</code>, <code>3in</code>.</li>
+          <li><b>Import SVG, DXF et FreeCAD</b> — le dessin importé reste un croquis qui se contraint.</li>
+          <li><b>Texte</b> en polices monotrait, ou dans toutes les polices TrueType et OpenType du poste.</li>
+          <li>Lignes, arcs, cercles, oblongs, courbes de Bézier. Congés, chanfreins, décalages,
+            réseaux, symétries, ciseaux, prolonger. Annuler et refaire sur tout, jusqu'au glisser d'un point.</li>
         </ul>
       </div>
       <figure class="capture apparait">
@@ -90,40 +156,18 @@
         <figcaption>Un levier entièrement contraint : arcs <b>tangents</b>, rayons et entraxe cotés.</figcaption>
       </figure>
     </div>
-
-    <div class="fonction inverse">
-      <div class="texte apparait">
-        <span class="surtitre">Au clavier</span>
-        <h2>La cote se tape pendant le tracé</h2>
-        <p>Pendant qu'on trace, on tape la longueur, Tab passe à l'angle, Entrée pose le
-          point. Une expression est acceptée dans tous les champs : <code>240/2</code>,
-          <code>W/2</code>, <code>3in</code>.</p>
-        <ul class="coches">
-          <li>Lignes, arcs, cercles, oblongs, courbes de Bézier.</li>
-          <li>Congés, chanfreins, décalages, réseaux, symétries, ciseaux, prolonger.</li>
-          <li>Annuler et refaire sur tout, jusqu'au glisser d'un point.</li>
-        </ul>
-      </div>
-      <figure class="capture apparait">
-        <div class="fenetre">
-          <video src="{{RACINE}}captures/clip-cote.mp4" poster="{{RACINE}}captures/clip-cote.webp"
-                 width="1920" height="1080" muted loop playsinline controls preload="none" data-auto
-                 aria-label="Tracé d'une forme dans VerdierCAM : la longueur et l'angle se tapent au clavier pendant le tracé"></video>
-        </div>
-      </figure>
-    </div>
   </div>
 </section>
 
 <section id="usinage">
   <div class="cadre">
-    <div class="fonction">
-      <div class="texte apparait">
+    <div class="usinage-tete apparait">
+      <div class="grand-nombre" aria-hidden="true">{{verdiercam.familles}}</div>
+      <div class="texte">
         <span class="surtitre">02 · Usinage</span>
         <h2>{{verdiercam.familles}} familles d'opérations, des réglages qui comptent</h2>
-        <p>Des classiques du panneau aux pièces tournées, aux reliefs et aux pièces
-          usinées sur les deux faces. L'ébauche en orange, la finition en bleu,
-          directement sur le brut en 3D.</p>
+        <p>Des classiques du panneau aux pièces tournées, aux reliefs et aux pièces usinées
+          sur les deux faces. Chaque opération se règle une fois, et se rappelle sur la suivante.</p>
         <ul class="coches">
           <li>Avalant ou opposition, rampe en zigzag ou en hélice.</li>
           <li>Poche en zigzag, concentrique, spirale, en équerres ou <b>adaptative</b>.</li>
@@ -131,15 +175,7 @@
           <li>Bibliothèque de fraises, <b>fraises de forme</b> dessinées à partir de leur profil, calculateur de régimes.</li>
         </ul>
       </div>
-      <figure class="capture apparait">
-        <div class="fenetre">
-          <img src="{{RACINE}}captures/cadre-parcours.webp" width="1920" height="1080" loading="lazy"
-               alt="Un cadre en bois en vue 3D, avec les parcours d'ébauche en orange et de finition en bleu tracés sur le brut">
-        </div>
-        <figcaption>Un cadre : poche, profils, ébauche puis finition à la cote.</figcaption>
-      </figure>
     </div>
-
     <div class="familles apparait">
 {{verdiercam.liste_familles}}
     </div>
@@ -148,23 +184,23 @@
 
 <section id="modes" class="teinte">
   <div class="cadre">
-    <div class="tete centre apparait">
+    <div class="tete apparait">
       <span class="surtitre">Débutant · Intermédiaire · Pro</span>
       <h2>Trois façons de travailler, les mêmes calculs</h2>
       <p>Au premier lancement, VerdierCAM demande comment on veut travailler. Seule la
         présentation du panneau d'usinage change : les réglages et le G-code sont les mêmes
         partout, et on passe de l'un à l'autre à tout moment.</p>
     </div>
-    <figure class="capture apparait">
-      <div class="fenetre">
-        <img src="{{RACINE}}captures/trois-modes.webp" width="1920" height="1080" loading="lazy"
-             alt="La fenêtre d'accueil de VerdierCAM et ses trois cartes : Débutant, Intermédiaire, Pro">
-      </div>
-      <figcaption><b>Débutant</b> : chaque réglage est une ligne, un clic ouvre son grand dessin.
-        <b>Intermédiaire</b> : le panneau complet, avec un petit dessin par section.
-        <b>Pro</b> : le panneau complet, compact.</figcaption>
-    </figure>
-    <div class="paire">
+    <div class="bento">
+      <figure class="capture apparait bento-grand">
+        <div class="fenetre">
+          <img src="{{RACINE}}captures/trois-modes.webp" width="1920" height="1080" loading="lazy"
+               alt="La fenêtre d'accueil de VerdierCAM et ses trois cartes : Débutant, Intermédiaire, Pro">
+        </div>
+        <figcaption><b>Débutant</b> : chaque réglage est une ligne, un clic ouvre son grand dessin.
+          <b>Intermédiaire</b> : le panneau complet, avec un petit dessin par section.
+          <b>Pro</b> : le panneau complet, compact.</figcaption>
+      </figure>
       <figure class="capture apparait">
         <div class="fenetre">
           <img src="{{RACINE}}captures/debutant-profondeurs.webp" width="1920" height="1080" loading="lazy"
@@ -193,18 +229,30 @@
           jusqu'au PNG 16 bits : ébauche à la fraise droite, finition à la boule ou à la
           boule conique.</p>
         <ul class="coches">
-          <li><b>Relief par IA</b> : une photo devient une carte de hauteur, avec le modèle Depth Anything 3 réécrit en C++ — sans Python et <b>sans connexion</b>.</li>
-          <li>Réglage <b>bas-relief</b> qui écrase les falaises et garde les détails ; calcul en tuiles pour les grandes images.</li>
-          <li>Et aussi : <b>Photo en V</b>, <b>Texture</b> de gouge, <b>Moulure</b> le long d'un rail, <b>Révolution</b> pour une assiette ou un bol.</li>
+          <li><b>Relief par IA</b> : une photo devient une carte de hauteur, avec le modèle
+            Depth Anything 3 réécrit en C++ — sans Python et <b>sans connexion</b>.</li>
+          <li>Réglage <b>bas-relief</b> qui écrase les falaises et garde les détails ; calcul en
+            tuiles pour les grandes images.</li>
+          <li>Et aussi : <b>Photo en V</b>, <b>Texture</b> de gouge, <b>Moulure</b> le long d'un
+            rail, <b>Révolution</b> pour une assiette ou un bol.</li>
         </ul>
       </div>
-      <figure class="capture apparait">
-        <div class="fenetre">
-          <img src="{{RACINE}}captures/25d-schema.webp" width="1920" height="1080" loading="lazy"
-               alt="Le dessin du modèle 3D en gravure 2.5D : un relief vu de dessus et en coupe dans la planche">
-        </div>
-        <figcaption>Le relief se place, se met à l'échelle et à la profondeur dans la planche.</figcaption>
-      </figure>
+      <div class="collage apparait">
+        <figure class="capture">
+          <div class="fenetre">
+            <img src="{{RACINE}}captures/25d-schema.webp" width="1920" height="1080" loading="lazy"
+                 alt="Le dessin du modèle 3D en gravure 2.5D : un relief vu de dessus et en coupe dans la planche">
+          </div>
+          <figcaption>Le relief se place, se met à l'échelle et à la profondeur dans la planche.</figcaption>
+        </figure>
+        <figure class="capture">
+          <div class="fenetre">
+            <img src="{{RACINE}}captures/25d-bois.webp" width="1920" height="1080" loading="lazy"
+                 alt="Le résultat simulé d'une gravure 2.5D : un motif en relief creusé dans une planche de bois clair">
+          </div>
+          <figcaption>Le résultat simulé : un relief floral, ébauche et finition.</figcaption>
+        </figure>
+      </div>
     </div>
   </div>
 </section>
@@ -220,31 +268,17 @@
         <ul class="coches">
           <li>La matière se creuse en direct, avec la <b>veinure du bois</b>.</li>
           <li>Lecture, pause, vitesse, position : on revient sur n'importe quelle passe.</li>
-          <li>Une queue de fraise ou un porte-outil qui toucherait la pièce <b>bloque l'export et le lancement</b>.</li>
+          <li>Une queue de fraise ou un porte-outil qui toucherait la pièce
+            <b>bloque l'export et le lancement</b>.</li>
+          <li>La matière enlevée s'affiche aussi <b>pendant l'usinage</b>, au pupitre.</li>
         </ul>
       </div>
-      <figure class="capture apparait">
-        <div class="fenetre">
-          <video src="{{RACINE}}captures/clip-simulation.mp4" poster="{{RACINE}}captures/clip-simulation.webp"
-                 width="1920" height="1080" muted loop playsinline controls preload="none" data-auto
-                 aria-label="Simulation d'usinage dans VerdierCAM : la fraise creuse le brut de bois passe après passe"></video>
-        </div>
-      </figure>
-    </div>
-    <div class="paire">
       <figure class="capture apparait">
         <div class="fenetre">
           <img src="{{RACINE}}captures/boite.webp" width="1920" height="1080" loading="lazy"
                alt="Une boîte à couvercle simulée dans un brut de bois : le logement circulaire et la feuillure du couvercle">
         </div>
-        <figcaption>Une boîte et son couvercle.</figcaption>
-      </figure>
-      <figure class="capture apparait">
-        <div class="fenetre">
-          <img src="{{RACINE}}captures/25d-bois.webp" width="1920" height="1080" loading="lazy"
-               alt="Le résultat simulé d'une gravure 2.5D : un motif en relief creusé dans une planche de bois clair">
-        </div>
-        <figcaption>Un relief floral en gravure 2.5D, ébauche et finition.</figcaption>
+        <figcaption>Une boîte et son couvercle, simulés dans le brut.</figcaption>
       </figure>
     </div>
   </div>
@@ -261,51 +295,58 @@
           changement d'outil et longueur d'outil adaptés à chacune.</p>
         <ul class="coches">
           <li>Jog au pas ou en continu, palpage, changement d'outil guidé.</li>
-          <li>Le cadre de la pièce parcouru avant de couper ; la matière enlevée affichée pendant l'usinage.</li>
+          <li>Le cadre de la pièce parcouru avant de couper.</li>
           <li><b>Deux faces</b> : goupilles ou butée, la pièce retournée retombe à sa place.</li>
-          <li><code>Ctrl + .</code> arrête la machine, de partout.</li>
+          <li><kbd>Ctrl</kbd> + <kbd>.</kbd> arrête la machine, de partout.</li>
         </ul>
+      </div>
+      <div class="postes apparait">
+        <span class="surtitre">Le G-code s'écrit pour</span>
+        <div class="defile" aria-hidden="true">
+          <ul>
+            <li>LinuxCNC</li><li>GRBL</li><li>FluidNC</li><li>grblHAL</li>
+            <li>MASSO</li><li>Mach3</li><li>Mach4</li><li>UCCNC</li>
+            <li>LinuxCNC</li><li>GRBL</li><li>FluidNC</li><li>grblHAL</li>
+            <li>MASSO</li><li>Mach3</li><li>Mach4</li><li>UCCNC</li>
+          </ul>
+        </div>
         <ul class="machines" aria-label="Post-processeurs">
           <li>LinuxCNC</li><li>GRBL</li><li>FluidNC</li><li>grblHAL</li>
           <li>MASSO</li><li>Mach3</li><li>Mach4</li><li>UCCNC</li>
         </ul>
+        <p>Le pilotage direct, depuis VerdierCAM, se fait avec <b>GRBL</b> et <b>grblHAL</b>.</p>
       </div>
-      <figure class="capture apparait">
-        <div class="fenetre">
-          <img src="{{RACINE}}captures/pupitre.webp" width="1920" height="1080" loading="lazy"
-               alt="Le pupitre de pilotage de VerdierCAM : le brut en 3D au centre, les positions et les boutons de jog à droite, le bouton ARRÊT en rouge">
-        </div>
-        <figcaption>Le pupitre : positions, jog, broche et arrêt, à côté de la pièce.</figcaption>
-      </figure>
     </div>
   </div>
 </section>
 
-<section id="sortie" class="teinte">
+<section id="sortie">
   <div class="cadre">
     <div class="sortie apparait">
-      <span class="surtitre">La sortie</span>
-      <h2>Bientôt disponible</h2>
-      <p>La version {{verdiercam.version}} tourne tous les jours à l'atelier. La 1.0 sortira quand
-        elle aura été validée sur le bois — pas à une date choisie d'avance.</p>
+      <div class="sortie-texte">
+        <span class="surtitre">La sortie</span>
+        <h2>Bientôt disponible</h2>
+        <p>La version {{verdiercam.version}} tourne tous les jours à l'atelier. La 1.0 sortira quand
+          elle aura été validée sur le bois — pas à une date choisie d'avance.</p>
+        <div class="actions">
+          <a class="bouton bouton-plein" href="https://ko-fi.com/atelierduverdier" target="_blank" rel="noopener">
+            {{TASSE}} Suivre l'atelier sur Ko-fi</a>
+          <a class="bouton bouton-clair" href="mailto:contact@verdiercam.fr">Écrire à contact@verdiercam.fr</a>
+        </div>
+      </div>
       <ul class="prevu">
         <li><b>Linux</b> Une AppImage, un seul fichier à lancer, sans installation.</li>
         <li><b>Windows 64 bits</b> Un dossier à dézipper, sans installation non plus.</li>
         <li><b>Prix fixe</b> Licence perpétuelle, pas d'abonnement. Le prix sera annoncé à la sortie.</li>
         <li><b>Mises à jour</b> Le logiciel signale une nouvelle version, sans rien envoyer de vos documents.</li>
       </ul>
-      <div class="actions" style="justify-content:flex-start">
-        <a class="bouton bouton-plein" href="https://ko-fi.com/atelierduverdier" target="_blank" rel="noopener">
-          {{TASSE}} Suivre l'atelier sur Ko-fi</a>
-        <a class="bouton bouton-clair" href="mailto:contact@verdiercam.fr">Écrire à contact@verdiercam.fr</a>
-      </div>
     </div>
   </div>
 </section>
 
-<section id="questions">
+<section id="questions" class="teinte">
   <div class="cadre">
-    <div class="tete centre apparait">
+    <div class="tete apparait">
       <span class="surtitre">Questions</span>
       <h2>Avant de l'installer</h2>
     </div>
@@ -338,6 +379,11 @@
         <p>Le bois d'abord : c'est ce que l'atelier usine, et ce que la simulation montre avec
           sa veinure. Le calculateur de régimes connaît aussi le MDF, le contreplaqué, le plexi,
           le POM, l'aluminium, le laiton et l'acier doux.</p>
+      </details>
+      <details>
+        <summary>Et le prix ?</summary>
+        <p>Une licence perpétuelle, à prix fixe, sans abonnement. Le montant sera annoncé à la
+          sortie de la 1.0.</p>
       </details>
     </div>
   </div>

@@ -40,9 +40,16 @@ pas l'ancienne.
 
 Le site a **sa propre identité**, à part de l'Atelier du Verdier (demandé le 06/10/2026 :
 « plus moderne, ne suis pas ma charte, pas sombre »). Fond clair, encre presque noire,
-l'orange de l'oiseau (`#ff6d00`) en accent. Les polices sont celles du logiciel (Inter,
-JetBrains Mono), réduites au latin et servies d'ici en WOFF2 : la page ne demande rien à
-Google.
+l'orange de l'oiseau (`#ff6d00`) en accent. La page se lit comme une **planche de dessin** :
+un papier finement quadrillé, des cotes au trait, des repères numérotés en mono, et l'orange
+pour tout ce qui est « parcours » (la fraise du logo, le jalon actif, le trait sous le mot
+fort du titre). Les polices sont celles du logiciel (Inter, JetBrains Mono), réduites au
+latin et servies d'ici en WOFF2 : la page ne demande rien à Google.
+
+La page d'accueil : un héros avec la capture du drakkar et une **loupe** sur son relief (un
+recadrage de la même capture, `RECADRAGES` dans `generer.py`), une bande de chiffres, puis
+**le parcours** — quatre jalons fixés à gauche pendant que les quatre vues défilent à droite
+(croquis, usinage, simulation, pilotage) — et les sections de détail, la sortie, les questions.
 
 | fichier | rôle |
 |---|---|
@@ -54,7 +61,9 @@ Google.
 orange prend `--orange-encre`, et le bouton plein met une encre sombre sur l'orange.
 
 Tout est facultatif côté script : sans lui, l'oiseau est dessiné, les blocs sont visibles,
-les vidéos ont leurs boutons.
+les vidéos ont leurs boutons, les quatre jalons sont en encre pleine. L'apparition au
+défilement se mesure au `scroll` (pas d'IntersectionObserver, qui laissait des blocs
+invisibles après un saut d'ancre) et, passé deux secondes, tout se montre quoi qu'il arrive.
 
 ## Le domaine
 

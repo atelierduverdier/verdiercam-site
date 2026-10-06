@@ -70,9 +70,10 @@ PAGES = [
 # Les ancres sont précédées de RACINE : la 404 peut être servie à n'importe
 # quelle profondeur, ses liens partent alors de « / ».
 NAV = [
-    ('#croquis', 'Fonctions'),
+    ('#parcours', 'Le parcours'),
+    ('#usinage', 'Opérations'),
     ('#modes', 'Modes'),
-    ('#simulation', 'Simulation'),
+    ('#sortie', 'Sortie'),
     ('#questions', 'Questions'),
 ]
 
@@ -161,6 +162,13 @@ LARGEUR = 1920
 # drakkar »). Boîte en pixels de la capture 2880 × 1620.
 RECADRAGE_CARTE = ('drakkar_bois', (790, 300, 2250, 1274))
 
+# Des DÉTAILS tirés des captures : une loupe posée sur le relief du drakkar,
+# en tête de page. Boîte en pixels de la capture 2880 × 1620, et largeur
+# servie. On lit toujours la source dans chemins.CAPTURES, jamais une copie.
+RECADRAGES = {
+    'drakkar-detail': ('drakkar_bois', (1000, 520, 1800, 970), 1200),
+}
+
 CLIPS = {
     'croquis_cote_tapee': 'clip-cote',
     'simulation_creuse': 'clip-simulation',
@@ -193,6 +201,16 @@ def publier_captures() -> dict:
         im = Image.open(f).convert('RGB')
         if im.width > LARGEUR:
             im = im.resize((LARGEUR, round(im.height * LARGEUR / im.width)), Image.LANCZOS)
+        en_webp(im, nom)
+
+    for nom, (src, boite, largeur) in RECADRAGES.items():
+        f = chemins.CAPTURES / f'{src}.png'
+        if not f.is_file():
+            manquants.append(f)
+            continue
+        im = Image.open(f).convert('RGB').crop(boite)
+        if im.width > largeur:
+            im = im.resize((largeur, round(im.height * largeur / im.width)), Image.LANCZOS)
         en_webp(im, nom)
 
     for src, nom in CLIPS.items():
