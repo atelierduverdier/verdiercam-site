@@ -18,14 +18,12 @@ VERDIERCAM = PROJETS / 'logiciels' / 'verdiercam-imgui'
 VERDIERCAM_CMAKE = VERDIERCAM / 'CMakeLists.txt'
 VERDIERCAM_OPERATION = VERDIERCAM / 'src' / 'cam' / 'Operation.h'
 VERDIERCAM_LOGO = VERDIERCAM / 'ressources' / 'logo-verdiercam.svg'
+POLICES = VERDIERCAM / 'ressources' / 'polices'        # Inter, JetBrains Mono
 
 # Les captures et les clips : refaits par capturer.sh, dans le vrai logiciel.
 PRESENTATION = PROJETS / 'realisations' / 'presentation-verdiercam'
 CAPTURES = PRESENTATION / 'captures'
 CLIPS = PRESENTATION / 'clips'
-
-# Les polices de la carte de partage (paquet ttf-dejavu).
-POLICE = '/usr/share/fonts/TTF/DejaVuSans%s.ttf'
 
 TOUT = {
     'CMakeLists (version)': VERDIERCAM_CMAKE,
@@ -33,7 +31,7 @@ TOUT = {
     'logo VerdierCAM': VERDIERCAM_LOGO,
     'captures': CAPTURES,
     'clips': CLIPS,
-    'police DejaVu': Path(POLICE % ''),
+    'polices du logiciel': POLICES,
 }
 
 

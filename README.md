@@ -36,13 +36,25 @@ Puis `python3 site/generer.py` ici. Les images sont publiées en WebP et **nomm�
 l'empreinte de leur contenu** : une capture refaite change d'adresse, le cache ne sert
 pas l'ancienne.
 
-## La charte
+## L'identité
 
-`kit/` vient du portail (`atelierduverdier/site`) : `outils/diffuser_kit.py` de ce
-dépôt-là y pose la charte entière, les gabarits `entete.html` / `pied.html` et le logo
-en ligne. **On n'édite pas `kit/` ici** : la prochaine diffusion écraserait la retouche.
-Ce qui est propre à ce site (les quatre établis, la grille des familles, le logo du
-héros) est dans `CSS_LOCAL`, en tête de `site/generer.py`.
+Le site a **sa propre identité**, à part de l'Atelier du Verdier (demandé le 06/10/2026 :
+« plus moderne, ne suis pas ma charte, pas sombre »). Fond clair, encre presque noire,
+l'orange de l'oiseau (`#ff6d00`) en accent. Les polices sont celles du logiciel (Inter,
+JetBrains Mono), réduites au latin et servies d'ici en WOFF2 : la page ne demande rien à
+Google.
+
+| fichier | rôle |
+|---|---|
+| `site/gabarits/page.html` | le squelette de chaque page : barre, pied, visionneuse |
+| `site/style/verdiercam.css` | toute la mise en page |
+| `site/style/verdiercam.js` | l'oiseau qui se dessine, l'apparition des blocs, les vidéos, la visionneuse |
+
+**L'orange n'écrit pas de texte courant** : sur fond clair il ne fait que 2,9:1. Le texte
+orange prend `--orange-encre`, et le bouton plein met une encre sombre sur l'orange.
+
+Tout est facultatif côté script : sans lui, l'oiseau est dessiné, les blocs sont visibles,
+les vidéos ont leurs boutons.
 
 ## Le domaine
 
