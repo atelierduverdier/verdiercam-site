@@ -12,8 +12,9 @@
       <h1>Une plaque, du premier trait au G-code</h1>
       <p class="accroche">
         Onze étapes, chacune avec une capture du vrai logiciel, en mode <b>Débutant</b>.
-        La pièce : une plaque de 120 × 80 mm et deux trous de fixation — de quoi suivre tout
-        le chemin, du croquis à la machine, sans rien connaître de l'informatique.
+        La pièce : une plaque de bois de 120 × 80 mm, détourée avec de la marge dans une
+        planche de 160 × 120 mm, et deux trous de fixation — de quoi suivre tout le chemin,
+        du croquis à la machine, sans rien connaître de l'informatique.
       </p>
     </div>
     <ol class="pp-sommaire" aria-label="Les onze étapes">
@@ -64,14 +65,16 @@
         <h2>Régler la planche</h2>
         <p>Dans l'onglet <b>Usinage</b>, le panneau <b>Brut</b> décrit la planche réelle :
           section « Dimensions &amp; matière », trois champs — <b>Largeur X</b>,
-          <b>Longueur Y</b>, <b>Épaisseur Z</b>.</p>
+          <b>Longueur Y</b>, <b>Épaisseur Z</b> — et un choix de <b>Matière</b>.</p>
         <p>Un double-clic sur un champ ouvre la saisie au clavier — une expression comme
-          <code>240/2</code> est aussi acceptée. Ici : 120 × 80 × 18 mm.</p>
+          <code>240/2</code> est aussi acceptée. Ici : une planche de <b>bois</b>,
+          160 × 120 × 18 mm — plus grande que la plaque de 120 × 80 qu'on va y détourer,
+          avec de la marge tout autour.</p>
       </div>
       <figure class="capture apparait">
         <div class="fenetre">
           <img src="{{RACINE}}captures/pp-brut.webp" width="1920" height="1080" loading="lazy"
-               alt="Le panneau Brut de VerdierCAM : Largeur X, Longueur Y, Épaisseur Z tapées à 120, 80 et 18 mm">
+               alt="Le panneau Brut de VerdierCAM : Largeur X 160, Longueur Y 120, Épaisseur Z 18 mm, matière Bois">
         </div>
         <figcaption>La planche fait partie du dessin, avant le premier trait.</figcaption>
       </figure>
@@ -89,12 +92,13 @@
           Les chiffres tapés au clavier vont dans le champ <b>Largeur</b>, <kbd>Tab</kbd> passe
           à <b>Hauteur</b>, <kbd>Entrée</kbd> pose le coin opposé.</p>
         <p>Ici, <b>120</b> puis <b>80</b> : la plaque prend sa taille exacte sans toucher la
-          souris une fois le premier coin posé — deux gestes pour une cote, pas quatre.</p>
+          souris une fois le premier coin posé — deux gestes pour une cote, pas quatre. Posée
+          avec de la marge sur la planche de 160 × 120, elle ne touche aucun bord.</p>
       </div>
       <figure class="capture apparait">
         <div class="fenetre">
           <img src="{{RACINE}}captures/pp-tracer.webp" width="1920" height="1080" loading="lazy"
-               alt="Le tracé d'un rectangle dans VerdierCAM : la largeur 120 et la hauteur 80 tapées au clavier pendant le tracé">
+               alt="Le tracé d'un rectangle dans VerdierCAM : la largeur 120 et la hauteur 80 tapées au clavier pendant le tracé, avec de la marge sur la planche 160 × 120">
         </div>
         <figcaption>La cote se tape <b>pendant le tracé</b>, pas après.</figcaption>
       </figure>
@@ -110,14 +114,16 @@
         <h2>Les deux trous</h2>
         <p>Outil <b>Cercle</b> (<kbd>G</kbd> <kbd>C</kbd>) : un clic pour le centre, un second
           pour le rayon — ou le rayon tapé au clavier, comme pour le rectangle. Deux petits
-          cercles marquent les deux perçages de fixation, chacun dans un coin de la plaque.</p>
+          cercles Ø5, chacun à 15 mm des deux bords d'un coin de la plaque : les futurs trous
+          de fixation.</p>
         <p>Rien à importer, rien à préfabriquer : une plaque percée est un rectangle et deux
-          cercles, posés l'un après l'autre sur la même feuille.</p>
+          cercles, posés l'un après l'autre sur la même feuille — nettement <b>à l'intérieur</b>
+          de la planche, qu'on voit tout autour.</p>
       </div>
       <figure class="capture apparait">
         <div class="fenetre">
           <img src="{{RACINE}}captures/pp-trous.webp" width="1920" height="1080" loading="lazy"
-               alt="Le croquis complet dans VerdierCAM : une plaque rectangulaire et ses deux perçages, dans le cadre orange de la planche">
+               alt="Le croquis complet dans VerdierCAM : une plaque rectangulaire et ses deux perçages Ø5, nettement à l'intérieur du cadre orange de la planche, avec de la marge tout autour">
         </div>
         <figcaption>La plaque et ses deux trous, prêts à coter.</figcaption>
       </figure>
@@ -161,6 +167,10 @@
           <b>Extérieur</b> : la fraise découpe la pièce en restant à l'extérieur du trait.</p>
         <p>Les deux trous ensuite : un clic sur le premier, <kbd>Ctrl</kbd> + clic sur le
           second, puis <b>Perçage</b>. Deux opérations, deux boutons du même ruban.</p>
+        <p>Une section « Onglets de maintien » accompagne le Contour : quelques ponts de
+          matière, automatiques ou posés à la main, pour qu'une pièce détourée ne parte pas
+          toute seule à la dernière passe. Aucun n'est posé par défaut — à ajouter soi-même
+          si la pièce est grande, lourde, ou que la fraise plonge vite.</p>
       </div>
       <figure class="capture apparait">
         <div class="fenetre">
@@ -179,19 +189,20 @@
       <div class="texte apparait">
         <span class="surtitre">07 · Usinage</span>
         <h2>Choisir la fraise</h2>
-        <p>Menu <b>Outils › Bibliothèque d'outils…</b> : un champ de recherche, la liste des
-          fraises rangées par famille — droites, boules, pointes en V, forets — et pour chacune
-          son diamètre, ses dents, sa matière.</p>
-        <p>Chaque fraise porte déjà son <b>régime de coupe</b> par matière — bois tendre, bois
-          dur, MDF, alu, laiton : vitesse de broche, avance, profondeur de passe. Rien à
-          recalculer à la main pour s'en servir sur une opération.</p>
+        <p>Dans le panneau d'une opération, la ligne <b>Outil</b> (section « Général ») ouvre
+          une liste déroulante : toutes les fraises de l'atelier, rangées — droites, pointes en
+          V, boules, forets — avec leur diamètre. Un clic en choisit une autre pour l'opération
+          en cours.</p>
+        <p>Pour le <b>Contour</b> de cette plaque, c'est déjà une <b>Fraise droite Ø6</b> — le
+          choix que fait le logiciel tout seul pour une découpe, dès la création de
+          l'opération. Rien à changer ici ; juste à savoir où le faire le jour où il le faut.</p>
       </div>
       <figure class="capture apparait">
         <div class="fenetre">
           <img src="{{RACINE}}captures/pp-fraise.webp" width="1920" height="1080" loading="lazy"
-               alt="La fenêtre Bibliothèque d'outils de VerdierCAM : la liste des fraises à gauche, le détail d'une fraise droite Ø3 et son régime de coupe par matière à droite">
+               alt="Le panneau de l'opération Contour dans VerdierCAM, la liste déroulante Outil ouverte : Fraise droite Ø3, Ø6 (choisie), Ø8, et les forets Ø3, Ø5">
         </div>
-        <figcaption>Une fraise de la bibliothèque, avec son régime de coupe déjà réglé.</figcaption>
+        <figcaption>La fraise <b>Ø6</b> du Contour, choisie d'office pour une découpe.</figcaption>
       </figure>
     </div>
   </div>
@@ -202,19 +213,23 @@
     <div class="fonction inverse">
       <div class="texte apparait">
         <span class="surtitre">08 · Usinage · Débutant</span>
-        <h2>Les profondeurs, sur le dessin</h2>
+        <h2>Les profondeurs, sur le dessin — une découpe qui traverse</h2>
         <p>En mode Débutant, chaque profondeur se règle directement sur un dessin en coupe :
           <b>Départ</b>, <b>Profondeur</b>, et les autres réglages qu'une opération peut
-          demander, chacun posé sur sa cote.</p>
-        <p>Un double-clic sur un champ ouvre la saisie au clavier, exactement comme au panneau
-          Brut — le même geste, partout dans le logiciel.</p>
+          demander, chacun posé sur sa cote. Un double-clic sur un champ ouvre la saisie au
+          clavier, exactement comme au panneau Brut.</p>
+        <p>Pour un Contour, la Profondeur naît déjà à <b>l'épaisseur de la planche</b> — 18 mm
+          ici : une découpe qui détoure la pièce traverse tout, par définition. Essayer d'aller
+          plus loin (pour « être sûr » de traverser) ne marche pas : le logiciel refuse et le
+          dit — <i>« profondeur ramenée à 18.00 mm : plus que le brut sous le départ »</i> — il
+          ne laisse pas la fraise plonger dans le martyr ou la table en dessous.</p>
       </div>
       <figure class="capture apparait">
         <div class="fenetre">
           <img src="{{RACINE}}captures/pp-profondeurs.webp" width="1920" height="1080" loading="lazy"
-               alt="Le dessin des profondeurs en mode Débutant dans VerdierCAM : une coupe du bois avec les cotes Départ et Profondeur posées sur le dessin">
+               alt="Le dessin des profondeurs du Contour en mode Débutant dans VerdierCAM : une coupe du bois avec la Profondeur posée à 18 mm, toute l'épaisseur de la planche">
         </div>
-        <figcaption>La profondeur se tape là où elle s'applique, pas dans une liste de champs.</figcaption>
+        <figcaption>18 mm de profondeur pour 18 mm de planche : la découpe traverse.</figcaption>
       </figure>
     </div>
   </div>
@@ -248,18 +263,21 @@
       <div class="texte apparait">
         <span class="surtitre">10 · Simulation</span>
         <h2>Voir le bois se creuser</h2>
-        <p>L'onglet <b>Simulation</b> rejoue l'usinage à l'écran. La case <b>Matière</b> montre
-          le brut ; la lecture (bouton <i>lecture / pause</i>, ou <kbd>Espace</kbd>) avance
-          passe après passe, veinure du bois comprise.</p>
-        <p>Une erreur — profondeur fausse, trou au mauvais endroit — se voit ici. Pas sur la
-          planche, et pas après coup.</p>
+        <p>L'onglet <b>Simulation</b> rejoue l'usinage à l'écran : case <b>Matière</b> pour
+          voir le brut se creuser passe après passe (lecture / pause, ou <kbd>Espace</kbd>),
+          veinure du bois comprise — ou case <b>Pièce finie</b> pour sauter directement au
+          résultat.</p>
+        <p>Avec « Pièce finie », la preuve est là : la plaque se détache bien de la planche,
+          entourée de la marge de bois qui restait autour — le Contour l'a vraiment détourée,
+          pas juste rainurée en surface. Une erreur — profondeur fausse, trou au mauvais
+          endroit — se verrait ici. Pas sur la planche, et pas après coup.</p>
       </div>
       <figure class="capture apparait">
         <div class="fenetre">
           <img src="{{RACINE}}captures/pp-simulation.webp" width="1920" height="1080" loading="lazy"
-               alt="La simulation de VerdierCAM en cours de lecture : la plaque en bois, perçages et contour en train de se creuser">
+               alt="La simulation « Pièce finie » de VerdierCAM : la plaque détourée, avec ses deux trous, bien séparée de la planche de bois qui l'entoure">
         </div>
-        <figcaption>La matière se creuse en direct, avant la première vraie coupe.</figcaption>
+        <figcaption>La plaque détourée, perçages compris — « Pièce finie » le prouve.</figcaption>
       </figure>
     </div>
   </div>
