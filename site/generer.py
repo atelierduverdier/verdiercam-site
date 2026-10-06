@@ -138,7 +138,9 @@ LARGEUR = 1920
 # deviendrait une bouillie grise. On n'en garde que la vue 3D — la pièce
 # dans le bois, qui se lit à toute taille. Boîte en pixels de la capture.
 RECADRES = {
-    'heros': ('assiette_bois', (880, 360, 2200, 1240)),
+    # Le drakkar en bas-relief, et non plus l'assiette (06/10/2026, Christophe :
+    # « une assiette c'est pas terrible, met le drakkar »).
+    'heros': ('drakkar_bois', (790, 300, 2250, 1274)),
 }
 
 CLIPS = {
