@@ -157,6 +157,39 @@
         <figcaption>Un levier entièrement contraint : arcs <b>tangents</b>, rayons et entraxe cotés.</figcaption>
       </figure>
     </div>
+
+    <div class="fonction inverse">
+      <div class="texte apparait">
+        <span class="surtitre">Le croquis en script</span>
+        <h3>Des variables, des boucles — et une IA peut l'écrire</h3>
+        <p>Le croquis s'écrit aussi en quelques lignes, à la façon d'OpenSCAD : on change un
+          nombre en tête du fichier, on rejoue, toute la pièce suit. Chaque forme tracée à la
+          souris s'inscrit dans la console comme la commande qui la refait.</p>
+<pre class="code"><code>dents = 44;  bcd = 104;  c = [101, 101];
+planche([202, 202, 3]);
+p = pignon(c, dents);            // profil de chaîne, en vrais arcs
+pour (i = [0 : 3]) {
+    t = cercle(c + bcd/2 * [cos(90*i), sin(90*i)], 5.25);
+    diametre(#t, 10.5);
+}</code></pre>
+        <ul class="coches">
+          <li><b>Variables, calculs, boucles, conditions, modules et fonctions</b> ; mots-clés en
+            français ou en anglais.</li>
+          <li>Les contraintes et les cotes aussi : le croquis écrit sort <b>entièrement contraint</b>.</li>
+          <li><b>Une IA l'écrit</b> à partir de la page du langage : quand une ligne ne passe pas,
+            la console dit laquelle et pourquoi, à recopier tel quel.</li>
+          <li><b>Pignons pour chaîne</b> à la norme (creux, flancs tangents, tête), oblongs et
+            polygones posés par leur centre.</li>
+        </ul>
+      </div>
+      <figure class="capture apparait">
+        <div class="fenetre">
+          <img src="{{RACINE}}captures/pedalier.webp" width="1920" height="1080" loading="lazy"
+               alt="Un plateau de pédalier de 44 dents dans le croquis de VerdierCAM, écrit en script : la denture, quatre pattes de vis et l'ajour, entièrement contraints">
+        </div>
+        <figcaption>Un plateau de 44 dents écrit en <b>script</b> : 21 formes, 0 degré de liberté.</figcaption>
+      </figure>
+    </div>
   </div>
 </section>
 
@@ -174,6 +207,9 @@
           <li>Poche en zigzag, concentrique, spirale, en équerres ou <b>adaptative</b>.</li>
           <li><b>Modèles de parcours</b> : une opération réglée se rappelle sur une autre, fraise comprise.</li>
           <li>Bibliothèque de fraises, <b>fraises de forme</b> dessinées à partir de leur profil, calculateur de régimes.</li>
+          <li><b>Dépassement</b> en fin de tour : la fraise repasse sur le début du contour, la marque d'entrée s'efface.</li>
+          <li><b>Surépaisseur négative</b> pour une fraise usée ou un ajustement serré : −0,2 enlève 0,2 mm de plus.</li>
+          <li>En gravure 2.5D, l'ébauche s'arrête à ce que la <b>fraise de finition</b> pourra reprendre : pas de sillon au pied des parois.</li>
         </ul>
       </div>
     </div>
@@ -298,6 +334,10 @@
           <li>Jog au pas ou en continu, palpage, changement d'outil guidé.</li>
           <li>Le cadre de la pièce parcouru avant de couper.</li>
           <li><b>Deux faces</b> : goupilles ou butée, la pièce retournée retombe à sa place.</li>
+          <li><b>Grands curseurs d'avance et de broche</b> pour corriger en cours d'usinage.</li>
+          <li><b>Onduler la broche</b> contre le broutement, sans toucher au programme.</li>
+          <li><b>Changeur d'outil automatique</b> : le vrai changement d'outil s'écrit pour les machines qui en ont un.</li>
+          <li>Un port série refusé par Linux ? VerdierCAM dit pourquoi et l'autorise en un clic.</li>
           <li><kbd>Ctrl</kbd> + <kbd>.</kbd> arrête la machine, de partout.</li>
         </ul>
       </div>
@@ -361,7 +401,9 @@
       <details>
         <summary>Faut-il une connexion internet ?</summary>
         <p>Non. Tout se calcule sur le poste, relief par IA compris. La connexion ne sert qu'à
-          télécharger le modèle du relief par IA (1,3 Go), si on le veut — une fois.</p>
+          télécharger le modèle du relief par IA (1,3 Go), si on le veut — une fois — et à dire,
+          au lancement, si une version plus récente est publiée : le numéro de version passe au
+          rouge en bas de la fenêtre.</p>
       </details>
       <details>
         <summary>Ma machine est-elle prise en charge ?</summary>
@@ -382,7 +424,8 @@
       </details>
       <details>
         <summary>Et le prix ?</summary>
-        <p>Une licence perpétuelle, à prix fixe : la version achetée fonctionne pour toujours.
+        <p>Une licence perpétuelle, à prix fixe : la version achetée fonctionne pour toujours,
+          <b>sans activation en ligne et sur toutes vos machines</b>.
           Un an de mises à jour est compris ; ensuite, les recevoir encore se renouvelle si on le
           souhaite, sans obligation. Les montants seront annoncés à la sortie de la 1.0.</p>
       </details>

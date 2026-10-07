@@ -243,6 +243,7 @@ IMAGES = {
     'gravure25d_schema': '25d-schema',
     'gravure25d_bois': '25d-bois',
     'pilotage_pupitre': 'pupitre',
+    'pedalier_script': 'pedalier',
     # La page « Premiers pas » : onze étapes, une plaque percée du croquis au G-code.
     'pp_01_accueil': 'pp-accueil',
     'pp_02_brut': 'pp-brut',

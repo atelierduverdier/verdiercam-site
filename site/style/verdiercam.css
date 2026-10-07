@@ -253,6 +253,15 @@ section.teinte + section.teinte { border-top: 0; }
 }
 .fonction .texte > p { color: var(--encre-2); font-size: 1.06rem; }
 .fonction h2 { font-size: clamp(1.7rem, 3.2vw, 2.4rem); margin-bottom: 18px; }
+/* Le second bloc d'une section (le croquis en script) : un peu d'air au-dessus, un titre de niveau 3 assez grand. */
+.fonction + .fonction { margin-top: clamp(56px, 8vw, 104px); }
+.fonction h3 { font-size: clamp(1.4rem, 2.4vw, 1.8rem); margin: 0 0 16px; letter-spacing: -.015em; }
+/* Un extrait de script : bloc à défilement horizontal, jamais plus large que sa colonne (pas de défilement de page à 375 px). */
+/* min-width: 0 — sans lui, la colonne de grille prend la largeur de la plus longue ligne du code (594 px à 375). */
+.fonction > .texte { min-width: 0; }
+pre.code { margin: 0 0 1.2em; padding: 14px 16px; background: var(--fond-2); border: 1px solid var(--trait);
+  border-radius: 10px; overflow-x: auto; max-width: 100%; line-height: 1.55; }
+pre.code code { background: none; border: 0; padding: 0; white-space: pre; font-size: .84rem; }
 .coches { list-style: none; padding: 0; margin: 22px 0 0; display: grid; gap: 10px; }
 .coches li { padding-left: 32px; position: relative; color: var(--encre-2); }
 .coches li::before { content: ""; position: absolute; left: 0; top: 4px; width: 20px; height: 20px; border-radius: 6px;
