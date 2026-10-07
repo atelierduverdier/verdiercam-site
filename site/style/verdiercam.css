@@ -321,6 +321,8 @@ pre.code code { background: none; border: 0; padding: 0; white-space: pre; font-
   border-radius: 999px; padding: 9px 18px; color: var(--encre); white-space: nowrap; }
 .machines { display: none; flex-wrap: wrap; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .postes p { color: var(--encre-2); margin: 6px 0 0; font-size: 1rem; }
+.defile li small, .machines li small { font-size: .78em; color: var(--encre-2); font-weight: 400; }
+.postes p.note-experimental { font-size: .88rem; }
 
 /* --- La sortie : une carte chaude, l'oiseau en filigrane -------------- */
 .sortie { position: relative; border-radius: 28px; padding: clamp(28px, 5vw, 64px); overflow: hidden;

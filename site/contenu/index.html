@@ -287,7 +287,7 @@ pour (i = [0 : 3]) {
             <img src="{{RACINE}}captures/25d-bois.webp" width="1920" height="1080" loading="lazy"
                  alt="Le résultat simulé d'une gravure 2.5D : un motif en relief creusé dans une planche de bois clair">
           </div>
-          <figcaption>Le résultat simulé : un relief floral, ébauche et finition.</figcaption>
+          <figcaption>Le résultat simulé : un relief floral, ébauché à la fraise Ø6 puis fini à la boule Ø3.</figcaption>
         </figure>
       </div>
     </div>
@@ -346,16 +346,18 @@ pour (i = [0 : 3]) {
         <div class="defile" aria-hidden="true">
           <ul>
             <li>LinuxCNC</li><li>GRBL</li><li>FluidNC</li><li>grblHAL</li>
-            <li>MASSO</li><li>Mach3</li><li>Mach4</li><li>UCCNC</li>
+            <li>MASSO <small>(expérimental)</small></li><li>Mach3 <small>(expérimental)</small></li><li>Mach4 <small>(expérimental)</small></li><li>UCCNC <small>(expérimental)</small></li>
             <li>LinuxCNC</li><li>GRBL</li><li>FluidNC</li><li>grblHAL</li>
-            <li>MASSO</li><li>Mach3</li><li>Mach4</li><li>UCCNC</li>
+            <li>MASSO <small>(expérimental)</small></li><li>Mach3 <small>(expérimental)</small></li><li>Mach4 <small>(expérimental)</small></li><li>UCCNC <small>(expérimental)</small></li>
           </ul>
         </div>
         <ul class="machines" aria-label="Post-processeurs">
           <li>LinuxCNC</li><li>GRBL</li><li>FluidNC</li><li>grblHAL</li>
-          <li>MASSO</li><li>Mach3</li><li>Mach4</li><li>UCCNC</li>
+          <li>MASSO <small>(expérimental)</small></li><li>Mach3 <small>(expérimental)</small></li><li>Mach4 <small>(expérimental)</small></li><li>UCCNC <small>(expérimental)</small></li>
         </ul>
         <p>Le pilotage direct, depuis VerdierCAM, se fait avec <b>GRBL</b> et <b>grblHAL</b>.</p>
+        <p class="note-experimental">MASSO, Mach3, Mach4 et UCCNC sont expérimentaux : écrits d'après leur documentation,
+          jamais essayés sur une vraie machine. Relisez le G-code et faites un passage en l'air avant de couper.</p>
       </div>
     </div>
   </div>
@@ -410,8 +412,8 @@ pour (i = [0 : 3]) {
       </details>
       <details>
         <summary>Ma machine est-elle prise en charge ?</summary>
-        <p>Le G-code s'écrit pour LinuxCNC, GRBL, FluidNC, grblHAL, MASSO, Mach3, Mach4 et
-          UCCNC. Le pilotage direct, depuis VerdierCAM, se fait avec GRBL et grblHAL.</p>
+        <p>Le G-code s'écrit pour LinuxCNC, GRBL, FluidNC, grblHAL, et, à titre expérimental — écrits d'après leur documentation, jamais essayés sur une vraie machine —,
+          MASSO, Mach3, Mach4 et UCCNC. Le pilotage direct, depuis VerdierCAM, se fait avec GRBL et grblHAL.</p>
       </details>
       <details>
         <summary>Je dessine dans FreeCAD, Inkscape ou un logiciel de DAO.</summary>
