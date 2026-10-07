@@ -346,6 +346,8 @@ pre.code code { background: none; border: 0; padding: 0; white-space: pre; font-
 .prix-inclus { color: var(--encre); margin-top: 6px; }
 .prix-tva { font-size: .8rem; color: var(--encre-2); }
 .prevu li.prix b { display: inline; font-size: inherit; }
+.prix-une-fois { font-weight: 600; color: var(--encre); }
+.prix-essai { margin-top: 6px; padding: 10px 12px; border-radius: 10px; background: #fff4ea; color: var(--encre); }
 @media (max-width: 860px) { .sortie { grid-template-columns: 1fr; } }
 
 /* --- Les questions ---------------------------------------------------- */
