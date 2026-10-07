@@ -436,3 +436,6 @@ section.legal { padding-top: 24px; }
 .achat.sans-lien .payer { opacity: .45 !important; pointer-events: none !important; }
 .achat.sans-lien .payer-aide { display: none; }
 .achat.sans-lien .payer-bientot { display: block; color: var(--encre-2); margin-top: 12px; }
+
+/* La promesse sous « Être prévenu de la sortie ». */
+.note-prevenu { margin-top: 14px; font-size: .9rem; color: var(--encre-2); }

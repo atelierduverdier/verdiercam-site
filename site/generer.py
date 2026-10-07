@@ -130,7 +130,6 @@ NAV = [
 
 LIENS_PIED = [
     ('mailto:contact@verdiercam.fr', 'contact@verdiercam.fr'),
-    ('https://ko-fi.com/atelierduverdier', 'Ko-fi'),
     ('https://atelierduverdier.fr', 'Atelier du Verdier'),
     ('{{RACINE}}mentions-legales.html', 'Mentions légales'),
     ('{{RACINE}}confidentialite.html', 'Confidentialité'),
@@ -171,13 +170,6 @@ def blocs_de_vente(texte: str, ouverte: bool) -> str:
     if ouverte:
         return texte.replace('<!--vente-->', '').replace('<!--/vente-->', '')
     return re.sub(r'<!--vente-->.*?<!--/vente-->', '', texte, flags=re.S)
-
-# La tasse de Ko-fi, au trait.
-TASSE = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" '
-         'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
-         '<path d="M4.5 10h11v4a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5v-4Z"/>'
-         '<path d="M15.5 11.5h1.2a2.6 2.6 0 0 1 0 5.2h-2"/>'
-         '<path d="M8 3.5c-.9 1 .9 2.2 0 3.5"/><path d="M12 3.5c-.9 1 .9 2.2 0 3.5"/></svg>')
 
 
 def empreinte(donnees: bytes) -> str:
@@ -526,7 +518,7 @@ def main() -> None:
         if A_REMPLIR in corps:
             a_remplir.append(page['sortie'])
         corps = injecter_verdiercam(corps, faits, page['contenu'])
-        corps = corps.replace('{{TASSE}}', TASSE).replace('{{OISEAU}}', oiseau)
+        corps = corps.replace('{{OISEAU}}', oiseau)
         corps = empreinter(corps, captures, page['contenu'], racine)
         corps = corps.replace('{{RACINE}}', racine)
         url = f"https://{DOMAINE}/" + ('' if page['sortie'] == 'index.html' else page['sortie'])
