@@ -208,7 +208,7 @@ pour (i = [0 : 3]) {
           <li><b>Modèles de parcours</b> : une opération réglée se rappelle sur une autre, fraise comprise.</li>
           <li>Bibliothèque de fraises, <b>fraises de forme</b> dessinées à partir de leur profil, calculateur de régimes.</li>
           <li><b>Dépassement</b> en fin de tour : la fraise repasse sur le début du contour, la marque d'entrée s'efface.</li>
-          <li><b>Surépaisseur négative</b> pour une fraise usée ou un ajustement serré : −0,2 enlève 0,2 mm de plus.</li>
+          <li><b>Surépaisseur négative</b> pour une fraise usée ou un ajustement serré : −0,2 enlève 0,2 mm de plus, et le dessin des profondeurs montre les parois reculer.</li>
           <li>En gravure 2.5D, l'ébauche s'arrête à ce que la <b>fraise de finition</b> pourra reprendre : pas de sillon au pied des parois.</li>
         </ul>
       </div>
@@ -399,7 +399,8 @@ pour (i = [0 : 3]) {
         <li><b>En français</b> L'interface, l'aide et les Premiers pas sont écrits en français, par un artisan français.</li>
         <li><b>À votre écoute</b> Il vous manque quelque chose ? <i>Aide › Suggérer une idée</i>, dans le logiciel,
           ou <a href="mailto:contact@verdiercam.fr?subject=Suggestion%20pour%20VerdierCAM">un courriel</a> : chaque idée
-          est lue.</li>
+          est lue. Un souci ? <i>Aide › Signaler un problème</i> prépare un fichier avec ce que vous avez fait, à joindre
+          au courriel.</li>
       </ul>
     </div>
   </div>
@@ -423,7 +424,7 @@ pour (i = [0 : 3]) {
         <p>Non. Tout se calcule sur le poste, relief par IA compris. La connexion ne sert qu'à
           télécharger le modèle du relief par IA (1,3 Go), si on le veut — une fois — et à dire,
           au lancement, si une version plus récente est publiée : le numéro de version passe au
-          rouge en bas de la fenêtre.</p>
+          rouge en bas de la fenêtre, et un clic propose de la télécharger.</p>
       </details>
       <details>
         <summary>Ma machine est-elle prise en charge ?</summary>
@@ -449,6 +450,18 @@ pour (i = [0 : 3]) {
           fonctionne, export du G-code et pilotage de la machine compris — de quoi vérifier que votre carte GRBL ou
           votre LinuxCNC suit. Ensuite, le dessin et la simulation restent ; seuls l'export et l'envoi à la machine
           demandent une licence.</p>
+      </details>
+      <details>
+        <summary>Comment s'active la licence ?</summary>
+        <p>Elle arrive par courriel : un petit fichier à votre nom. Dans VerdierCAM, <b>Aide › Licence…</b>, puis
+          « Choisir le fichier de licence… » : elle s'active aussitôt, sans connexion, et vaut sur toutes vos
+          machines.</p>
+      </details>
+      <details>
+        <summary>Comment passer à une nouvelle version ?</summary>
+        <p>Quand une version sort, le numéro en bas de la fenêtre passe au <b>rouge</b>. Un clic : ce qui change, et
+          « Télécharger ». Décompressez, lancez — vos réglages, vos outils et votre licence sont gardés. Pendant vos
+          mises à jour comprises, chaque nouvelle version est à vous.</p>
       </details>
       <details>
         <summary>Il manque une chose dont j'ai besoin.</summary>
