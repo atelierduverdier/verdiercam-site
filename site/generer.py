@@ -27,6 +27,7 @@
 import hashlib
 import html
 import io
+import json
 import re
 import shutil
 import sys
@@ -478,6 +479,16 @@ def main() -> None:
         shutil.rmtree(PUBLIC)
     PUBLIC.mkdir(parents=True)
     (PUBLIC / 'CNAME').write_text(DOMAINE + '\n', encoding='utf-8')
+    # LE MANIFESTE DE VERSION (07/10/2026) : ce que le logiciel lit au lancement pour dire, en vert ou en rouge, s'il est
+    # à jour (verdiercam-imgui, scene/VersionPubliee.h). Recopié tel quel de site/version-publiee.json — on le change À
+    # LA MAIN quand un paquet est réellement téléchargeable : c'est l'interrupteur. Absent : pas de manifeste, le
+    # logiciel reste en gris.
+    publiee = SITE / 'version-publiee.json'
+    if publiee.exists():
+        manifeste = json.loads(publiee.read_text(encoding='utf-8'))
+        if not str(manifeste.get('version', '')).strip()[:1].isdigit():
+            sys.exit("generer : site/version-publiee.json sans « version » lisible")
+        (PUBLIC / 'version.json').write_text(json.dumps(manifeste, ensure_ascii=False) + '\n', encoding='utf-8')
 
     polices = publier_polices()
     # La feuille vit dans style/ : elle cite les polices depuis là.

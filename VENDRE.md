@@ -60,3 +60,16 @@ Vérifier ces libellés dans le tableau de bord Stripe au moment de le faire : i
 VerdierCAM actuel n'a **ni clé de licence ni vérification de version** (elles n'existaient que dans
 l'ancien verdiercam-cpp). Il faudra, avant la vente : une clé au nom de l'acheteur portant la date
 de fin des mises à jour, comparée à la date de la version — sans verrou anti-copie, le nom suffit.
+
+## Annoncer une nouvelle version (07/10/2026)
+
+Le logiciel lit au lancement `https://verdiercam.fr/version.json` et montre sa version en **vert** (à jour) ou en
+**rouge** avec le numéro publié (un clic ouvre la page). Ce fichier vient de `site/version-publiee.json`, que
+`generer.py` recopie tel quel ; **on le change à la main, une fois le paquet réellement téléchargeable** — c'est
+l'interrupteur : sans lui, aucun client ne voit passer une version.
+
+```json
+{"version": "0.9.160", "page": "https://verdiercam.fr/#telecharger", "notes": "Pignons, script façon OpenSCAD"}
+```
+
+Absent, le site ne publie pas de manifeste et le logiciel reste en gris.
