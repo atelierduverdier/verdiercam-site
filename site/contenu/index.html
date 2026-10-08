@@ -145,6 +145,10 @@
           <li><b>Une expression dans tous les champs</b> : <code>240/2</code>, <code>W/2</code>, <code>3in</code>.</li>
           <li><b>Import SVG, DXF et FreeCAD</b> — le dessin importé reste un croquis qui se contraint.</li>
           <li><b>Texte</b> en polices monotrait, ou dans toutes les polices TrueType et OpenType du poste.</li>
+          <li><b>Contour extérieur</b> : un dessin compliqué — une guitare de 1&nbsp;857 courbes — donne son seul tour, en
+            une forme fermée prête à découper.</li>
+          <li><b>Des post-its sur la vue</b> : vos notes et la photo de vos croquis papier, collées d'un Ctrl+V,
+            enregistrées avec le document.</li>
           <li>Lignes, arcs, cercles, oblongs, courbes de Bézier. Congés, chanfreins, décalages,
             réseaux, symétries, ciseaux, prolonger. Annuler et refaire sur tout, jusqu'au glisser d'un point.</li>
         </ul>
@@ -205,8 +209,14 @@ pour (i = [0 : 3]) {
         <ul class="coches">
           <li>Avalant ou opposition, rampe en zigzag ou en hélice.</li>
           <li>Poche en zigzag, concentrique, spirale, en équerres ou <b>adaptative</b>.</li>
+          <li><b>Cliquer les zones à vider</b>, comme dans VCarve : un clic dans une surface, Ctrl+clic pour en ajouter ;
+            des zones voisines se vident d'un seul parcours. Les bords posés sur le tour de la pièce s'ouvrent d'un bouton,
+            la fraise sort dans le brut.</li>
+          <li><b>Rainure en T, queue d'aronde, trou de serrure</b> : entrée et sortie hors du brut, la gorge du centre
+            vérifiée — et créée d'un clic. Une passe qui ferait frotter la tige est refusée, la raison dite.</li>
           <li><b>Modèles de parcours</b> : une opération réglée se rappelle sur une autre, fraise comprise.</li>
-          <li>Bibliothèque de fraises, <b>fraises de forme</b> dessinées à partir de leur profil, calculateur de régimes.</li>
+          <li>Bibliothèque de fraises, <b>fraises de forme</b> dessinées à partir de leur profil et cotées sur leur dessin,
+            calculateur de régimes.</li>
           <li><b>Dépassement</b> en fin de tour : la fraise repasse sur le début du contour, la marque d'entrée s'efface.</li>
           <li><b>Surépaisseur négative</b> pour une fraise usée ou un ajustement serré : −0,2 enlève 0,2 mm de plus, et le dessin des profondeurs montre les parois reculer.</li>
           <li>En gravure 2.5D, l'ébauche s'arrête à ce que la <b>fraise de finition</b> pourra reprendre : pas de sillon au pied des parois.</li>
@@ -303,7 +313,10 @@ pour (i = [0 : 3]) {
         <p>La simulation enlève la matière comme la fraise le fera. Une erreur se voit à
           l'écran, pas sur la planche.</p>
         <ul class="coches">
-          <li>La matière se creuse en direct, avec la <b>veinure du bois</b>.</li>
+          <li>La matière se creuse en direct, avec la <b>veinure du bois</b> — même <b>sous la surface</b>, quand une
+            fraise en T creuse son aile.</li>
+          <li><b>Vue en coupe</b> : un plan qu'on fait glisser tranche la pièce et montre son profil exact. Vue en
+            perspective ou orthographique.</li>
           <li>Lecture, pause, vitesse, position : on revient sur n'importe quelle passe.</li>
           <li>Une queue de fraise ou un porte-outil qui toucherait la pièce
             <b>bloque l'export et le lancement</b>.</li>
