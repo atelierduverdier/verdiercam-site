@@ -149,7 +149,13 @@
             une forme fermée prête à découper.</li>
           <li><b>Des post-its sur la vue</b> : vos notes et la photo de vos croquis papier, collées d'un Ctrl+V,
             enregistrées avec le document.</li>
-          <li>Lignes, arcs, cercles, oblongs, courbes de Bézier. Congés, chanfreins, décalages,
+          <li><b>Réseaux liés à l'original</b> : une cote changée sur le premier logement change toute la série, le pas
+            tient en une cote — et le croquis ne gagne aucune liberté.</li>
+          <li><b>Imbriquer sur la plaque</b> : des pièces quelconques posées au plus serré, écart entre elles garanti,
+            rotations permises — de quoi ne pas gâcher une plaque chère.</li>
+          <li><b>Mettre à l'échelle pour remplir le brut</b>, sans déformer le dessin ; l'import d'un SVG signale les
+            poussières laissées par le logiciel de dessin.</li>
+          <li>Lignes, arcs, cercles, ellipses, oblongs, courbes de Bézier. Congés, chanfreins, décalages,
             réseaux, symétries, ciseaux, prolonger. Annuler et refaire sur tout, jusqu'au glisser d'un point.</li>
         </ul>
       </div>
@@ -220,6 +226,12 @@ pour (i = [0 : 3]) {
           <li><b>Dépassement</b> en fin de tour : la fraise repasse sur le début du contour, la marque d'entrée s'efface.</li>
           <li><b>Surépaisseur négative</b> pour une fraise usée ou un ajustement serré : −0,2 enlève 0,2 mm de plus, et le dessin des profondeurs montre les parois reculer.</li>
           <li>En gravure 2.5D, l'ébauche s'arrête à ce que la <b>fraise de finition</b> pourra reprendre : pas de sillon au pied des parois.</li>
+          <li><b>Gravure en V entre les traits</b> : ce qui sera creusé se peint sur le dessin avant le calcul, et une fraise
+            droite vide les fonds plats avant la pointe.</li>
+          <li><b>Peau d'oignon</b> pour les plaques minces et les composites : les pièces tiennent par un voile jusqu'à la
+            dernière passe, sans onglets à poncer. Carbone et G10 parmi les matières.</li>
+          <li><b>Importer une bibliothèque de fraises Fusion 360</b>, comme en exportent les fabricants : cotes et régimes
+            par matière repris, la source notée sur chaque fraise.</li>
         </ul>
       </div>
     </div>
