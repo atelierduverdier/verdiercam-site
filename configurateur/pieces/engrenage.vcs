@@ -1,0 +1,243 @@
+// ENGRENAGE DROIT À DÉVELOPPANTE DE CERCLE — une roue dentée à tailler dans la planche, son alésage (clavette ou méplat
+// au besoin) et ses évidements ; et, pour vérifier, la roue qui l'entraîne, dessinée en tirets à l'entraxe exact.
+//
+// LE PROFIL est celui que TAILLERAIT LA CRÉMAILLÈRE de référence (ISO 53 : angle de pression `angle_pression`, saillie
+// 1 × module, creux 1,25 × module, arrondi de tête 0,38 × module), calculé point par point :
+//   · le flanc est la VRAIE DÉVELOPPANTE, enveloppe du flanc droit de la crémaillère (aucune approximation par des arcs) ;
+//   · le pied est la TROCHOÏDE que trace l'arrondi de la crémaillère : il raccorde la développante au cercle de pied sans
+//     rien laisser que la roue d'en face pourrait heurter ;
+//   · avec PEU DE DENTS, la trochoïde mord dans la développante : c'est le SOUS-TAILLAGE, et le profil le montre tel
+//     que la crémaillère le ferait (le pied de la dent se creuse, la dent s'affaiblit). Il apparaît sous
+//     2 × (1 − déport) / sin²(angle de pression) dents — 17 à 20°, 12 à 25° ; le script le dit à la console et donne le
+//     déport qui l'évite (`deport` : en × module, positif = dents plus épaisses au pied, roue un peu plus grande) ;
+//   · une dent devenue POINTUE (grand déport, très peu de dents) a sa tête rabattue à 0,2 × module de largeur.
+// Le jeu d'engrènement `jeu` se prend sur l'épaisseur des dents, sur le cercle primitif : chaque roue en perd la moitié.
+//
+// L'USINAGE (déclaré en bas : les opérations se créent à l'ouverture, et suivent quand on change une valeur) :
+//   · les évidements et l'alésage d'abord, en contour intérieur ; la roue en DERNIER, en contour extérieur avec onglets ;
+//   · les dents demandent une fraise fine : la Fraise droite Ø3 jusqu'au module 6, la Ø6 au-delà. Le creux entre deux
+//     dents est mesuré au fond, là où passerait le centre de la fraise : s'il est plus étroit qu'elle, la console le dit
+//     — la fraise ne descend pas jusqu'au cercle de pied, le pied reste plus plein (sans gêner l'engrènement tant que la
+//     tête d'en face passe ; sinon, une fraise plus fine ou un module plus grand). Repères mesurés : la Ø3 passe au fond
+//     à partir du module 2,6 environ, la Ø6 à partir de 5,5 ; au module 2, le creux fait 2,5 mm au fond.
+//   · les coins intérieurs des évidements gardent le rayon de la fraise.
+
+module      = 3;     // module (mm) : la taille des dents — diamètre primitif = module × dents
+dents       = 24;    // nombre de dents
+angle_pression = 20; // angle de pression (°) — 20 d'ordinaire, 14,5 sur de vieux engrenages
+deport      = 0;     // déport de denture (× module) : positif contre le sous-taillage des petits pignons
+epaisseur   = 10;    // épaisseur de la roue = de la planche (mm)
+alesage     = 10;    // Ø de l'alésage (mm, 0 = aucun)
+clavette    = 0;     // largeur de la rainure de clavette (mm, 0 = aucune)
+meplat      = 0;     // méplat : cote sur plat de l'arbre (mm, entre Ø/2 et Ø ; 0 = aucun)
+allegement  = 4;     // nombre de rayons évidés (0 = roue pleine)
+jeu         = 0.1;   // jeu d'engrènement (mm, pris sur l'épaisseur des dents)
+dents_roue_menante = 0;  // dents de la roue qui l'entraîne, dessinée à l'entraxe pour vérifier (0 = aucune)
+marge       = 8;     // de la roue au bord de la planche (mm)
+
+// ── Les grandeurs, en degrés comme tout le script (les fonctions trigonométriques le sont) ──
+a_p = angle_pression;
+function rad(d) = d * PI / 180;
+function deg(t) = t * 180 / PI;
+function invo(a) = tan(a) - rad(a);                 // la fonction développante, d'un angle en degrés (radians rendus)
+function r_p(z) = module * z / 2;                   // rayon primitif
+function r_b(z) = r_p(z) * cos(a_p);                // rayon de base : la développante en part
+function r_a(z, x) = r_p(z) + module * (1 + x);     // rayon de tête
+function r_f(z, x) = r_p(z) - module * (1.25 - x);  // rayon de pied
+rho = 0.38 * module;                                // l'arrondi de tête de la crémaillère (ISO 53)
+J = jeu / 2;                                        // l'amincissement de chaque dent, sur le primitif
+nf = 10;                                            // points de la trochoïde (le pied)
+ni = 30;                                            // points de la développante (le flanc)
+
+// ── La crémaillère qui taille une roue de z dents, déport x. Repère « monde » : la roue au centre, la crémaillère au-
+// dessus, sa ligne de roulement à y = r_p tangente au primitif, sa ligne de référence décalée du déport. La dent de la
+// roue (axe vertical) occupe le creux de la crémaillère ; on suit la dent de crémaillère de droite, son flanc gauche. ──
+function y_d(z, x) = r_p(z) + x * module;                                   // ligne de référence
+function y_c(z, x) = y_d(z, x) - 1.25 * module + rho;                       // centre de l'arrondi de tête
+function u_c(z, x) = (PI * module / 2 - J) / 2 + (y_d(z, x) - y_c(z, x) + rho * sin(a_p)) * tan(a_p) + rho * cos(a_p);
+function y_F(z, x) = y_c(z, x) - rho * sin(a_p);                            // où le flanc droit rejoint l'arrondi
+
+// LE POINT TAILLÉ : le point Q de la crémaillère, de normale n, touche la roue quand sa normale passe par le point
+// primitif (0, r_p) ; la crémaillère a alors glissé de d, la roue tourné de φ = −d / r_p. Rendu en [rayon, angle depuis
+// l'axe de la dent (°)], côté horaire.
+function engendre(z, Q, n) = rpsi(z, Q, n, (r_p(z) - Q[1]) / n[1]);
+function rpsi(z, Q, n, s) = [sqrt(s * n[0] * s * n[0] + Q[1] * Q[1]), atan2(-s * n[0], Q[1]) + deg((Q[0] + s * n[0]) / r_p(z))];
+
+// Le pied : la trochoïde, l'arrondi parcouru de sa normale verticale (fond du creux) à celle du flanc.
+function theta(k) = -90 - (90 - a_p) * k / nf;
+function troch(z, x) = [for (k = [0 : nf]) engendre(z, [u_c(z, x) + rho * cos(theta(k)), y_c(z, x) + rho * sin(theta(k))],
+                                                      [cos(theta(k)), sin(theta(k))])];
+
+// Le flanc : la développante. Son demi-angle au rayon R, et si le flanc DROIT de la crémaillère l'a taillé à ce rayon
+// (au-dessus de l'arrondi, sur la vraie branche).
+function s_dent(x) = PI * module / 2 + 2 * x * module * tan(a_p) - J;      // épaisseur de la dent sur le primitif
+function psi_dev(z, x, R) = deg(s_dent(x) / (2 * r_p(z)) + invo(a_p) - invo(acos(r_b(z) / R)));
+function y_de(z, R) = r_p(z) + sin(a_p) * (sqrt(R * R - r_b(z) * r_b(z)) - r_p(z) * sin(a_p));
+function dev_ok(z, x, R) = R >= r_b(z) && (R < r_b(z) ? faux : y_de(z, R) >= y_F(z, x) - 1e-9);
+
+// LE SOUS-TAILLAGE : la trochoïde passe-t-elle à l'intérieur de la développante ? Le premier point qui le fait marque
+// la coupure ; le profil est la trochoïde jusque-là, puis la développante.
+function viole(z, x, T, k) = dev_ok(z, x, T[k][0]) ? psi_dev(z, x, T[k][0]) < T[k][1] : faux;
+function coupure(z, x, T, k) = k > nf ? nf + 1 : (viole(z, x, T, k) ? k : coupure(z, x, T, k + 1));
+function ecart_t(z, x, T, k) = T[k][1] - psi_dev(z, x, T[k][0]);
+function r_coupe(z, x, T, kc) = kc > nf ? T[nf][0]
+    : (kc > 0 && (kc > 0 ? dev_ok(z, x, T[kc - 1][0]) : faux))
+        ? T[kc - 1][0] + (T[kc][0] - T[kc - 1][0]) * ecart_t(z, x, T, kc - 1) / (ecart_t(z, x, T, kc - 1) - ecart_t(z, x, T, kc))
+        : T[kc][0];
+
+// La tête : le rayon de tête, rabattu si la dent y devient pointue (moins de 0,2 × module de large).
+function largeur(z, x, R) = 2 * R * rad(psi_dev(z, x, R));
+function bissec(z, x, a, b, n) = n == 0 ? a
+    : (largeur(z, x, (a + b) / 2) > 0.2 * module ? bissec(z, x, (a + b) / 2, b, n - 1) : bissec(z, x, a, (a + b) / 2, n - 1));
+function r_tete(z, x) = largeur(z, x, r_a(z, x)) >= 0.2 * module ? r_a(z, x) : bissec(z, x, max(r_b(z), r_f(z, x)), r_a(z, x), 40);
+
+// LE PROFIL d'un côté de la dent, du pied à la tête : [rayon, demi-angle (°)].
+function profil(z, x) = profil2(z, x, troch(z, x));
+function profil2(z, x, T) = profil3(z, x, T, coupure(z, x, T, 0));
+function profil3(z, x, T, kc) = profil4(z, x, T, kc, r_coupe(z, x, T, kc), r_tete(z, x));
+function profil4(z, x, T, kc, rc, rt) = concat([for (k = [0 : min(kc, nf + 1) - 1]) T[k]],
+                                               [for (j = [kc > nf ? 1 : 0 : ni]) [rc + (rt - rc) * j / ni, psi_dev(z, x, rc + (rt - rc) * j / ni)]]);
+// Le demi-angle de la dent au rayon R (le profil interpolé) : pour mesurer le creux.
+function psi_a(P, R, k) = k >= len(P) - 1 ? P[len(P) - 1][1]
+    : (P[k + 1][0] >= R ? P[k][1] + (P[k + 1][1] - P[k][1]) * (R - P[k][0]) / (P[k + 1][0] - P[k][0]) : psi_a(P, R, k + 1));
+
+function pt(c, R, a) = c + R * [cos(a), sin(a)];
+
+// ── LA ROUE : un seul contour fermé — pour chaque dent, son flanc droit (polyligne), sa tête (arc), son flanc gauche
+// (polyligne), puis le pied jusqu'à la dent suivante (arc) ; chaque morceau joint au premier. La dent 0 a son axe à
+// l'angle `phase`. ──
+module roue(c, z, P, phase, nom, aide) {
+    n = len(P);
+    premier = arc(c, pt(c, P[0][0], phase + 360 * (z - 1) / z + P[0][1]), pt(c, P[0][0], phase - P[0][1]));   // le pied avant la dent 0
+    pour (i = [0 : z - 1]) {
+        ax = phase + 360 * i / z;
+        d = polyligne([for (p = P) pt(c, p[0], ax - p[1])]);
+        joindre(#premier, #d);
+        t = arc(c, pt(c, P[n - 1][0], ax - P[n - 1][1]), pt(c, P[n - 1][0], ax + P[n - 1][1]));
+        joindre(#premier, #t);
+        g = polyligne([for (k = [n - 1 : -1 : 0]) pt(c, P[k][0], ax + P[k][1])]);
+        joindre(#premier, #g);
+        si (i < z - 1) {
+            f = arc(c, pt(c, P[0][0], ax + P[0][1]), pt(c, P[0][0], phase + 360 * (i + 1) / z - P[0][1]));
+            joindre(#premier, #f);
+        }
+    }
+    nommer(#premier, nom);
+    si (aide == 1)
+        construction(#premier);
+}
+
+// ── L'entraxe exact avec la roue menante (son déport : 0) : l'angle de fonctionnement αw, inv(αw) = inv(α) +
+// 2 tan(α) (x1 + x2) / (z1 + z2), trouvé par Newton. ──
+z2 = dents_roue_menante;
+avec2 = z2 >= 3;
+function invr(t) = tan(deg(t)) - t;
+function newton(v, t, k) = k == 0 ? t : newton(v, t - (invr(t) - v) / (tan(deg(t)) * tan(deg(t))), k - 1);
+a_w = avec2 ? deg(newton(2 * tan(a_p) * deport / (dents + z2) + invo(a_p), rad(a_p), 30)) : a_p;
+entraxe = avec2 ? (dents + z2) * module / 2 * cos(a_p) / cos(a_w) : 0;
+
+// ── La planche, et le centre de la roue ──
+P1 = profil(dents, deport);
+ra1 = P1[len(P1) - 1][0];
+ra2 = avec2 ? r_a(z2, 0) : 0;
+planche([2 * marge + ra1 + (avec2 ? entraxe + ra2 : ra1), 2 * marge + 2 * max(ra1, ra2), epaisseur]);
+o = [marge + ra1, marge + max(ra1, ra2)];
+
+// ── Ce que la console doit dire ──
+z_min = 2 * (1 - deport) / (sin(a_p) * sin(a_p));
+si (dents < z_min)
+    echo(str("Sous-taillage : ", dents, " dents, moins que ", round(z_min * 10) / 10, " — le pied de dent est creusé par la taille. ",
+             "Un déport de ", round((1 - dents * sin(a_p) * sin(a_p) / 2) * 100) / 100, " (× module) l'éviterait."));
+si (ra1 < r_a(dents, deport) - 1e-9)
+    echo(str("Dent pointue : tête rabattue au Ø ", round(2 * ra1 * 100) / 100, " (au lieu de ", round(2 * r_a(dents, deport) * 100) / 100, ")."));
+
+// ── La roue ──
+roue(o, dents, P1, 0, "roue", 0);
+primitif = cercle(o, r_p(dents));            // le cercle primitif, en tirets
+construction(#primitif);
+
+// ── L'alésage : un cercle, ou un arc fermé par la rainure de clavette (en haut) et/ou le méplat (en bas) ──
+R_al = alesage / 2;
+avec_clavette = alesage > 0 && clavette > 0 && clavette < alesage;
+h_m = meplat - R_al;                                  // de l'axe au plat
+avec_meplat = alesage > 0 && meplat > 0 && h_m > 0 && h_m < R_al;
+t_cl = clavette / 2;                                  // profondeur de la rainure dans le moyeu (≈ DIN 6885)
+d_k = asin(clavette / 2 / max(R_al, 1e-9));           // demi-angle de la rainure sur l'alésage
+d_m = acos(h_m / max(R_al, 1e-9));                    // demi-angle du méplat, autour du bas
+KL = pt(o, R_al, 90 + d_k);       KR = pt(o, R_al, 90 - d_k);
+KLh = o + [-clavette / 2, R_al * cos(d_k) + t_cl];  KRh = o + [clavette / 2, R_al * cos(d_k) + t_cl];
+FL = pt(o, R_al, 270 - d_m);      FR = pt(o, R_al, 270 + d_m);
+si (alesage > 0 && !avec_clavette && !avec_meplat) {
+    a1 = cercle(o, R_al);
+    nommer(#a1, "alésage");
+}
+si (avec_clavette && !avec_meplat) {
+    a1 = arc(o, KL, KR);
+    k1 = ligne(KR, KRh);  joindre(#a1, #k1);
+    k2 = ligne(KRh, KLh); joindre(#a1, #k2);
+    k3 = ligne(KLh, KL);  joindre(#a1, #k3);
+    nommer(#a1, "alésage");
+}
+si (avec_meplat && !avec_clavette) {
+    a1 = arc(o, FR, FL);
+    m1 = ligne(FL, FR);   joindre(#a1, #m1);
+    nommer(#a1, "alésage");
+}
+si (avec_clavette && avec_meplat) {
+    a1 = arc(o, KL, FL);
+    m1 = ligne(FL, FR);   joindre(#a1, #m1);
+    a2 = arc(o, FR, KR);  joindre(#a1, #a2);
+    k1 = ligne(KR, KRh);  joindre(#a1, #k1);
+    k2 = ligne(KRh, KLh); joindre(#a1, #k2);
+    k3 = ligne(KLh, KL);  joindre(#a1, #k3);
+    nommer(#a1, "alésage");
+}
+
+// ── Les évidements : des fenêtres entre la jante (sous le pied, 2,5 × module d'épaisseur) et le moyeu, séparées par
+// `allegement` rayons ──
+r_jante = r_f(dents, deport) - max(2.5 * module, 3);
+r_moyeu = max(R_al + (avec_clavette ? t_cl : 0), 2) + max(5, 2 * module);
+l_rayon = max(4, 2.5 * module);                       // largeur d'un rayon
+d_o = asin(l_rayon / 2 / max(r_jante, 1e-9));
+d_i = asin(min(1, l_rayon / 2 / max(r_moyeu, 1e-9)));
+ok_evid = allegement >= 2 && r_jante - r_moyeu >= 6 && 360 / max(allegement, 1) - 2 * max(d_o, d_i) >= 12;
+si (allegement > 0 && !ok_evid)
+    echo("Allègement : la roue est trop petite pour ces rayons évidés — elle reste pleine.");
+si (ok_evid) {
+    pour (k = [0 : allegement - 1]) {
+        b0 = 90 + 360 * k / allegement;
+        b1 = 90 + 360 * (k + 1) / allegement;
+        w1 = arc(o, pt(o, r_jante, b0 + d_o), pt(o, r_jante, b1 - d_o));
+        w2 = ligne(pt(o, r_jante, b1 - d_o), pt(o, r_moyeu, b1 - d_i));   joindre(#w1, #w2);
+        w3 = arc(o, pt(o, r_moyeu, b0 + d_i), pt(o, r_moyeu, b1 - d_i));  joindre(#w1, #w3);
+        w4 = ligne(pt(o, r_moyeu, b0 + d_i), pt(o, r_jante, b0 + d_o));   joindre(#w1, #w4);
+        nommer(#w1, "évidement");
+    }
+}
+
+// ── La roue menante, en tirets (jamais usinée) : à l'entraxe exact, un creux face à la dent 0 ──
+si (avec2) {
+    P2 = profil(z2, 0);
+    roue(o + [entraxe, 0], z2, P2, 180 + 180 / z2, "roue menante", 1);
+    p2 = cercle(o + [entraxe, 0], r_p(z2));
+    construction(#p2);
+}
+
+// ── L'USINAGE, déclaré : les découpes intérieures d'abord, la roue en dernier (elle tient à la planche jusqu'au bout) ──
+outil_dents = module >= 6 ? "Fraise droite Ø6" : "Fraise droite Ø3";
+d_outil = module >= 6 ? 6 : 3;
+passe = module >= 6 ? 3 : 1.5;
+// Le creux au fond : sa largeur au rayon où passerait le centre de la fraise qui touche le pied.
+R_fond = r_f(dents, deport) + d_outil / 2;
+creux = 2 * R_fond * sin(180 / dents - psi_a(P1, R_fond, 0));
+si (creux < d_outil)
+    echo(str("Le creux entre deux dents (", round(creux * 100) / 100, " mm au fond) est plus étroit que la ", outil_dents,
+             " : le pied ne sera pas taillé jusqu'au cercle de pied."));
+si (alesage > 0 && alesage < d_outil + 0.5)
+    echo(str("L'alésage Ø", alesage, " est trop petit pour la ", outil_dents, " : à percer."));
+si (ok_evid)
+    usinage("contour", "évidement", outil = outil_dents, cote = "interieur", profondeur = epaisseur, passe = passe, nom = "Évidements");
+si (alesage > 0)
+    usinage("contour", "alésage", outil = outil_dents, cote = "interieur", profondeur = epaisseur, passe = passe, nom = "Alésage");
+usinage("contour", "roue", outil = outil_dents, cote = "exterieur", profondeur = epaisseur, passe = passe,
+        onglets = 4, onglet_long = 4, onglet_haut = 1.5, nom = "Détourage de la roue");

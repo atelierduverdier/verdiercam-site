@@ -1,0 +1,93 @@
+// MANIVELLE — le moyeu percé, son bras, la bande courbe et sa lumière (plan du post-it de Christophe, 09/10/2026).
+// Origine du dessin : le centre du moyeu, posé au milieu de la planche (o). Toutes les cotes du plan sont des variables :
+// changer l'une d'elles et rejouer le script redessine la pièce.
+
+// ── Les cotes du plan ──
+R_moyeu   = 50;      // R50
+R_alesage = 15;      // R15 (l'alésage central)
+R_percage = 32.5;    // R32.5, le cercle des trous
+D_trou    = 22;      // Ø22
+n_trous   = 6;
+L_bras    = 40;      // largeur du bras
+ecart     = 43.4;    // du bord du moyeu au bord de la bande
+R_int     = 115;     // la bande : R115 (côté du centre des arcs)
+R_ext     = 155;     //            R155 (côté du moyeu)
+R_lum_int = 125;     // la lumière : R125
+R_lum_ext = 145;     //              R145
+demi      = 37;      // les bouts de la bande et de la lumière, à ±37° de l'axe
+R_conge   = 5;       // R5 aux quatre jonctions du bras
+epaisseur = 18;      // la planche, traversée par la découpe
+
+planche([420, 280, epaisseur]);
+o = [110, 140];                                   // le centre du moyeu sur la planche
+K = o + [R_moyeu + ecart + R_ext, 0];             // le centre commun des arcs de la bande (x = 248,4 depuis le moyeu)
+function sur(c, r, a) = c + r * [cos(a), sin(a)];  // le point à l'angle a (degrés) du cercle (c, r)
+
+// ── Le contour extérieur, un seul trait fermé ──
+// Les congés R5 entre le bras et les cercles se CALCULENT : le centre d'un congé est à r du bras (y = ±(h + r)) et à
+// R + r du centre du cercle qu'il touche ; il touche le bras juste au-dessus/au-dessous de lui, et le cercle sur la
+// droite qui le relie au centre de ce cercle. (« conge » de la console n'arrondit qu'entre deux traits.)
+h = L_bras / 2;
+r = R_conge;
+a_haut = 180 - demi;                              // 143°
+a_bas  = 180 + demi;                              // 217°
+function unite(v) = v / norm(v);
+c_haut = sur(K, (R_int + R_ext) / 2, a_haut);     // les centres des bouts arrondis de la bande
+c_bas  = sur(K, (R_int + R_ext) / 2, a_bas);
+// côté moyeu
+dxm = sqrt((R_moyeu + r) * (R_moyeu + r) - (h + r) * (h + r));
+C1 = o + [dxm, h + r];          C3 = o + [dxm, -(h + r)];
+T1 = C1 + r * unite(o - C1);    T3 = C3 + r * unite(o - C3);      // sur le moyeu
+L1 = C1 - [0, r];               L3 = C3 + [0, r];                 // sur le bras
+// côté bande
+dxb = sqrt((R_ext + r) * (R_ext + r) - (h + r) * (h + r));
+C2 = K + [-dxb, h + r];         C4 = K + [-dxb, -(h + r)];
+T2 = C2 + r * unite(K - C2);    T4 = C4 + r * unite(K - C4);      // sur la bande
+L2 = C2 - [0, r];               L4 = C4 + [0, r];                 // sur le bras
+
+// Chaque morceau garde son numéro dans une variable : le script marche aussi dans un document qui a déjà des formes.
+g1  = arc(o, T1, T3);                                  // le moyeu, côté gauche
+g2  = arc(C1, T1, L1);                                 // congé moyeu, dessus
+g3  = ligne(L1, L2);                                   // le bras, dessus
+g4  = arc(C2, L2, T2);                                 // congé bande, dessus
+g5  = arc(K, sur(K, R_ext, a_haut), T2);               // la bande, bord gauche au-dessus du bras
+g6  = arc(c_haut, sur(K, R_int, a_haut), sur(K, R_ext, a_haut));   // le bout arrondi du haut
+g7  = arc(K, sur(K, R_int, a_haut), sur(K, R_int, a_bas));         // la bande, bord droit
+g8  = arc(c_bas, sur(K, R_ext, a_bas), sur(K, R_int, a_bas));      // le bout arrondi du bas
+g9  = arc(K, T4, sur(K, R_ext, a_bas));                // la bande, bord gauche sous le bras
+g10 = arc(C4, T4, L4);                                 // congé bande, dessous
+g11 = ligne(L3, L4);                                   // le bras, dessous
+g12 = arc(C3, L3, T3);                                 // congé moyeu, dessous
+joindre(#g1, #g2, #g3, #g4, #g5, #g6, #g7, #g8, #g9, #g10, #g11, #g12);   // un seul contour : la forme #g1
+nommer(#g1, "manivelle");
+
+// ── La lumière (une poche ou un contour, à l'usinage) ──
+r_l = (R_lum_ext - R_lum_int) / 2;
+l1 = arc(K, sur(K, R_lum_int, a_haut), sur(K, R_lum_int, a_bas));
+l2 = arc(c_bas, sur(K, R_lum_ext, a_bas), sur(K, R_lum_int, a_bas));
+l3 = arc(K, sur(K, R_lum_ext, a_haut), sur(K, R_lum_ext, a_bas));
+l4 = arc(c_haut, sur(K, R_lum_int, a_haut), sur(K, R_lum_ext, a_haut));
+joindre(#l1, #l2, #l3, #l4);
+nommer(#l1, "lumière");
+
+// L'axe de la bande, en tirets (R135) : une aide, jamais usinée.
+m = arc(K, sur(K, (R_int + R_ext) / 2, a_haut), sur(K, (R_int + R_ext) / 2, a_bas));
+construction(#m);
+
+// ── Le moyeu : l'alésage, et les six trous Ø22 sur R32.5, le premier en haut ──
+a = cercle(o, R_alesage);
+nommer(#a, "alésage");
+pour (i = [0 : n_trous - 1]) {
+    t = cercle(sur(o, R_percage, 90 + 360 / n_trous * i), D_trou / 2);
+    nommer(#t, "trou");
+}
+p = cercle(o, R_percage);   // le cercle de perçage, en tirets
+construction(#p);
+
+// ── L'USINAGE, déclaré : les opérations se créent à l'ouverture, et se refont à chaque rejeu ──
+// Les découpes intérieures d'abord, la pièce en dernier (elle tient à la planche jusqu'au bout).
+usinage("contour", "trou", outil = "Fraise droite Ø6", cote = "interieur", profondeur = epaisseur, passe = 3, nom = "Trous Ø22");
+usinage("contour", "alésage", outil = "Fraise droite Ø6", cote = "interieur", profondeur = epaisseur, passe = 3, nom = "Alésage");
+usinage("contour", "lumière", outil = "Fraise droite Ø6", cote = "interieur", profondeur = epaisseur, passe = 3, nom = "Lumière");
+usinage("contour", "manivelle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Détourage de la manivelle");

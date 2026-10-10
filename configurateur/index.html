@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configurateur de pièces — VerdierCAM</title>
+<meta name="description" content="Choisissez une pièce, changez ses cotes, téléchargez le dessin en SVG ou en DXF. Tout se calcule dans votre navigateur.">
+<link rel="icon" href="logo-verdiercam.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="entete">
+  <a class="marque" href="/" title="verdiercam.fr">
+    <img src="logo-verdiercam.svg" alt="" width="40" height="40">
+    <span>VerdierCAM</span>
+  </a>
+  <h1>Configurateur de pièces</h1>
+</header>
+
+<main class="page">
+  <section class="reglages" aria-labelledby="titre-piece">
+    <label class="choix-piece" for="piece">
+      <span id="titre-piece">Pièce</span>
+      <select id="piece" disabled><option>Chargement…</option></select>
+    </label>
+    <p id="description" class="description"></p>
+
+    <form id="formulaire" class="formulaire" autocomplete="off" novalidate>
+      <!-- un champ par variable du script, écrit par configurateur.js -->
+    </form>
+    <button type="button" id="origine" class="lien" disabled>Revenir aux valeurs d'origine</button>
+  </section>
+
+  <section class="apercu" aria-label="Aperçu">
+    <div id="cadre" class="cadre" aria-busy="true">
+      <img id="dessin" alt="Aperçu du dessin" hidden>
+      <p id="attente" class="attente">Chargement du calcul…</p>
+    </div>
+    <p id="etat" class="etat" role="status" aria-live="polite"></p>
+    <div id="erreur" class="erreur" role="alert" hidden></div>
+    <div class="actions">
+      <button type="button" id="svg" class="principal" disabled>Télécharger le SVG</button>
+      <button type="button" id="dxf" disabled>Télécharger le DXF</button>
+      <button type="button" id="vcs" disabled>Ouvrir dans VerdierCAM</button>
+    </div>
+    <p class="note">Dessin en millimètres, origine au coin bas-gauche de la planche. « Ouvrir dans VerdierCAM » télécharge
+      le script de la pièce avec vos valeurs : à rejouer dans VerdierCAM (Outils › Script).</p>
+    <!-- LE SCRIPT SOUS LE DESSIN (10/10/2026, Christophe : « montrer le script en dessous du dessin, ce n'est pas
+         privé ») : la pièce telle que VerdierCAM la lit, avec les valeurs du formulaire. -->
+    <details id="script-bloc" class="script" open>
+      <summary>Le script de la pièce <span class="script-sous">— avec vos valeurs, dans le langage de VerdierCAM</span></summary>
+      <div class="script-outils">
+        <button type="button" id="copier" class="lien" disabled>Copier le script</button>
+        <span id="copie" class="script-copie" role="status" aria-live="polite"></span>
+      </div>
+      <pre id="script" class="script-texte" tabindex="0"></pre>
+    </details>
+  </section>
+</main>
+
+<footer class="pied">
+  Calculé dans votre navigateur par le cœur de VerdierCAM : rien n'est envoyé à un serveur.
+</footer>
+
+<noscript><p class="erreur">Le configurateur a besoin de JavaScript.</p></noscript>
+<script src="configurateur.js"></script>
+</body>
+</html>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#fdfcfa">
+<title>VerdierCAM — Premiers pas, une plaque du croquis au G-code</title>
+<meta name="description" content="Onze étapes avec une capture du vrai logiciel : ouvrir VerdierCAM en mode Débutant, tracer une plaque percée, la coter, choisir les opérations et la fraise, simuler, puis exporter le G-code.">
+<link rel="canonical" href="https://verdiercam.fr/premiers-pas.html">
+<link rel="icon" type="image/svg+xml" href="/oiseau.f8508e8c.svg">
+<link rel="preload" href="/polices/Inter-Regular.8af6cbde.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/style/verdiercam.43f8ee93.css">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VerdierCAM">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="VerdierCAM — Premiers pas, une plaque du croquis au G-code">
+<meta property="og:description" content="Onze étapes avec une capture du vrai logiciel : ouvrir VerdierCAM en mode Débutant, tracer une plaque percée, la coter, choisir les opérations et la fraise, simuler, puis exporter le G-code.">
+<meta property="og:url" content="https://verdiercam.fr/premiers-pas.html">
+<meta property="og:image" content="https://verdiercam.fr/partage/carte.b6341f29.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="VerdierCAM">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="saut" href="#contenu">Aller au contenu</a>
+
+<header class="barre">
+  <div class="cadre barre-dedans">
+    <a class="marque" href="/" aria-label="VerdierCAM, accueil">
+      <img src="/oiseau.f8508e8c.svg" alt="" width="30" height="30">
+      <span>Verdier<b>CAM</b></span>
+    </a>
+    <nav class="menu" aria-label="Sections">
+      <a href="/#parcours">Le parcours</a>
+      <a href="/#usinage">Opérations</a>
+      <a href="/#modes">Modes</a>
+      <a href="/premiers-pas.html">Premiers pas</a>
+      <a href="/configurateur/">Configurateur</a>
+      <a href="/#sortie">Sortie</a>
+      <a href="/#questions">Questions</a>
+    </nav>
+    <a class="bouton bouton-plein petit" href="/#sortie">Être prévenu</a>
+  </div>
+</header>
+
+<main id="contenu">
+<!-- VerdierCAM — « Premiers pas » : une pièce simple, du premier trait au G-code, en mode
+     Débutant. Chaque geste, chaque libellé et chaque capture de cette page ont été vérifiés
+     dans le code du logiciel (~/Projets/logiciels/verdiercam-imgui) ou sur une vraie capture
+     avant d'être écrits — jamais inventés. Les captures sont fabriquées par
+     realisations/presentation-verdiercam/capturer.sh, bloc « PREMIERS PAS », en rejouant des
+     scénarios dans le vrai exécutable : jamais à la main. Voir site/generer.py. -->
+
+<div class="heros papier pp-heros">
+  <div class="cadre">
+    <div class="pp-intro apparait">
+      <span class="surtitre">Premiers pas</span>
+      <h1>Une plaque, du premier trait au G-code</h1>
+      <p class="accroche">
+        Onze étapes, chacune avec une capture du vrai logiciel, en mode <b>Débutant</b>.
+        La pièce : une plaque de bois de 120 × 80 mm, détourée avec de la marge dans une
+        planche de 160 × 120 mm, et deux trous de fixation — de quoi suivre tout le chemin,
+        du croquis à la machine, sans rien connaître de l'informatique.
+      </p>
+    </div>
+    <ol class="pp-sommaire" aria-label="Les onze étapes">
+      <li><a href="#etape-01"><span>01</span>Choisir Débutant</a></li>
+      <li><a href="#etape-02"><span>02</span>La planche</a></li>
+      <li><a href="#etape-03"><span>03</span>Tracer la plaque</a></li>
+      <li><a href="#etape-04"><span>04</span>Les deux trous</a></li>
+      <li><a href="#etape-05"><span>05</span>Coter</a></li>
+      <li><a href="#etape-06"><span>06</span>Usinage</a></li>
+      <li><a href="#etape-07"><span>07</span>La fraise</a></li>
+      <li><a href="#etape-08"><span>08</span>Profondeurs</a></li>
+      <li><a href="#etape-09"><span>09</span>Parcours en 3D</a></li>
+      <li><a href="#etape-10"><span>10</span>Simuler</a></li>
+      <li><a href="#etape-11"><span>11</span>Exporter</a></li>
+    </ol>
+  </div>
+</div>
+
+<section id="etape-01" class="pp-etape">
+  <div class="cadre">
+    <div class="fonction">
+      <div class="texte apparait">
+        <span class="surtitre">01 · Lancement</span>
+        <h2>Choisir le mode Débutant</h2>
+        <p>Au premier lancement, une fenêtre « Bienvenue dans VerdierCAM » propose trois façons
+          de travailler : <b>Débutant</b>, <b>Intermédiaire</b>, <b>Pro</b>. Les calculs et le
+          G-code sont les mêmes partout — seule la présentation du panneau d'usinage change.</p>
+        <p>Cliquer sur la carte <b>Débutant</b> : « chaque réglage d'usinage devient une ligne,
+          et un clic ouvre son grand dessin ». Le bouton <b>Commencer</b> valide le choix. On
+          peut changer d'avis plus tard, depuis le menu <b>Aide › Mode</b>.</p>
+      </div>
+      <figure class="capture apparait">
+        <div class="fenetre">
+          <img src="/captures/pp-accueil.b5214cae.webp" width="1920" height="1080" loading="lazy"
+               alt="La fenêtre d'accueil de VerdierCAM, trois cartes Débutant, Intermédiaire, Pro, la carte Débutant en survol">
+        </div>
+        <figcaption>La carte <b>Débutant</b> : les réglages se tapent sur les dessins.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="etape-02" class="pp-etape teinte">
+  <div class="cadre">
+    <div class="fonction inverse">
+      <div class="texte apparait">
+        <span class="surtitre">02 · Le brut</span>
+        <h2>Régler la planche</h2>
+        <p>Dans l'onglet <b>Usinage</b>, le panneau <b>Brut</b> décrit la planche réelle :
+          section « Dimensions &amp; matière », trois champs — <b>Largeur X</b>,
+          <b>Longueur Y</b>, <b>Épaisseur Z</b> — et un choix de <b>Matière</b>.</p>
+        <p>Un double-clic sur un champ ouvre la saisie au clavier — une expression comme
+          <code>240/2</code> est aussi acceptée. Ici : une planche de <b>bois</b>,
+          160 × 120 × 18 mm — plus grande que la plaque de 120 × 80 qu'on va y détourer,
+          avec de la marge tout autour.</p>
+      </div>
+      <figure class="capture apparait">
+        <div class="fenetre">
+          <img src="/captures/pp-brut.bbea00cf.webp" width="1920" height="1080" loading="lazy"
+               alt="Le panneau Brut de VerdierCAM : Largeur X 160, Longueur Y 120, Épaisseur Z 18 mm, matière Bois">
+        </div>
+        <figcaption>La planche fait partie du dessin, avant le premier trait.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="etape-03" class="pp-etape">
+  <div class="cadre">
+    <div class="fonction">
+      <div class="texte apparait">
+        <span class="surtitre">03 · Croquis</span>
+        <h2>Tracer la plaque</h2>
+        <p>Outil <b>Rectangle</b> (<kbd>G</kbd> <kbd>R</kbd>) : un clic pose le premier coin.
+          Les chiffres tapés au clavier vont dans le champ <b>Largeur</b>, <kbd>Tab</kbd> passe
+          à <b>Hauteur</b>, <kbd>Entrée</kbd> pose le coin opposé.</p>
+        <p>Ici, <b>120</b> puis <b>80</b> : la plaque prend sa taille exacte sans toucher la
+          souris une fois le premier coin posé — deux gestes pour une cote, pas quatre. Posée
+          avec de la marge sur la planche de 160 × 120, elle ne touche aucun bord.</p>
+      </div>
+      <figure class="capture apparait">
+        <div class="fenetre">
+          <img src="/captures/pp-tracer.3b4d0d7c.webp" width="1920" height="1080" loading="lazy"
+               alt="Le tracé d'un rectangle dans VerdierCAM : la largeur 120 et la hauteur 80 tapées au clavier pendant le tracé, avec de la marge sur la planche 160 × 120">
+        </div>
+        <figcaption>La cote se tape <b>pendant le tracé</b>, pas après.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="etape-04" class="pp-etape teinte">
+  <div class="cadre">
+    <div class="fonction inverse">
+      <div class="texte apparait">
+        <span class="surtitre">04 · Croquis</span>
+        <h2>Les deux trous</h2>
+        <p>Outil <b>Cercle</b> (<kbd>G</kbd> <kbd>C</kbd>) : un clic pour le centre, un second
+          pour le rayon — ou le rayon tapé au clavier, comme pour le rectangle. Deux petits
+          cercles Ø5, chacun à 15 mm des deux bords d'un coin de la plaque : les futurs trous
+          de fixation.</p>
+        <p>Rien à importer, rien à préfabriquer : une plaque percée est un rectangle et deux
+          cercles, posés l'un après l'autre sur la même feuille — nettement <b>à l'intérieur</b>
+          de la planche, qu'on voit tout autour.</p>
+      </div>
+      <figure class="capture apparait">
+        <div class="fenetre">
+          <img src="/captures/pp-trous.4cc5693a.webp" width="1920" height="1080" loading="lazy"
+               alt="Le croquis complet dans VerdierCAM : une plaque rectangulaire et ses deux perçages Ø5, nettement à l'intérieur du cadre orange de la planche, avec de la marge tout autour">
+        </div>
+        <figcaption>La plaque et ses deux trous, prêts à coter.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="etape-05" class="pp-etape">
+  <div class="cadre">
+    <div class="fonction">
+      <div class="texte apparait">
+        <span class="surtitre">05 · Croquis</span>
+        <h2>Coter, jusqu'à « entièrement contraint »</h2>
+        <p>Une forme sélectionnée, puis <kbd>D</kbd> pose la cote qui convient — ou directement
+          <kbd>L</kbd> pour une distance horizontale, <kbd>I</kbd> pour une verticale. Une cote
+          tout juste posée s'ouvre aussitôt à la saisie ; plus tard, un double-clic sur son
+          étiquette la retape.</p>
+        <p>Quand il ne reste plus rien à fixer, le panneau l'annonce : <b>« Croquis entièrement
+          contraint »</b>, un point vert, et <b>0 DDL</b> (degré de liberté — ce qui peut encore
+          bouger). Avant cela, le point reste orange et le compte au-dessus de zéro.</p>
+      </div>
+      <figure class="capture apparait">
+        <div class="fenetre">
+          <img src="/captures/pp-cotes.eabe14c0.webp" width="1920" height="1080" loading="lazy"
+               alt="Le panneau du croquis dans VerdierCAM, avec les cotes de largeur et de hauteur posées et le message Croquis entièrement contraint, 0 DDL">
+        </div>
+        <figcaption>Un point vert, <b>0 DDL</b> : plus rien ne peut bouger.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="etape-06" class="pp-etape teinte">
+  <div class="cadre">
+    <div class="fonction inverse">
+      <div class="texte apparait">
+        <span class="surtitre">06 · Usinage</span>
+        <h2>Choisir les formes, choisir l'opération</h2>
+        <p>L'onglet <b>Usinage</b> ouvre le ruban des opérations. Le contour de la plaque
+          sélectionné, un clic sur <b>Contour</b> crée l'opération — par défaut sur le côté
+          <b>Extérieur</b> : la fraise découpe la pièce en restant à l'extérieur du trait.</p>
+        <p>Les deux trous ensuite : un clic sur le premier, <kbd>Ctrl</kbd> + clic sur le
+          second, puis <b>Perçage</b>. Deux opérations, deux boutons du même ruban.</p>
+        <p>Une section « Onglets de maintien » accompagne le Contour : quelques ponts de
+          matière, automatiques ou posés à la main, pour qu'une pièce détourée ne parte pas
+          toute seule à la dernière passe. Aucun n'est posé par défaut — à ajouter soi-même
+          si la pièce est grande, lourde, ou que la fraise plonge vite.</p>
+      </div>
+      <figure class="capture apparait">
+        <div class="fenetre">
+          <img src="/captures/pp-usinage.c3054700.webp" width="1920" height="1080" loading="lazy"
+               alt="Le panneau Usinage de VerdierCAM : deux opérations dans la liste, Contour sur la plaque et Perçage sur les deux trous">
+        </div>
+        <figcaption>Deux opérations posées : <b>Contour</b> et <b>Perçage</b>.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="etape-07" class="pp-etape">
+  <div class="cadre">
+    <div class="fonction">
+      <div class="texte apparait">
+        <span class="surtitre">07 · Usinage</span>
+        <h2>Choisir la fraise</h2>
+        <p>Dans le panneau d'une opération, la ligne <b>Outil</b> (section « Général ») ouvre
+          une liste déroulante : toutes les fraises de l'atelier, rangées — droites, pointes en
+          V, boules, forets — avec leur diamètre. Un clic en choisit une autre pour l'opération
+          en cours.</p>
+        <p>Pour le <b>Contour</b> de cette plaque, c'est déjà une <b>Fraise droite Ø6</b> — le
+          choix que fait le logiciel tout seul pour une découpe, dès la création de
+          l'opération. Rien à changer ici ; juste à savoir où le faire le jour où il le faut.</p>
+      </div>
+      <figure class="capture apparait">
+        <div class="fenetre">
+          <img src="/captures/pp-fraise.a4386b21.webp" width="1920" height="1080" loading="lazy"
+               alt="Le panneau de l'opération Contour dans VerdierCAM, la liste déroulante Outil ouverte : Fraise droite Ø3, Ø6 (choisie), Ø8, et les forets Ø3, Ø5">
+        </div>
+        <figcaption>La fraise <b>Ø6</b> du Contour, choisie d'office pour une découpe.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="etape-08" class="pp-etape teinte">
+  <div class="cadre">
+    <div class="fonction inverse">
+      <div class="texte apparait">
+        <span class="surtitre">08 · Usinage · Débutant</span>
+        <h2>Les profondeurs, sur le dessin — une découpe qui traverse</h2>
+        <p>En mode Débutant, chaque profondeur se règle directement sur un dessin en coupe :
+          <b>Départ</b>, <b>Profondeur</b>, et les autres réglages qu'une opération peut
+          demander, chacun posé sur sa cote. Un double-clic sur un champ ouvre la saisie au
+          clavier, exactement comme au panneau Brut.</p>
+        <p>Pour un Contour, la Profondeur naît déjà à <b>l'épaisseur de la planche</b> — 18 mm
+          ici : une découpe qui détoure la pièce traverse tout, par définition. Essayer d'aller
+          plus loin (pour « être sûr » de traverser) ne marche pas : le logiciel refuse et le
+          dit — <i>« profondeur ramenée à 18.00 mm : plus que le brut sous le départ »</i> — il
+          ne laisse pas la fraise plonger dans le martyr ou la table en dessous.</p>
+      </div>
+      <figure class="capture apparait">
+        <div class="fenetre">
+          <img src="/captures/pp-profondeurs.09ae6a29.webp" width="1920" height="1080" loading="lazy"
+               alt="Le dessin des profondeurs du Contour en mode Débutant dans VerdierCAM : une coupe du bois avec la Profondeur posée à 18 mm, toute l'épaisseur de la planche">
+        </div>
+        <figcaption>18 mm de profondeur pour 18 mm de planche : la découpe traverse.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="etape-09" class="pp-etape">
+  <div class="cadre">
+    <div class="fonction">
+      <div class="texte apparait">
+        <span class="surtitre">09 · Usinage</span>
+        <h2>Calculer, regarder les parcours en 3D</h2>
+        <p>Le gros bouton orange <b>Toolpath</b>, en haut du ruban, relance le calcul des
+          parcours — il se refait aussi tout seul dès qu'un réglage change.</p>
+        <p>En 3D, l'<b>ébauche</b> s'affiche en orange et la <b>finition</b> en bleu, sur le
+          brut : on voit, avant de couper, ce que chaque passe va faire.</p>
+      </div>
+      <figure class="capture apparait">
+        <div class="fenetre">
+          <img src="/captures/pp-parcours.a195bc85.webp" width="1920" height="1080" loading="lazy"
+               alt="La vue 3D de VerdierCAM après calcul : les parcours d'ébauche en orange et de finition en bleu sur le brut de la plaque">
+        </div>
+        <figcaption>L'ébauche en orange, la finition en bleu — avant la première coupe.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="etape-10" class="pp-etape teinte">
+  <div class="cadre">
+    <div class="fonction inverse">
+      <div class="texte apparait">
+        <span class="surtitre">10 · Simulation</span>
+        <h2>Voir le bois se creuser</h2>
+        <p>L'onglet <b>Simulation</b> rejoue l'usinage à l'écran : case <b>Matière</b> pour
+          voir le brut se creuser passe après passe (lecture / pause, ou <kbd>Espace</kbd>),
+          veinure du bois comprise — ou case <b>Pièce finie</b> pour sauter directement au
+          résultat.</p>
+        <p>Avec « Pièce finie », la preuve est là : la plaque se détache bien de la planche,
+          entourée de la marge de bois qui restait autour — le Contour l'a vraiment détourée,
+          pas juste rainurée en surface. Une erreur — profondeur fausse, trou au mauvais
+          endroit — se verrait ici. Pas sur la planche, et pas après coup.</p>
+      </div>
+      <figure class="capture apparait">
+        <div class="fenetre">
+          <img src="/captures/pp-simulation.dbcc6b8d.webp" width="1920" height="1080" loading="lazy"
+               alt="La simulation « Pièce finie » de VerdierCAM : la plaque détourée, avec ses deux trous, bien séparée de la planche de bois qui l'entoure">
+        </div>
+        <figcaption>La plaque détourée, perçages compris — « Pièce finie » le prouve.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="etape-11" class="pp-etape">
+  <div class="cadre">
+    <div class="fonction">
+      <div class="texte apparait">
+        <span class="surtitre">11 · Sortie</span>
+        <h2>Exporter le G-code</h2>
+        <p>Le panneau <b>G-code</b> affiche le nombre de lignes et d'opérations ; le bouton
+          <b>Exporter…</b> écrit le fichier (<code>.ngc</code> par défaut — <code>.nc</code>,
+          <code>.gcode</code> et <code>.tap</code> sont aussi acceptés).</p>
+        <p>Le dialecte de la machine se choisit dans <b>Réglages machine</b>, section
+          « Post-processeur » : LinuxCNC, GRBL, FluidNC, grblHAL, MASSO, Mach3, Mach4 ou UCCNC.
+          Le fichier qui en sort est déjà écrit pour la machine visée.</p>
+      </div>
+      <figure class="capture apparait">
+        <div class="fenetre">
+          <img src="/captures/pp-export.5c1a737e.webp" width="1920" height="1080" loading="lazy"
+               alt="Le panneau G-code de VerdierCAM, prêt à exporter le programme de la plaque">
+        </div>
+        <figcaption>Le G-code de la plaque, prêt pour l'export.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="pp-suite" class="teinte">
+  <div class="cadre">
+    <div class="tete apparait">
+      <span class="surtitre">Et ensuite ?</span>
+      <h2>La même pièce, en plus riche</h2>
+      <p>Cette plaque ne montre que le strict chemin : croquis, usinage, simulation, G-code.
+        L'accueil du site creuse chaque étape plus loin — les 18 familles
+        d'opérations, les trois modes, les reliefs, et le pilotage direct d'une machine GRBL ou
+        grblHAL depuis la même fenêtre.</p>
+      <p class="pp-manuel">Le mode d'emploi complet, pas à pas, viendra avec la sortie de
+        VerdierCAM — sans date fixée pour l'instant.</p>
+    </div>
+    <div class="actions">
+      <a class="bouton bouton-plein" href="/#usinage">Les opérations</a>
+      <a class="bouton bouton-clair" href="/#modes">Les trois modes</a>
+      <a class="bouton bouton-clair" href="/#pilotage">Le pilotage</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="pied">
+  <div class="cadre pied-dedans">
+    <div class="pied-marque">
+      <a class="marque" href="/">
+        <img src="/oiseau.f8508e8c.svg" alt="" width="26" height="26">
+        <span>Verdier<b>CAM</b></span>
+      </a>
+      <p>CAO/FAO pour défonceuse CNC, écrite à
+        l'<a href="https://atelierduverdier.fr">Atelier du Verdier</a>.<br>
+        © 2026 Atelier du Verdier.</p>
+    </div>
+    <nav class="pied-liens" aria-label="Liens">
+      <a href="mailto:contact@verdiercam.fr">contact@verdiercam.fr</a>
+      <a href="https://atelierduverdier.fr">Atelier du Verdier</a>
+      <a href="/mentions-legales.html">Mentions légales</a>
+      <a href="/confidentialite.html">Confidentialité</a>
+    </nav>
+  </div>
+</footer>
+
+<div class="visionneuse" hidden role="dialog" aria-modal="true" aria-label="Capture agrandie">
+  <img alt="">
+  <button type="button" aria-label="Fermer">×</button>
+</div>
+
+<script src="/style/verdiercam.dbde6038.js" defer></script>
+<script>
+  window.goatcounter = { path: function (p) { return '/verdiercam' + p } };
+</script>
+<script data-goatcounter="https://atelierduverdier.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

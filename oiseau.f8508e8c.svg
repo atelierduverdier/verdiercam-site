@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+<!-- LE LOGO SEUL, sans fond : a poser sur ce qu'on veut.
+     L'oiseau du logo VerdierCAM, redessine au trait d'apres
+     ~/Documents/logo-VerdierCAM.jpeg (le JPEG etait trop compresse pour etre vectorise : le
+     trait fin de la queue disparaissait a la binarisation). Couleurs de l'atelier : orange
+     #ff8a00, ardoise #2f3540, fond #1a1e23, gris clair #d6dae0. -->
+<g transform="translate(13.72,31.78) scale(0.3927)">
+<g fill="none" stroke="#ff8a00" stroke-width="20" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M 40 38 C 170 70 296 112 358 152 C 332 202 300 248 262 284 C 196 274 104 176 40 38 Z"/>
+  <path d="M 268 268 C 304 214 334 168 358 138 C 374 92 402 50 444 46 C 472 44 484 62 496 74 C 514 76 530 84 542 96 C 524 106 504 112 488 112 C 492 162 486 220 468 266 C 450 310 412 336 356 344"/>
+  <path d="M 358 152 C 394 194 398 248 366 280 C 334 308 294 300 258 282"/>
+  <path d="M 358 152 C 286 254 196 360 116 444 C 172 432 218 400 256 360"/>
+</g>
+<path d="M 284 348 L 348 316 L 350 376 Z" fill="#ff8a00"/>
+</g>
+</svg>

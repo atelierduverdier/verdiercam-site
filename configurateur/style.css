@@ -1,0 +1,179 @@
+/* LE CONFIGURATEUR DE PIÈCES — sobre, clair, lisible au téléphone. Orange de l'atelier sur fond clair ; l'encre
+   est l'ardoise du logo (ressources/logo-verdiercam.svg). L'orange ne porte jamais de texte blanc : trop pâle. */
+:root {
+  --orange: #FF8F00;
+  --orange-fonce: #E65100;
+  --orange-pale: #FFF3E0;
+  --encre: #2F3540;
+  --encre-douce: #5C6370;
+  --fond: #FAFAF7;
+  --carte: #FFFFFF;
+  --bord: #DADCE0;
+  --erreur: #B3261E;
+  --erreur-fond: #FDECEA;
+  --rayon: 8px;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--fond);
+  color: var(--encre);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+}
+
+.entete {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  background: var(--carte);
+  border-bottom: 3px solid var(--orange);
+}
+.marque {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--encre);
+  font-weight: 700;
+  text-decoration: none;
+}
+.entete h1 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--encre-douce);
+}
+
+.page {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) 1fr;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+@media (max-width: 760px) {
+  .page { grid-template-columns: 1fr; gap: 16px; padding: 16px; }
+  /* Au téléphone : l'aperçu d'abord, le formulaire dessous. */
+  .apercu { order: -1; }
+}
+
+.reglages, .apercu {
+  background: var(--carte);
+  border: 1px solid var(--bord);
+  border-radius: var(--rayon);
+  padding: 16px;
+  min-width: 0;
+}
+
+.choix-piece { display: grid; gap: 4px; font-weight: 600; }
+select, input[type="text"] {
+  width: 100%;
+  font: inherit;
+  color: var(--encre);
+  background: var(--carte);
+  border: 1px solid var(--bord);
+  border-radius: 6px;
+  padding: 8px 10px;
+  min-height: 44px;
+}
+select:focus-visible, input:focus-visible, button:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: 1px;
+}
+.description { color: var(--encre-douce); margin: 8px 0 16px; }
+
+.formulaire { display: grid; gap: 12px; }
+.champ { display: grid; gap: 2px; }
+.champ label { font-size: 0.95rem; }
+.champ .nom {
+  font: 0.8rem/1.2 ui-monospace, "DejaVu Sans Mono", Menlo, monospace;
+  color: var(--encre-douce);
+}
+.champ input[type="text"] { font-variant-numeric: tabular-nums; }
+.champ input[aria-invalid="true"] { border-color: var(--erreur); background: var(--erreur-fond); }
+.champ.case { grid-template-columns: auto 1fr; align-items: center; column-gap: 8px; }
+.champ.case input { width: 22px; height: 22px; accent-color: var(--orange); }
+
+.cadre {
+  position: relative;
+  background: #fff;
+  border: 1px solid var(--bord);
+  border-radius: 6px;
+  min-height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+.cadre img { display: block; max-width: 100%; max-height: 70vh; width: 100%; height: auto; }
+.cadre.perime img { opacity: 0.35; }
+.attente { color: var(--encre-douce); margin: 0; }
+
+.etat { min-height: 1.5em; margin: 8px 0 0; color: var(--encre-douce); font-size: 0.9rem; }
+.erreur {
+  margin: 8px 0 0;
+  padding: 10px 12px;
+  border-left: 4px solid var(--erreur);
+  background: var(--erreur-fond);
+  color: var(--erreur);
+  border-radius: 4px;
+}
+
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+button {
+  font: inherit;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--encre);
+  background: var(--carte);
+  color: var(--encre);
+  cursor: pointer;
+}
+button:hover:not(:disabled) { background: var(--orange-pale); }
+button.principal { background: var(--orange); border-color: var(--orange); color: var(--encre); font-weight: 600; }
+button.principal:hover:not(:disabled) { background: var(--orange-fonce); border-color: var(--orange-fonce); color: #fff; }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+button.lien {
+  border: none;
+  background: none;
+  padding: 8px 0;
+  min-height: 0;
+  margin-top: 12px;
+  color: var(--orange-fonce);
+  text-decoration: underline;
+}
+button.lien:hover:not(:disabled) { background: none; }
+/* Au téléphone, l'aperçu reste en haut de l'écran pendant qu'on fait défiler les champs : compact, sans la note,
+   les trois boutons sur une ligne. */
+@media (max-width: 760px) {
+  .apercu { position: sticky; top: 0; z-index: 1; padding: 8px; box-shadow: 0 2px 8px rgba(47, 53, 64, 0.15); }
+  .cadre { min-height: 0; padding: 4px; }
+  .cadre img { max-height: 28vh; }
+  .attente { padding: 24px 0; }
+  .note { display: none; }
+  .etat { margin-top: 4px; }
+  .actions { margin-top: 8px; gap: 6px; flex-wrap: nowrap; }
+  .actions button { flex: 1 1 0; padding: 6px 4px; font-size: 0.85rem; line-height: 1.2; }
+}
+
+.note { color: var(--encre-douce); font-size: 0.85rem; margin: 12px 0 0; }
+.pied { text-align: center; color: var(--encre-douce); font-size: 0.85rem; padding: 8px 16px 24px; }
+
+/* LE SCRIPT SOUS LE DESSIN (10/10/2026) : lisible, défilant dans son cadre — jamais la page en largeur. */
+.script { margin-top: 1.2rem; border: 1px solid #e3ddd3; border-radius: 8px; background: #fff; }
+.script summary { cursor: pointer; padding: .7rem .9rem; font-weight: 600; }
+.script .script-sous { font-weight: 400; color: #6b6b70; font-size: .9em; }
+.script-outils { display: flex; gap: .8rem; align-items: center; padding: 0 .9rem .4rem; }
+.script-copie { color: #2e7d32; font-size: .9em; }
+.script-texte { position: relative; margin: 0; padding: .7rem .9rem 1rem; max-height: 26rem; overflow: auto; white-space: pre;
+  font: 12.5px/1.5 ui-monospace, "JetBrains Mono", "DejaVu Sans Mono", monospace; color: #2f3540;
+  background: #faf8f4; border-top: 1px solid #eee7dc; border-radius: 0 0 8px 8px; }
+.script-commentaire { color: #8a8378; }
+.script-erreur { background: #fde4e1; color: #b3261e; display: inline-block; min-width: 100%; }

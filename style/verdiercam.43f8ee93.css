@@ -1,0 +1,453 @@
+/* =========================================================================
+   verdiercam.css — la feuille du site verdiercam.fr
+   =========================================================================
+   Une identité À PART de l'Atelier du Verdier (06/10/2026, Christophe :
+   « plus moderne, ne suis pas ma charte, quelque chose de neuf, pas
+   sombre »). La page se lit comme une PLANCHE DE DESSIN : un papier clair
+   finement quadrillé, des cotes au trait, des repères numérotés en mono —
+   et l'orange de l'oiseau pour tout ce qui est « parcours » : la fraise du
+   logo, le jalon actif, le trait sous le mot fort du titre.
+
+   Les captures du logiciel se posent sur ce papier comme des fenêtres :
+   bord fin, grande ombre douce, coin arrondi. Leur thème changera ; rien
+   ici ne dépend de leurs couleurs.
+
+   L'ORANGE N'ÉCRIT PAS DE TEXTE COURANT : #ff6d00 sur ce papier ne fait
+   que 2,8:1. Le texte orange prend --orange-encre (5,2:1) ; le bouton plein
+   garde l'orange de marque, avec une encre sombre dessus (6,6:1).
+   ========================================================================= */
+
+@font-face { font-family: "Inter"; font-weight: 400; font-display: swap;
+  src: url("../polices/Inter-Regular.8af6cbde.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 600; font-display: swap;
+  src: url("../polices/Inter-SemiBold.655de2b9.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 500; font-display: swap;
+  src: url("../polices/JetBrainsMono-Medium.06c6a075.woff2") format("woff2"); }
+
+:root {
+  --fond: #fdfcfa;
+  --fond-2: #f5f2ec;
+  --carte: #ffffff;
+  --encre: #15171c;
+  --encre-2: #474c57;
+  --encre-3: #6a7080;          /* 4,8:1 sur le papier : lisible en petit */
+  --trait: #e8e4dc;
+  --trait-2: #d5d0c5;
+  --grille: rgba(21, 23, 28, .06);
+  --orange: #ff6d00;
+  --orange-2: #ff8a2b;
+  --orange-clair: #fff1e6;
+  --orange-pale: #ffe3cc;
+  --orange-encre: #b54a00;
+  --sur-orange: #1a1205;
+  --rayon: 16px;
+  --ombre: 0 1px 2px rgba(21,23,28,.05), 0 10px 30px -8px rgba(21,23,28,.10);
+  --ombre-fenetre: 0 1px 2px rgba(21,23,28,.08), 0 30px 70px -20px rgba(21,23,28,.35);
+  --texte: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", monospace;
+  --gouttiere: 20px;
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 88px; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--fond); color: var(--encre); font: 400 17px/1.65 var(--texte);
+  -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+img, video { max-width: 100%; height: auto; display: block; }
+a { color: var(--orange-encre); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { color: var(--encre); }
+h1, h2, h3 { font-weight: 600; letter-spacing: -.03em; line-height: 1.08; margin: 0; text-wrap: balance; }
+h2 { font-size: clamp(1.9rem, 3.8vw, 2.9rem); }
+h3 { font-size: 1.15rem; letter-spacing: -.01em; }
+p { margin: 0 0 1em; }
+code { font: 500 .86em var(--mono); background: var(--fond-2); border: 1px solid var(--trait);
+  padding: .08em .4em; border-radius: 6px; white-space: nowrap; }
+kbd { display: inline-block; font: 500 .8em var(--mono); color: var(--encre); background: var(--carte);
+  border: 1px solid var(--trait-2); border-bottom-width: 2px; border-radius: 6px; padding: .05em .5em;
+  margin: 0 1px; line-height: 1.6; vertical-align: 1px; }
+b, strong { font-weight: 600; }
+:focus-visible { outline: 2px solid var(--orange-encre); outline-offset: 3px; border-radius: 6px; }
+
+.cadre { width: min(1180px, 100% - 2 * var(--gouttiere)); margin-inline: auto; }
+.cadre.large { width: min(1320px, 100% - 2 * var(--gouttiere)); }
+.saut { position: absolute; left: -999px; }
+.saut:focus { left: 16px; top: 12px; z-index: 99; background: var(--carte); padding: 8px 12px; border-radius: 8px; }
+
+/* Le papier quadrillé : la planche du croquis, à peine visible. */
+.papier { position: relative; }
+.papier::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: linear-gradient(var(--grille) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--grille) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(70% 60% at 50% 40%, #000 30%, transparent 100%);
+          mask-image: radial-gradient(70% 60% at 50% 40%, #000 30%, transparent 100%); }
+
+/* --- La barre du haut ------------------------------------------------- */
+.barre { position: sticky; top: 0; z-index: 50; background: #fdfcfa;
+  /* FOND PLEIN, sans flou d'arrière-plan : translucide, la barre laissait passer les grands titres
+     sous le logo (un « Q » géant sous « VerdierCAM »), et backdrop-filter se rendait flou jusque sur
+     ses propres boutons dans l'aperçu (06/10/2026). */
+  border-bottom: 1px solid transparent; transition: border-color .3s; }
+.barre.defile { border-bottom-color: var(--trait); }
+.barre-dedans { display: flex; align-items: center; gap: 24px; height: 68px; }
+.marque { display: inline-flex; align-items: center; gap: 10px; color: var(--encre);
+  text-decoration: none; font-weight: 600; font-size: 1.15rem; letter-spacing: -.02em; }
+.marque b { color: var(--orange-encre); font-weight: 600; }
+.menu { display: flex; gap: 2px; margin-left: auto; }
+.menu a { color: var(--encre-2); text-decoration: none; font-size: .95rem; padding: 8px 12px; border-radius: 10px; }
+.menu a:hover { color: var(--encre); background: var(--fond-2); }
+@media (max-width: 900px) { .menu { display: none; } .barre .bouton { margin-left: auto; } }
+
+/* --- Les boutons ------------------------------------------------------ */
+.bouton { display: inline-flex; align-items: center; gap: 8px; font: 600 1rem var(--texte);
+  padding: 13px 22px; border-radius: 12px; text-decoration: none; border: 1px solid transparent;
+  transition: transform .15s, box-shadow .2s, background .2s, border-color .2s; cursor: pointer; }
+.bouton:hover { transform: translateY(-1px); }
+.bouton-plein { background: var(--orange); color: var(--sur-orange); box-shadow: 0 8px 20px -8px rgba(255,109,0,.7); }
+.bouton-plein:hover { background: var(--orange-2); color: var(--sur-orange); box-shadow: 0 12px 26px -8px rgba(255,109,0,.8); }
+.bouton-clair { background: var(--carte); color: var(--encre); border-color: var(--trait-2); }
+.bouton-clair:hover { color: var(--encre); border-color: var(--encre-3); }
+.bouton.petit { padding: 9px 16px; font-size: .92rem; border-radius: 10px; }
+.bouton svg { width: 18px; height: 18px; }
+
+/* --- Les petites pièces : surtitre, étiquette, cote ------------------- */
+.surtitre { display: inline-flex; align-items: center; gap: 10px; font: 500 .78rem var(--mono);
+  letter-spacing: .06em; text-transform: uppercase; color: var(--orange-encre); margin-bottom: 16px; }
+.surtitre::before { content: ""; width: 22px; height: 2px; background: var(--orange); border-radius: 2px; }
+.etiquette { display: inline-flex; align-items: center; gap: 8px; font: 500 .78rem var(--mono);
+  color: var(--orange-encre); background: var(--orange-clair); border: 1px solid var(--orange-pale);
+  padding: 6px 12px; border-radius: 999px; margin: 0 0 22px; }
+.etiquette i { width: 7px; height: 7px; border-radius: 50%; background: var(--orange);
+  box-shadow: 0 0 0 4px rgba(255,109,0,.18); animation: pouls 2s infinite; }
+@keyframes pouls { 50% { box-shadow: 0 0 0 7px rgba(255,109,0,0); } }
+/* Une cote de dessin : un trait avec ses deux témoins, le texte au milieu. */
+.cote { display: flex; align-items: center; gap: 16px; margin: 22px 0 0; font: 500 .76rem var(--mono);
+  letter-spacing: .04em; text-transform: uppercase; color: var(--encre-3); white-space: nowrap; }
+.cote::before, .cote::after { content: ""; flex: 1; height: 11px;
+  background: linear-gradient(var(--trait-2), var(--trait-2)) center / 100% 1px no-repeat; }
+.cote::before { background-image: linear-gradient(var(--trait-2), var(--trait-2)), linear-gradient(var(--trait-2), var(--trait-2));
+  background-position: center, left; background-size: 100% 1px, 1px 100%; }
+.cote::after { background-image: linear-gradient(var(--trait-2), var(--trait-2)), linear-gradient(var(--trait-2), var(--trait-2));
+  background-position: center, right; background-size: 100% 1px, 1px 100%; }
+
+/* --- Le héros --------------------------------------------------------- */
+.heros { padding: clamp(40px, 7vw, 88px) 0 0; overflow: hidden; }
+.heros::after { content: ""; position: absolute; inset: auto 0 0; height: 60%; z-index: -1; pointer-events: none;
+  background: radial-gradient(60% 50% at 50% 100%, rgba(255,109,0,.14), transparent 70%); }
+.heros-haut { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 40px; }
+.heros-texte { max-width: 44rem; }
+.oiseau { display: block; width: clamp(84px, 10vw, 116px); height: auto; margin: 0 0 18px -6px; overflow: visible; }
+.oiseau .fraise { fill: #fff; opacity: 0; filter: drop-shadow(0 0 5px #ff8a00) drop-shadow(0 0 12px #ff6d00); }
+.oiseau .rapide { fill: none; stroke: var(--encre-3); stroke-width: 3; stroke-dasharray: 2 10; opacity: 0; }
+.heros h1 { font-size: clamp(2.5rem, 6.6vw, 5.1rem); letter-spacing: -.045em; line-height: 1.02; max-width: 15ch; }
+.heros h1 em { font-style: normal; position: relative; white-space: nowrap; }
+.heros h1 em::after { content: ""; position: absolute; left: -.02em; right: -.02em; bottom: .04em; height: .22em;
+  z-index: -1; border-radius: .08em; background: linear-gradient(90deg, rgba(255,109,0,.55), rgba(255,138,43,.35)); }
+.heros .accroche { font-size: clamp(1.08rem, 1.7vw, 1.28rem); color: var(--encre-2); max-width: 36rem; margin: 24px 0 32px; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.fiche { display: grid; gap: 10px; margin: 0 0 6px; padding: 0 0 0 22px; list-style: none;
+  border-left: 1px solid var(--trait-2); color: var(--encre-2); font: 500 .8rem var(--mono); }
+.fiche li { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+.fiche li::before { content: ""; width: 14px; height: 14px; flex: none; border-radius: 4px; background:
+  var(--orange-clair) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.5 10.5l3 3 6-7' fill='none' stroke='%23b54a00' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat; }
+@media (max-width: 900px) {
+  .heros-haut { grid-template-columns: 1fr; align-items: start; gap: 28px; }
+  .fiche { grid-template-columns: 1fr 1fr; border-left: 0; padding-left: 0; gap: 8px 16px; }
+  .fiche li { white-space: normal; }
+}
+@media (max-width: 480px) { .fiche { grid-template-columns: 1fr; } }
+
+.vitrine { position: relative; margin-top: clamp(40px, 6vw, 72px); }
+.fenetre-heros { margin: 0; }
+/* La loupe : un détail de la capture, posé sur son coin comme sur un plan. */
+.loupe { position: absolute; right: clamp(-12px, -1vw, 28px); bottom: -34px; width: min(34%, 400px); margin: 0;
+  background: var(--carte); border: 1px solid var(--trait); border-radius: 14px; padding: 8px;
+  box-shadow: var(--ombre-fenetre); transform: rotate(-1.2deg); }
+.loupe img { border-radius: 8px; }
+.loupe figcaption { font-size: .82rem; line-height: 1.45; color: var(--encre-2); padding: 10px 6px 4px; }
+.loupe figcaption b { color: var(--encre); }
+.vitrine + .cote { margin-top: 64px; }
+@media (max-width: 760px) {
+  .loupe { position: static; transform: none; width: auto; margin: 16px 0 0; display: grid;
+    grid-template-columns: 42% 1fr; gap: 12px; align-items: center; }
+  .loupe figcaption { padding: 0 6px 0 0; }
+  .vitrine + .cote { margin-top: 28px; }
+}
+
+/* --- Les fenêtres : les captures du logiciel -------------------------- */
+.fenetre { margin: 0; border-radius: 12px; overflow: hidden; background: var(--fond-2);
+  box-shadow: var(--ombre-fenetre); border: 1px solid rgba(21,23,28,.14);
+  transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s; }
+.fenetre img, .fenetre video { width: 100%; cursor: zoom-in; }
+.fenetre video { cursor: default; }
+figure.capture { margin: 0; }
+figure.capture:hover .fenetre { transform: translateY(-3px); }
+figure.capture figcaption, .vue figcaption { color: var(--encre-3); font-size: .9rem; margin: 12px 4px 0; line-height: 1.5; }
+figure.capture figcaption b, .vue figcaption b { color: var(--encre-2); }
+
+/* --- Les chiffres ----------------------------------------------------- */
+.chiffres { padding: 0; margin-top: clamp(56px, 8vw, 96px); }
+.chiffres ul { display: grid; grid-template-columns: repeat(5, 1fr); list-style: none; margin: 0; padding: 0;
+  border-top: 1px solid var(--trait); border-bottom: 1px solid var(--trait); }
+.chiffres li { padding: 26px 20px 24px 0; border-left: 1px solid var(--trait); padding-left: 20px; }
+.chiffres li:first-child { border-left: 0; padding-left: 0; }
+.chiffres b { display: block; font: 600 clamp(2rem, 3.4vw, 2.8rem)/1 var(--texte); letter-spacing: -.04em;
+  font-variant-numeric: tabular-nums; }
+.chiffres span { display: block; margin-top: 8px; font: 500 .76rem var(--mono); letter-spacing: .04em;
+  text-transform: uppercase; color: var(--encre-3); }
+@media (max-width: 900px) {
+  .chiffres ul { grid-template-columns: repeat(3, 1fr); }
+  .chiffres li:nth-child(3n + 1) { border-left: 0; padding-left: 0; }
+  .chiffres li:nth-child(n + 4) { border-top: 1px solid var(--trait); }
+}
+@media (max-width: 520px) {
+  .chiffres ul { grid-template-columns: 1fr 1fr; }
+  .chiffres li { padding: 18px 12px 16px 14px; }
+  .chiffres li:nth-child(3n + 1) { border-left: 1px solid var(--trait); padding-left: 14px; }
+  .chiffres li:nth-child(odd) { border-left: 0; padding-left: 0; }
+  .chiffres li:nth-child(n + 3) { border-top: 1px solid var(--trait); }
+}
+
+/* --- Les sections ----------------------------------------------------- */
+section { padding: clamp(72px, 9vw, 120px) 0; }
+section.teinte { background: var(--fond-2); border-top: 1px solid var(--trait); border-bottom: 1px solid var(--trait); }
+section.teinte + section.teinte { border-top: 0; }
+.tete { max-width: 48rem; margin-bottom: clamp(36px, 5vw, 56px); }
+.tete p { color: var(--encre-2); font-size: 1.12rem; margin: 18px 0 0; max-width: 42rem; }
+
+/* --- Le parcours : jalons fixés, vues qui défilent -------------------- */
+.parcours { display: grid; grid-template-columns: minmax(240px, 4fr) 8fr; gap: clamp(32px, 5vw, 80px); align-items: start; }
+.jalons { list-style: none; margin: 0; padding: 0; position: sticky; top: 100px; display: grid; gap: 4px; }
+.jalons li { position: relative; padding: 16px 18px 16px 58px; border-radius: 14px; transition: background .3s, color .3s; }
+.jalons .num { position: absolute; left: 18px; top: 19px; font: 500 .78rem var(--mono); color: var(--orange-encre); }
+.jalons h3 { font-size: 1.2rem; }
+.jalons p { margin: 6px 0 0; color: var(--encre-2); font-size: .95rem; line-height: 1.5; }
+/* Posé par le script seulement : sans lui, les quatre sont en encre pleine. */
+.jalonne .jalons li { cursor: pointer; }
+.jalonne .jalons li:not(.actif) h3 { color: var(--encre-2); }
+.jalonne .jalons li:not(.actif) p { color: var(--encre-3); }
+.jalonne .jalons li.actif { background: var(--carte); box-shadow: var(--ombre); }
+.jalonne .jalons li.actif::before { content: ""; position: absolute; left: 0; top: 18px; bottom: 18px; width: 3px;
+  border-radius: 3px; background: var(--orange); }
+.vues { display: grid; gap: clamp(36px, 5vw, 64px); }
+.vue { margin: 0; }
+.vue > .num { display: inline-block; font: 500 .78rem var(--mono); letter-spacing: .04em; text-transform: uppercase;
+  color: var(--orange-encre); margin-bottom: 12px; }
+@media (max-width: 900px) {
+  .parcours { grid-template-columns: 1fr; }
+  .jalons { position: static; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+  .jalons li { padding: 14px 14px 14px 46px; background: var(--carte); border: 1px solid var(--trait); }
+  .jalons .num { left: 14px; top: 17px; }
+  .jalonne .jalons li.actif::before { display: none; }
+  .jalonne .jalons li.actif { border-color: var(--orange); }
+}
+@media (max-width: 520px) { .jalons { grid-template-columns: 1fr; } }
+
+/* --- Une fonction : l'explication d'un côté, la capture de l'autre ---- */
+.fonction { display: grid; grid-template-columns: 5fr 7fr; gap: clamp(32px, 5vw, 72px); align-items: center; }
+.fonction.inverse { grid-template-columns: 7fr 5fr; }
+.fonction.inverse .texte { order: 2; }
+@media (max-width: 900px) {
+  .fonction, .fonction.inverse { grid-template-columns: 1fr; gap: 32px; }
+  .fonction.inverse .texte { order: 0; }
+}
+.fonction .texte > p { color: var(--encre-2); font-size: 1.06rem; }
+.fonction h2 { font-size: clamp(1.7rem, 3.2vw, 2.4rem); margin-bottom: 18px; }
+/* Le second bloc d'une section (le croquis en script) : un peu d'air au-dessus, un titre de niveau 3 assez grand. */
+.fonction + .fonction { margin-top: clamp(56px, 8vw, 104px); }
+.fonction h3 { font-size: clamp(1.4rem, 2.4vw, 1.8rem); margin: 0 0 16px; letter-spacing: -.015em; }
+/* Un extrait de script : bloc à défilement horizontal, jamais plus large que sa colonne (pas de défilement de page à 375 px). */
+/* min-width: 0 — sans lui, la colonne de grille prend la largeur de la plus longue ligne du code (594 px à 375). */
+.fonction > .texte { min-width: 0; }
+pre.code { margin: 0 0 1.2em; padding: 14px 16px; background: var(--fond-2); border: 1px solid var(--trait);
+  border-radius: 10px; overflow-x: auto; max-width: 100%; line-height: 1.55; }
+pre.code code { background: none; border: 0; padding: 0; white-space: pre; font-size: .84rem; }
+.coches { list-style: none; padding: 0; margin: 22px 0 0; display: grid; gap: 10px; }
+.coches li { padding-left: 32px; position: relative; color: var(--encre-2); }
+.coches li::before { content: ""; position: absolute; left: 0; top: 4px; width: 20px; height: 20px; border-radius: 6px;
+  background: var(--orange-clair) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.5 10.5l3 3 6-7' fill='none' stroke='%23b54a00' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat; }
+.coches li b { color: var(--encre); }
+
+/* L'usinage : le grand nombre, puis les familles en bento. */
+.usinage-tete { display: grid; grid-template-columns: auto 1fr; gap: clamp(24px, 4vw, 64px); align-items: start; }
+.usinage-tete .texte { max-width: 44rem; }
+.usinage-tete h2 { font-size: clamp(1.7rem, 3.2vw, 2.4rem); margin-bottom: 18px; }
+.usinage-tete .texte > p { color: var(--encre-2); font-size: 1.06rem; }
+.grand-nombre { font: 600 clamp(6rem, 16vw, 15rem)/.85 var(--texte); letter-spacing: -.07em; color: var(--orange);
+  position: sticky; top: 100px; -webkit-text-stroke: 0; }
+@media (max-width: 760px) { .usinage-tete { grid-template-columns: 1fr; gap: 8px; } .grand-nombre { position: static; } }
+.familles { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-top: clamp(40px, 5vw, 64px); }
+.groupe { background: var(--carte); border: 1px solid var(--trait); border-radius: var(--rayon); padding: 22px 24px 10px;
+  box-shadow: var(--ombre); grid-column: span 2; }
+.groupe:nth-child(4), .groupe:nth-child(5) { grid-column: span 3; }
+.groupe h3 { font: 500 .78rem var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--orange-encre); margin-bottom: 12px; }
+.groupe ul { list-style: none; padding: 0; margin: 0; }
+.groupe li { padding: 11px 0; border-top: 1px solid var(--trait); font-size: .95rem; color: var(--encre-2); line-height: 1.5; }
+.groupe li:first-child { border-top: 0; }
+.groupe li b { display: block; color: var(--encre); font-size: 1rem; }
+@media (max-width: 1000px) { .familles { grid-template-columns: 1fr 1fr; } .groupe, .groupe:nth-child(n) { grid-column: auto; } }
+@media (max-width: 640px) { .familles { grid-template-columns: 1fr; } }
+
+/* Les modes : une grande vue, deux petites. */
+.bento { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.bento-grand { grid-column: 1 / -1; }
+@media (max-width: 700px) { .bento { grid-template-columns: 1fr; } }
+
+/* Les reliefs : deux fenêtres superposées, comme deux feuilles sur l'établi. */
+.collage { position: relative; display: grid; gap: 20px; }
+@media (min-width: 901px) {
+  .collage { padding-bottom: 20%; }
+  /* La feuille du dessous : sa légende passe AU-DESSUS, sinon la feuille du dessus la couvre. */
+  .collage figure:first-child { width: 78%; display: flex; flex-direction: column-reverse; }
+  .collage figure:first-child figcaption { margin: 0 4px 12px; }
+  .collage figure:last-child { position: absolute; right: 0; bottom: 0; width: 62%;
+    transform: rotate(1deg); }
+  .collage figure:last-child .fenetre { box-shadow: 0 1px 2px rgba(21,23,28,.1), 0 40px 80px -24px rgba(21,23,28,.45); }
+  .collage figure:last-child figcaption { background: var(--fond); display: inline-block; padding: 2px 6px; margin: 10px 0 0; border-radius: 6px; }
+}
+
+/* Les postes : un bandeau qui défile, et la liste sage pour qui lit sans mouvement. */
+.postes { display: grid; gap: 14px; align-self: center; background: var(--carte); border: 1px solid var(--trait);
+  border-radius: var(--rayon); padding: 28px 28px 24px; box-shadow: var(--ombre); }
+.postes .surtitre { margin-bottom: 0; }
+.defile { overflow: hidden; margin-inline: -8px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+.defile ul { display: flex; gap: 10px; width: max-content; margin: 0; padding: 8px; list-style: none;
+  animation: defiler 26s linear infinite; }
+.defile:hover ul { animation-play-state: paused; }
+@keyframes defiler { to { transform: translateX(-50%); } }
+.defile li, .machines li { font: 500 .95rem var(--mono); background: var(--carte); border: 1px solid var(--trait-2);
+  border-radius: 999px; padding: 9px 18px; color: var(--encre); white-space: nowrap; }
+.machines { display: none; flex-wrap: wrap; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.postes p { color: var(--encre-2); margin: 6px 0 0; font-size: 1rem; }
+.defile li small, .machines li small { font-size: .78em; color: var(--encre-2); font-weight: 400; }
+.postes p.note-experimental { font-size: .88rem; }
+
+/* --- La sortie : une carte chaude, l'oiseau en filigrane -------------- */
+.sortie { position: relative; border-radius: 28px; padding: clamp(28px, 5vw, 64px); overflow: hidden;
+  background: linear-gradient(135deg, #fff4ea 0%, #ffe6d0 60%, #ffd9b8 100%); border: 1px solid var(--orange-pale);
+  display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(28px, 5vw, 64px); align-items: center; }
+.sortie::before { content: ""; position: absolute; width: 520px; height: 520px; right: -140px; top: -200px; z-index: 0;
+  background: radial-gradient(circle, rgba(255,109,0,.35), transparent 65%); }
+.sortie > * { position: relative; z-index: 1; }
+.sortie h2 { font-size: clamp(2.1rem, 4.6vw, 3.4rem); }
+.sortie-texte > p { color: var(--encre-2); font-size: 1.12rem; max-width: 36rem; margin: 18px 0 30px; }
+.sortie .bouton-clair { background: rgba(255,255,255,.7); }
+.prevu { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.prevu li { background: rgba(255,255,255,.72); border: 1px solid rgba(255,109,0,.18); border-radius: 14px;
+  padding: 14px 18px; color: var(--encre-2); font-size: .95rem; line-height: 1.5; }
+.prevu li b { display: block; color: var(--encre); font-size: 1rem; }
+.prevu li.prix { display: grid; gap: 4px; background: #fff; border-color: rgba(255,109,0,.4); padding: 18px 20px; }
+.prix-titre { font: 500 .78rem var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--orange); }
+.prix-montant { font-size: 2.4rem; font-weight: 700; color: var(--encre); line-height: 1.1; }
+.prix-montant small { font-size: .9rem; font-weight: 500; color: var(--encre-2); }
+.prix-suite { color: var(--encre-2); }
+.prix-inclus { color: var(--encre); margin-top: 6px; }
+.prix-tva { font-size: .8rem; color: var(--encre-2); }
+.prevu li.prix b { display: inline; font-size: inherit; }
+.prix-une-fois { font-weight: 600; color: var(--encre); }
+.prix-essai { margin-top: 6px; padding: 10px 12px; border-radius: 10px; background: #fff4ea; color: var(--encre); }
+@media (max-width: 860px) { .sortie { grid-template-columns: 1fr; } }
+
+/* --- Les questions ---------------------------------------------------- */
+.questions { columns: 2; column-gap: 48px; }
+.questions details { break-inside: avoid; border-top: 1px solid var(--trait-2); }
+.questions summary { list-style: none; cursor: pointer; padding: 20px 40px 20px 0; font-weight: 600; font-size: 1.05rem; position: relative; }
+.questions summary::-webkit-details-marker { display: none; }
+.questions summary::after { content: "+"; position: absolute; right: 4px; top: 14px; font: 400 1.6rem var(--texte);
+  color: var(--orange-encre); transition: transform .2s; }
+.questions details[open] summary::after { transform: rotate(45deg); }
+.questions details p { color: var(--encre-2); margin: -6px 0 22px; }
+@media (max-width: 860px) { .questions { columns: 1; } }
+
+/* --- Le pied ---------------------------------------------------------- */
+.pied { border-top: 1px solid var(--trait); padding: 44px 0 52px; color: var(--encre-3); font-size: .92rem; }
+.pied-dedans { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 24px; }
+.pied p { margin: 12px 0 0; }
+.pied-liens { display: flex; flex-wrap: wrap; gap: 8px 22px; align-items: flex-start; }
+.pied-liens a { color: var(--encre-2); text-decoration: none; }
+.pied-liens a:hover { color: var(--encre); }
+
+/* --- La visionneuse --------------------------------------------------- */
+.visionneuse { position: fixed; inset: 0; z-index: 100; background: rgba(21,23,28,.88); display: grid;
+  place-items: center; padding: 24px; cursor: zoom-out; }
+.visionneuse[hidden] { display: none; }
+.visionneuse img { max-height: 92vh; width: auto; border-radius: 10px; box-shadow: 0 30px 80px rgba(0,0,0,.5); }
+.visionneuse button { position: absolute; top: 14px; right: 18px; background: none; border: 0; color: #fff; font-size: 2.2rem; cursor: pointer; }
+
+/* --- L'apparition au défilement (posée par le script seulement) ------- */
+.js .apparait { opacity: 0; transform: translateY(18px); transition: opacity .7s, transform .7s cubic-bezier(.2,.7,.2,1); }
+.js .apparait.vu { opacity: 1; transform: none; }
+
+/* --- Premiers pas : le sommaire des onze étapes, et la page elle-même - */
+/* Les étapes réutilisent .fonction / .texte / figure.capture / .fenetre, déjà faites pour
+   « Le parcours » et les autres sections : rien de neuf à dessiner là. Ici, seulement le
+   sommaire du haut (une liste de pastilles numérotées) et la phrase sur le futur manuel. */
+.pp-heros { padding-bottom: clamp(32px, 5vw, 56px); }
+.pp-intro { max-width: 46rem; }
+.pp-intro .accroche { font-size: clamp(1.06rem, 1.6vw, 1.2rem); color: var(--encre-2); max-width: 40rem; margin: 18px 0 0; }
+.pp-sommaire { list-style: none; margin: 30px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.pp-sommaire a { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; color: var(--encre);
+  background: var(--carte); border: 1px solid var(--trait-2); border-radius: 999px; padding: 6px 16px 6px 6px;
+  font-size: .92rem; transition: border-color .2s, transform .15s; }
+.pp-sommaire a:hover { border-color: var(--orange); transform: translateY(-1px); }
+.pp-sommaire a span { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px;
+  border-radius: 50%; background: var(--orange-clair); color: var(--orange-encre); font: 500 .7rem var(--mono); flex: none; }
+.pp-etape + .pp-etape { border-top: 1px solid var(--trait); }
+.pp-etape.teinte + .pp-etape.teinte { border-top: 0; }
+.pp-manuel { font-style: italic; color: var(--encre-3); }
+@media (max-width: 480px) { .pp-sommaire { gap: 8px; } .pp-sommaire a { font-size: .86rem; padding: 5px 13px 5px 5px; } }
+
+/* --- Moins de mouvement : tout est là, rien ne bouge ------------------ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js .apparait { opacity: 1; transform: none; transition: none; }
+  .etiquette i { animation: none; }
+  .bouton:hover, figure.capture:hover .fenetre { transform: none; }
+  .fenetre, .jalons li { transition: none; }
+  .defile { display: none; }
+  .machines { display: flex; }
+}
+
+
+/* =========================================================================
+   Pages légales et page d'achat (06/10/2026)
+   ========================================================================= */
+.page-legale { padding-bottom: 8px; }
+.page-legale h1 { font-size: clamp(2rem, 5vw, 3rem); }
+section.legal { padding-top: 24px; }
+.legal-texte { max-width: 46rem; }
+.legal-texte h2 { font-size: 1.25rem; margin: 2.2em 0 .6em; letter-spacing: -.01em; }
+.legal-texte h2:first-child { margin-top: 0; }
+.legal-texte p, .legal-texte li { color: var(--encre-2); }
+.legal-texte ul { padding-left: 1.2em; }
+.legal-texte li { margin: .35em 0; }
+.legal-texte .muet, .legal-date { color: var(--encre-3); font-size: .92rem; }
+.formulaire-type { border: 1px dashed var(--trait-2); border-radius: 14px; padding: 18px 22px;
+  background: var(--carte); }
+.a-remplir { background: #ffe1d6; color: #9b1c00; font: 500 .85em var(--mono);
+  padding: .1em .4em; border-radius: 5px; }
+
+/* La page d'achat : le bouton ne s'active que les deux cases cochées — en CSS
+   (:has), donc même sans JavaScript ; le script ne fait que l'annoncer. */
+.achat { background: var(--carte); border: 1px solid var(--trait); border-radius: 22px;
+  padding: clamp(20px, 4vw, 36px); box-shadow: var(--ombre); }
+.achat-resume { list-style: none; padding: 0; margin: 0 0 22px; display: grid; gap: 8px; }
+.achat-resume li { padding-left: 26px; position: relative; color: var(--encre-2); }
+.achat-resume li::before { content: "✓"; position: absolute; left: 4px; color: var(--orange-encre); font-weight: 600; }
+.case { display: flex; gap: 12px; align-items: flex-start; margin: 14px 0; cursor: pointer;
+  padding: 14px 16px; border: 1px solid var(--trait); border-radius: 14px; background: var(--fond); }
+.case input { width: 20px; height: 20px; margin-top: 2px; flex: none; accent-color: var(--orange); }
+.case span { color: var(--encre-2); font-size: .97rem; }
+.achat .payer { margin-top: 10px; opacity: .45; pointer-events: none; filter: grayscale(.3); }
+.achat:has(#accepte-conditions:checked):has(#renonce-retractation:checked) .payer {
+  opacity: 1; pointer-events: auto; filter: none; }
+.achat .payer-aide { color: var(--encre-3); font-size: .9rem; margin-top: 10px; }
+.achat .payer-bientot { display: none; }
+.achat.sans-lien .payer { opacity: .45 !important; pointer-events: none !important; }
+.achat.sans-lien .payer-aide { display: none; }
+.achat.sans-lien .payer-bientot { display: block; color: var(--encre-2); margin-top: 12px; }
+
+/* La promesse sous « Être prévenu de la sortie ». */
+.note-prevenu { margin-top: 14px; font-size: .9rem; color: var(--encre-2); }

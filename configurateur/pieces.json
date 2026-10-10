@@ -1,0 +1,25 @@
+{
+  "pieces": [
+    {
+      "id": "manivelle",
+      "nom": "Manivelle",
+      "description": "Le moyeu percé, son bras, la bande courbe et sa lumière. Le nombre de trous, les rayons et les congés se changent.",
+      "fichier": "pieces/manivelle.vcs",
+      "origine": "docs/exemples/manivelle.vcs"
+    },
+    {
+      "id": "labyrinthe",
+      "nom": "Labyrinthe à bille",
+      "description": "Un labyrinthe à chemin unique, généré : chaque « graine » en donne un autre. Sa taille, la largeur des canaux et le couvercle en plexiglas se changent.",
+      "fichier": "pieces/labyrinthe.vcs",
+      "origine": "docs/exemples/labyrinthe.vcs"
+    },
+    {
+      "id": "engrenage",
+      "nom": "Engrenage droit",
+      "description": "Une roue dentée à développante de cercle, taillée comme par la crémaillère : module, nombre de dents, angle de pression, déport, jeu. L'alésage (clavette, méplat), les évidements, et la roue qui l'entraîne pour vérifier l'engrènement.",
+      "fichier": "pieces/engrenage.vcs",
+      "origine": "docs/exemples/engrenage.vcs"
+    }
+  ]
+}

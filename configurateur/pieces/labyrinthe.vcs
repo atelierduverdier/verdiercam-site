@@ -1,0 +1,147 @@
+// LABYRINTHE À BILLE — généré : chaque « graine » donne un labyrinthe différent, toujours à chemin unique. Algorithme
+// du parcours en profondeur (« recursive backtracker ») : de longs détours et beaucoup de culs-de-sac, et l'ARRIVÉE est
+// posée sur la case la plus éloignée du départ — le plus long chemin possible.
+//
+// L'USINAGE (pensé pour être beau et bien fini) :
+//   · les canaux sont leurs LIGNES D'AXE, en polylignes continues (l'ordre du creusement : peu de plongées) :
+//     opération Rainure, fraise BOULE de la largeur du canal (la Boule Ø6 de la bibliothèque), passes de 1 à 1,5 mm —
+//     fond arrondi où la bille roule, culs-de-sac arrondis d'eux-mêmes, aucune reprise. Profondeur : 4 mm sans plexi ;
+//     AVEC le plexi, départ = `plexi` (3) et profondeur = `bille` + 1 (6), soit 9 mm sous le dessus du bois ;
+//   · avec le plexi, la FEUILLURE d'abord : Poche, fraise droite Ø6, profondeur `plexi` — puis les canaux ;
+//   · le départ et l'arrivée : deux coupelles (cercles) — Poche, même fraise ; l'arrivée 2 mm plus profonde, la bille
+//     y reste ;
+//   · le liseré : Gravure en V (pointe 90°, 1 mm) — un filet qui encadre le jeu ;
+//   · le contour : Contour extérieur (fraise droite Ø6), onglets, à faire en DERNIER ;
+//   · bille conseillée : Ø5 (acier ou verre) dans un canal de Ø6 ; ou `canal` = 8, `pas` = 16 et une boule Ø8 pour
+//     une bille de Ø6 à Ø7.
+//
+// ON PART DE SON BOIS : `largeur_bois` × `hauteur_bois` × `epaisseur` est la planche. Le plateau y est détouré à
+// `rognure` du bord (des chants propres, les coins arrondis), et le labyrinthe le REMPLIT : `niveau` choisit la taille
+// des cases (plus elles sont petites, plus il y en a : le chemin s'allonge, les culs-de-sac se multiplient), et la
+// grille se centre. `graine` donne un autre labyrinthe. 1 500 cases au plus (la récursion du script est bornée) : au-delà,
+// les cases grandissent d'elles-mêmes. Les murs font `pas` − `canal` : 6 mm au moins dans du hêtre ou du chêne.
+
+largeur_bois = 250;  // largeur de votre planche (mm)
+hauteur_bois = 180;  // hauteur de votre planche (mm)
+epaisseur  = 18;     // épaisseur de votre planche (mm)
+niveau     = 2;      // niveau : 1 facile (cases de 24 mm), 2 moyen (18), 3 difficile (14), 4 expert (12)
+graine     = 7;      // graine du hasard (un autre nombre : un autre labyrinthe)
+pas        = 0;      // taille d'une case, d'un axe de canal au suivant (mm) — 0 : celle du niveau ; au moins canal + 4
+canal      = 6;      // largeur du canal = Ø de la fraise boule (mm)
+marge      = 16;     // du bord du plateau aux canaux extérieurs, au moins (mm)
+rognure    = 3;      // le plateau détouré à cette distance du bord du bois (mm)
+R_coin     = 10;     // les coins du plateau
+liseré     = 5;      // le filet gravé, à cette distance du bord
+D_coupelle = 13;     // départ et arrivée
+
+// ── Le couvercle en plexiglas (1 : oui, 0 : non) ──
+// Une FEUILLURE (une poche peu profonde, de l'épaisseur du plexi) reçoit la plaque à fleur du bois ; elle repose sur
+// les murs du labyrinthe. Les canaux se creusent alors DEPUIS le fond de la feuillure, de la bille + 1 mm : la bille
+// roule libre sous le plexi. Un trou dans le plexi, au-dessus du départ, laisse entrer la bille.
+avec_plexi = 1;      // couvercle en plexiglas (1 : oui, 0 : non)
+plexi      = 3;      // épaisseur de la plaque
+jeu_plexi  = 0.2;    // de chaque côté, pour qu'elle entre sans forcer
+bille      = 5;      // Ø de la bille
+f_bord     = 10;     // la feuillure, à cette distance du bord du plateau
+R_feuil    = 4;      // ses coins (au moins le rayon de la fraise qui la creuse : Ø6 → 3)
+
+// ── La planche, le plateau, et la grille qui le remplit ──
+planche([largeur_bois, hauteur_bois, epaisseur]);
+o = [rognure, rognure];                              // le coin du plateau
+L = largeur_bois - 2 * rognure;
+H = hauteur_bois - 2 * rognure;
+Lf = L - 2 * f_bord;                                  // la feuillure
+Hf = H - 2 * f_bord;
+p0 = pas > 0 ? pas : [24, 18, 14, 12][min(max(niveau, 1), 4) - 1];   // le pas tapé l'emporte sur le niveau
+// Pas plus de 1 500 cases : sur une très grande planche, les cases grandissent (la récursion du script est bornée,
+// et celle d'un navigateur aussi — le configurateur du site rejoue ce même script).
+p1 = max(p0, sqrt((L - 2 * marge) * (H - 2 * marge) / 1500));
+pas_case = max(p1, canal + 4);                        // un mur de 4 mm au moins, quoi qu'on demande
+nc = max(2, floor((L - 2 * marge - canal) / pas_case) + 1);
+nr = max(2, floor((H - 2 * marge - canal) / pas_case) + 1);
+c0 = o + [(L - (nc - 1) * pas_case) / 2, (H - (nr - 1) * pas_case) / 2];   // la case (0, 0) : la grille centrée
+function centre(i, j) = c0 + [i * pas_case, j * pas_case];
+
+// ── Le hasard reproductible : un nombre entre 0 et 1 pour un couple d'entiers et la graine ──
+function frac(x) = x - floor(x);
+function alea(a, b) = frac(sin(a * 12.9898 + b * 78.233 + graine * 37.719) * 43758.5453);
+
+// ── Le labyrinthe : un parcours en profondeur ──
+// Une case n = j × nc + i. On avance d'une case libre au hasard ; coincé, on revient sur ses pas jusqu'à la
+// dernière case qui a encore une voisine libre. `pile` : le chemin depuis le départ ; `vus` : 1 pour une case visitée ;
+// `aretes` : les passages creusés, dans l'ordre ; `loin` : la case la plus éloignée du départ et sa distance.
+N = nc * nr;
+function col(n) = n % nc;
+function rang(n) = floor(n / nc);
+function voisins(n) = concat(col(n) > 0 ? [n - 1] : [], col(n) < nc - 1 ? [n + 1] : [],
+                             rang(n) > 0 ? [n - nc] : [], rang(n) < nr - 1 ? [n + nc] : []);
+// UN SEUL APPEL PAR PAS : chaque appel recopie ses listes (pile, vus, aretes) ; les voisins libres se lisent sur place
+// (`vus[v]`), et le tirage ne reçoit que leur courte liste.
+function marquer(vus, v) = [for (k = [0 : N - 1]) k == v ? 1 : vus[k]];
+function tirer(lib, u, k) = lib[floor(alea(u, k) * len(lib))];
+function creuser(pile, vus, aretes, loin) =
+    len([for (v = voisins(pile[len(pile) - 1])) if (vus[v] == 0) v]) > 0
+        ? creuser(concat(pile, [tirer([for (v = voisins(pile[len(pile) - 1])) if (vus[v] == 0) v], pile[len(pile) - 1], len(aretes))]),
+                  marquer(vus, tirer([for (v = voisins(pile[len(pile) - 1])) if (vus[v] == 0) v], pile[len(pile) - 1], len(aretes))),
+                  concat(aretes, [[pile[len(pile) - 1],
+                                   tirer([for (v = voisins(pile[len(pile) - 1])) if (vus[v] == 0) v], pile[len(pile) - 1], len(aretes))]]),
+                  len(pile) + 1 > loin[1]
+                      ? [tirer([for (v = voisins(pile[len(pile) - 1])) if (vus[v] == 0) v], pile[len(pile) - 1], len(aretes)), len(pile) + 1]
+                      : loin)
+        : max(concat([-1], [for (t = [0 : len(pile) - 1]) if (len([for (v = voisins(pile[t])) if (vus[v] == 0) v]) > 0) t])) < 0
+            ? [aretes, loin]
+            : creuser([for (t = [0 : max(concat([-1], [for (t = [0 : len(pile) - 1])
+                                                         if (len([for (v = voisins(pile[t])) if (vus[v] == 0) v]) > 0) t]))]) pile[t]],
+                      vus, aretes, loin);
+depart = 0;                                                       // en bas à gauche
+fait = creuser([depart], marquer([for (k = [0 : N - 1]) 0], depart), [], [depart, 0]);
+aretes = fait[0];
+arrivee = fait[1][0];
+function c(n) = centre(col(n), rang(n));
+
+// ── Le plateau ──
+p_plateau = rect(o, [L, H], R_coin);                                       // le contour (détourage)
+nommer(#p_plateau, "plateau");
+p_lisere = rect(o + [liseré, liseré], [L - 2 * liseré, H - 2 * liseré], R_coin - liseré / 2);   // le liseré gravé
+nommer(#p_lisere, "liseré");
+si (avec_plexi == 1) {
+    p_feuil = rect(o + [f_bord, f_bord], [Lf, Hf], R_feuil);              // la feuillure (Poche, profondeur `plexi`)
+    nommer(#p_feuil, "feuillure");
+}
+
+// ── Les canaux : une polyligne par élan du creusement (un nouvel élan part d'une case où l'on est revenu) ──
+debuts = [for (k = [0 : len(aretes) - 1]) if (k == 0 || aretes[k][0] != aretes[k - 1][1]) k];
+pour (m = [0 : len(debuts) - 1]) {
+    d = debuts[m];
+    f = m < len(debuts) - 1 ? debuts[m + 1] - 1 : len(aretes) - 1;
+    q = polyligne(concat([c(aretes[d][0])], [for (k = [d : f]) c(aretes[k][1])]));
+    nommer(#q, "canal");
+}
+
+// ── Départ (en bas à gauche) et arrivée (la case la plus éloignée) ──
+c_dep = cercle(c(depart), D_coupelle / 2);
+nommer(#c_dep, "départ");
+c_arr = cercle(c(arrivee), D_coupelle / 2);
+nommer(#c_arr, "arrivée");
+
+// ── La plaque de plexiglas, à côté de la planche, HORS d'elle (à découper dans du plexi : un autre brut) ──
+// La feuillure moins le jeu ; un trou au-dessus du départ pour y glisser la bille.
+si (avec_plexi == 1) {
+    op = [largeur_bois + 20, rognure] + [f_bord + jeu_plexi, f_bord + jeu_plexi];   // hors de la planche
+    rect(op, [Lf - 2 * jeu_plexi, Hf - 2 * jeu_plexi], R_feuil - jeu_plexi);
+    cercle(op - (o + [f_bord + jeu_plexi, f_bord + jeu_plexi]) + c(depart), (bille + 2) / 2);
+}
+
+// ── L'USINAGE, déclaré : les opérations se créent à l'ouverture du script, et se refont à chaque rejeu ──
+// Dans l'ordre où elles s'usinent. Les outils se nomment comme dans la bibliothèque de l'atelier (un morceau suffit).
+z0 = avec_plexi == 1 ? plexi : 0;          // le dessus des canaux : le fond de la feuillure, ou le dessus du bois
+zc = avec_plexi == 1 ? bille + 1 : 4;      // la profondeur des canaux sous ce dessus
+si (avec_plexi == 1)
+    usinage("poche", "feuillure", outil = "Fraise droite Ø6", profondeur = plexi, passe = 1.5, nom = "Feuillure du plexi");
+usinage("rainure", "canal", outil = "Boule Ø6", depart = z0, profondeur = zc, passe = 1.5, nom = "Canaux");
+usinage("poche", "départ", outil = "Boule Ø6", depart = z0, profondeur = zc, passe = 1.5, nom = "Coupelle de départ");
+usinage("poche", "arrivée", outil = "Boule Ø6", depart = z0, profondeur = zc + 2, passe = 1.5, nom = "Coupelle d'arrivée");
+usinage("gravure", "liseré", outil = "Pointe V 90", profondeur = 1, nom = "Liseré");
+usinage("contour", "plateau", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Détourage du plateau");
+// (La plaque de plexi se découpe à part : un autre brut, une autre matière.)
