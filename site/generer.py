@@ -124,6 +124,7 @@ NAV = [
     ('#usinage', 'Opérations'),
     ('#modes', 'Modes'),
     ('premiers-pas.html', 'Premiers pas'),
+    ('configurateur/', 'Configurateur'),
     ('#sortie', 'Sortie'),
     ('#questions', 'Questions'),
 ]
@@ -492,6 +493,9 @@ def main() -> None:
     js_servi = servir((STYLE / 'verdiercam.js').read_bytes(), PUBLIC / 'style', 'verdiercam', 'js')
     favicon = servir(chemins.VERDIERCAM_LOGO.read_bytes(), PUBLIC, 'oiseau', 'svg')
 
+    # LE CONFIGURATEUR DE PIÈCES (10/10/2026) : la page du logiciel (web/configurateur), recopiée telle quelle sous
+    # /configurateur/ — sa page, son script, son cœur WebAssembly, ses pièces .vcs. Pas la notice de construction.
+    shutil.copytree(chemins.CONFIGURATEUR, PUBLIC / 'configurateur', ignore=shutil.ignore_patterns('README.md', '*.map'))
     captures = publier_captures()
     carte = carte_partage()
     faits = faits_verdiercam()

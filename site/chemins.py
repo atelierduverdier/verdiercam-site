@@ -19,6 +19,9 @@ VERDIERCAM_CMAKE = VERDIERCAM / 'CMakeLists.txt'
 VERDIERCAM_OPERATION = VERDIERCAM / 'src' / 'cam' / 'Operation.h'
 VERDIERCAM_LOGO = VERDIERCAM / 'ressources' / 'logo-verdiercam.svg'
 POLICES = VERDIERCAM / 'ressources' / 'polices'        # Inter, JetBrains Mono
+# Le configurateur de pièces (10/10/2026) : la page et le cœur WebAssembly, construit par outils/construire-wasm.sh
+# du logiciel (le .wasm n'est pas versionné : il se construit, puis le site le recopie).
+CONFIGURATEUR = VERDIERCAM / 'web' / 'configurateur'
 
 # Les captures et les clips : refaits par capturer.sh, dans le vrai logiciel.
 PRESENTATION = PROJETS / 'realisations' / 'presentation-verdiercam'
@@ -32,6 +35,8 @@ TOUT = {
     'captures': CAPTURES,
     'clips': CLIPS,
     'polices du logiciel': POLICES,
+    'configurateur (page)': CONFIGURATEUR / 'index.html',
+    'configurateur (cœur WebAssembly, outils/construire-wasm.sh)': CONFIGURATEUR / 'verdiercam-coeur.wasm',
 }
 
 
