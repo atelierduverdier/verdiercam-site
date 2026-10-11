@@ -3,10 +3,13 @@
   "jours": [
     {
       "date": "2026-10-11",
-      "titre": "Simuler n'importe quel G-code, et le creux d'une cuillère",
+      "titre": "Une IA aux commandes, n'importe quel G-code simulé, le creux d'une cuillère",
       "points": [
+        "Outils › Intelligence artificielle : un assistant (Claude Desktop, Claude Code ou tout client MCP) se branche d'un clic. Il dessine, pose les usinages, regarde le résultat et écrit le G-code de votre machine — dans son dossier seulement, jamais la machine, et seulement si vous l'avez autorisé.",
         "Fichier › Simuler un G-code : un programme écrit par un autre logiciel se rejoue dans la simulation — la matière qui se creuse, la pièce finie, la vue en coupe. Rien ne part à la machine.",
         "Dessin › Creux ou bombé depuis le contour : un contour fermé devient un creux arrondi (une cuillère, un vide-poche) ou un bombé, usiné en Gravure 2.5D — l'ébauche, puis la finition à la boule.",
+        "Le DXF exporté s'ouvre partout (calques déclarés, un contour d'un seul tenant, arcs gardés) ; à l'import, les textes se gravent et les points deviennent des points ou des trous.",
+        "Croquis : un miroir par un axe quelconque — deux points cliqués —, l'original gardé ; pendant le tracé, l'accroche finit un trait tangent à un cercle ou d'équerre, la contrainte posée.",
         "Chaque opération peut avoir sa propre couleur de parcours.",
         "Une poche par zone usine la zone telle qu'on l'a cliquée, et un bout de trait posé sur un contour ne fait plus fuir la zone. Des bords ouverts qui se suivent s'élargissent en une seule bande, et les zones se calculent une fois, pas à chaque image.",
         "Croquis : un cercle déplacé par une contrainte garde son rayon ; Coïncidence et Point sur objet posent le centre d'un cercle sur une ligne ou un axe, et deux cercles deviennent concentriques ; la symétrie de trois points prend celui du milieu pour pivot, dans n'importe quel ordre.",
