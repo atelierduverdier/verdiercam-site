@@ -470,3 +470,29 @@ section.legal { padding-top: 24px; }
 .journee h2 { font-size: clamp(1.2rem, 2vw, 1.45rem); letter-spacing: -.02em; margin: 0 0 12px; }
 .journee ul { margin: 0; padding-left: 1.1em; color: var(--encre-2); display: grid; gap: 6px; }
 @media (max-width: 700px) { .journee { grid-template-columns: 1fr; gap: 10px; } .journee-quand { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; } }
+
+/* --- « Tout voir » : le détail replié sous les points forts (11/10/2026) --- */
+.plus { margin-top: 14px; }
+.plus > summary { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; list-style: none;
+  font-weight: 600; color: var(--orange-encre); padding: 6px 0; }
+.plus > summary::-webkit-details-marker { display: none; }
+.plus > summary::before { content: "+"; font: 400 1.3rem/1 var(--texte); transition: transform .2s; }
+.plus[open] > summary::before { transform: rotate(45deg); }
+.plus > summary:hover { text-decoration: underline; }
+.plus > .coches { margin-top: 8px; }
+.plus-familles { margin-top: 28px; }
+.plus-familles > .familles { margin-top: 16px; }
+
+/* --- Ça avance : les trois derniers jours de nouveautés (11/10/2026) --- */
+.etiquette a { color: inherit; text-decoration: none; border-bottom: 1px dotted currentColor; }
+.recents { list-style: none; margin: 24px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.recents a { display: grid; gap: 6px; height: 100%; padding: 18px 20px; border: 1px solid var(--trait-2); border-radius: 14px;
+  background: var(--carte); color: var(--encre); text-decoration: none; transition: border-color .2s; }
+.recents a:hover { border-color: var(--orange); }
+.recents time { font-weight: 600; }
+.recent-version { font: 500 .76rem var(--mono); letter-spacing: .04em; color: var(--orange-encre); }
+.recents b { font-weight: 500; color: var(--encre-2); }
+.recents-tout { margin: 18px 0 0; }
+.recents-tout a { font-weight: 600; color: var(--orange-encre); text-decoration: none; }
+.recents-tout a:hover { text-decoration: underline; }
+@media (max-width: 760px) { .recents { grid-template-columns: 1fr; } }

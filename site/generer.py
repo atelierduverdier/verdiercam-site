@@ -410,7 +410,7 @@ def faits_verdiercam() -> dict:
         sys.exit(f"generer : pas de kJoursEssai dans {chemins.VERDIERCAM_LICENCE}")
     return {'version': m.group(1), 'familles': str(len(set(faites))),
             'liste_familles': '\n'.join(blocs), 'essai': essai.group(1),
-            'nouveautes': nouveautes_en_html()}
+            **nouveautes_en_html()}
 
 
 # --- Les nouveautés ------------------------------------------------------
@@ -441,7 +441,7 @@ def versions_par_jour() -> dict:
     return {j: sorted(vs, key=cle) for j, vs in jours.items()}
 
 
-def nouveautes_en_html() -> str:
+def nouveautes_en_html() -> dict:
     from datetime import date
     entrees = json.loads((SITE / 'nouveautes.json').read_text(encoding='utf-8'))['jours']
     versions = versions_par_jour()
@@ -453,7 +453,7 @@ def nouveautes_en_html() -> str:
     if oublies:
         print(f"  ! nouveautés : {len(oublies)} jour(s) de travail non raconté(s) dans "
               f"site/nouveautes.json : {', '.join(oublies)}")
-    blocs = []
+    blocs, recents = [], []
     for e in sorted(entrees, key=lambda e: e['date'], reverse=True):
         d = date.fromisoformat(e['date'])
         vs = versions[e['date']]
@@ -470,7 +470,20 @@ def nouveautes_en_html() -> str:
             f'    <ul>\n{points}\n    </ul>\n'
             f'  </div>\n'
             f'</article>')
-    return '\n'.join(blocs)
+        if len(recents) < 3:
+            recents.append(
+                f'<li><a href="{{{{RACINE}}}}nouveautes.html#j{e["date"]}">'
+                f'<time datetime="{e["date"]}">{d.day} {MOIS_FR[d.month - 1]}</time>'
+                f'<span class="recent-version">{plage}</span>'
+                f'<b>{html.escape(e["titre"], quote=False)}</b></a></li>')
+    # L'avancement en un chiffre : les versions posées depuis le premier jour raconté.
+    depuis = min(racontes)
+    nb = sum(len(vs) for j, vs in versions.items() if j >= depuis)
+    d0 = date.fromisoformat(depuis)
+    return {'nouveautes': '\n'.join(blocs),
+            'nouveautes_recentes': '\n'.join(recents),
+            'versions_depuis': str(nb),
+            'depuis': f'{d0.day}{"er" if d0.day == 1 else ""} {MOIS_FR[d0.month - 1]}'}
 
 
 def injecter_verdiercam(texte: str, faits: dict, nom: str) -> str:
