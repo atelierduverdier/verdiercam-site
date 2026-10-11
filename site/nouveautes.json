@@ -49,7 +49,7 @@
     },
     {
       "date": "2026-10-07",
-      "titre": "Choisir ses zones comme dans VCarve",
+      "titre": "Choisir ses zones d'un clic",
       "points": [
         "Usinage : cliquer dans une surface choisit la zone, Ctrl+clic en ajoute ou en retire, puis Poche.",
         "Ouvrir les bords d'une poche posés sur le tour de la pièce : la fraise sort dans le brut.",
