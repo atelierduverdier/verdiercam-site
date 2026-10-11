@@ -496,3 +496,11 @@ section.legal { padding-top: 24px; }
 .recents-tout a { font-weight: 600; color: var(--orange-encre); text-decoration: none; }
 .recents-tout a:hover { text-decoration: underline; }
 @media (max-width: 760px) { .recents { grid-template-columns: 1fr; } }
+
+/* --- Pourquoi VerdierCAM : l'histoire, en une colonne de lecture (11/10/2026) --- */
+.histoire { padding: clamp(56px, 8vw, 96px) 0 clamp(24px, 4vw, 40px); }
+.histoire-texte { max-width: 42rem; }
+.histoire-texte h2 { margin: 12px 0 20px; }
+.histoire-texte p { font-size: clamp(1.05rem, 1.5vw, 1.18rem); color: var(--encre-2); margin: 0 0 14px; }
+.histoire-texte .signature { margin-top: 22px; font: 500 .9rem var(--mono); letter-spacing: .03em; color: var(--orange-encre); }
+.histoire-texte .signature::before { content: "— "; }
