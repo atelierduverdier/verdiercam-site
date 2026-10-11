@@ -3,12 +3,15 @@
   "jours": [
     {
       "date": "2026-10-11",
-      "titre": "La poche par zones, plus sûre",
+      "titre": "Simuler n'importe quel G-code, et le creux d'une cuillère",
       "points": [
+        "Fichier › Simuler un G-code : un programme écrit par un autre logiciel se rejoue dans la simulation — la matière qui se creuse, la pièce finie, la vue en coupe. Rien ne part à la machine.",
+        "Dessin › Creux ou bombé depuis le contour : un contour fermé devient un creux arrondi (une cuillère, un vide-poche) ou un bombé, usiné en Gravure 2.5D — l'ébauche, puis la finition à la boule.",
         "Chaque opération peut avoir sa propre couleur de parcours.",
-        "Une poche par zone usine la zone telle qu'on l'a cliquée, et un bout de trait posé sur un contour ne fait plus fuir la zone.",
-        "Des bords ouverts qui se suivent s'élargissent en une seule bande.",
-        "Les zones d'une poche se calculent une fois, et non plus à chaque image : la vue reste fluide."
+        "Une poche par zone usine la zone telle qu'on l'a cliquée, et un bout de trait posé sur un contour ne fait plus fuir la zone. Des bords ouverts qui se suivent s'élargissent en une seule bande, et les zones se calculent une fois, pas à chaque image.",
+        "Croquis : un cercle déplacé par une contrainte garde son rayon ; Coïncidence et Point sur objet posent le centre d'un cercle sur une ligne ou un axe, et deux cercles deviennent concentriques ; la symétrie de trois points prend celui du milieu pour pivot, dans n'importe quel ordre.",
+        "Sous « Par passe », les passes qui seront faites s'affichent (4 + 4 + 2) ; après un ARRÊT, le message de la carte dit comment reprendre.",
+        "Corrigé : le plantage du panneau Brut après « Créer une fraise » ou « Nouveau »."
       ]
     },
     {
