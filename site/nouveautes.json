@@ -1,0 +1,130 @@
+{
+  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
+  "jours": [
+    {
+      "date": "2026-10-11",
+      "titre": "La poche par zones, plus sûre",
+      "points": [
+        "Chaque opération peut avoir sa propre couleur de parcours.",
+        "Une poche par zone usine la zone telle qu'on l'a cliquée, et un bout de trait posé sur un contour ne fait plus fuir la zone.",
+        "Des bords ouverts qui se suivent s'élargissent en une seule bande.",
+        "Les zones d'une poche se calculent une fois, et non plus à chaque image : la vue reste fluide."
+      ]
+    },
+    {
+      "date": "2026-10-10",
+      "titre": "Pièces paramétriques et croquis plus complet",
+      "points": [
+        "Le croquis s'exporte en pièce paramétrique : chaque cote devient une variable nommée. Dessin › Pièces paramétriques… les règle et les insère.",
+        "Un configurateur de pièces sur ce site : le cœur du logiciel tourne dans le navigateur.",
+        "Exemples en script : un labyrinthe à bille, un engrenage droit à développante de cercle.",
+        "Croquis : mesurer sans contraindre, couper un trait en un point, tourner ou mettre à l'échelle autour d'un point cliqué, polygone sur plats.",
+        "Coter l'écart entre deux cercles ; congé et chanfrein entre une ligne et un arc ; « Compléter les cotes » pose celles qui manquent, sans rien faire bouger.",
+        "Poche concentrique ou en spirale : le centre est usiné, et les raccords ne traversent plus les îlots."
+      ]
+    },
+    {
+      "date": "2026-10-09",
+      "titre": "Imbrication et réseaux liés",
+      "points": [
+        "Imbriquer sur la plaque : des pièces quelconques posées au plus serré, jusque dans les trous, en évitant les brides.",
+        "Réseaux liés à l'original : une cote changée sur la première pièce change toute la série.",
+        "Mettre à l'échelle pour remplir le brut, sans déformer le dessin.",
+        "Gravure en V entre les traits : ce qui sera creusé se peint sur le dessin avant le calcul.",
+        "La bibliothèque d'outils importe celles de Fusion 360, et accepte vos propres familles de fraises.",
+        "Sécurité du G-code : la fraise remonte après chaque outil, un programme périmé n'est plus exporté, une ligne refusée par la carte met en pause."
+      ]
+    },
+    {
+      "date": "2026-10-08",
+      "titre": "Fraises spéciales, post-its et vue en coupe",
+      "points": [
+        "Rainure en T, queue d'aronde et trou de serrure, avec la vérification que la gorge est creusée d'abord et que la tige ne frotte pas.",
+        "La simulation garde les creux sous la surface, et une vue en coupe glissante montre le profil exact.",
+        "Des post-its sur la vue, pour vos notes et la photo de vos croquis papier, enregistrés avec le document.",
+        "Dessin › Contour extérieur : le seul tour d'un dessin compliqué, en une forme fermée.",
+        "Dessin › Spirale, textures « Martelé » et « Vagues », et l'ellipse tracée à la souris.",
+        "Import DXF et SVG plus fidèles : arrondis des polylignes justes, contours presque fermés refermés."
+      ]
+    },
+    {
+      "date": "2026-10-07",
+      "titre": "Choisir ses zones comme dans VCarve",
+      "points": [
+        "Usinage : cliquer dans une surface choisit la zone, Ctrl+clic en ajoute ou en retire, puis Poche.",
+        "Ouvrir les bords d'une poche posés sur le tour de la pièce : la fraise sort dans le brut.",
+        "Import FreeCAD : toute une pièce d'un coup, chaque esquisse à sa place.",
+        "Vue 3D orthographique ou en perspective, aux mêmes touches que FreeCAD.",
+        "Pilotage : grands curseurs d'avance et de broche, et l'ondulation de broche contre le broutement.",
+        "Surépaisseur négative, pour une fraise usée ou un ajustement serré.",
+        "Aide › Signaler un problème et Aide › Suggérer une idée, captures d'écran comprises."
+      ]
+    },
+    {
+      "date": "2026-10-06",
+      "titre": "Le croquis en script",
+      "points": [
+        "La console construit un croquis entier, et un script façon OpenSCAD (variables, boucles, modules) pilote le dessin.",
+        "Gravure 2.5D : l'ébauche et la finition ont chacune leur fraise, leur motif et leur angle, et l'ébauche s'arrête à ce que la finition reprendra.",
+        "Relief par IA : le sommet du relief n'est plus aplati.",
+        "Thème clair, et des infobulles compactes.",
+        "La rampe ne coupe plus la pièce en revenant ; le dépassement suit tout le contour."
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "titre": "Le mode Débutant en dessins",
+      "points": [
+        "Chaque réglage du mode Débutant se pose sur un dessin agrandi : contour, onglets, perçage, deux faces, profondeurs.",
+        "Gravure en V à fond plat sans relevages de la pointe ; rainure trochoïdale qui fait sa largeur et sort à bouts plats.",
+        "Convertir une polyligne en courbe de Bézier.",
+        "Créer une fraise en la dessinant dans un croquis à part.",
+        "La queue et le porte-outil sont contrôlés sur la matière simulée : une collision arrête l'export.",
+        "Une profondeur plus grande que le brut est bornée, et le logiciel le dit."
+      ]
+    },
+    {
+      "date": "2026-10-04",
+      "titre": "Trois modes de travail",
+      "points": [
+        "Trois modes, Débutant, Intermédiaire et Pro, expliqués à l'accueil.",
+        "Gravure 2.5D : un modèle 3D ébauché et fini en une opération.",
+        "Lire et écrire les réglages de la carte ($$ de GRBL et grblHAL, arbre de FluidNC) depuis le Pilotage.",
+        "Les cotes se tapent pendant le tracé ; quatre traits bout à bout font un contour fermé.",
+        "La version Linux se livre aussi en archive .tar.gz, qui garde le droit d'exécution."
+      ]
+    },
+    {
+      "date": "2026-10-03",
+      "titre": "Cotes et moulures",
+      "points": [
+        "Cotes horizontale et verticale au ruban ; cote d'un point à une ligne ; l'angle posé est celui qu'on voit.",
+        "Le profil de la moulure se voit dans la vue, au départ du rail.",
+        "FluidNC reconnu à son identité : un tampon de 1 024 octets au lieu de 128.",
+        "Réseaux en direct pendant qu'on les règle."
+      ]
+    },
+    {
+      "date": "2026-10-02",
+      "titre": "Le pupitre de pilotage refait",
+      "points": [
+        "Un pupitre neuf : vitesses Précis et Rapide, pavé avec obliques, palpeur illustré à cinq modes.",
+        "Atelier Pilotage en plein écran : G-code et console, reprise à une ligne.",
+        "La version Windows et l'AppImage Linux, essayée sur trois distributions.",
+        "Les ciseaux gardent les contraintes ; Fichier › Exemples."
+      ]
+    },
+    {
+      "date": "2026-10-01",
+      "titre": "La 0.9 : deux faces et plusieurs repères",
+      "points": [
+        "Usiner les deux faces : pièce recentrée, goupilles symétriques, perçages du dessous au bon endroit.",
+        "La même pièce sur plusieurs repères, de G54 à G59.3.",
+        "La table de la machine et ses brides en 3D ; onglets montrés en surbrillance.",
+        "Lire le fichier .ini d'une machine LinuxCNC dans les réglages.",
+        "Le G-code passe par un post-processeur par famille de machines : MASSO, Mach3, Mach4 et UCCNC reviennent (expérimental).",
+        "Durées justes sur les arcs et les plongées ; import DXF, SVG et photos fidèles."
+      ]
+    }
+  ]
+}

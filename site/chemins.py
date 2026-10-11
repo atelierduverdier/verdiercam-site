@@ -18,6 +18,8 @@ VERDIERCAM = PROJETS / 'logiciels' / 'verdiercam-imgui'
 VERDIERCAM_CMAKE = VERDIERCAM / 'CMakeLists.txt'
 VERDIERCAM_OPERATION = VERDIERCAM / 'src' / 'cam' / 'Operation.h'
 VERDIERCAM_LOGO = VERDIERCAM / 'ressources' / 'logo-verdiercam.svg'
+# La durée de l'essai (kJoursEssai) : le site l'annonce, le logiciel la tient.
+VERDIERCAM_LICENCE = VERDIERCAM / 'src' / 'scene' / 'Licence.h'
 POLICES = VERDIERCAM / 'ressources' / 'polices'        # Inter, JetBrains Mono
 # Le configurateur de pièces (10/10/2026) : la page et le cœur WebAssembly, construit par outils/construire-wasm.sh
 # du logiciel (le .wasm n'est pas versionné : il se construit, puis le site le recopie).
@@ -32,6 +34,7 @@ TOUT = {
     'CMakeLists (version)': VERDIERCAM_CMAKE,
     'Operation.h (familles)': VERDIERCAM_OPERATION,
     'logo VerdierCAM': VERDIERCAM_LOGO,
+    'Licence.h (durée de l\'essai)': VERDIERCAM_LICENCE,
     'captures': CAPTURES,
     'clips': CLIPS,
     'polices du logiciel': POLICES,

@@ -30,6 +30,7 @@
         <a class="bouton bouton-clair" href="{{RACINE}}premiers-pas.html">Suivre les premiers pas</a>
         <a class="bouton bouton-clair" href="#parcours">Voir le parcours <span aria-hidden="true">↓</span></a>
       </div>
+      <p class="essai-heros">À la sortie : <b>{{verdiercam.essai}} jours d'essai complets</b>, sans carte bancaire.</p>
     </div>
     <ul class="fiche" aria-label="En bref">
       <li>Linux et Windows</li>
@@ -62,7 +63,7 @@
       <li><b>8</b><span>commandes numériques servies</span></li>
       <li><b>2</b><span>systèmes, Linux et Windows</span></li>
       <li><b>0</b><span>abonnement</span></li>
-      <li><b>0</b><span>connexion nécessaire</span></li>
+      <li><b>0</b><span>connexion pour travailler</span></li>
     </ul>
   </div>
 </section>
@@ -434,7 +435,7 @@ pour (i = [0 : 3]) {
             sans activation en ligne</span>
           <span class="prix-suite">Ensuite, si vous le souhaitez : <b>29&nbsp;€ par an</b> pour continuer à recevoir les
             mises à jour. Sans renouvellement, votre version continue de fonctionner.</span>
-          <span class="prix-essai"><b>15 jours d'essai complets</b> : tout fonctionne, export du G-code et pilotage
+          <span class="prix-essai"><b>{{verdiercam.essai}} jours d'essai complets</b> : tout fonctionne, export du G-code et pilotage
             compris. Ensuite, le dessin et la simulation restent.</span>
           <span class="prix-tva">TVA non applicable, art. 293&nbsp;B du CGI.</span>
         </li>
@@ -489,10 +490,10 @@ pour (i = [0 : 3]) {
       </details>
       <details>
         <summary>Peut-on l'essayer avant de l'acheter ?</summary>
-        <p>Oui : <b>15 jours d'essai complets</b> dès le premier lancement, sans carte bancaire — il suffit de laisser
+        <p>Oui : <b>{{verdiercam.essai}} jours d'essai complets</b> dès le premier lancement, sans carte bancaire — il suffit de laisser
           votre nom et votre courriel, et le lien de téléchargement vous est envoyé. Tout
-          fonctionne, export du G-code et pilotage de la machine compris — de quoi vérifier que votre carte GRBL ou
-          votre LinuxCNC suit. Ensuite, le dessin et la simulation restent ; seuls l'export et l'envoi à la machine
+          fonctionne, export du G-code et pilotage de la machine compris — de quoi vérifier que votre carte GRBL ou grblHAL
+          suit le pilotage, ou que votre LinuxCNC lit bien le G-code. Ensuite, le dessin et la simulation restent ; seuls l'export et l'envoi à la machine
           demandent une licence.</p>
       </details>
       <details>

@@ -30,6 +30,7 @@ import io
 import json
 import re
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -54,11 +55,21 @@ PAGES = [
     {
         'contenu': 'index.html',
         'sortie': 'index.html',
-        'titre': "VerdierCAM — du croquis au copeau, dans une seule fenêtre",
-        'description': "Logiciel de CAO/FAO pour la défonceuse CNC : croquis "
-                       "contraint, {{verdiercam.familles}} familles d'opérations, "
-                       "simulation de la matière et pilotage de la machine dans "
-                       "une seule fenêtre. Linux et Windows. Sortie prochaine.",
+        # Le titre porte les mots qu'on tape dans un moteur de recherche (11/10/2026) ; le slogan
+        # « du croquis au copeau » reste le grand titre de la page.
+        'titre': "VerdierCAM — logiciel CAO/FAO pour CNC bois, Linux et Windows",
+        'description': "Dessiner la pièce, calculer les parcours de la défonceuse CNC, simuler la "
+                       "matière et envoyer le G-code à GRBL, grblHAL ou LinuxCNC, dans un seul "
+                       "logiciel : croquis contraint, gravure en V, bas-relief depuis une photo, "
+                       "{{verdiercam.familles}} familles d'opérations. Licence perpétuelle, sans "
+                       "abonnement. Sortie prochaine.",
+    },
+    {
+        'contenu': 'nouveautes.html',
+        'sortie': 'nouveautes.html',
+        'titre': "VerdierCAM — les nouveautés, version par version",
+        'description': "Ce qui change dans VerdierCAM, jour après jour : les fonctions ajoutées, "
+                       "les défauts corrigés, avec les numéros de version.",
     },
     {
         'contenu': 'premiers-pas.html',
@@ -125,12 +136,15 @@ NAV = [
     ('#modes', 'Modes'),
     ('premiers-pas.html', 'Premiers pas'),
     ('configurateur/', 'Configurateur'),
+    ('nouveautes.html', 'Nouveautés'),
     ('#sortie', 'Sortie'),
     ('#questions', 'Questions'),
 ]
 
 LIENS_PIED = [
     ('mailto:contact@verdiercam.fr', 'contact@verdiercam.fr'),
+    ('https://www.youtube.com/@VerdierCAM', 'YouTube'),
+    ('{{RACINE}}nouveautes.html', 'Nouveautés'),
     ('https://atelierduverdier.fr', 'Atelier du Verdier'),
     ('{{RACINE}}mentions-legales.html', 'Mentions légales'),
     ('{{RACINE}}confidentialite.html', 'Confidentialité'),
@@ -391,8 +405,72 @@ def faits_verdiercam() -> dict:
         if lignes:
             blocs.append(f'<div class="groupe">\n  <h3>{html.escape(titre)}</h3>\n'
                          '  <ul>\n    ' + '\n    '.join(lignes) + '\n  </ul>\n</div>')
+    essai = re.search(r'kJoursEssai\s*=\s*(\d+)', chemins.VERDIERCAM_LICENCE.read_text(encoding='utf-8'))
+    if not essai:
+        sys.exit(f"generer : pas de kJoursEssai dans {chemins.VERDIERCAM_LICENCE}")
     return {'version': m.group(1), 'familles': str(len(set(faites))),
-            'liste_familles': '\n'.join(blocs)}
+            'liste_familles': '\n'.join(blocs), 'essai': essai.group(1),
+            'nouveautes': nouveautes_en_html()}
+
+
+# --- Les nouveautés ------------------------------------------------------
+# Le TEXTE est écrit à la main dans site/nouveautes.json (raconté pour qui usine) ;
+# les NUMÉROS DE VERSION de chaque jour se lisent dans l'historique du logiciel :
+# chaque commit y monte le dernier chiffre du CMakeLists. Un jour annoncé que
+# l'historique ne connaît pas arrête tout ; un jour de l'historique, postérieur au
+# premier raconté et sans entrée, est seulement signalé.
+JOURS_FR = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche']
+MOIS_FR = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août',
+           'septembre', 'octobre', 'novembre', 'décembre']
+
+
+def versions_par_jour() -> dict:
+    """{'2026-10-11': ['0.9.270', …]} — les versions posées ce jour-là dans le CMakeLists."""
+    sortie = subprocess.run(
+        ['git', '-C', str(chemins.VERDIERCAM), 'log', '-p', '--date=short', '--format=JOUR %ad',
+         '--', 'CMakeLists.txt'], capture_output=True, text=True, check=True).stdout
+    jours, jour = {}, None
+    for ligne in sortie.splitlines():
+        if ligne.startswith('JOUR '):
+            jour = ligne[5:]
+            continue
+        v = re.match(r'\+project\(\s*\w+\s+VERSION\s+([\d.]+)', ligne)
+        if v and jour:
+            jours.setdefault(jour, set()).add(v.group(1))
+    cle = lambda v: tuple(int(x) for x in v.split('.'))
+    return {j: sorted(vs, key=cle) for j, vs in jours.items()}
+
+
+def nouveautes_en_html() -> str:
+    from datetime import date
+    entrees = json.loads((SITE / 'nouveautes.json').read_text(encoding='utf-8'))['jours']
+    versions = versions_par_jour()
+    racontes = {e['date'] for e in entrees}
+    inconnus = sorted(racontes - set(versions))
+    if inconnus:
+        sys.exit(f"generer : nouveautes.json — jour(s) sans version dans l'historique : {', '.join(inconnus)}")
+    oublies = sorted(j for j in versions if j > min(racontes) and j not in racontes)
+    if oublies:
+        print(f"  ! nouveautés : {len(oublies)} jour(s) de travail non raconté(s) dans "
+              f"site/nouveautes.json : {', '.join(oublies)}")
+    blocs = []
+    for e in sorted(entrees, key=lambda e: e['date'], reverse=True):
+        d = date.fromisoformat(e['date'])
+        vs = versions[e['date']]
+        plage = vs[0] if len(vs) == 1 else f'{vs[0]} à {vs[-1]}'
+        points = '\n'.join(f'      <li>{html.escape(p, quote=False)}</li>' for p in e['points'])
+        blocs.append(
+            f'<article class="journee apparait" id="j{e["date"]}">\n'
+            f'  <div class="journee-quand">\n'
+            f'    <time datetime="{e["date"]}">{JOURS_FR[d.weekday()]} {d.day} {MOIS_FR[d.month - 1]}</time>\n'
+            f'    <span class="journee-version">{plage}</span>\n'
+            f'  </div>\n'
+            f'  <div class="journee-texte">\n'
+            f'    <h2>{html.escape(e["titre"], quote=False)}</h2>\n'
+            f'    <ul>\n{points}\n    </ul>\n'
+            f'  </div>\n'
+            f'</article>')
+    return '\n'.join(blocs)
 
 
 def injecter_verdiercam(texte: str, faits: dict, nom: str) -> str:

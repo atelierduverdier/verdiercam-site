@@ -96,7 +96,11 @@ b, strong { font-weight: 600; }
 .menu { display: flex; gap: 2px; margin-left: auto; }
 .menu a { color: var(--encre-2); text-decoration: none; font-size: .95rem; padding: 8px 12px; border-radius: 10px; }
 .menu a:hover { color: var(--encre); background: var(--fond-2); }
-@media (max-width: 900px) { .menu { display: none; } .barre .bouton { margin-left: auto; } }
+/* Huit entrées depuis « Nouveautés » (11/10/2026) : jamais sur deux lignes ; resserrées, puis repliées
+   avant de pousser le bouton hors de l'écran. */
+.menu a { white-space: nowrap; }
+@media (max-width: 1320px) { .menu a { padding: 8px 8px; font-size: .9rem; } }
+@media (max-width: 1140px) { .menu { display: none; } .barre .bouton { margin-left: auto; } }
 
 /* --- Les boutons ------------------------------------------------------ */
 .bouton { display: inline-flex; align-items: center; gap: 8px; font: 600 1rem var(--texte);
@@ -451,3 +455,18 @@ section.legal { padding-top: 24px; }
 
 /* La promesse sous « Être prévenu de la sortie ». */
 .note-prevenu { margin-top: 14px; font-size: .9rem; color: var(--encre-2); }
+
+/* --- L'essai sous les boutons du héros ------------------------------- */
+.essai-heros { margin: 16px 0 0; font-size: .95rem; color: var(--encre-2); }
+.essai-heros b { color: var(--orange-encre); }
+
+/* --- Les nouveautés -------------------------------------------------- */
+.nouveautes { padding: clamp(24px, 4vw, 48px) 0 clamp(56px, 8vw, 96px); }
+.journee { display: grid; grid-template-columns: 13rem minmax(0, 1fr); gap: 32px;
+  padding: 28px 0; border-top: 1px solid var(--trait-2); }
+.journee-quand { display: grid; gap: 6px; align-content: start; }
+.journee-quand time { font-weight: 600; color: var(--encre); }
+.journee-version { font: 500 .78rem var(--mono); letter-spacing: .04em; color: var(--orange-encre); }
+.journee h2 { font-size: clamp(1.2rem, 2vw, 1.45rem); letter-spacing: -.02em; margin: 0 0 12px; }
+.journee ul { margin: 0; padding-left: 1.1em; color: var(--encre-2); display: grid; gap: 6px; }
+@media (max-width: 700px) { .journee { grid-template-columns: 1fr; gap: 10px; } .journee-quand { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; } }

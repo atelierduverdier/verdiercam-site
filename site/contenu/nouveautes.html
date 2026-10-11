@@ -1,0 +1,23 @@
+<!-- VerdierCAM — « Nouveautés ». Le texte de chaque jour vient de site/nouveautes.json (écrit pour qui
+     usine, d'après l'historique du logiciel) ; les numéros de version se lisent dans cet historique à la
+     génération, jamais à la main. Voir nouveautes_en_html() dans site/generer.py. -->
+
+<div class="heros papier pp-heros">
+  <div class="cadre">
+    <div class="pp-intro apparait">
+      <span class="surtitre">Nouveautés</span>
+      <h1>Ce qui change, jour après jour</h1>
+      <p class="accroche">
+        VerdierCAM avance par petites versions : chaque correction, chaque fonction ajoutée
+        monte le numéro d'un cran. Voici, en clair, ce que chaque journée de travail a apporté.
+        Version en cours : <b>{{verdiercam.version}}</b>.
+      </p>
+    </div>
+  </div>
+</div>
+
+<section class="nouveautes">
+  <div class="cadre">
+{{verdiercam.nouveautes}}
+  </div>
+</section>
