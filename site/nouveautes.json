@@ -12,7 +12,7 @@
         "Imbriquer : les copies peuvent rester liées à l'original — une cote changée les suit — et entrer dans les mêmes opérations.",
         "Les menus rangés : Dessin en trois sections, Ctrl+K cherche une commande par quelques lettres (Outils › Rechercher une commande…), un clic droit sur la sélection propose ce qu'on peut en faire. Affichage › Panneaux ramène un panneau perdu dans son coin ; Affichage › Zoom sur une fenêtre (Ctrl+B).",
         "Annuler couvre tout : une commande de la console ou un script entier s'annule d'un coup, comme les réglages du brut, les post-its et l'image de fond.",
-        "Corrigé, après une relecture de toute la journée : un plantage en ramenant tous les panneaux ; le sens inversé d'un trou perdu à l'enregistrement ; un relief trop haut avec « suivre la largeur » ; une forme verrouillée qui bougeait encore aux flèches ; Ctrl+K qui marquait le document modifié."
+        "Corrigé, après une relecture de toute la journée : un plantage en ramenant tous les panneaux ; le sens inversé d'un trou perdu à l'enregistrement ; un relief trop haut avec « suivre la largeur » ; une forme verrouillée qui bougeait encore aux flèches ; Ctrl+K qui marquait le document modifié ; un cercle qui grandissait quand on changeait la cote qui le place."
       ]
     },
     {
