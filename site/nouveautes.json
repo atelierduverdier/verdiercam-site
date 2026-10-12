@@ -2,6 +2,20 @@
   "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
   "jours": [
     {
+      "date": "2026-10-12",
+      "titre": "L'onglet Relief, des menus rangés, un Annuler qui couvre tout",
+      "points": [
+        "Onglet Relief, en quatre étapes — Formes, Façonner, Vérifier, Usiner : des contours du croquis bombés ou creusés, des images en gris (PNG, JPEG, PGM) et des modèles 3D (STL, OBJ) posés à l'échelle, un profil de moulure promené le long d'un trait. La pile devient une carte de hauteurs, usinée en Gravure 2.5D : l'ébauche, puis la finition à la boule, les fraises prises dans votre bibliothèque.",
+        "Le bombé peut suivre la largeur de chaque endroit (un manche qui s'affine), monter jusqu'à des arêtes tracées dans la forme, s'incliner ; les formes de la pile s'ajoutent, se retirent, gardent le plus haut ou le plus bas, ou se multiplient.",
+        "Croquis : diviser aux intersections, diviser un trait en N points, inverser le sens d'un contour ; cercle par deux ou par trois points ; arc tangent, qui prolonge une ligne sans cassure ; Dessin › Marquer comme › Verrouiller / déverrouiller fige une forme.",
+        "Fichier › Exporter le dessin › Gabarit PDF à l'échelle 1 : le dessin en vraie grandeur sur des feuilles A4 à assembler, avec un carré de 50 mm à mesurer après impression.",
+        "Imbriquer : les copies peuvent rester liées à l'original — une cote changée les suit — et entrer dans les mêmes opérations.",
+        "Les menus rangés : Dessin en trois sections, Ctrl+K cherche une commande par quelques lettres (Outils › Rechercher une commande…), un clic droit sur la sélection propose ce qu'on peut en faire. Affichage › Panneaux ramène un panneau perdu dans son coin ; Affichage › Zoom sur une fenêtre (Ctrl+B).",
+        "Annuler couvre tout : une commande de la console ou un script entier s'annule d'un coup, comme les réglages du brut, les post-its et l'image de fond.",
+        "Corrigé, après une relecture de toute la journée : un plantage en ramenant tous les panneaux ; le sens inversé d'un trou perdu à l'enregistrement ; un relief trop haut avec « suivre la largeur » ; une forme verrouillée qui bougeait encore aux flèches ; Ctrl+K qui marquait le document modifié."
+      ]
+    },
+    {
       "date": "2026-10-11",
       "titre": "Une IA aux commandes, n'importe quel G-code simulé, le creux d'une cuillère",
       "points": [
