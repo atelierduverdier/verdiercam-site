@@ -251,6 +251,10 @@ IMAGES = {
     'gravure25d_bois': '25d-bois',
     'pilotage_pupitre': 'pupitre',
     'pedalier_script': 'pedalier',
+    # Graver une image (13/10/2026) : un insigne de démonstration, jamais une pièce de client.
+    'graver_image': 'graver-image',
+    'graver_fraise': 'graver-fraise',
+    'relief_usine': 'relief-paliers',
     # La page « Premiers pas » : onze étapes, une plaque percée du croquis au G-code.
     'pp_01_accueil': 'pp-accueil',
     'pp_02_brut': 'pp-brut',
@@ -459,6 +463,11 @@ def nouveautes_en_html() -> dict:
         vs = versions[e['date']]
         plage = vs[0] if len(vs) == 1 else f'{vs[0]} à {vs[-1]}'
         points = '\n'.join(f'      <li>{html.escape(p, quote=False)}</li>' for p in e['points'])
+        # Des captures, en fin de journée (clé « images » : [[capture, légende], …]) — rien d'autre que des captures publiées.
+        figures = ''.join(
+            f'\n    <figure class="capture journee-capture"><div class="fenetre"><img src="{{{{RACINE}}}}captures/{c}" '
+            f'width="1920" height="1080" loading="lazy" alt="{html.escape(l)}"></div>'
+            f'<figcaption>{html.escape(l, quote=False)}</figcaption></figure>' for c, l in e.get('images', []))
         blocs.append(
             f'<article class="journee apparait" id="j{e["date"]}">\n'
             f'  <div class="journee-quand">\n'
@@ -467,7 +476,7 @@ def nouveautes_en_html() -> dict:
             f'  </div>\n'
             f'  <div class="journee-texte">\n'
             f'    <h2>{html.escape(e["titre"], quote=False)}</h2>\n'
-            f'    <ul>\n{points}\n    </ul>\n'
+            f'    <ul>\n{points}\n    </ul>{figures}\n'
             f'  </div>\n'
             f'</article>')
         if len(recents) < 3:

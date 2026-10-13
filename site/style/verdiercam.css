@@ -469,6 +469,7 @@ section.legal { padding-top: 24px; }
 .journee-version { font: 500 .78rem var(--mono); letter-spacing: .04em; color: var(--orange-encre); }
 .journee h2 { font-size: clamp(1.2rem, 2vw, 1.45rem); letter-spacing: -.02em; margin: 0 0 12px; }
 .journee ul { margin: 0; padding-left: 1.1em; color: var(--encre-2); display: grid; gap: 6px; }
+.journee-capture { margin: 18px 0 0; max-width: 760px; }
 @media (max-width: 700px) { .journee { grid-template-columns: 1fr; gap: 10px; } .journee-quand { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; } }
 
 /* --- « Tout voir » : le détail replié sous les points forts (11/10/2026) --- */
