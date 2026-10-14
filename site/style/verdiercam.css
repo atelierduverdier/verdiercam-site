@@ -505,3 +505,22 @@ section.legal { padding-top: 24px; }
 .histoire-texte p { font-size: clamp(1.05rem, 1.5vw, 1.18rem); color: var(--encre-2); margin: 0 0 14px; }
 .histoire-texte .signature { margin-top: 22px; font: 500 .9rem var(--mono); letter-spacing: .03em; color: var(--orange-encre); }
 .histoire-texte .signature::before { content: "— "; }
+
+/* --- La présentation en vidéo : une image d'ici, YouTube au clic ------- */
+.video-yt { position: relative; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: var(--encre);
+  box-shadow: var(--ombre-fenetre); border: 1px solid rgba(21,23,28,.14); }
+.video-yt-lien { position: absolute; inset: 0; display: block; color: #fff; text-decoration: none; }
+.video-yt-lien img { width: 100%; height: 100%; object-fit: cover; filter: brightness(.72); transition: filter .3s; }
+.video-yt-lien:hover img, .video-yt-lien:focus-visible img { filter: brightness(.85); }
+.video-yt-lecture { position: absolute; left: 50%; top: 50%; width: 84px; height: 84px; margin: -42px 0 0 -42px;
+  border-radius: 50%; background: var(--orange); box-shadow: 0 10px 30px rgba(0,0,0,.35); transition: transform .25s; }
+.video-yt-lecture::after { content: ""; position: absolute; left: 34px; top: 26px; border-style: solid;
+  border-width: 16px 0 16px 26px; border-color: transparent transparent transparent var(--encre); }
+.video-yt-lien:hover .video-yt-lecture { transform: scale(1.08); }
+.video-yt-titre { position: absolute; left: 20px; right: 20px; bottom: 16px; font-weight: 600; font-size: 1.1rem;
+  text-shadow: 0 1px 6px rgba(0,0,0,.6); }
+.video-yt-titre small { font-weight: 400; opacity: .85; }
+.video-yt iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+@media (max-width: 520px) { .video-yt-lecture { width: 64px; height: 64px; margin: -32px 0 0 -32px; }
+  .video-yt-lecture::after { left: 26px; top: 19px; border-width: 13px 0 13px 21px; }
+  .video-yt-titre { font-size: .9rem; left: 14px; bottom: 10px; } .video-yt-titre small { display: none; } }

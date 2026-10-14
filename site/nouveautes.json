@@ -2,6 +2,21 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+   "date": "2026-10-14",
+   "titre": "Assemblages à dents, calques, une simulation des deux faces, et vos remarques en vidéo",
+   "points": [
+    "Dessin › Créer › Assemblage à dents… : un trait devient denté (queues droites ou queues d'aronde vues de dessus, mâle ou femelle, avec le jeu par flanc), un panneau de boîte à doigts, une clé papillon et son logement, aux pointes arrondies au rayon de la fraise.",
+    "Affichage › Calques… : ranger le dessin par usage, cacher ou verrouiller un calque, le choisir d'un clic ; les calques d'un DXF importé sont gardés, et repartent dans le DXF exporté.",
+    "Venu de QCAD : l'aire nette d'une pièce percée et son centre de gravité, choisir les contours intérieurs ou extérieurs, éclater une forme, allonger une ligne, des trous posés depuis un fichier de points (CSV) ; et un texte en police pleine qui suit une courbe.",
+    "Simulation : « Les deux » joue le dessus, puis retourne la planche à l'écran et joue le dessous ; « Aller à » une opération, et la liste du G-code suit la fraise ; elle prévient quand la queue ou le porte-outil frotte le bois.",
+    "Machine › Course & broche › Pince : ER11 à ER32, avec le Ø de l'écrou ; un outil sans écrou à lui prend celui de la machine en service. La fiche d'une fraise dessinée cote le Ø de la tête sous la pointe, celui de la queue sur la queue.",
+    "Gravure en V : la fraise droite de dégagement se choisit dans la section même, la pointe ne change plus. Recalculer propose de prendre les formes nouvellement choisies — un rectangle ajouté autour du motif, par exemple.",
+    "Croquis : « Compléter les cotes » passe de 4 min 34 à 7 s sur un DXF de 25 formes, et propose de verrouiller plutôt que de semer mille cotes ; Suppr efface quel que soit l'outil en main ; le clic droit termine une polyligne au lieu de la perdre ; une barre d'icônes pour montrer ou cacher grille, cotes, contraintes, numéros, axes.",
+    "Fichier › Importer › Dessins récents : les dix derniers SVG, DXF ou esquisses FreeCAD, relus d'un clic. Usinage et Simulation : les traits du croquis se cachent d'un clic dans la légende.",
+    "Corrigé : sous Windows, le téléchargement des modèles d'IA échouait (certificats HTTPS) ; la zone cliquée d'une poche filait ailleurs quand on changeait les cotes de son contour."
+   ]
+  },
+  {
    "date": "2026-10-13",
    "titre": "Graver une image, imprimer en couleurs, usiner un relief par paliers",
    "points": [

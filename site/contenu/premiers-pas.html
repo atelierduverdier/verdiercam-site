@@ -63,10 +63,10 @@
       <div class="texte apparait">
         <span class="surtitre">02 · Le brut</span>
         <h2>Régler la planche</h2>
-        <p>Dans l'onglet <b>Usinage</b>, le panneau <b>Brut</b> décrit la planche réelle :
-          section « Dimensions &amp; matière », trois champs — <b>Largeur X</b>,
-          <b>Longueur Y</b>, <b>Épaisseur Z</b> — et un choix de <b>Matière</b>.</p>
-        <p>Un double-clic sur un champ ouvre la saisie au clavier — une expression comme
+        <p>L'onglet <b>Planche</b>, à droite, décrit la planche réelle : un clic sur
+          « Dimensions &amp; matière » ouvre son dessin, trois cotes — <b>Largeur X</b>,
+          <b>Longueur Y</b>, <b>Épaisseur Z</b> — et un choix de <b>Matière</b> ; <b>Appliquer</b> les prend.</p>
+        <p>Un double-clic sur une cote ouvre la saisie au clavier — une expression comme
           <code>240/2</code> est aussi acceptée. Ici : une planche de <b>bois</b>,
           160 × 120 × 18 mm — plus grande que la plaque de 120 × 80 qu'on va y détourer,
           avec de la marge tout autour.</p>
@@ -74,7 +74,7 @@
       <figure class="capture apparait">
         <div class="fenetre">
           <img src="{{RACINE}}captures/pp-brut.webp" width="1920" height="1080" loading="lazy"
-               alt="Le panneau Brut de VerdierCAM : Largeur X 160, Longueur Y 120, Épaisseur Z 18 mm, matière Bois">
+               alt="Le dessin Dimensions et matière de VerdierCAM : la planche en perspective, Largeur X 160, Longueur Y 120, Épaisseur Z 18 mm, matière Bois">
         </div>
         <figcaption>La planche fait partie du dessin, avant le premier trait.</figcaption>
       </figure>
@@ -169,8 +169,8 @@
           second, puis <b>Perçage</b>. Deux opérations, deux boutons du même ruban.</p>
         <p>Une section « Onglets de maintien » accompagne le Contour : quelques ponts de
           matière, automatiques ou posés à la main, pour qu'une pièce détourée ne parte pas
-          toute seule à la dernière passe. Aucun n'est posé par défaut — à ajouter soi-même
-          si la pièce est grande, lourde, ou que la fraise plonge vite.</p>
+          toute seule à la dernière passe. Quatre sont posés d'office quand la découpe traverse
+          la planche ; leur nombre, leur taille et leur place se changent dans la section.</p>
       </div>
       <figure class="capture apparait">
         <div class="fenetre">
@@ -217,7 +217,7 @@
         <p>En mode Débutant, chaque profondeur se règle directement sur un dessin en coupe :
           <b>Départ</b>, <b>Profondeur</b>, et les autres réglages qu'une opération peut
           demander, chacun posé sur sa cote. Un double-clic sur un champ ouvre la saisie au
-          clavier, exactement comme au panneau Brut.</p>
+          clavier, exactement comme pour la planche.</p>
         <p>Pour un Contour, la Profondeur naît déjà à <b>l'épaisseur de la planche</b> — 18 mm
           ici : une découpe qui détoure la pièce traverse tout, par définition. Essayer d'aller
           plus loin (pour « être sûr » de traverser) ne marche pas : le logiciel refuse et le
@@ -263,21 +263,22 @@
       <div class="texte apparait">
         <span class="surtitre">10 · Simulation</span>
         <h2>Voir le bois se creuser</h2>
-        <p>L'onglet <b>Simulation</b> rejoue l'usinage à l'écran : case <b>Matière</b> pour
-          voir le brut se creuser passe après passe (lecture / pause, ou <kbd>Espace</kbd>),
-          veinure du bois comprise — ou case <b>Pièce finie</b> pour sauter directement au
+        <p>L'onglet <b>Simulation</b> rejoue l'usinage à l'écran : <b>Montrer › la planche qui se
+          creuse</b> pour voir le brut se creuser passe après passe (lecture / pause, ou <kbd>Espace</kbd>),
+          veinure du bois comprise — ou <b>la pièce finie</b> pour sauter directement au
           résultat.</p>
-        <p>Avec « Pièce finie », la preuve est là : la plaque se détache bien de la planche,
-          entourée de la marge de bois qui restait autour — le Contour l'a vraiment détourée,
-          pas juste rainurée en surface. Une erreur — profondeur fausse, trou au mauvais
+        <p>Avec « la pièce finie », la preuve est là : le Contour traverse toute l'épaisseur
+          autour de la plaque, pas juste une rainure en surface. Seuls restent les quatre
+          <b>onglets de maintien</b> que la découpe pose d'office : la plaque reste tenue dans la
+          planche jusqu'à la fin, on les tranche au ciseau (section Onglets pour les changer). Une erreur — profondeur fausse, trou au mauvais
           endroit — se verrait ici. Pas sur la planche, et pas après coup.</p>
       </div>
       <figure class="capture apparait">
         <div class="fenetre">
           <img src="{{RACINE}}captures/pp-simulation.webp" width="1920" height="1080" loading="lazy"
-               alt="La simulation « Pièce finie » de VerdierCAM : la plaque détourée, avec ses deux trous, bien séparée de la planche de bois qui l'entoure">
+               alt="La simulation de VerdierCAM, la pièce finie montrée : la plaque détourée dans toute l'épaisseur, avec ses deux trous, tenue à la planche par ses onglets">
         </div>
-        <figcaption>La plaque détourée, perçages compris — « Pièce finie » le prouve.</figcaption>
+        <figcaption>La plaque détourée, perçages compris, tenue par ses onglets — la pièce finie le prouve.</figcaption>
       </figure>
     </div>
   </div>

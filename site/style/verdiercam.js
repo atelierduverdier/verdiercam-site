@@ -80,6 +80,21 @@
     });
   }
 
+  // --- La présentation en vidéo : YouTube ne se charge qu'au clic ------------
+  document.querySelectorAll('.video-yt[data-youtube]').forEach(function (bloc) {
+    var lien = bloc.querySelector('.video-yt-lien');
+    if (!lien) return;
+    lien.addEventListener('click', function (e) {
+      e.preventDefault();
+      var f = document.createElement('iframe');
+      f.src = 'https://www.youtube-nocookie.com/embed/' + bloc.getAttribute('data-youtube') + '?autoplay=1&rel=0';
+      f.title = 'Présentation de VerdierCAM';
+      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      f.allowFullscreen = true;
+      bloc.replaceChild(f, lien);
+    });
+  });
+
   // --- La visionneuse : un clic sur une capture l'agrandit ------------------
   var vis = document.querySelector('.visionneuse');
   if (vis) {
