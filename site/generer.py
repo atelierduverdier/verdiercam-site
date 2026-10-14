@@ -79,6 +79,13 @@ PAGES = [
                        "mode Débutant, tracer une plaque percée, la coter, choisir les "
                        "opérations et la fraise, simuler, puis exporter le G-code.",
     },
+    {
+        'contenu': 'installer.html',
+        'sortie': 'installer.html',
+        'titre': "VerdierCAM — installer sur Linux, Windows et Raspberry Pi 5",
+        'description': "Installer VerdierCAM : une AppImage sous Linux, un dossier sous Windows, une AppImage ARM64 "
+                       "sur Raspberry Pi 5 — y compris un Pi sous Debian 12 ou l'image LinuxCNC.",
+    },
     # Les pages légales. Celles marquées « vente » ne partent en ligne que si
     # editeur.json dit « vente_ouverte » : publier des conditions de vente et un
     # bouton d'achat pour un logiciel qu'on ne vend pas encore serait trompeur.
@@ -135,6 +142,7 @@ NAV = [
     ('#usinage', 'Opérations'),
     ('#modes', 'Modes'),
     ('premiers-pas.html', 'Premiers pas'),
+    ('installer.html', 'Installer'),
     ('configurateur/', 'Configurateur'),
     ('nouveautes.html', 'Nouveautés'),
     ('#sortie', 'Sortie'),
