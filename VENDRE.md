@@ -36,7 +36,10 @@ reste un.
    logiciel : Linux, Windows, Raspberry Pi 5) ne se publient qu'à l'ouverture.
 7. **Les CGV et la licence d'utilisation en PDF**, datées du jour de l'ouverture : jointes à chaque
    courriel de livraison (la confirmation sur support durable « reprend ces conditions », art. L221-13).
-8. **Ouvrir** : `vente_ouverte` à `true`, `date_conditions` à jour, `python3 site/publier.py`.
+   `outils/conditions-pdf.sh` les imprime (WeasyPrint) d'une copie du site engendrée vente ouverte, dans
+   `~/Documents/VerdierCAM-vente/` : à relancer chaque fois que `date_conditions` change.
+8. **Ouvrir** : `date_conditions` à jour, puis `outils/conditions-pdf.sh`, la Release (« Publier une
+   version » ci-dessous), `vente_ouverte` à `true`, `python3 site/publier.py`.
 9. **Suivre le total** des ventes à des particuliers des autres pays de l'UE : au-delà de 10 000 €
    par an, la TVA du pays de l'acheteur est due (guichet OSS), même en franchise.
 
@@ -81,3 +84,23 @@ l'interrupteur : sans lui, aucun client ne voit passer une version.
 ```
 
 Absent, le site ne publie pas de manifeste et le logiciel reste en gris.
+
+## Publier une version (15/10/2026)
+
+Vente ouverte, la page Installer montre trois boutons (bloc `<!--vente-->`) qui visent les paquets de la
+version **du manifeste** (`{{verdiercam.publiee}}`, lu dans `site/version-publiee.json`) :
+
+    https://github.com/atelierduverdier/verdiercam-site/releases/download/v<version>/VerdierCAM-<version>-linux-x86_64.tar.gz
+                                                                          …/VerdierCAM-<version>-windows-x64.zip
+                                                                          …/VerdierCAM-<version>-linux-aarch64.tar.gz
+
+Dans l'ordre, pour qu'aucun lien ne vise un fichier absent :
+
+1. `outils/construire-vente.sh` dans le dépôt du logiciel, **arbre propre** (`git status` vide : un paquet
+   emporte tout `ressources/`, fichiers non commités compris) — « NE PAS PUBLIER » s'il le dit.
+2. La Release `v<version>` de ce dépôt, ses trois fichiers sous leur nom de `dist/` :
+   `gh release create v<version> --repo atelierduverdier/verdiercam-site --title "VerdierCAM <version>" <les trois>`.
+3. `site/version-publiee.json` à cette version, puis `python3 site/publier.py`.
+
+Ce qu'une page dit tant qu'on ne vend pas (« le lien arrive par courriel ») se met entre `<!--hors-vente-->`
+et `<!--/hors-vente-->` : retiré à l'ouverture, comme `<!--vente-->` est retiré avant.

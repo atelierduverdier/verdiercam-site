@@ -407,7 +407,11 @@ pre.code code { background: none; border: 0; padding: 0; white-space: pre; font-
 .pp-etape + .pp-etape { border-top: 1px solid var(--trait); }
 .pp-etape.teinte + .pp-etape.teinte { border-top: 0; }
 .pp-manuel { font-style: italic; color: var(--encre-3); }
-@media (max-width: 480px) { .pp-sommaire { gap: 8px; } .pp-sommaire a { font-size: .86rem; padding: 5px 13px 5px 5px; } }
+/* Les téléchargements, vente ouverte (15/10/2026). */
+.pp-telecharger { margin-top: 28px; }
+.pp-version { margin: 14px 0 0; color: var(--encre-3); font-size: .92rem; }
+@media (max-width: 480px) { .pp-sommaire { gap: 8px; } .pp-sommaire a { font-size: .86rem; padding: 5px 13px 5px 5px; }
+  .pp-telecharger .bouton { width: 100%; justify-content: center; } }
 
 /* --- Moins de mouvement : tout est là, rien ne bouge ------------------ */
 @media (prefers-reduced-motion: reduce) {
@@ -436,6 +440,26 @@ section.legal { padding-top: 24px; }
 .legal-texte .muet, .legal-date { color: var(--encre-3); font-size: .92rem; }
 .formulaire-type { border: 1px dashed var(--trait-2); border-radius: 14px; padding: 18px 22px;
   background: var(--carte); }
+/* L'IMPRESSION (15/10/2026) : les CGV et la licence en PDF, jointes au courriel de livraison
+   (outils/conditions-pdf.sh) — le texte seul, sans la barre, le pied ni le papier quadrillé. */
+@media print {
+  @page { size: A4; margin: 16mm 16mm 18mm; }
+  /* Une police du système au vrai gras : WeasyPrint ne prenait pas Inter SemiBold, et les passages en gras du droit
+     de rétractation s'imprimaient maigres. */
+  body { background: #fff; font: 400 10.5pt/1.5 "Noto Sans", "DejaVu Sans", sans-serif; }
+  b, strong, h1, h2, h3 { font-weight: 700; }
+  .barre, .pied, .visionneuse, .saut { display: none !important; }
+  .papier::before, .heros::after { display: none; }
+  .cadre { width: auto; }
+  .page-legale { padding: 0 0 4mm; }
+  .page-legale h1 { font-size: 22pt; max-width: none; }
+  section.legal { padding-top: 0; }
+  .legal-texte { max-width: none; }
+  .legal-texte h2 { font-size: 13pt; break-after: avoid; }
+  .legal-texte p, .legal-texte li { color: #222; }
+  a { color: inherit; }
+  .formulaire-type { break-inside: avoid; background: #fff; }
+}
 .a-remplir { background: #ffe1d6; color: #9b1c00; font: 500 .85em var(--mono);
   padding: .1em .4em; border-radius: 5px; }
 

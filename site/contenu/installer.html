@@ -12,10 +12,23 @@
       <h1>Installer VerdierCAM</h1>
       <p class="accroche">
         Rien à installer au sens habituel : un fichier à lancer sous Linux, un dossier à dézipper sous Windows.
-        Le lien de téléchargement arrive par courriel, avec votre essai ou votre licence. Vos réglages, vos
+        <!--hors-vente-->Le lien de téléchargement arrive par courriel, avec votre essai ou votre licence.<!--/hors-vente-->
+        <!--vente-->Téléchargez le paquet de votre système : {{verdiercam.essai}} jours d'essai complets, sans carte
+        bancaire. La licence s'achète ensuite, et arrive par courriel.<!--/vente--> Vos réglages, vos
         outils et votre licence sont gardés d'une version à l'autre.
       </p>
     </div>
+    <!--vente-->
+    <!-- LES TÉLÉCHARGEMENTS (15/10/2026) : les paquets de vente (construire-vente.sh du logiciel) dans la Release
+         « v<version> » de ce dépôt, la version lue dans site/version-publiee.json — VENDRE.md, « Publier une version ». -->
+    <div class="actions pp-telecharger" id="telecharger">
+      <a class="bouton bouton-plein" href="https://github.com/atelierduverdier/verdiercam-site/releases/download/v{{verdiercam.publiee}}/VerdierCAM-{{verdiercam.publiee}}-linux-x86_64.tar.gz">Télécharger pour Linux</a>
+      <a class="bouton bouton-plein" href="https://github.com/atelierduverdier/verdiercam-site/releases/download/v{{verdiercam.publiee}}/VerdierCAM-{{verdiercam.publiee}}-windows-x64.zip">Pour Windows</a>
+      <a class="bouton bouton-plein" href="https://github.com/atelierduverdier/verdiercam-site/releases/download/v{{verdiercam.publiee}}/VerdierCAM-{{verdiercam.publiee}}-linux-aarch64.tar.gz">Pour Raspberry Pi 5</a>
+    </div>
+    <p class="pp-version">Version {{verdiercam.publiee}} · <a href="{{RACINE}}acheter.html">Acheter une licence</a> ·
+      <a href="https://github.com/atelierduverdier/verdiercam-site/releases/latest">Tous les fichiers</a></p>
+    <!--/vente-->
     <ol class="pp-sommaire" aria-label="Les systèmes">
       <li><a href="#linux"><span>01</span>Linux (PC)</a></li>
       <li><a href="#windows"><span>02</span>Windows</a></li>

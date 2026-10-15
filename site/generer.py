@@ -190,10 +190,12 @@ def injecter_editeur(texte: str, editeur: dict, nom: str) -> str:
 
 
 def blocs_de_vente(texte: str, ouverte: bool) -> str:
-    """Garde ou retire les passages entre <!--vente--> et <!--/vente-->."""
-    if ouverte:
-        return texte.replace('<!--vente-->', '').replace('<!--/vente-->', '')
-    return re.sub(r'<!--vente-->.*?<!--/vente-->', '', texte, flags=re.S)
+    """Garde ou retire les passages entre <!--vente--> et <!--/vente-->, et leurs contraires entre
+    <!--hors-vente--> et <!--/hors-vente--> (15/10/2026 : ce que la page dit tant qu'on ne vend pas —
+    « le lien arrive par courriel » — et qui deviendrait faux à l'ouverture)."""
+    garder, retirer = ('vente', 'hors-vente') if ouverte else ('hors-vente', 'vente')
+    texte = re.sub(rf'<!--{retirer}-->.*?<!--/{retirer}-->', '', texte, flags=re.S)
+    return texte.replace(f'<!--{garder}-->', '').replace(f'<!--/{garder}-->', '')
 
 
 def empreinte(donnees: bytes) -> str:
@@ -634,6 +636,11 @@ def main() -> None:
     captures = publier_captures()
     carte = carte_partage()
     faits = faits_verdiercam()
+    # LA VERSION TÉLÉCHARGEABLE (15/10/2026) : {{verdiercam.publiee}}, celle du manifeste — les liens de la page
+    # Installer visent ses paquets dans la Release « v<version> » du dépôt. Sans manifeste, la clé n'existe pas, et une
+    # page qui la cite (vente ouverte) arrête la génération : pas de lien vers un paquet qui n'est pas publié.
+    if publiee.exists():
+        faits['publiee'] = str(manifeste['version']).strip()
     gabarit = (GABARITS / 'page.html').read_text(encoding='utf-8')
     oiseau = oiseau_en_ligne()
 
