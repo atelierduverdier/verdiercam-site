@@ -13,6 +13,7 @@
 #   la version                    CMakeLists.txt de verdiercam-imgui
 #   les familles d'opérations     src/cam/Operation.h (FamilyLabel, FamilyTip)
 #   les captures et les clips     realisations/presentation-verdiercam
+#   les pièces paramétriques      web/configurateur/pieces.json (écrit par outils/construire-wasm.sh)
 #   le logo, l'oiseau animé       ressources/logo-verdiercam.svg
 #   les polices Inter et Mono     ressources/polices/ du logiciel
 #
@@ -422,7 +423,33 @@ def faits_verdiercam() -> dict:
         sys.exit(f"generer : pas de kJoursEssai dans {chemins.VERDIERCAM_LICENCE}")
     return {'version': m.group(1), 'familles': str(len(set(faites))),
             'liste_familles': '\n'.join(blocs), 'essai': essai.group(1),
-            **nouveautes_en_html()}
+            **pieces_en_html(), **nouveautes_en_html()}
+
+
+# --- Les pièces paramétriques --------------------------------------------
+# Le catalogue du configurateur (15/10/2026) : pieces.json, écrit par la construction du cœur WebAssembly
+# (outils/construire-wasm.sh du logiciel) — les pièces COMMITÉES de ressources/pieces, nom, description et thème lus
+# par le logiciel lui-même, dans l'ordre de sa galerie. Rien n'est recopié ici : ni le nombre, ni les thèmes, ni les noms.
+def pieces_en_html() -> dict:
+    pieces = json.loads((chemins.CONFIGURATEUR / 'pieces.json').read_text(encoding='utf-8'))['pieces']
+    if not pieces:
+        sys.exit("generer : pieces.json du configurateur sans pièce — relancer outils/construire-wasm.sh")
+    themes = []
+    for p in pieces:
+        if p['theme'] not in themes:
+            themes.append(p['theme'])
+    blocs = []
+    for t in themes:
+        lignes = [f'<li><a href="{{{{RACINE}}}}configurateur/#{html.escape(p["id"])}" '
+                  f'title="{html.escape(p["description"])}">{html.escape(p["nom"], quote=False)}</a></li>'
+                  for p in pieces if p['theme'] == t]
+        blocs.append(f'<div class="groupe">\n  <h3>{html.escape(t)}</h3>\n  <ul>\n    '
+                     + '\n    '.join(lignes) + '\n  </ul>\n</div>')
+    # Les thèmes en toutes lettres, séparés par des virgules seules : « décoration et cadeaux et électronique… » se lirait mal.
+    nommes = [t for t in themes if t != 'Autres']
+    return {'pieces': str(len(pieces)), 'themes_pieces': str(len(nommes)),
+            'themes_pieces_en_mots': ', '.join(t[:1].lower() + t[1:] for t in nommes),
+            'liste_pieces': '\n'.join(blocs)}
 
 
 # --- Les nouveautés ------------------------------------------------------

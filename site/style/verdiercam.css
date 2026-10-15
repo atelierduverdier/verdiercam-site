@@ -291,6 +291,12 @@ pre.code code { background: none; border: 0; padding: 0; white-space: pre; font-
 .groupe li b { display: block; color: var(--encre); font-size: 1rem; }
 @media (max-width: 1000px) { .familles { grid-template-columns: 1fr 1fr; } .groupe, .groupe:nth-child(n) { grid-column: auto; } }
 @media (max-width: 640px) { .familles { grid-template-columns: 1fr; } }
+/* Le catalogue des pièces : les mêmes cartes, autant de colonnes que la largeur en tient. */
+.catalogue { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; margin-top: 28px; }
+.catalogue .groupe, .catalogue .groupe:nth-child(n) { grid-column: auto; }
+.catalogue li { padding: 7px 0; }
+.catalogue li a { color: var(--encre); text-decoration: none; }
+.catalogue li a:hover { color: var(--orange-encre); text-decoration: underline; }
 
 /* Les modes : une grande vue, deux petites. */
 .bento { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }

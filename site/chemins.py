@@ -40,6 +40,7 @@ TOUT = {
     'polices du logiciel': POLICES,
     'configurateur (page)': CONFIGURATEUR / 'index.html',
     'configurateur (cœur WebAssembly, outils/construire-wasm.sh)': CONFIGURATEUR / 'verdiercam-coeur.wasm',
+    'configurateur (liste des pièces, outils/construire-wasm.sh)': CONFIGURATEUR / 'pieces.json',
 }
 
 

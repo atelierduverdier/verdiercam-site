@@ -471,10 +471,12 @@ pour (i = [0 : 3]) {
   <div class="cadre">
     <div class="tete apparait">
       <span class="surtitre">Configurateur</span>
-      <h2>Essayez une pièce paramétrique, sans rien installer</h2>
-      <p>Une pièce de VerdierCAM peut s'écrire en script : ses cotes deviennent des réglages. Changez-les ici,
-        dans votre navigateur — le nombre de trous d'une manivelle, la taille d'un labyrinthe à bille, généré à
-        chaque fois différent — et téléchargez le dessin en SVG ou en DXF, ou le script à rouvrir dans VerdierCAM.</p>
+      <h2>{{verdiercam.pieces}} pièces paramétriques à essayer, sans rien installer</h2>
+      <p>VerdierCAM est livré avec un catalogue de pièces prêtes à usiner, rangées en {{verdiercam.themes_pieces}}
+        thèmes : {{verdiercam.themes_pieces_en_mots}}. Chacune est un script : ses cotes deviennent des réglages.
+        Changez-les ici, dans votre navigateur — le prénom d'un porte-clés, les dents d'un engrenage, les mots d'une
+        enseigne — et téléchargez le dessin en SVG ou en DXF, ou le script à rouvrir dans VerdierCAM, ses usinages
+        compris.</p>
       <ul class="coches">
         <li>Le <b>même calcul</b> que le logiciel : le croquis contraint de VerdierCAM, compilé pour le navigateur.</li>
         <li>Rien n'est envoyé : tout se calcule <b>sur votre ordinateur</b>.</li>
@@ -483,6 +485,12 @@ pour (i = [0 : 3]) {
         <a class="bouton bouton-plein" href="{{RACINE}}configurateur/">Ouvrir le configurateur</a>
       </div>
     </div>
+    <details class="plus plus-pieces">
+      <summary>Les {{verdiercam.pieces}} pièces, thème par thème</summary>
+      <div class="catalogue">
+{{verdiercam.liste_pieces}}
+      </div>
+    </details>
   </div>
 </section>
 
