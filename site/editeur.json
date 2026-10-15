@@ -5,9 +5,9 @@
   "adresse": "107 rue du mont Flambé 14400 Crouay",
   "email": "contact@verdiercam.fr",
   "siret": "48177324000025",
-  "mediateur_nom": "",
-  "mediateur_adresse": "",
-  "mediateur_site": "",
+  "mediateur_nom": "CM2C",
+  "mediateur_adresse": "49 rue de Ponthieu, 75008 Paris, tél. 01 89 47 00 14, litiges@cm2c.net",
+  "mediateur_site": "https://www.cm2c.net/declarer-un-litige.php",
   "lien_paiement": "https://buy.stripe.com/cNi3cx3Ai4aq0TQ3p467S00",
   "installations": "3",
   "date_conditions": "6 octobre 2026"
