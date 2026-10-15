@@ -381,7 +381,7 @@ GROUPES = [
 # LES FAMILLES EXPÉRIMENTALES, tues par la page (15/10/2026, Christophe : « pas de laser », « pas d'expérimental pour
 # le moment ») : le marquage et la découpe laser (cam/Operation.h, EstLaser) sont un chantier, pas ce qu'on vend. Elles
 # ne comptent pas dans le nombre de familles. Une famille nouvelle qui n'est ni rangée ni tue arrête toujours tout.
-MASQUEES = {'Laser', 'LaserCut'}
+MASQUEES = {'Laser', 'LaserCut', 'LaserFill'}   # EstLaser, toutes trois (LaserFill : la gravure remplie, 15/10)
 
 
 def faits_verdiercam() -> dict:
