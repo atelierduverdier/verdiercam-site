@@ -8,7 +8,7 @@
   "mediateur_nom": "",
   "mediateur_adresse": "",
   "mediateur_site": "",
-  "lien_paiement": "",
+  "lien_paiement": "https://buy.stripe.com/cNi3cx3Ai4aq0TQ3p467S00",
   "installations": "3",
   "date_conditions": "6 octobre 2026"
 }

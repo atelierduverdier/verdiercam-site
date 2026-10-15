@@ -29,8 +29,15 @@ reste un.
 3. **Remplir `site/editeur.json`** : nom tel qu'au répertoire SIRENE, adresse, téléphone, SIRET.
 4. **Décider** le nombre d'ordinateurs par licence (`installations`, 3 par défaut) et les prix
    (lancement, normal, renouvellement, fin du prix de lancement) — les écrire sur la page d'accueil.
-5. **Régler la page de paiement** (ci-dessous), puis mettre son adresse dans `lien_paiement`.
-6. **Suivre le total** des ventes à des particuliers des autres pays de l'UE : au-delà de 10 000 €
+5. ~~**Régler la page de paiement**~~ — fait le 15/10/2026 (ci-dessous) ; son adresse de production va
+   dans `lien_paiement`.
+6. **Héberger les paquets** : les **Releases** de ce dépôt (public), `releases/latest`, où pointent le
+   courriel de livraison et la page Installer. Les paquets de vente (`outils/construire-vente.sh` du
+   logiciel : Linux, Windows, Raspberry Pi 5) ne se publient qu'à l'ouverture.
+7. **Les CGV et la licence d'utilisation en PDF**, datées du jour de l'ouverture : jointes à chaque
+   courriel de livraison (la confirmation sur support durable « reprend ces conditions », art. L221-13).
+8. **Ouvrir** : `vente_ouverte` à `true`, `date_conditions` à jour, `python3 site/publier.py`.
+9. **Suivre le total** des ventes à des particuliers des autres pays de l'UE : au-delà de 10 000 €
    par an, la TVA du pays de l'acheteur est due (guichet OSS), même en franchise.
 
 ## La page de paiement : là où se garde la preuve
@@ -40,26 +47,27 @@ navigateur du client peut la contourner. Le renoncement au droit de rétractatio
 **préalable** et **confirmé sur un support durable** (art. L221-13) — c'est le prestataire de paiement
 qui le garde.
 
-Avec un **lien de paiement Stripe** (Payment Link) :
+Avec un **lien de paiement Stripe** (Payment Link) — **réglé le 15/10/2026**, en test puis copié en
+production :
 
-- dans les réglages du compte, renseigner l'adresse des conditions : `https://verdiercam.fr/cgv.html` ;
-- sur le lien de paiement, activer **« Exiger l'acceptation des conditions d'utilisation »** (case
-  obligatoire, horodatée par Stripe) ;
-- ajouter un **texte personnalisé** près du bouton de paiement, mot pour mot :
-  « Je demande à recevoir VerdierCAM immédiatement et je renonce expressément à mon droit de
-  rétractation dès la fourniture du lien de téléchargement et de la clé (art. L221-28 13° du code de
-  la consommation). »
-- dans le **pied du reçu** envoyé par courriel, reprendre cette phrase : c'est la confirmation sur
-  support durable ;
-- demander le **nom** de l'acheteur (il figure dans la clé de licence).
+- l'adresse des conditions dans les informations publiques du compte : `https://verdiercam.fr/cgv.html` ;
+- sur le lien, **« Exiger le consentement du client à vos Conditions d'utilisation »** : case
+  obligatoire ; Stripe garde `consent.terms_of_service: accepted` dans chaque `checkout.session.completed` ;
+- le **texte de cette case** remplacé (`custom_text.terms_of_service_acceptance`, par l'API — le
+  Dashboard ne le propose pas ; Stripe Shell ne marche qu'en test, la copie en production l'a gardé) :
+  « J'accepte les conditions générales de vente et la licence d'utilisation. Je demande à recevoir
+  VerdierCAM immédiatement et je renonce expressément à mon droit de rétractation dès la fourniture du
+  lien de téléchargement et de la clé (art. L221-28 13° du code de la consommation). »
+- le **nom complet** de l'acheteur demandé (il figure dans la clé de licence), l'entreprise facultative ;
+- la **confirmation sur support durable** : non pas le reçu Stripe (son pied ne se règle pas) mais le
+  courriel de livraison, que `outils/licence.py signer … --courriel` écrit dans le dépôt du logiciel, la
+  phrase reprise mot pour mot. L'une ne change pas sans l'autre.
 
-Vérifier ces libellés dans le tableau de bord Stripe au moment de le faire : ils peuvent changer.
+## Dans le logiciel
 
-## Ce qui manque encore dans le logiciel
-
-VerdierCAM actuel n'a **ni clé de licence ni vérification de version** (elles n'existaient que dans
-l'ancien verdiercam-cpp). Il faudra, avant la vente : une clé au nom de l'acheteur portant la date
-de fin des mises à jour, comparée à la date de la version — sans verrou anti-copie, le nom suffit.
+La licence (au nom de l'acheteur, date de fin des mises à jour comparée à la date de la version),
+l'essai de quinze jours et la révocation existent depuis le 07/10/2026 : `docs/licence.md` du
+logiciel.
 
 ## Annoncer une nouvelle version (07/10/2026)
 
