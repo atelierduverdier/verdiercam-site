@@ -378,6 +378,10 @@ GROUPES = [
     ('Volumes et reliefs', ['Roughing3D', 'Moulding', 'Revolution']),
     ('Usiner les deux faces', ['Dowels', 'Fence']),
 ]
+# LES FAMILLES EXPÉRIMENTALES, tues par la page (15/10/2026, Christophe : « pas de laser », « pas d'expérimental pour
+# le moment ») : le marquage et la découpe laser (cam/Operation.h, EstLaser) sont un chantier, pas ce qu'on vend. Elles
+# ne comptent pas dans le nombre de familles. Une famille nouvelle qui n'est ni rangée ni tue arrête toujours tout.
+MASQUEES = {'Laser', 'LaserCut'}
 
 
 def faits_verdiercam() -> dict:
@@ -399,6 +403,7 @@ def faits_verdiercam() -> dict:
     faites = re.findall(r'OperationFamily::(\w+)', corps_fonction('FamilyIsImplemented('))
     if not noms or not faites:
         sys.exit(f"generer : familles illisibles dans {chemins.VERDIERCAM_OPERATION}")
+    faites = [f for f in faites if f not in MASQUEES]
 
     oubliees = sorted(set(faites) - {f for _, fam in GROUPES for f in fam})
     if oubliees:
