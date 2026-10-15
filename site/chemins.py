@@ -8,13 +8,16 @@
 #   python3 site/chemins.py      dit ce qui manque, d'un coup
 # =========================================================================
 
+import os
 from pathlib import Path
 
 PROJETS = Path.home() / 'Projets'
 
 # Le logiciel : la version dans le CMakeLists, les familles d'opérations
 # dans le noyau, le logo dans les ressources. Lus, jamais recopiés.
-VERDIERCAM = PROJETS / 'logiciels' / 'verdiercam-imgui'
+# VERDIERCAM_DEPOT (15/10/2026) : le minuteur de republication y met son propre clone, propre et remis sur GitHub à chaque
+# passage — le dossier de travail, lui, porte souvent le travail en cours d'autres sessions.
+VERDIERCAM = Path(os.environ['VERDIERCAM_DEPOT']) if os.environ.get('VERDIERCAM_DEPOT') else PROJETS / 'logiciels' / 'verdiercam-imgui'
 VERDIERCAM_CMAKE = VERDIERCAM / 'CMakeLists.txt'
 VERDIERCAM_OPERATION = VERDIERCAM / 'src' / 'cam' / 'Operation.h'
 VERDIERCAM_LOGO = VERDIERCAM / 'ressources' / 'logo-verdiercam.svg'

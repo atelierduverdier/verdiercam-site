@@ -381,7 +381,14 @@ GROUPES = [
 # LES FAMILLES EXPÉRIMENTALES, tues par la page (15/10/2026, Christophe : « pas de laser », « pas d'expérimental pour
 # le moment ») : le marquage et la découpe laser (cam/Operation.h, EstLaser) sont un chantier, pas ce qu'on vend. Elles
 # ne comptent pas dans le nombre de familles. Une famille nouvelle qui n'est ni rangée ni tue arrête toujours tout.
-MASQUEES = {'Laser', 'LaserCut', 'LaserFill'}   # EstLaser, toutes trois (LaserFill : la gravure remplie, 15/10)
+# Elles se LISENT dans le corps de EstLaser (« OperationFamily::X ») : une famille laser ajoutée au logiciel (LaserFill,
+# puis LaserTest le même jour) n'arrête plus la génération. Si EstLaser devient illisible, on retombe sur les trois connues.
+MASQUEES_CONNUES = {'Laser', 'LaserCut', 'LaserFill'}
+
+
+def familles_laser(texte: str) -> set:
+    m = re.search(r'bool\s+EstLaser\s*\([^)]*\)\s*\{(.*?)\}', texte, re.S)
+    return set(re.findall(r'OperationFamily::(\w+)', m.group(1))) if m else set(MASQUEES_CONNUES)
 
 
 def faits_verdiercam() -> dict:
@@ -403,7 +410,8 @@ def faits_verdiercam() -> dict:
     faites = re.findall(r'OperationFamily::(\w+)', corps_fonction('FamilyIsImplemented('))
     if not noms or not faites:
         sys.exit(f"generer : familles illisibles dans {chemins.VERDIERCAM_OPERATION}")
-    faites = [f for f in faites if f not in MASQUEES]
+    masquees = familles_laser(texte)
+    faites = [f for f in faites if f not in masquees]
 
     oubliees = sorted(set(faites) - {f for _, fam in GROUPES for f in fam})
     if oubliees:
