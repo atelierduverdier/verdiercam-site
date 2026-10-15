@@ -2,9 +2,23 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
-   "date": "2026-10-14",
-   "titre": "Assemblages à dents, calques, une simulation des deux faces, et vos remarques en vidéo",
+   "date": "2026-10-15",
+   "titre": "Un catalogue de 86 pièces, des parcours plus courts, et le croquis tiré d'un G-code",
    "points": [
+    "Dessin › Pièces paramétriques… : 86 pièces prêtes à régler et à usiner, rangées par thème (jeux et jouets, rangement, atelier et gabarits, cuisine, décoration, boîtiers…) : planche à découper, boîte à doigts, échiquier, horloge, nichoir, casier à bouteilles, gabarit système 32, poulie, pantographe… ; un texte gravé s'y règle aussi, un prénom par exemple.",
+    "Pièces paramétriques : le script d'une pièce s'ouvre dans l'éditeur de votre choix (Préférences › Général › Éditeur de texte), ou dans celui de VerdierCAM, avec ses numéros de ligne.",
+    "Simuler un G-code : « Faire le croquis des coupes » relit un programme reçu sans dessin et en refait le croquis, à usiner avec vos propres outils ; l'outil se lit dans le nom du fichier (« 1_5mm », « 15deg ») ; « Ajouter un G-code à la suite… » enchaîne les fichiers d'une même pièce, et un bilan dit le temps passé au-dessus du bois.",
+    "Poche : l'angle de balayage se choisit seul, celui qui donne le parcours le plus court ; le zigzag tourne avec l'angle et ses demi-tours s'arrondissent ; une trochoïde en D ; la rampe à 3° se fait en un seul aller-retour.",
+    "Haut rendement : aussi en ébauche 3D adaptative, en couches de la longueur utile de la fraise, l'avance compensée ; et une finition 3D en anneaux qui suit le contour.",
+    "Parcours plus courts : les traits d'un texte gravé se soudent et s'enchaînent, les tronçons se rangent mieux, les hélices partent en vrais arcs, les passes 3D sont allégées sans perdre de précision.",
+    "Corrigé : la reprise au crayon et un tronçon retourné pouvaient plonger en rapide dans le bois ; la moulure sautait parfois un coin ; « rester en bas » changeait la matière enlevée au surfaçage ; un palpage refusé n'est plus annoncé « zéro refait » ; aucun outil n'est plus envoyé plus profond que sa longueur utile."
+   ]
+  },
+  {
+   "date": "2026-10-14",
+   "titre": "Assemblages à dents, calques, une simulation des deux faces, VerdierCAM sur Raspberry Pi 5",
+   "points": [
+    "Raspberry Pi 5 : VerdierCAM tourne sur un Pi 5 en 64 bits, même sous l'image LinuxCNC, pour retoucher un dessin, simuler et piloter à côté de la machine. Pour moi, c'est le vrai gain : j'utilise le logiciel directement sur le lieu d'usinage, sans repasser par le bureau, qui est loin.",
     "Dessin › Créer › Assemblage à dents… : un trait devient denté (queues droites ou queues d'aronde vues de dessus, mâle ou femelle, avec le jeu par flanc), un panneau de boîte à doigts, une clé papillon et son logement, aux pointes arrondies au rayon de la fraise.",
     "Affichage › Calques… : ranger le dessin par usage, cacher ou verrouiller un calque, le choisir d'un clic ; les calques d'un DXF importé sont gardés, et repartent dans le DXF exporté.",
     "Venu de QCAD : l'aire nette d'une pièce percée et son centre de gravité, choisir les contours intérieurs ou extérieurs, éclater une forme, allonger une ligne, des trous posés depuis un fichier de points (CSV) ; et un texte en police pleine qui suit une courbe.",
@@ -13,6 +27,7 @@
     "Gravure en V : la fraise droite de dégagement se choisit dans la section même, la pointe ne change plus. Recalculer propose de prendre les formes nouvellement choisies — un rectangle ajouté autour du motif, par exemple.",
     "Croquis : « Compléter les cotes » passe de 4 min 34 à 7 s sur un DXF de 25 formes, et propose de verrouiller plutôt que de semer mille cotes ; Suppr efface quel que soit l'outil en main ; le clic droit termine une polyligne au lieu de la perdre ; une barre d'icônes pour montrer ou cacher grille, cotes, contraintes, numéros, axes.",
     "Fichier › Importer › Dessins récents : les dix derniers SVG, DXF ou esquisses FreeCAD, relus d'un clic. Usinage et Simulation : les traits du croquis se cachent d'un clic dans la légende.",
+    "Fichiers : VerdierCAM a sa propre fenêtre Ouvrir et Enregistrer, avec vignettes des SVG et DXF, favoris et dossiers récents, quand celle du système ne s'ouvre pas (sur le Pi, par exemple) ; un clic ouvre un dossier.",
     "Corrigé : sous Windows, le téléchargement des modèles d'IA échouait (certificats HTTPS) ; la zone cliquée d'une poche filait ailleurs quand on changeait les cotes de son contour."
    ]
   },
