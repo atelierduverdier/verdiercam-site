@@ -652,6 +652,10 @@ def main() -> None:
     editeur = lire_editeur()
     vente = bool(editeur.get('vente_ouverte'))
     liens_pied = LIENS_PIED + (LIENS_PIED_VENTE if vente else [])
+    # La barre aussi change à l'ouverture (15/10/2026) : « Être prévenu » devient « Télécharger », et l'entrée
+    # « Sortie » du menu, qui mène à la même section devenue celle de l'achat, « Acheter ».
+    gabarit = blocs_de_vente(gabarit, vente)
+    menu = [(h, 'Acheter' if vente and h == '#sortie' else t) for h, t in NAV]
     a_remplir = []
 
     for page in PAGES:
@@ -673,7 +677,7 @@ def main() -> None:
         corps = empreinter(corps, captures, page['contenu'], racine)
         corps = corps.replace('{{RACINE}}', racine)
         url = f"https://{DOMAINE}/" + ('' if page['sortie'] == 'index.html' else page['sortie'])
-        nav = '\n      '.join(f'<a href="{racine}{h}">{html.escape(t)}</a>' for h, t in NAV)
+        nav = '\n      '.join(f'<a href="{racine}{h}">{html.escape(t)}</a>' for h, t in menu)
         liens = '\n      '.join(f'<a href="{h.replace("{{RACINE}}", racine)}">{html.escape(t)}</a>'
                                  for h, t in liens_pied)
         texte = remplir(gabarit, {

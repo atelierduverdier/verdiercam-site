@@ -18,7 +18,7 @@
   <div class="cadre heros-haut">
     <div class="heros-texte">
       {{OISEAU}}
-      <p class="etiquette"><i></i> <a href="{{RACINE}}nouveautes.html">Version {{verdiercam.version}}</a> · sortie prochaine</p>
+      <p class="etiquette"><i></i> <!--hors-vente--><a href="{{RACINE}}nouveautes.html">Version {{verdiercam.version}}</a> · sortie prochaine<!--/hors-vente--><!--vente--><a href="{{RACINE}}nouveautes.html">Version {{verdiercam.publiee}}</a> · disponible<!--/vente--></p>
       <h1>Du croquis <em>au copeau</em>, dans une seule fenêtre.</h1>
       <p class="accroche">
         VerdierCAM dessine la pièce, calcule les parcours, simule la matière enlevée
@@ -26,11 +26,13 @@
         d'abord — et éprouvé sur une vraie machine.
       </p>
       <div class="actions">
-        <a class="bouton bouton-plein" href="#sortie">Être prévenu de la sortie</a>
+        <!--hors-vente--><a class="bouton bouton-plein" href="#sortie">Être prévenu de la sortie</a><!--/hors-vente-->
+        <!--vente--><a class="bouton bouton-plein" href="{{RACINE}}installer.html#telecharger">Essayer {{verdiercam.essai}} jours, gratuitement</a>
+        <a class="bouton bouton-clair" href="{{RACINE}}acheter.html">Acheter une licence</a><!--/vente-->
         <a class="bouton bouton-clair" href="{{RACINE}}premiers-pas.html">Suivre les premiers pas</a>
         <a class="bouton bouton-clair" href="#presentation">Voir la présentation en vidéo <span aria-hidden="true">↓</span></a>
       </div>
-      <p class="essai-heros">À la sortie : <b>{{verdiercam.essai}} jours d'essai complets</b>, sans carte bancaire.
+      <p class="essai-heros"><!--hors-vente-->À la sortie : <!--/hors-vente--><b>{{verdiercam.essai}} jours d'essai complets</b>, sans carte bancaire.
         Ensuite, <b>le dessin et la simulation restent gratuits</b> ; la licence sert à écrire le G-code
         et à piloter la machine.</p>
     </div>
@@ -512,6 +514,7 @@ pour (i = [0 : 3]) {
   <div class="cadre">
     <div class="sortie apparait">
       <div class="sortie-texte">
+        <!--hors-vente-->
         <span class="surtitre">La sortie</span>
         <h2>Bientôt disponible</h2>
         <p>La version {{verdiercam.version}} tourne tous les jours à l'atelier. La 1.0 sortira quand
@@ -524,6 +527,20 @@ pour (i = [0 : 3]) {
         </div>
         <p class="note-prevenu">Un simple courriel : vous serez prévenu le jour de la sortie, au prix de lancement.
           Votre adresse ne sert qu'à ça.</p>
+        <!--/hors-vente-->
+        <!--vente-->
+        <span class="surtitre">Acheter</span>
+        <h2>Disponible maintenant</h2>
+        <p>La version {{verdiercam.publiee}} se télécharge pour Linux, Windows et Raspberry Pi 5 :
+          {{verdiercam.essai}} jours d'essai complets, sans carte bancaire. La licence, payée une fois, garde
+          l'export du G-code et le pilotage de la machine.</p>
+        <div class="actions">
+          <a class="bouton bouton-plein" href="{{RACINE}}installer.html#telecharger">Télécharger l'essai</a>
+          <a class="bouton bouton-clair" href="{{RACINE}}acheter.html">Acheter une licence</a>
+        </div>
+        <p class="note-prevenu">Paiement par carte, sécurisé par Stripe. La licence arrive par courriel, à votre nom,
+          sous 48 heures au plus tard.</p>
+        <!--/vente-->
       </div>
       <ul class="prevu">
         <li class="prix">
@@ -531,8 +548,8 @@ pour (i = [0 : 3]) {
           <span class="prix-une-fois">Payé une fois, à vous pour toujours — sans abonnement.</span>
           <span class="prix-montant">59&nbsp;€ <small>TTC</small></span>
           <span class="prix-suite">puis 79&nbsp;€ après la période de lancement</span>
-          <span class="prix-inclus">Licence perpétuelle · un an de mises à jour compris · sur toutes vos machines ·
-            sans activation en ligne</span>
+          <span class="prix-inclus">Licence perpétuelle · un an de mises à jour compris · sur {{editeur.installations}} de vos
+            ordinateurs · sans activation en ligne</span>
           <span class="prix-suite">Ensuite, si vous le souhaitez : <b>29&nbsp;€ par an</b> pour continuer à recevoir les
             mises à jour. Sans renouvellement, votre version continue de fonctionner.</span>
           <span class="prix-essai"><b>{{verdiercam.essai}} jours d'essai complets</b> : tout fonctionne, export du G-code et pilotage
