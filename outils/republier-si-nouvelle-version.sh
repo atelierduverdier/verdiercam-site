@@ -3,7 +3,8 @@
 # Lancé chaque soir par ~/.config/systemd/user/verdiercam-site.timer. Le site lit la version dans le CMakeLists de
 # verdiercam-imgui à la génération : un clone propre, remis sur GitHub (voir plus bas), puis on republie si la version a bougé
 # depuis la dernière fois. Le manifeste de mise à jour (site/version-publiee.json) n'est PAS touché : c'est
-# l'interrupteur, il reste à la main.
+# l'interrupteur, il reste à la main. Le site comme le logiciel se lisent dans des clones à lui, remis sur GitHub : seul
+# ce qui est commité et poussé part en ligne.
 set -uo pipefail
 SITE="$HOME/Projets/site/Site_VerdierCAM"
 VCAM="$HOME/Projets/logiciels/verdiercam-imgui"
@@ -27,6 +28,20 @@ if ! { git -C "$CLONE" fetch -q origin && git -C "$CLONE" reset -q --hard origin
 fi
 VCAM="$CLONE"
 export VERDIERCAM_DEPOT="$CLONE"
+# LE SITE AUSSI, DEPUIS SA COPIE PROPRE (16/10/2026, Christophe : « fais publier le minuteur depuis une copie propre ») :
+# publier.py publie tout ce qu'il trouve dans le dossier — le dossier de travail du site porte souvent le travail en cours
+# d'une autre session (une page à moitié écrite partait en ligne). Le minuteur a son clone du site, remis chaque fois sur
+# la branche main de GitHub : seul ce qui est commité et poussé est publié.
+SITE_PROPRE="$ETAT/site"
+if [ ! -d "$SITE_PROPRE/.git" ]; then
+    git clone -q "$(git -C "$SITE" remote get-url origin)" "$SITE_PROPRE" 2>"$ETAT/pull.log" || {
+        prevenir -u critical "Site VerdierCAM" "Le clone du site ne se fait pas (voir $ETAT/pull.log) : rien de republié."; exit 1; }
+fi
+if ! { git -C "$SITE_PROPRE" fetch -q origin && git -C "$SITE_PROPRE" reset -q --hard origin/main; } 2>"$ETAT/pull.log"; then
+    prevenir -u critical "Site VerdierCAM" "Le site ne se met pas à jour depuis GitHub (voir $ETAT/pull.log) : rien de republié."
+    exit 1
+fi
+SITE="$SITE_PROPRE"
 version=$(sed -n 's/^project(VerdierCAM_ImGui VERSION \([0-9.]*\).*/\1/p' "$VCAM/CMakeLists.txt")
 [ -n "$version" ] || { prevenir -u critical "Site VerdierCAM" "Version illisible dans le CMakeLists."; exit 1; }
 if [ "$version" = "$(cat "$ETAT/version" 2>/dev/null)" ]; then
