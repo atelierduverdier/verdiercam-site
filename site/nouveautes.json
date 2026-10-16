@@ -2,6 +2,20 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+   "date": "2026-10-16",
+   "titre": "Des variables dans le croquis, un solveur cent fois plus rapide, et 33 pièces de plus",
+   "points": [
+    "Croquis : les cotes acceptent des variables — une cote suit « A », et taper « A = 32 » la crée ; elles ont leur onglet « Variables », à droite à côté de Contraintes, et celles d'un script joué y apparaissent ; un script collé dans la console se joue d'un bloc.",
+    "Croquis plus rapide : le solveur découpe le dessin en blocs indépendants — l'échiquier se calcule en 0,07 s au lieu de 25, le différentiel en 0,6 s au lieu de 19,5.",
+    "Pièces paramétriques : 33 pièces de plus, 134 en tout — échappement à ancre, différentiel plat, gabarit de queues d'aronde, butée d'onglet, jeu de go, boîte à musique, lampe en dentelle, porte-épices aimanté, support de Raspberry Pi 5… ; leur usinage suit l'épaisseur et les variables (profondeur, départ, passe, fraise), et s'exporte avec ses calculs ; la fenêtre grandit avec l'écran.",
+    "Reliefs et gravure 2.5D : l'ébauche et la finition se règlent dans le même panneau, sous deux onglets Ébauche | Finition, et « Mettre à jour l'usinage » met à jour les deux ; la fraise d'ébauche se choisit dans la bibliothèque d'outils ; l'ébauche adaptative peut « rester au fond entre les fronts ».",
+    "Pilotage : la recherche nomme les cartes branchées en USB ou en réseau — GRBL, Grbl_ESP32, FluidNC, grblHAL, même sans son nom ; « Lancer » prévient des lignes que la carte refusera et d'une vitesse de broche hors de ses limites ($30/$31) ; les erreurs 9 et 14 sont expliquées en clair.",
+    "Configurateur en ligne : la pièce s'y voit usinée en 3D, chaque opération à sa profondeur ; elle se tourne au doigt, se pince, se regarde par-dessous ; le lien partagé garde les valeurs réglées.",
+    "Diagnostic : si VerdierCAM ne démarre pas, il dit ce qui manque à la carte graphique (Vulkan) ; un utilitaire de diagnostic fait le tour du poste, livré dans l'AppImage (« --diagnostic »), et son rapport se copie, sous Windows aussi.",
+    "Corrigé : avec « rester en bas », une rainure ouverte d'une seule passe repartait en coupe, en ligne droite, vers le début du trait — sur un arc, jusqu'à 11,7 mm hors de la saignée ; l'ARRÊT pendant un déplacement manuel ne fait plus perdre la position (ALARM:3) ; le labyrinthe du catalogue passe de nouveau en Simulation."
+   ]
+  },
+  {
    "date": "2026-10-15",
    "titre": "Un catalogue de 86 pièces, des parcours plus courts, et le croquis tiré d'un G-code",
    "points": [
