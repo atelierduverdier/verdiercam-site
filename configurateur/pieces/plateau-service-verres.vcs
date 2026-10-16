@@ -1,0 +1,91 @@
+// PLATEAU DE SERVICE À ENCOCHES — un plateau d'apéritif dont les bouts portent des encoches en trou de serrure : le pied
+// d'un verre à vin s'y glisse, le verre pend sous le plateau par son pied, debout à côté du fromage.
+// thème : Cuisine
+//
+// LES ENCOCHES : `verres_par_bout` à chaque bout, réparties sur la largeur. Chacune est une fente de `largeur_fente`
+// (plus que la jambe du verre, 8 à 10 mm d'ordinaire) qui entre de `profondeur_encoche` dans le plateau et finit en un
+// rond de `d_fond` où la jambe se pose. Le pied du verre (7 à 8 cm de Ø) doit tenir sous le plateau : la profondeur
+// d'encoche en tient compte, et deux encoches voisines restent à `ecart_mini` l'une de l'autre au moins.
+// Le contour est UN trait : bords, coins arrondis et encoches joints (une pièce paramétrique n'a pas de booléens).
+//
+// L'USINAGE (déclaré en bas) : le liseré gravé (Pointe V 90°, 1 mm), puis le plateau en Contour extérieur, fraise droite
+// Ø6 — elle entre dans les fentes (pas moins de 7 mm de large) —, quatre onglets.
+
+longueur   = 450;    // longueur du plateau (mm)
+largeur    = 250;    // largeur du plateau (mm)
+epaisseur  = 18;     // épaisseur du bois (mm)
+R_coin     = 20;     // rayon des coins (mm)
+verres_par_bout = 2; // encoches à chaque bout
+largeur_fente = 12;  // largeur de la fente (mm) : la jambe du verre y passe
+d_fond     = 18;     // Ø du rond au fond de l'encoche (mm)
+profondeur_encoche = 70;  // du bout du plateau au centre du rond (mm)
+ecart_mini = 80;     // d'une encoche à la voisine, au moins (mm) : les pieds des verres
+lisere     = 12;     // le liseré gravé, à cette distance du bord (mm, 0 : aucun)
+rognure    = 5;      // du bord du brut au plateau (mm)
+
+Lx = longueur;  Ly = largeur;  R = min(R_coin, Ly / 4);
+w = max(largeur_fente, 7);                   // la fraise Ø6 doit y passer
+rc = max(d_fond, w + 2) / 2;
+p = profondeur_encoche;
+xi = p - sqrt(rc * rc - w * w / 4);          // où la fente rejoint le rond
+n = max(0, round(verres_par_bout));
+yk0 = [for (k = [1 : max(n, 1)]) Ly * k / (n + 1)];   // les axes des encoches, de bas en haut
+si (n > 1 && Ly / (n + 1) < ecart_mini)
+    echo(str("Les encoches ne sont qu'à ", round(Ly / (n + 1)), " mm l'une de l'autre : les pieds des verres se toucheront."));
+si (p + rc > Lx / 2 - 20)
+    echo("Les encoches des deux bouts se rejoignent presque : un plateau plus long, ou des encoches moins profondes.");
+
+planche([Lx + 2 * rognure, Ly + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+function P(x, y) = o + [x, y];
+
+// ── Le contour, dans le sens trigonométrique : un segment = [0, a, b] (un trait) ou [1, a, b, c] (un arc de centre c,
+// de a à b dans le sens trigonométrique). Chaque point se calcule une fois, de la même expression des deux côtés : les
+// bouts se partagent exactement, et « joindre » fait un seul trait. ──
+function y(k) = yk0[k];
+// Le bout gauche, de haut en bas : pour l'encoche k (du haut), la descente jusqu'à elle, la fente du haut, le rond, la
+// fente du bas.
+function haut_g(k) = k == n - 1 ? Ly - R : y(k + 1) - w / 2;
+function enc_g(k, i) = i == 0 ? [0, P(0, haut_g(k)), P(0, y(k) + w / 2)]
+                     : i == 1 ? [0, P(0, y(k) + w / 2), P(xi, y(k) + w / 2)]
+                     : i == 2 ? [1, P(xi, y(k) - w / 2), P(xi, y(k) + w / 2), P(p, y(k))]
+                     : [0, P(xi, y(k) - w / 2), P(0, y(k) - w / 2)];
+// Le bout droit, de bas en haut.
+function bas_d(k) = k == 0 ? R : y(k - 1) + w / 2;
+function enc_d(k, i) = i == 0 ? [0, P(Lx, bas_d(k)), P(Lx, y(k) - w / 2)]
+                     : i == 1 ? [0, P(Lx, y(k) - w / 2), P(Lx - xi, y(k) - w / 2)]
+                     : i == 2 ? [1, P(Lx - xi, y(k) + w / 2), P(Lx - xi, y(k) - w / 2), P(Lx - p, y(k))]
+                     : [0, P(Lx - xi, y(k) + w / 2), P(Lx, y(k) + w / 2)];
+gauche = n == 0 ? [[0, P(0, Ly - R), P(0, R)]]
+                : concat([for (j = [0 : 4 * n - 1]) enc_g(n - 1 - floor(j / 4), j % 4)], [[0, P(0, y(0) - w / 2), P(0, R)]]);
+droite = n == 0 ? [[0, P(Lx, R), P(Lx, Ly - R)]]
+                : concat([for (j = [0 : 4 * n - 1]) enc_d(floor(j / 4), j % 4)], [[0, P(Lx, y(n - 1) + w / 2), P(Lx, Ly - R)]]);
+segments = concat(gauche,
+                  [[1, P(0, R), P(R, 0), P(R, R)], [0, P(R, 0), P(Lx - R, 0)], [1, P(Lx - R, 0), P(Lx, R), P(Lx - R, R)]],
+                  droite,
+                  [[1, P(Lx, Ly - R), P(Lx - R, Ly), P(Lx - R, Ly - R)], [0, P(Lx - R, Ly), P(R, Ly)], [1, P(R, Ly), P(0, Ly - R), P(R, Ly - R)]]);
+
+premier = ligne(segments[0][1], segments[0][2]);
+pour (s = [for (i = [1 : len(segments) - 1]) segments[i]]) {
+    si (s[0] == 0) {
+        q = ligne(s[1], s[2]);
+        joindre(#premier, #q);
+    } sinon {
+        q = arc(s[3], s[1], s[2]);
+        joindre(#premier, #q);
+    }
+}
+nommer(#premier, "plateau");
+
+// ── Le liseré : un rectangle arrondi, entre les encoches ──
+xl = n > 0 ? p + rc + lisere : lisere;
+si (lisere > 0 && Lx - 2 * xl > 40) {
+    l = rect(o + [xl, lisere], [Lx - 2 * xl, Ly - 2 * lisere], max(R - lisere, 4));
+    nommer(#l, "liseré");
+}
+
+// ── L'USINAGE, déclaré ──
+si (lisere > 0 && Lx - 2 * xl > 40)
+    usinage("gravure", "liseré", outil = "Pointe V 90", profondeur = 1, nom = "Liseré");
+usinage("contour", "plateau", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Détourage du plateau");

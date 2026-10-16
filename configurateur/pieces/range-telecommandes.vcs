@@ -1,0 +1,78 @@
+// RANGE-TÉLÉCOMMANDES — le bac à gradins de la table basse : un compartiment bas devant pour les petites télécommandes,
+// un haut derrière pour les longues. Six pièces à tenons traversants, sans une vis.
+// thème : Rangement
+//
+// LES CÔTÉS, de profil : `profondeur` de long, `hauteur_avant` devant et `hauteur_arriere` derrière, la marche au milieu
+// (8 mm devant la cloison, pour laisser du bois devant sa mortaise).
+// Ils reçoivent par des MORTAISES le fond (couché, un peu au-dessus du bas : le bac ne pose que sur ses côtés), l'avant, la
+// cloison du milieu et le dos (debout sur le fond). Chacune de ces quatre plaques a la `largeur` intérieure et, à chaque
+// bout, un TENON de l'épaisseur d'un côté, épaulé de 10 ; les mortaises ont le `jeu` de chaque côté, coins dégagés.
+//
+// L'USINAGE : les mortaises (Contour intérieur, coins dégagés), puis les côtés et les plaques (Contour extérieur, coins
+// dégagés aux épaulements, onglets). Contreplaqué de 12 ; coller, poncer, arrondir les arêtes du haut.
+
+largeur    = 160;    // largeur intérieure (mm)
+profondeur = 110;    // profondeur du bac (mm)
+hauteur_avant = 70;  // hauteur à l'avant (mm)
+hauteur_arriere = 120;  // hauteur à l'arrière (mm)
+jeu        = 0.1;    // jeu des tenons dans les mortaises, par côté (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  D = profondeur;  Ha = hauteur_avant;  Hr = hauteur_arriere;  Wi = largeur;
+b = 8;                                         // le dessous du fond, au-dessus du bas des côtés
+retrait = 6;                                   // de l'avant et de l'arrière des côtés aux plaques debout
+xa = retrait;  xm = D / 2 - ep / 2;  xd = D - retrait - ep;   // les plaques debout, sur la profondeur
+Df = xd - xa - ep;                             // le fond, entre l'avant et le dos
+yp = b + ep;                                   // le pied des plaques debout
+si (Ha < yp + 30)
+    echo("L'avant est trop bas pour son tenon : un bac plus haut devant.");
+si (Hr <= Ha)
+    echo("L'arrière doit être plus haut que l'avant.");
+// les quatre plaques : leurs hauteurs, et où chacune se pose sur la planche
+ha = Ha - yp;  hr = Hr - yp;
+Lp = Wi + 2 * ep;
+hp = ha + 2 * hr + Df + 3 * espace;
+planche([D + espace + Lp + 2 * rognure, max(2 * Hr + espace, hp) + 2 * rognure, epaisseur]);
+
+// ── Les côtés, de profil (l'avant à gauche) : la marche au milieu, les quatre mortaises ──
+module cote(o) {
+    s = polyligne([o, o + [D, 0], o + [D, Hr], o + [xm - 8, Hr], o + [xm - 8, Ha], o + [0, Ha]], fermee = vrai);
+    nommer(#s, "côté");
+    pour (x = [xa, xm, xd]) {
+        top = x == xa ? Ha : Hr;
+        m = rect(o + [x - jeu, yp + 10 - jeu], [ep + 2 * jeu, top - yp - 20 + 2 * jeu]);
+        nommer(#m, "mortaise");
+    }
+    f = rect(o + [xa + ep + 10 - jeu, b - jeu], [Df - 20 + 2 * jeu, ep + 2 * jeu]);
+    nommer(#f, "mortaise");
+}
+cote([rognure, rognure]);
+cote([rognure, rognure + Hr + espace]);
+
+// ── Les plaques, à plat : à chaque bout un tenon de `ep`, épaulé de 10 ──
+module plaque(o, h, nom) {
+    c = polyligne([o + [ep, 0], o + [Lp - ep, 0], o + [Lp - ep, 10], o + [Lp, 10], o + [Lp, h - 10], o + [Lp - ep, h - 10],
+                   o + [Lp - ep, h], o + [ep, h], o + [ep, h - 10], o + [0, h - 10], o + [0, 10], o + [ep, 10]], fermee = vrai);
+    nommer(#c, nom);
+}
+x = rognure + D + espace;
+plaque([x, rognure], ha, "avant");
+plaque([x, rognure + ha + espace], hr, "cloison");
+plaque([x, rognure + ha + hr + 2 * espace], hr, "dos");
+plaque([x, rognure + ha + 2 * hr + 3 * espace], Df, "fond");
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaises");
+usinage("contour", "côté", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 1.5, nom = "Côtés");
+usinage("contour", "avant", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Avant");
+usinage("contour", "cloison", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Cloison");
+usinage("contour", "dos", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Dos");
+usinage("contour", "fond", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Fond");

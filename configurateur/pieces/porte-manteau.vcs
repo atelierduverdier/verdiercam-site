@@ -1,0 +1,69 @@
+// PORTE-MANTEAU — une planche murale et ses patères en crochet, emboîtées à tenons traversants : l'entrée, une chambre
+// d'enfant, l'atelier. D'une seule planche de 18, sans une vis hormis les deux qui le tiennent au mur.
+// thème : Rangement
+//
+// LA PLANCHE : `longueur` × `hauteur`, coins arrondis, `patères` mortaises au pas régulier, deux trous de fixation (Ø
+// `d_vis`) entre les patères des bouts. LES PATÈRES, de profil : un bras de `saillie` qui part du mur, son bout relevé en
+// crochet arrondi de `hauteur_crochet` ; côté mur, un TENON de l'épaisseur de la planche qui la traverse, épaulé de 5 en
+// haut et en bas. Les mortaises ont le `jeu` de chaque côté, leurs coins dégagés ; les épaulements des tenons aussi.
+//
+// L'USINAGE : trous de fixation (Perçage, Foret Ø5), mortaises (Contour intérieur, sans onglets), puis les patères et la planche (Contour
+// extérieur, onglets). Coller les tenons ; une cheville en travers les bloque si l'on veut.
+
+longueur   = 600;    // longueur de la planche (mm)
+hauteur    = 100;    // hauteur de la planche (mm)
+pateres    = 5;      // nombre de patères
+saillie    = 80;     // longueur d'une patère depuis le mur (mm)
+hauteur_bras = 40;   // hauteur du bras contre le mur (mm)
+hauteur_crochet = 45;  // hauteur du bout relevé (mm)
+d_vis      = 5;      // Ø des trous de fixation (mm) : celui du Foret Ø5 qui les perce
+jeu        = 0.1;    // jeu des tenons dans les mortaises, par côté (mm)
+epaisseur  = 18;     // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  L = longueur;  H = hauteur;  S = saillie;
+n = max(1, round(pateres));
+hb = hauteur_bras;  hc = hauteur_crochet;
+ht = hb - 10;                                  // la hauteur du tenon (épaulé de 5 en haut et en bas)
+pas = L / n;                                   // une patère au milieu de chaque part
+lp = S + ep;                                   // une patère, tenon compris, de profil
+planche([max(L, n * (lp + espace) - espace) + 2 * rognure, H + espace + hc + 8 + 2 * rognure, epaisseur]);
+si (ht > H - 20)
+    echo("Le bras est presque aussi haut que la planche : une planche plus haute, ou un bras plus bas.");
+si (pas < ep + 40)
+    echo("Les patères sont trop serrées : moins de patères, ou une planche plus longue.");
+
+// ── La planche, ses mortaises et ses deux trous ──
+o = [rognure, rognure];
+p = rect(o, [L, H], 8);
+nommer(#p, "planche");
+pour (k = [0 : n - 1]) {
+    m = rect(o + [(k + 0.5) * pas - ep / 2 - jeu, H / 2 - ht / 2 - jeu], [ep + 2 * jeu, ht + 2 * jeu]);
+    nommer(#m, "mortaise");
+}
+pour (x = n > 1 ? [pas, L - pas] : [L / 4, 3 * L / 4]) {
+    t = cercle(o + [x, H / 2], d_vis / 2);
+    nommer(#t, "fixation");
+}
+
+// ── Les patères, de profil (le mur à gauche) : le tenon, le bras, le crochet arrondi au bout ──
+module patere(q) {
+    r = 7;                                     // la demi-épaisseur du crochet
+    a = polyligne([q + [ep + S - 2 * r, hc], q + [ep + S - 2 * r, 18], q + [ep + 12, hb], q + [ep, hb], q + [ep, hb - 5],
+                   q + [0, hb - 5], q + [0, 5], q + [ep, 5], q + [ep, 0], q + [ep + S, 0], q + [ep + S, hc]]);
+    b = arc(q + [ep + S - r, hc], q + [ep + S, hc], q + [ep + S - 2 * r, hc]);
+    joindre(#a, #b);
+    nommer(#a, "patère");
+}
+pour (k = [0 : n - 1])
+    patere([rognure + k * (lp + espace), rognure + H + espace]);
+
+// ── L'USINAGE, déclaré ──
+usinage("percage", "fixation", outil = "Foret Ø5", profondeur = epaisseur, nom = "Trous de fixation");
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaises");
+usinage("contour", "patère", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 2, nom = "Patères");
+usinage("contour", "planche", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Planche");

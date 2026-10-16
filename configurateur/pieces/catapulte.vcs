@@ -1,0 +1,99 @@
+// CATAPULTE — la petite catapulte de bureau à élastique : un socle, deux flasques, un bras à cuillère qui pivote sur une
+// cheville, une butée qui l'arrête presque debout. Cinq pièces emboîtées, une cheville de Ø6, un élastique.
+// thème : Jeux et jouets
+//
+// LE SOCLE reçoit les deux FLASQUES par des tenons traversants ; entre elles, le BRAS (de l'épaisseur de la planche) a
+// `jeu_bras` de chaque côté. Il pivote sur une cheville de Ø6 serrée dans les flasques (trous au Ø exact) et libre dans
+// le bras (Ø6,6). Sa CUILLÈRE est une cuvette de `d_cuillere`, creusée à mi-épaisseur, au bout du bras. La BUTÉE traverse
+// les flasques au-dessus et en avant du pivot : le bras s'y arrête à quelques degrés de la verticale, et le projectile
+// part. L'élastique va du trou du bras à la cheville plantée à l'avant du socle.
+//
+// L'USINAGE : la cuillère (Poche), les trous (Perçage à la fraise Ø6 pour les chevilles, Contour pour le pivot du bras,
+// Perçage au Foret Ø5 pour l'élastique), les mortaises (Contour intérieur, coins dégagés), puis les pièces (Contour
+// extérieur, coins dégagés aux tenons, onglets). Bois dur de 12.
+
+longueur_bras = 170; // du pivot au centre de la cuillère (mm)
+d_cuillere = 30;     // Ø de la cuillère (mm)
+hauteur_pivot = 95;  // hauteur du pivot au-dessus du socle (mm)
+jeu_bras   = 1.5;    // jeu du bras entre les flasques, par côté (mm)
+jeu        = 0.1;    // jeu des tenons dans les mortaises, par côté (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  hp = hauteur_pivot;  Lb = longueur_bras;
+g = ep + 2 * jeu_bras;                         // l'écart entre les flasques
+L = 200;  Ws = g + 2 * ep + 40;                // le socle
+xf = 20;                                       // les flasques sur le socle, depuis l'arrière
+Lf = 100;  Hf = hp + 75;                       // une flasque
+px = 25;                                       // le pivot, depuis l'arrière de la flasque
+wb = 24;  rc = d_cuillere / 2 + 7;             // le bras : sa largeur, le rayon de sa tête
+xb = px + 15;  yb = hp + 45;  hb = 20;         // la mortaise de la butée : devant le pivot, au-dessus
+Lbu = g + 2 * ep + 2 * 10;                     // la butée, tenons compris
+si (hp < wb / 2 + 15)
+    echo("Le pivot est trop bas : le bras toucherait le socle en tournant.");
+planche([max(L, 2 * (Lf + espace) + Lbu, Lb + rc + wb / 2) + 2 * rognure, Ws + espace + Hf + ep + espace + 2 * rc + 2 * rognure, epaisseur]);
+
+// ── Le socle : deux mortaises, la cheville de l'élastique à l'avant ──
+o = [rognure, rognure];
+s = rect(o, [L, Ws], 6);
+nommer(#s, "socle");
+pour (y = [Ws / 2 - g / 2 - ep, Ws / 2 + g / 2]) {
+    m = rect(o + [xf + 30 - jeu, y - jeu], [40 + 2 * jeu, ep + 2 * jeu]);
+    nommer(#m, "mortaise");
+}
+c = cercle(o + [L - 15, Ws / 2], 3);
+nommer(#c, "cheville");
+
+// ── Les flasques, de profil (l'avant à droite) : le tenon dessous, le pivot, la mortaise de la butée ──
+pour (k = [0 : 1]) {
+    q = [rognure + k * (Lf + espace), rognure + Ws + espace + ep];
+    f = polyligne([q + [30, 0], q + [30, -ep], q + [70, -ep], q + [70, 0], q + [Lf, 0], q + [Lf, 40], q + [xb + ep + 20, Hf],
+                   q + [8, Hf], q + [0, Hf - 30], q + [0, 0]], fermee = vrai);
+    nommer(#f, "flasque");
+    a = cercle(q + [px, hp], 3);
+    nommer(#a, "cheville");
+    b = rect(q + [xb - jeu, yb - jeu], [ep + 2 * jeu, hb + 2 * jeu]);
+    nommer(#b, "mortaise");
+}
+
+// ── Le bras, couché : la queue arrondie autour du pivot, la tête ronde de la cuillère ──
+ob = [rognure + wb / 2, rognure + Ws + espace + ep + Hf + espace + rc];
+xa = Lb - sqrt(rc * rc - (wb / 2) * (wb / 2));   // où le bras rejoint la tête
+a1 = polyligne([ob + [0, -wb / 2], ob + [xa, -wb / 2]]);
+t1 = arc(ob + [Lb, 0], ob + [xa, -wb / 2], ob + [xa, wb / 2]);
+joindre(#a1, #t1);
+a2 = polyligne([ob + [xa, wb / 2], ob + [0, wb / 2]]);
+joindre(#a1, #a2);
+t2 = arc(ob, ob + [0, wb / 2], ob + [0, -wb / 2]);
+joindre(#a1, #t2);
+nommer(#a1, "bras");
+p = cercle(ob, 3.3);
+nommer(#p, "pivot");
+e = cercle(ob + [55, 0], 2.5);
+nommer(#e, "élastique");
+u = cercle(ob + [Lb, 0], d_cuillere / 2);
+nommer(#u, "cuillère");
+
+// ── La butée : épaulée entre les flasques, ses bouts traversent les mortaises et dépassent de 10 ──
+ou = [rognure + 2 * (Lf + espace), rognure + Ws + espace];
+h = polyligne([ou + [10 + ep, 0], ou + [10 + ep + g, 0], ou + [10 + ep + g, 5], ou + [Lbu, 5], ou + [Lbu, 5 + hb], ou + [10 + ep + g, 5 + hb],
+               ou + [10 + ep + g, hb + 10], ou + [10 + ep, hb + 10], ou + [10 + ep, 5 + hb], ou + [0, 5 + hb], ou + [0, 5], ou + [10 + ep, 5]],
+              fermee = vrai);
+nommer(#h, "butée");
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "cuillère", outil = "Fraise droite Ø6", profondeur = epaisseur / 2, passe = 3, nom = "Cuillère");
+usinage("percage", "cheville", outil = "Fraise droite Ø6", profondeur = epaisseur, nom = "Trous des chevilles");
+usinage("percage", "élastique", outil = "Foret Ø5", profondeur = epaisseur, nom = "Trou de l'élastique");
+usinage("contour", "pivot", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Pivot du bras");
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaises");
+usinage("contour", "flasque", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Flasques");
+usinage("contour", "butée", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Butée");
+usinage("contour", "bras", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Bras");
+usinage("contour", "socle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Socle");

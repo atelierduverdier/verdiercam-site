@@ -1,0 +1,54 @@
+// CADRE PHOTO — un cadre d'une pièce : la fenêtre sur la photo, la feuillure au dos qui reçoit verre, photo et carton,
+// l'encoche de l'accroche ; aux cotes d'un tirage du commerce.
+// thème : Décoration et cadeaux
+//
+// LA PHOTO : `photo_largeur` × `photo_hauteur` (13 × 18, 10 × 15, 20 × 30…). La FENÊTRE la montre, moins `recouvrement`
+// de chaque côté (le cadre tient la photo par ses bords). La FEUILLURE, plus grande que la photo de `jeu` de chaque côté,
+// creusée de `prof_feuillure` (verre 2 + photo + carton 3) : ses coins sont dégagés (dogbone), la photo et le verre à
+// angles vifs y entrent jusqu'au coin.
+//
+// LA FACE USINÉE EST LE DOS : la feuillure et l'encoche de l'accroche s'y creusent, la fenêtre traverse. La belle face
+// est donc celle du dessous de la planche — y poser le parement.
+//
+// L'USINAGE : la feuillure (Poche, fraise droite Ø6, coins dégagés), l'encoche d'accroche (Poche), la fenêtre (Contour
+// intérieur), puis le cadre (Contour extérieur, onglets).
+
+photo_largeur = 130;  // largeur de la photo (mm)
+photo_hauteur = 180;  // hauteur de la photo (mm)
+recouvrement = 5;     // la fenêtre, plus petite que la photo de chaque côté (mm)
+jeu        = 1;       // la feuillure, plus grande que la photo de chaque côté (mm)
+largeur_cadre = 40;   // largeur du bois autour de la fenêtre (mm)
+prof_feuillure = 6;   // profondeur de la feuillure (mm) : verre, photo, carton
+R_coin     = 4;       // rayon des coins extérieurs (mm)
+accroche   = 1;       // encoche pour une accroche à dents (1 : oui, 0 : non)
+epaisseur  = 18;      // épaisseur du bois (mm)
+rognure    = 5;       // du bord du brut au cadre (mm)
+
+Wf = photo_largeur - 2 * recouvrement;  Hf = photo_hauteur - 2 * recouvrement;     // la fenêtre
+W = Wf + 2 * largeur_cadre;  H = Hf + 2 * largeur_cadre;                           // le cadre
+Wp = photo_largeur + 2 * jeu;  Hp = photo_hauteur + 2 * jeu;                       // la feuillure
+si (largeur_cadre < recouvrement + jeu + 10)
+    echo("Le bois autour de la feuillure fait moins de 10 mm : un cadre plus large.");
+planche([W + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+c = o + [W / 2, H / 2];
+
+k = rect(o, [W, H], R_coin);
+nommer(#k, "cadre");
+f = rect(c - [Wf / 2, Hf / 2], [Wf, Hf], 3.2);
+nommer(#f, "fenêtre");
+u = rect(c - [Wp / 2, Hp / 2], [Wp, Hp]);
+nommer(#u, "feuillure");
+// L'encoche de l'accroche : au milieu du haut, entre la feuillure et le bord.
+si (accroche == 1) {
+    a = rect(o + [W / 2 - 22, (H + Hp) / 2 + (largeur_cadre - recouvrement - jeu) / 2 - 5], [44, 10], 3.2);
+    nommer(#a, "accroche");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "feuillure", outil = "Fraise droite Ø6", profondeur = prof_feuillure, passe = 3, coins = "dogbone", nom = "Feuillure");
+si (accroche == 1)
+    usinage("poche", "accroche", outil = "Fraise droite Ø6", profondeur = 3, passe = 3, nom = "Encoche d'accroche");
+usinage("contour", "fenêtre", outil = "Fraise droite Ø6", cote = "interieur", profondeur = epaisseur, passe = 3, nom = "Fenêtre");
+usinage("contour", "cadre", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Détourage du cadre");

@@ -1,0 +1,84 @@
+// ÉTAGÈRE FLOTTANTE — la tablette sans console visible : elle s'enfile sur des doigts de bois tenus par une latte vissée
+// au mur. Le plateau est fait de deux planches collées face à face, creusées chacune de la moitié du logement des doigts.
+// thème : Rangement
+//
+// LE PLATEAU : deux moitiés de `longueur` × `profondeur`, de l'épaisseur de la planche ; chacune porte, ouvertes sur son
+// chant arrière, `doigts` POCHES de `largeur_doigt` + 2 × `jeu` et de `longueur_doigt` + `jeu`, profondes de la moitié de
+// l'épaisseur plus `jeu`. Collées l'une sur l'autre (poches face à face), elles laissent aux doigts un canal de l'épaisseur
+// plus 2 × `jeu`. LES DOIGTS : des lattes de `largeur_doigt` × `longueur_doigt`, prolongées d'un TENON (épaulé de 8 de
+// chaque côté) qui traverse la LATTE MURALE (deux épaisseurs de haut, comme le plateau). La latte se visse au mur par
+// des trous de Ø5 entre les doigts et aux bouts (à fraiser à la main), les doigts s'y collent, le plateau s'enfile.
+//
+// L'USINAGE : les poches des doigts (Poche, coins dégagés), les mortaises (Contour intérieur, coins dégagés), les trous
+// de vis (Perçage, Foret Ø5), puis les pièces (Contour extérieur, coins dégagés aux tenons, onglets). Coller les deux
+// moitiés à plat sous serre-joints, chants affleurés ; une charge de 10 kg par doigt dans du chêne.
+
+longueur   = 600;    // longueur de l'étagère (mm)
+profondeur = 200;    // profondeur de l'étagère (mm)
+doigts     = 3;      // nombre de doigts
+largeur_doigt = 50;  // largeur d'un doigt (mm)
+longueur_doigt = 150;  // longueur d'un doigt dans le plateau (mm)
+jeu        = 0.2;    // jeu des doigts dans leur canal, par côté (mm)
+jeu_tenon  = 0.1;    // jeu des tenons dans les mortaises, par côté (mm)
+epaisseur  = 18;     // épaisseur (mm) : le plateau en fait deux
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  L = longueur;  P = profondeur;  n = max(1, round(doigts));
+wd = largeur_doigt;  ld = longueur_doigt;  wt = wd - 16;        // le tenon d'un doigt
+hl = 2 * ep;                                   // la hauteur de la latte murale
+xd = [for (k = [0 : n - 1]) L * (k + 0.5) / n]; // les axes des doigts
+si (ld > P - 30)
+    echo("Les doigts arrivent presque au chant avant : des doigts plus courts, ou une étagère plus profonde.");
+si (L / n < wd + 40)
+    echo("Les doigts sont trop serrés : moins de doigts, ou plus étroits.");
+planche([L + 2 * rognure, 2 * P + hl + wd + 3 * espace + 2 * rognure, epaisseur]);
+
+// ── Les deux moitiés du plateau, le chant arrière en haut, et leurs poches ouvertes sur lui ──
+pour (k = [0 : 1]) {
+    o = [rognure, rognure + k * (P + espace)];
+    p = rect(o, [L, P]);
+    nommer(#p, "plateau");
+    pour (x = xd) {
+        // la poche déborde de 4 au-delà du chant arrière : la fraise l'ouvre franchement, sans laisser de peau
+        q = rect(o + [x - wd / 2 - jeu, P - ld - jeu], [wd + 2 * jeu, ld + jeu + 4]);
+        nommer(#q, "logement");
+    }
+}
+
+// ── La latte murale : une mortaise par doigt, les trous de vis entre ──
+ol = [rognure, rognure + 2 * (P + espace)];
+l = rect(ol, [L, hl]);
+nommer(#l, "latte");
+pour (x = xd) {
+    m = rect(ol + [x - wt / 2 - jeu_tenon, hl / 2 - ep / 2 - jeu_tenon], [wt + 2 * jeu_tenon, ep + 2 * jeu_tenon]);
+    nommer(#m, "mortaise");
+}
+// une vis entre deux doigts, et une entre chaque doigt du bout et le bout de la latte
+xv = concat([xd[0] / 2], [for (k = [0 : n - 2]) (xd[k] + xd[k + 1]) / 2], [(L + xd[n - 1]) / 2]);
+pour (x = xv) {
+    v = cercle(ol + [x, hl / 2], 2.5);
+    nommer(#v, "vis");
+}
+
+// ── Les doigts : la latte, puis le tenon (de l'épaisseur de la latte murale) épaulé de 8 ──
+pour (k = [0 : n - 1]) {
+    od = [rognure + k * (ld + ep + espace), rognure + 2 * (P + espace) + hl + espace];
+    d = polyligne([od, od + [ld, 0], od + [ld, 8], od + [ld + ep, 8], od + [ld + ep, wd - 8], od + [ld, wd - 8], od + [ld, wd],
+                   od + [0, wd]], fermee = vrai);
+    nommer(#d, "doigt");
+}
+si (n * (ld + ep + espace) - espace > L)
+    echo("Les doigts ne tiennent pas en une rangée sur la planche : moins de doigts, ou plus courts.");
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "logement", outil = "Fraise droite Ø6", coins = "dogbone", profondeur = epaisseur / 2 + jeu, passe = 3, nom = "Logements des doigts");
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaises");
+usinage("percage", "vis", outil = "Foret Ø5", profondeur = epaisseur, nom = "Trous de vis");
+usinage("contour", "doigt", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 2, nom = "Doigts");
+usinage("contour", "latte", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Latte murale");
+usinage("contour", "plateau", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 10, onglet_haut = 2, nom = "Plateau");

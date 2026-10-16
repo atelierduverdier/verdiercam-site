@@ -1,0 +1,68 @@
+// GABARIT DE PERÇAGE « SYSTÈME 32 » — une règle percée tous les 32 mm et sa butée, pour percer d'équerre les rangées de
+// trous des taquets d'étagère (et des charnières, coulisses, fiches) dans les côtés d'un meuble : le système de l'industrie
+// du meuble, à l'atelier.
+// thème : Atelier et gabarits
+//
+// LA RÈGLE : `trous` trous de `d_trou` au pas de 32, sur une ou deux rangées (`rangees`) ; la première rangée à 37 mm du
+// bord avant (la cote du système 32), la seconde à `ecart_rangees` d'elle. Le premier trou à `debut` du bout. LA BUTÉE,
+// une latte vissée sous la règle le long du bord avant, la cale contre le chant du panneau ; un repère gravé tous les
+// cinq trous pour compter.
+//
+// Percer avec un foret à étage ou une butée de profondeur ; contre l'usure, un canon de perçage dans chaque trou (`d_trou`
+// = son Ø extérieur). L'USINAGE : les repères (Gravure, Pointe V 90°, 0,5 mm), les trous (au Ø5, Perçage au Foret Ø5 ;
+// plus larges, Contour intérieur, fraise droite Ø6, sans onglets), les trous de vis de la butée (Perçage, Foret Ø5), puis la règle et la butée (Contour
+// extérieur, onglets).
+
+trous      = 20;     // trous par rangée
+d_trou     = 5;      // Ø des trous (mm) : 5 pour les taquets, ou le Ø extérieur d'un canon
+rangees    = 1;      // une ou deux rangées
+ecart_rangees = 32;  // de la première rangée à la seconde (mm)
+debut      = 20;     // du bout de la règle au premier trou (mm)
+largeur    = 60;     // largeur de la règle, de son bord avant (mm)
+largeur_butee = 25;  // largeur de la butée (mm)
+epaisseur  = 12;     // épaisseur (mm) : plus que la hauteur d'un canon
+espace     = 10;     // entre la règle et la butée (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+n = max(2, round(trous));
+nr = rangees >= 2 ? 2 : 1;
+L = 2 * debut + (n - 1) * 32;
+W = max(largeur, 37 + (nr - 1) * ecart_rangees + d_trou / 2 + 10);
+si (d_trou < 4.99 || (d_trou > 5.01 && d_trou < 6.5))
+    echo("Les trous se percent au Foret Ø5 (Ø5 tout juste) ou se détourent à la fraise Ø6 (Ø6,5 et plus).");
+si (W > largeur)
+    echo(str("La règle est élargie à ", W, " mm pour tenir ses rangées."));
+planche([L + 2 * rognure, W + espace + largeur_butee + 2 * rognure, epaisseur]);
+o = [rognure, rognure + largeur_butee + espace];            // la règle, son bord avant en bas
+r = rect(o, [L, W], 3);
+nommer(#r, "règle");
+pour (j = [0 : nr - 1])
+    pour (k = [0 : n - 1]) {
+        t = cercle(o + [debut + 32 * k, 37 + j * ecart_rangees], d_trou / 2);
+        nommer(#t, "trou");
+    }
+// Les repères : un trait au bord avant sous chaque cinquième trou.
+pour (k = [0 : 5 : n - 1]) {
+    g = ligne(o + [debut + 32 * k, 3], o + [debut + 32 * k, 12]);
+    nommer(#g, "repère");
+}
+// Les vis de la butée : dans la règle, au-dessus de la butée (à mi-largeur de son épaisseur, vissée par en dessous).
+pour (x = [debut / 2 + 16, L / 2, L - debut / 2 - 16]) {
+    v = cercle(o + [x, epaisseur / 2 + 6], 2.5);
+    nommer(#v, "vis");
+}
+b = rect([rognure, rognure], [L, largeur_butee]);
+nommer(#b, "butée");
+echo(str(nr, " rangée(s) de ", n, " trous Ø", d_trou, " au pas de 32, la première à 37 mm du bord avant."));
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "repère", outil = "Pointe V 90", profondeur = 0.5, nom = "Repères");
+si (d_trou <= 5.01)
+    usinage("percage", "trou", outil = "Foret Ø5", profondeur = epaisseur, nom = "Trous");
+sinon
+    usinage("contour", "trou", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Trous");
+usinage("percage", "vis", outil = "Foret Ø5", profondeur = epaisseur, nom = "Vis de la butée");
+usinage("contour", "règle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Règle");
+usinage("contour", "butée", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Butée");

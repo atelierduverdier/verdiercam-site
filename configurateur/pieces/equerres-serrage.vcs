@@ -1,0 +1,49 @@
+// ÉQUERRES DE SERRAGE D'ANGLE — pour coller un caisson d'équerre : l'équerre se serre dans l'angle intérieur, ses deux
+// chants droits plaqués contre les deux planches, et la tient à 90° le temps que la colle prenne. La machine fait l'angle
+// droit mieux qu'on ne le scierait.
+// thème : Atelier et gabarits
+//
+// UNE ÉQUERRE : un carré de `cote`, ses deux chants de référence en bas et à gauche. L'angle est évidé d'un quart de cercle
+// de `degagement` (la colle qui bave et l'arête de l'assemblage n'y touchent pas). Le long de chaque chant, une LUMIÈRE de
+// `largeur_lumiere` × `longueur_lumiere` où passe la mâchoire d'un serre-joint ; au milieu, un trou pour la main ; le coin
+// opposé est abattu. `nombre` équerres (quatre : un caisson entier).
+//
+// L'USINAGE : les lumières et le trou (Contour intérieur, sans onglets), puis les équerres (Contour extérieur, onglets) —
+// la fraise fait l'angle droit au centième. Contreplaqué de bouleau de 18.
+
+nombre     = 4;      // nombre d'équerres
+cote       = 150;    // côté d'une équerre (mm)
+degagement = 12;     // rayon du dégagement de l'angle (mm)
+largeur_lumiere = 24; // largeur d'une lumière (mm) : la mâchoire d'un serre-joint
+longueur_lumiere = 55; // longueur d'une lumière (mm)
+pan        = 35;     // le coin opposé, abattu de (mm)
+epaisseur  = 18;     // épaisseur (mm)
+espace     = 10;     // entre deux équerres (mm)
+rognure    = 5;      // du bord du brut aux équerres (mm)
+
+S = cote;  rc = degagement;  wl = largeur_lumiere;  ll = longueur_lumiere;
+n = max(1, round(nombre));  colonnes = min(n, 2);  lignes = ceil(n / 2);
+yl = rc + 8 + wl / 2;                          // l'axe d'une lumière, depuis son chant
+sl = yl + wl / 2 + 8 + ll / 2;                 // son milieu, le long du chant : elle commence au-delà de l'autre lumière
+si (sl + ll / 2 > S - pan - 5)
+    echo("Les lumières débordent sur le pan coupé : une équerre plus grande, ou des lumières plus courtes.");
+planche([colonnes * (S + espace) - espace + 2 * rognure, lignes * (S + espace) - espace + 2 * rognure, epaisseur]);
+
+pour (k = [0 : n - 1]) {
+    o = [rognure + (k % 2) * (S + espace), rognure + floor(k / 2) * (S + espace)];
+    a = polyligne([o + [rc, 0], o + [S, 0], o + [S, S - pan], o + [S - pan, S], o + [0, S], o + [0, rc]]);
+    d = arc(o, o + [rc, 0], o + [0, rc]);
+    joindre(#a, #d);
+    nommer(#a, "équerre");
+    l1 = oblong(o + [sl, yl], ll, wl);
+    nommer(#l1, "lumière");
+    l2 = oblong(o + [yl, sl], ll, wl, 90);
+    nommer(#l2, "lumière");
+    m = cercle(o + [0.58 * S, 0.58 * S], 16);
+    nommer(#m, "lumière");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "lumière", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Lumières");
+usinage("contour", "équerre", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Équerres");

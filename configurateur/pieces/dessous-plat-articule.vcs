@@ -1,0 +1,52 @@
+// DESSOUS-DE-PLAT ARTICULÉ — des lattes debout sur chant, enfilées sur deux cordelettes avec une rondelle entre deux : il
+// se pose à plat sous la cocotte, et s'enroule pour se ranger dans un tiroir.
+// thème : Cuisine
+//
+// LES LATTES : `lattes` lattes de `longueur` × `hauteur`, aux bouts arrondis ; elles se posent sur CHANT (la `hauteur`
+// debout), et la cordelette traverse leur épaisseur — d'où deux trous percés à `retrait` des bouts. LES RONDELLES : une entre
+// deux lattes sur chaque cordelette, Ø`d_rondelle`, percées pareil : l'écart entre deux lattes vaut l'épaisseur. Une
+// cordelette de coton ciré de 3, un nœud à chaque bout.
+//
+// L'USINAGE : les trous (Perçage, Foret Ø5), puis les lattes et les rondelles (Contour extérieur, onglets). Hêtre ou chêne
+// de 12, huile ; jamais de vernis (la chaleur le fait cloquer).
+
+lattes     = 10;     // nombre de lattes
+longueur   = 180;    // longueur d'une latte (mm)
+hauteur    = 22;     // hauteur d'une latte, debout (mm)
+retrait    = 25;     // des bouts aux trous de la cordelette (mm)
+d_rondelle = 16;     // Ø d'une rondelle (mm)
+epaisseur  = 12;     // épaisseur (mm) : l'écart entre deux lattes, et leur épaisseur
+espace     = 8;      // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+n = max(2, round(lattes));  L = longueur;  h = hauteur;  dr = d_rondelle;
+nr = 2 * (n - 1);
+par = floor((L + espace) / (dr + espace));    // rondelles par rangée, sous les lattes
+rangs = ceil(nr / par);
+si (h < 12)
+    echo("Des lattes de moins de 12 de haut : le plat touchera presque la table.");
+echo(str("Dessous-de-plat de ", L, " × ", n * epaisseur + (n - 1) * epaisseur, " mm, ", n, " lattes."));
+planche([L + 2 * rognure, n * (h + espace) + rangs * (dr + espace) - espace + 2 * rognure, epaisseur]);
+pour (k = [0 : n - 1]) {
+    o = [rognure, rognure + rangs * (dr + espace) + k * (h + espace)];
+    l = oblong(o + [L / 2, h / 2], L, h);
+    nommer(#l, "latte");
+    pour (x = [retrait, L - retrait]) {
+        t = cercle(o + [x, h / 2], 2.5);
+        nommer(#t, "trou");
+    }
+}
+pour (k = [0 : nr - 1]) {
+    c = [rognure + dr / 2 + (k % par) * (dr + espace), rognure + dr / 2 + floor(k / par) * (dr + espace)];
+    r = cercle(c, dr / 2);
+    nommer(#r, "rondelle");
+    t = cercle(c, 2.5);
+    nommer(#t, "trou");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("percage", "trou", outil = "Foret Ø5", profondeur = epaisseur, nom = "Trous de la cordelette");
+usinage("contour", "rondelle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 3, onglet_haut = 1.5, nom = "Rondelles");
+usinage("contour", "latte", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 2, nom = "Lattes");

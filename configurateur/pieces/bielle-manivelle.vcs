@@ -1,0 +1,78 @@
+// BIELLE-MANIVELLE — le mécanisme du moteur et de la scie alternative : la manivelle tourne, la bielle pousse et tire,
+// le coulisseau va et vient en ligne droite. Un démonstrateur de table : on tourne la poignée, on voit la course.
+// thème : Technique et mécanique
+//
+// LA MANIVELLE : un disque, son maneton (une cheville Ø8 collée) à `rayon` de l'axe : la COURSE du coulisseau vaut deux
+// fois ce rayon. LA BIELLE : `longueur_bielle` d'un trou à l'autre (le rapport bielle/manivelle, 3 à 4, adoucit le
+// mouvement). LE COULISSEAU : un bloc traversé par une cheville Ø8 collée ; dessus, elle porte la bielle ; dessous, elle
+// glisse dans la LUMIÈRE du socle, alignée sur l'axe — c'est elle qui guide le va-et-vient. LE SOCLE porte l'axe de la
+// manivelle (cheville collée).
+//
+// L'USINAGE : les trous des chevilles collées (Perçage, Foret Ø8), les alésages qui tournent et la lumière (Contour
+// intérieur), puis les pièces (Contour extérieur, onglets). Contreplaqué de bouleau de 12, ciré aux frottements.
+
+rayon      = 35;     // rayon de la manivelle, de l'axe au maneton (mm) : la course vaut le double
+longueur_bielle = 120;  // la bielle, d'un trou à l'autre (mm)
+jeu_axe    = 0.3;    // jeu des pièces qui tournent ou glissent sur une cheville Ø8, par côté (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+r = rayon;  L = longueur_bielle;  ra = 4 + jeu_axe;
+Rd = r + 15;                                   // le disque de la manivelle
+lc = 44;  hc = 34;                             // le coulisseau
+wb = 22;                                       // la largeur de la bielle
+si (L < 2.5 * r)
+    echo("La bielle est courte pour la manivelle : le coulisseau forcerait. 2,5 fois le rayon au moins.");
+si (L - r - lc / 2 < Rd + 5)
+    echo("Au point mort bas, le coulisseau heurte le disque : une bielle plus longue.");
+Ls = Rd + L + r + lc / 2 + 25;  Hs = 2 * Rd + 20;   // le socle
+planche([max(Ls, 2 * Rd + espace + L + wb + espace + lc) + 2 * rognure, Hs + espace + max(2 * Rd, hc, wb) + 2 * rognure, epaisseur]);
+
+// ── Le socle : l'axe de la manivelle, la lumière du coulisseau sur son axe ──
+os = [rognure, rognure];
+c0 = os + [Rd + 10, Hs / 2];
+s = rect(os, [Ls, Hs], 8);
+nommer(#s, "socle");
+a0 = cercle(c0, 4);
+nommer(#a0, "cheville");
+lu = oblong(c0 + [L, 0], 2 * r + 8 + 2 * jeu_axe, 8 + 2 * jeu_axe);   // du point mort bas (L − r) au point mort haut (L + r)
+nommer(#lu, "lumière");
+
+// ── La manivelle, la bielle, le coulisseau, en rangée au-dessus du socle ──
+y2 = rognure + Hs + espace;
+cm = [rognure + Rd, y2 + Rd];
+d = cercle(cm, Rd);
+nommer(#d, "manivelle");
+dm = cercle(cm, ra);
+nommer(#dm, "alésage");
+mn = cercle(cm + [r, 0], 4);
+nommer(#mn, "cheville");
+pg = cercle(cm + [-r, 0], 4);                  // la poignée, à l'opposé du maneton
+nommer(#pg, "cheville");
+ob = [rognure + 2 * Rd + espace + wb / 2, y2 + wb / 2];
+b = oblong(ob + [L / 2, 0], L + wb, wb);
+nommer(#b, "bielle");
+pour (x = [0, L]) {
+    t = cercle(ob + [x, 0], ra);
+    nommer(#t, "alésage");
+}
+oc = [rognure + 2 * Rd + espace + L + wb + espace, y2];
+c = rect(oc, [lc, hc], 4);
+nommer(#c, "coulisseau");
+cc = cercle(oc + [lc / 2, hc / 2], 4);
+nommer(#cc, "cheville");
+echo(str("Course du coulisseau : ", 2 * r, " mm ; rapport bielle/manivelle : ", L / r, "."));
+
+// ── L'USINAGE, déclaré ──
+usinage("percage", "cheville", outil = "Foret Ø8", profondeur = epaisseur, nom = "Trous des chevilles");
+usinage("contour", "alésage", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Alésages");
+usinage("contour", "lumière", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Lumière");
+usinage("contour", "manivelle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Manivelle");
+usinage("contour", "bielle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Bielle");
+usinage("contour", "coulisseau", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Coulisseau");
+usinage("contour", "socle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Socle");

@@ -1,0 +1,122 @@
+// BOÎTIER ÉLECTRONIQUE — une boîte à queues droites taillée autour d'une carte : le fond percé à ses trous de fixation,
+// un petit côté ouvert pour ses prises, un couvercle aéré. D'office, une Arduino Uno.
+// thème : Électronique et boîtiers
+//
+// LA CARTE : `carte_longueur` × `carte_largeur`, ses quatre trous de fixation (`trous`, en mm depuis son coin bas-gauche,
+// prises vers la gauche) ; elle est posée sur des entretoises de `entretoise` à `jeu_carte` des côtés. Le dedans de la
+// boîte en découle, la hauteur dedans est `hauteur_dedans`. Les cotes d'une Uno : 68,6 × 53,3, trous Ø3,2 à (14,0 ; 2,5),
+// (15,2 ; 50,8), (66,0 ; 7,6), (66,0 ; 35,6) ; prise USB-B centrée à 38,1 du bas, jack d'alimentation à 7,6.
+//
+// L'ASSEMBLAGE est celui de la « Boîte à queues droites » de ce catalogue (mêmes doigts, même jeu par flanc, les côtés
+// longs gardent les coins), dans du contreplaqué de 6. Les ouvertures des prises sont dans le côté court de GAUCHE,
+// dessiné face extérieure vers soi ; leur bas est au-dessus du fond, de l'entretoise et de la carte (1,6 mm).
+//
+// L'USINAGE : les trous de fixation (Perçage, Foret Ø3), les ouvertures et les fentes d'aération (Contour intérieur,
+// fraise droite Ø3 — leurs coins au rayon 1,5), puis les panneaux (Contour extérieur, fraise droite Ø6, coins dégagés).
+
+carte_longueur = 68.6;   // longueur de la carte (mm)
+carte_largeur = 53.3;    // largeur de la carte (mm)
+jeu_carte  = 5;      // de la carte aux côtés, dedans (mm)
+entretoise = 6;      // hauteur des entretoises sous la carte (mm)
+hauteur_dedans = 35; // hauteur libre dedans, du fond au couvercle (mm)
+usb        = 1;      // ouverture de la prise USB-B (1 : oui, 0 : non)
+y_usb      = 38.1;   // milieu de la prise USB, depuis le bas de la carte (mm)
+alim       = 1;      // ouverture du jack d'alimentation (1 : oui, 0 : non)
+y_alim     = 7.6;    // milieu du jack, depuis le bas de la carte (mm)
+aeration   = 5;      // fentes d'aération dans le couvercle (0 : aucune)
+epaisseur  = 6;      // épaisseur du contreplaqué (mm)
+largeur_doigt = 12;  // largeur visée d'un doigt (mm)
+jeu        = 0.1;    // jeu de coupe, par flanc (mm)
+espace     = 12;     // entre deux panneaux (mm)
+marge      = 10;     // des panneaux au bord de la planche (mm)
+
+ep = epaisseur;
+trous = [[13.97, 2.54], [15.24, 50.8], [66.04, 7.62], [66.04, 35.56]];   // Arduino Uno
+Xi = carte_longueur + 2 * jeu_carte;  Yi = carte_largeur + 2 * jeu_carte;
+X = Xi + 2 * ep;  Y = Yi + 2 * ep;  H = hauteur_dedans + ep;
+
+// ── Les doigts (le dessin de la Boîte à queues droites) ──
+function impair(L) = max(3, 2 * round((L / largeur_doigt - 1) / 2) + 1);
+nX = impair(X);  nY = impair(Y);  nH = impair(H);
+function vn(u) = [-u[1], u[0]];
+function enc(g, i) = g == 0 ? faux : (g > 0 ? i % 2 == 1 : i % 2 == 0);
+function bout(g) = enc(g, 0) ? ep : 0;
+function pt(a, u, s, t) = a + s * u + t * vn(u);
+function s0(i, w) = i * w - (i > 0 ? jeu : 0);
+function s1(i, w, n) = (i + 1) * w + (i < n - 1 ? jeu : 0);
+function entaille(a, u, i, w, n, k) = k == 0 ? pt(a, u, s0(i, w), 0) : k == 1 ? pt(a, u, s0(i, w), ep)
+                                    : k == 2 ? pt(a, u, s1(i, w, n), ep) : pt(a, u, s1(i, w, n), 0);
+function garder(i, n, k) = i == 0 ? k >= 2 : (i == n - 1 ? k <= 1 : vrai);
+function interieur(a, u, Lk, g, n) = [for (j = [0 : 4 * n - 1]) if (enc(g, floor(j / 4)) && garder(floor(j / 4), n, j % 4))
+                                          entaille(a, u, floor(j / 4), Lk / n, n, j % 4)];
+function profil(c, L, H, G, N) = profil2([c, c + [L, 0], c + [L, H], c + [0, H]], [[1, 0], [0, 1], [-1, 0], [0, -1]], [L, H, L, H], G, N);
+function profil2(A, U, Lk, G, N) = [for (k = [0 : 3])
+    for (q = concat([A[k] + bout(G[(k + 3) % 4]) * vn(U[(k + 3) % 4]) + bout(G[k]) * vn(U[k])],
+                    interieur(A[k], U[k], Lk[k], G[k], N[k]))) q];
+module panneau(c, L, H, G, N, nom) {
+    p = polyligne(profil(c, L, H, G, N), fermee = vrai);
+    nommer(#p, nom);
+}
+
+// ── La planche : côtés longs, côtés courts, puis le fond, le couvercle et son rebord ──
+Xr = Xi - 2 * 0.5;  Yr = Yi - 2 * 0.5;           // le rebord du couvercle, 0,5 de jeu
+y1 = marge + H + espace;
+y2 = y1 + H + espace;
+large = max(2 * X + espace, 2 * Y + espace, 2 * X + 2 * espace + Xr);
+planche([2 * marge + large, y2 + Y + marge, epaisseur]);
+
+panneau([marge, marge], X, H, [1, 1, 0, 1], [nX, nH, 1, nH], "côté long");
+panneau([marge + X + espace, marge], X, H, [1, 1, 0, 1], [nX, nH, 1, nH], "côté long");
+panneau([marge, y1], Y, H, [1, -1, 0, -1], [nY, nH, 1, nH], "côté court");
+panneau([marge + Y + espace, y1], Y, H, [1, -1, 0, -1], [nY, nH, 1, nH], "côté court");
+panneau([marge, y2], X, Y, [-1, -1, -1, -1], [nX, nY, nX, nY], "fond");
+k = rect([marge + X + espace, y2], [X, Y], 2);
+nommer(#k, "couvercle");
+r = rect([marge + 2 * X + 2 * espace, y2 + (Y - Yr) / 2], [Xr, Yr], 1.5);
+nommer(#r, "rebord du couvercle");
+
+// ── Les trous de fixation de la carte, dans le fond ──
+oc = [marge + ep + jeu_carte, y2 + ep + jeu_carte];   // le coin de la carte
+pour (t = trous) {
+    c = cercle(oc + t, 1.6);
+    nommer(#c, "fixation");
+}
+
+// ── Les ouvertures des prises, dans le côté court de gauche (posé en [marge, y1]) : le bas de la carte y est à
+// `ep + jeu_carte` du bout gauche, son dessus à `ep + entretoise + 1,6` du bas du côté ──
+z = ep + entretoise + 1.6;
+si (usb == 1) {
+    u = rect([marge + ep + jeu_carte + y_usb - 7, y1 + z - 0.5], [14, 12.5], 1.5);    // USB-B : 12 × 11, un peu de jeu
+    nommer(#u, "ouverture");
+}
+si (alim == 1) {
+    a = rect([marge + ep + jeu_carte + y_alim - 5, y1 + z - 0.5], [10, 12], 1.5);    // jack : 9 × 11
+    nommer(#a, "ouverture");
+}
+
+// ── Les fentes d'aération du couvercle ──
+si (aeration > 0) {
+    pas = (Y - 30) / max(aeration - 1, 1);
+    pour (i = [0 : aeration - 1]) {
+        f = oblong([marge + X + espace + X / 2, y2 + 15 + (aeration == 1 ? (Y - 30) / 2 : i * pas)], X - 30, 4);
+        nommer(#f, "aération");
+    }
+}
+echo(str("Boîtier ", round(X * 10) / 10, " × ", round(Y * 10) / 10, " × ", H + ep, " mm dehors (couvercle compris)."));
+
+// ── L'USINAGE, déclaré ──
+usinage("percage", "fixation", outil = "Foret Ø3", profondeur = epaisseur, nom = "Fixations de la carte");
+si (usb == 1 || alim == 1)
+    usinage("contour", "ouverture", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1.5, nom = "Ouvertures des prises");
+si (aeration > 0)
+    usinage("contour", "aération", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1.5, nom = "Aération");
+usinage("contour", "fond", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2, coins = "dogbone",
+        onglets = 4, onglet_long = 5, onglet_haut = 1.5, nom = "Fond");
+usinage("contour", "côté long", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2, coins = "dogbone",
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Côtés longs");
+usinage("contour", "côté court", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2, coins = "dogbone",
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Côtés courts");
+usinage("contour", "couvercle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2,
+        onglets = 4, onglet_long = 5, onglet_haut = 1.5, nom = "Couvercle");
+usinage("contour", "rebord du couvercle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Rebord du couvercle");

@@ -1,0 +1,96 @@
+// HORLOGE MURALE — un cadran de bois pour un mouvement à quartz du commerce : le trou de l'axe au centre, les repères des
+// heures et des minutes, les chiffres arabes ou romains gravés, un mot sous le centre ; au dos, le logement du mouvement.
+// thème : Décoration et cadeaux
+//
+// LE CADRAN : rond de `diametre` (ou carré, `carre` = 1). L'axe fileté du mouvement traverse le cadran et reçoit l'écrou
+// devant : il ne passe que `voile` de bois (5 à 6 mm pour un axe court). Dans une planche plus épaisse, le DOS reçoit une
+// poche de `mouvement` de côté (le boîtier du mouvement, 56 mm d'ordinaire) qui ne laisse que ce voile — usinée sur la
+// FACE DU DESSOUS (`face("dessous")` : le travail en deux faces s'active, retourner la planche entre les deux). Trou de
+// `d_axe` (8 à 8,5 pour le filetage M8 courant). LES REPÈRES : un trait par heure (plus long aux quarts), un trait court par minute
+// (`minutes` = 1). LES CHIFFRES : `chiffres` = 1 arabes, 2 romains, 0 aucun, à `retrait_chiffres` du bord ; le `mot` (vide :
+// aucun) sous le centre.
+//
+// L'USINAGE, dessus : repères, chiffres et mot (Gravure, Pointe V 90°, 1 mm ; les minutes 0,5), l'axe (Contour intérieur,
+// fraise droite Ø6), le cadran (Contour extérieur, onglets) ; dessous : le logement (Poche, fraise droite Ø6). Une teinte
+// dans les traits avant le ponçage.
+
+diametre   = 300;    // Ø du cadran (mm), ou côté s'il est carré
+carre      = 0;      // cadran carré aux coins arrondis (1 : oui, 0 : rond)
+d_axe      = 8.5;    // Ø du trou de l'axe du mouvement (mm)
+chiffres   = 1;      // 1 : arabes ; 2 : romains ; 0 : aucun
+minutes    = 1;      // un trait par minute (1 : oui, 0 : non)
+retrait_chiffres = 45;  // du bord au centre des chiffres (mm)
+mot        = "";     // un mot sous le centre (vide : aucun)
+police     = "Hershey Sans1";    // la police des chiffres et du mot
+epaisseur  = 12;     // épaisseur de la planche (mm)
+voile      = 5;      // bois que l'axe du mouvement traverse, au fond du logement (mm)
+mouvement  = 57;     // côté du logement du mouvement, au dos (mm) : son boîtier et un peu de jeu
+rognure    = 5;      // du bord du brut au cadran (mm)
+
+R = diametre / 2;
+c = [rognure + R, rognure + R];
+planche([diametre + 2 * rognure, diametre + 2 * rognure, epaisseur]);
+si (carre == 1) {
+    k = rect(c - [R, R], [diametre, diametre], 15);
+    nommer(#k, "cadran");
+} sinon {
+    k = cercle(c, R);
+    nommer(#k, "cadran");
+}
+a = cercle(c, d_axe / 2);
+nommer(#a, "axe");
+// Les repères : du bord vers le centre ; le cadran carré les garde sur le même cercle.
+re = R - 8;
+function u(deg) = [sin(deg), cos(deg)];         // 0 en haut, sens horaire
+pour (h = [0 : 11]) {
+    l = h % 3 == 0 ? 16 : 10;
+    g = ligne(c + re * u(30 * h), c + (re - l) * u(30 * h));
+    nommer(#g, "repère");
+}
+si (minutes == 1)
+    pour (m = [0 : 59])
+        si (m % 5 != 0) {
+            g = ligne(c + re * u(6 * m), c + (re - 4) * u(6 * m));
+            nommer(#g, "minute");
+        }
+// Les chiffres : centrés (sur leur encre) sur le cercle des chiffres, droits.
+noms = chiffres == 2 ? ["XII", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI"]
+                     : ["12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
+hc = min(0.09 * diametre, 30);
+si (chiffres > 0)
+    pour (h = [0 : 11]) {
+        s = noms[h];
+        M = mesure_texte(s, 10, police) / 10;
+        // les longs (XII, VIII) plus petits, pour tenir entre leurs voisins
+        hh = min(hc, 2 * PI * (R - retrait_chiffres) / 12 * 0.75 / max(M[3] - M[2], 1e-6));
+        q = c + (R - retrait_chiffres) * u(30 * h);
+        t = texte(q - hh * [(M[2] + M[3]) / 2, (M[4] + M[5]) / 2], hh, s, police = police);
+        nommer(#t, "chiffre");
+    }
+si (len(mot) > 0) {
+    M = mesure_texte(mot, 10, police) / 10;
+    hm = min(12, 0.5 * R / max(M[3] - M[2], 1e-6));
+    t = texte(c + [-hm * (M[2] + M[3]) / 2, -0.35 * R - hm * (M[4] + M[5]) / 2], hm, mot, police = police);
+    nommer(#t, "chiffre");
+}
+
+// ── Le logement du mouvement, au dos : sur la face du dessous, centré sous l'axe ──
+logement = epaisseur - voile > 0.5;
+si (logement) {
+    face("dessous");
+    m = rect(c - [mouvement / 2, mouvement / 2], [mouvement, mouvement], 3.2);
+    nommer(#m, "logement");
+    face("dessus");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "repère", outil = "Pointe V 90", profondeur = 1, nom = "Repères des heures");
+si (minutes == 1)
+    usinage("gravure", "minute", outil = "Pointe V 90", profondeur = 0.5, nom = "Repères des minutes");
+si (chiffres > 0 || len(mot) > 0)
+    usinage("gravure", "chiffre", outil = "Pointe V 90", profondeur = 1, nom = "Chiffres");
+usinage("contour", "axe", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1.5, nom = "Trou de l'axe");
+usinage("contour", "cadran", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2,
+        onglets = 4, onglet_long = 8, onglet_haut = 1.5, nom = "Cadran");
+si (logement)
+    usinage("poche", "logement", outil = "Fraise droite Ø6", profondeur = epaisseur - voile, passe = 3, nom = "Logement du mouvement (dessous)");

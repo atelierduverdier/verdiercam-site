@@ -1,0 +1,78 @@
+// BOÎTIER DE PÉDALE D'EFFET — le boîtier en bois d'une pédale de guitare, en strates : un fond, des cadres collés, un
+// dessus vissé qui porte tout — interrupteur au pied, trois potentiomètres, la LED, et les prises sur le DESSUS, à
+// l'arrière (« top jacks ») : on aligne les pédales côte à côte sans câbles qui dépassent sur les côtés.
+// thème : Électronique et boîtiers
+//
+// L'INTÉRIEUR : `longueur_interieure` × `largeur_interieure` × `hauteur_interieure`, des parois de `paroi`. LE DESSUS, percé :
+// l'interrupteur 3PDT (Ø12,2) devant, au milieu, loin des potentiomètres (le pied ne les touche pas) ; trois
+// potentiomètres (Ø7,2) ; la LED (Ø5,2) ; deux prises jack 6,35 (Ø9,5) et la prise d'alimentation (Ø12) à l'arrière. Sous
+// les potentiomètres et les prises, un LAMAGE par dessous ne laisse que `peau` de bois : leurs canons sont courts. Quatre
+// vis dans les parois tiennent le dessus.
+//
+// L'USINAGE : les lamages (Poche, face du dessous, fraise droite Ø6), les trous (Contour intérieur, fraise droite Ø3), les
+// ouvertures des cadres (Contour intérieur), puis les pièces (Contour extérieur, onglets). Contreplaqué de bouleau de 6 ;
+// un vernis dur sur le dessus (on marche dessus).
+
+longueur_interieure = 110;  // intérieur, d'avant en arrière (mm)
+largeur_interieure = 80;    // intérieur, en travers (mm)
+hauteur_interieure = 36;    // intérieur, en hauteur (mm)
+paroi      = 12;     // largeur des parois (mm)
+peau       = 3;      // le bois laissé sous les écrous des potentiomètres et des prises (mm)
+epaisseur  = 6;      // épaisseur (mm)
+espace     = 8;      // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  p = paroi;  Li = longueur_interieure;  Wi = largeur_interieure;
+L = Li + 2 * p;  W = Wi + 2 * p;               // le dehors ; x en travers, y d'avant (0) en arrière (L)
+nc = ceil(hauteur_interieure / ep);
+// les pièces du dessus, depuis le coin avant gauche du dehors : [x, y, Ø du trou, Ø du lamage (0 : aucun), nom]
+pieces = [[W / 2, p + 22, 12.2, 0, "interrupteur"],
+          [W / 2 - 26, p + 70, 7.2, 17, "potentiomètre"], [W / 2, p + 70, 7.2, 17, "potentiomètre"], [W / 2 + 26, p + 70, 7.2, 17, "potentiomètre"],
+          [W / 2, p + 50, 5.2, 0, "led"],
+          [W / 2 - 25, L - p - 13, 9.5, 19, "jack"], [W / 2 + 25, L - p - 13, 9.5, 19, "jack"], [W / 2, L - p - 13, 12, 18, "alimentation"]];
+si (peau < 2)
+    echo("Moins de 2 mm sous les écrous : le bois cassera.");
+nl = ceil((nc + 2) / 2);                       // les pièces sur deux rangées
+planche([nl * (W + espace) - espace + 2 * rognure, 2 * L + espace + 2 * rognure, epaisseur]);
+pour (k = [0 : nc + 1]) {
+    o = [rognure + (k % nl) * (W + espace), rognure + floor(k / nl) * (L + espace)];
+    a = rect(o, [W, L], 5);
+    nommer(#a, k == 0 ? "fond" : (k == nc + 1 ? "dessus" : "cadre"));
+    si (k > 0 && k <= nc) {
+        b = rect(o + [p, p], [Wi, Li], 3);
+        nommer(#b, "ouverture");
+    }
+    si (k == nc + 1) {
+        pour (q = pieces) {
+            t = cercle(o + [q[0], q[1]], q[2] / 2);
+            nommer(#t, str("trou ", q[4]));
+        }
+        pour (x = [p / 2, W - p / 2])
+            pour (y = [p / 2, L - p / 2]) {
+                v = cercle(o + [x, y], 1.6);
+                nommer(#v, "vis");
+            }
+        face("dessous");
+        pour (q = pieces)
+            si (q[3] > 0) {
+                l = cercle(o + [q[0], q[1]], q[3] / 2);
+                nommer(#l, "lamage");
+            }
+        face("dessus");
+    }
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "lamage", outil = "Fraise droite Ø6", profondeur = epaisseur - peau, passe = 1.5, nom = "Lamages");
+pour (n = ["interrupteur", "potentiomètre", "led", "jack", "alimentation"])
+    usinage("contour", str("trou ", n), outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1.5,
+            nom = str("Trou ", n));
+usinage("percage", "vis", outil = "Foret Ø3", profondeur = epaisseur, nom = "Trous de vis");
+usinage("contour", "ouverture", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 2,
+        nom = "Ouvertures");
+usinage("contour", "fond", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Fond");
+usinage("contour", "cadre", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Cadres");
+usinage("contour", "dessus", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Dessus");

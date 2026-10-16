@@ -1,0 +1,75 @@
+// ÉQUERRE À LUMIÈRES — une équerre plate en L, ses deux branches percées de lumières pour régler avant de serrer : coin
+// de cadre, renfort de châssis, support de capteur sur une machine, fixation réglable sur profilé aluminium.
+// thème : Technique et mécanique
+//
+// LA FORME : deux branches de `longueur` (depuis le coin extérieur) et de `largeur`, le coin extérieur arrondi de
+// `R_exterieur`, l'angle intérieur d'un congé de `R_interieur` (il renforce, et la fraise l'arrondit de toute façon). LES
+// LUMIÈRES : `lumieres` par branche, de `course` de réglage, larges de `d_vis` (5,5 pour du M5, 6,5 pour du M6) ; un trou
+// rond (`trou_coin`, 0 : aucun) dans le coin. Le contour est un seul trait (droites et arcs joints).
+//
+// L'USINAGE : lumières et trou (Contour intérieur, sans onglets), puis l'équerre (Contour extérieur, onglets). Aluminium
+// de 4 à 6 (fraise Ø3, régimes de l'atelier), ou contreplaqué de bouleau de 12.
+
+longueur   = 120;    // longueur d'une branche, depuis le coin extérieur (mm)
+largeur    = 30;     // largeur d'une branche (mm)
+R_exterieur = 8;     // rayon du coin extérieur et des bouts (mm)
+R_interieur = 10;    // rayon du congé de l'angle intérieur (mm)
+lumieres   = 2;      // lumières par branche
+course     = 15;     // course de réglage d'une lumière (mm)
+d_vis      = 5.5;    // largeur des lumières (mm) : le Ø de la vis plus le jeu
+trou_coin  = 5.5;    // Ø du trou du coin (mm, 0 : aucun)
+epaisseur  = 6;      // épaisseur (mm)
+rognure    = 5;      // du bord du brut à l'équerre (mm)
+
+L = longueur;  W = largeur;  Re = min(R_exterieur, W / 2 - 0.5);  Ri = R_interieur;
+nl = max(0, round(lumieres));
+planche([L + 2 * rognure, L + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+function P(x, y) = o + [x, y];
+// Le contour, dans le sens trigonométrique depuis le coin extérieur (en bas à gauche) : le bas de la branche horizontale,
+// son bout arrondi, son dessus jusqu'au congé, le congé, le côté de la branche verticale, son bout, son dos.
+a = arc(P(Re, Re), P(0, Re), P(Re, 0));                         // le coin extérieur
+b = ligne(P(Re, 0), P(L - Re, 0));
+joindre(#a, #b);
+c = arc(P(L - Re, Re), P(L - Re, 0), P(L, Re));
+joindre(#a, #c);
+d = ligne(P(L, Re), P(L, W - Re));
+joindre(#a, #d);
+e = arc(P(L - Re, W - Re), P(L, W - Re), P(L - Re, W));
+joindre(#a, #e);
+f = ligne(P(L - Re, W), P(W + Ri, W));
+joindre(#a, #f);
+g = arc(P(W + Ri, W + Ri), P(W, W + Ri), P(W + Ri, W));       // le congé intérieur (creux : de la branche verticale à l'horizontale)
+joindre(#a, #g);
+h = ligne(P(W, W + Ri), P(W, L - Re));
+joindre(#a, #h);
+i = arc(P(W - Re, L - Re), P(W, L - Re), P(W - Re, L));
+joindre(#a, #i);
+j = ligne(P(W - Re, L), P(Re, L));
+joindre(#a, #j);
+k = arc(P(Re, L - Re), P(Re, L), P(0, L - Re));
+joindre(#a, #k);
+m = ligne(P(0, L - Re), P(0, Re));
+joindre(#a, #m);
+nommer(#a, "équerre");
+
+// Les lumières, sur l'axe de chaque branche, réparties entre le congé et le bout.
+x0 = W + Ri + 8;  x1 = L - Re - 4;
+pour (q = [0 : nl - 1]) {
+    s = nl == 1 ? (x0 + x1) / 2 : x0 + (course + d_vis) / 2 + q * ((x1 - x0) - (course + d_vis)) / (nl - 1);
+    u = oblong(P(s, W / 2), course + d_vis, d_vis);
+    nommer(#u, "lumière");
+    v = oblong(P(W / 2, s), course + d_vis, d_vis, 90);
+    nommer(#v, "lumière");
+}
+si (trou_coin > 0) {
+    t = cercle(P(W / 2, W / 2), trou_coin / 2);
+    nommer(#t, "lumière");
+}
+si (nl > 1 && ((x1 - x0) - (course + d_vis)) / (nl - 1) < course + d_vis + 4)
+    echo("Les lumières se touchent : des branches plus longues, ou moins de lumières.");
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "lumière", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1, nom = "Lumières");
+usinage("contour", "équerre", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1,
+        onglets = 3, onglet_long = 4, onglet_haut = 1, nom = "Équerre");

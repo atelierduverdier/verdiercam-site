@@ -1,0 +1,83 @@
+// JEU DE PALETS (CORNHOLE) — les plateaux inclinés percés d'un trou où l'on lance des sacs de grains, et leurs pieds
+// pliants : le jeu de jardin que les ateliers CNC vendent peint ou gravé aux couleurs d'une équipe.
+// thème : Jeux et jouets
+//
+// LES COTES RÉGLEMENTAIRES (ACL, l'association américaine du cornhole) : un plateau de 24 × 48 pouces (610 × 1 220 mm),
+// un trou de 6 pouces (152 mm) dont le centre est à 9 pouces (229 mm) du bord haut, centré en largeur ; le haut du
+// plateau à 12 pouces (305 mm) du sol. `echelle` les réduit pour un jeu de table (0,5 : 305 × 610, trou de 76).
+// `jeux` plateaux (deux pour une partie).
+//
+// CE QUI SORT DE LA PLANCHE : chaque plateau (contreplaqué de 18), son trou, un liseré gravé à `lisere` du bord et un
+// anneau gravé autour du trou ; deux pieds par plateau, à bout arrondi, percés pour leur axe (un boulon Ø10). Le cadre
+// sous le plateau se fait en tasseaux du commerce (2 × 4 pouces, 38 × 89) : les pieds s'y vissent au bout haut.
+//
+// L'USINAGE : liseré et anneau (Gravure, Pointe V 90°, 1 mm), le trou et les axes (Contour intérieur, fraise droite Ø6),
+// puis les plateaux et les pieds (Contour extérieur, fraise droite Ø6, onglets).
+
+echelle    = 1;      // 1 : réglementaire ; 0.5 : jeu de table
+jeux       = 2;      // nombre de plateaux
+epaisseur  = 18;     // épaisseur du contreplaqué (mm)
+lisere     = 25;     // le liseré gravé, à cette distance du bord (mm, 0 : aucun)
+anneau     = 1;      // un anneau gravé autour du trou (1 : oui, 0 : non)
+pieds      = 1;      // découper les pieds (1 : oui, 0 : non)
+d_axe      = 10;     // Ø de l'axe des pieds (mm)
+espace     = 12;     // entre deux pièces (mm)
+rognure    = 10;     // du bord du brut aux pièces (mm)
+
+e = echelle;
+Lp = 610 * e;  Hp = 1220 * e;                 // le plateau
+D = 152 * e;                                  // le trou
+yt = Hp - 229 * e;                            // son centre, depuis le bas du plateau
+lp = 89 * e;                                  // largeur d'un pied (celle du tasseau)
+// La longueur d'un pied : le haut du plateau à 305 × e du sol, son bas à 2,5 pouces (64 × e) — le pied tient l'arrière,
+// sous le cadre ; son axe à mi-largeur du bout arrondi.
+Lpied = round(sqrt(pow(305 * e - lp, 2) + pow(lp, 2)) + lp);
+n = max(1, round(jeux));
+xp = rognure + n * (Lp + espace);             // la colonne des pieds
+planche([xp + (pieds == 1 ? 2 * n * (lp + espace) - espace : -espace) + rognure, Hp + 2 * rognure, epaisseur]);
+
+pour (k = [0 : n - 1]) {
+    o = [rognure + k * (Lp + espace), rognure];
+    p = rect(o, [Lp, Hp]);
+    nommer(#p, "plateau");
+    t = cercle(o + [Lp / 2, yt], D / 2);
+    nommer(#t, "trou");
+    si (lisere > 0) {
+        l = rect(o + [lisere, lisere], [Lp - 2 * lisere, Hp - 2 * lisere], 6);
+        nommer(#l, "liseré");
+    }
+    si (anneau == 1) {
+        a = cercle(o + [Lp / 2, yt], D / 2 + 15 * e);
+        nommer(#a, "anneau");
+    }
+}
+
+// ── Les pieds : debout, côte à côte ; le bout arrondi en haut, l'axe au centre de l'arrondi ──
+si (pieds == 1)
+    pour (k = [0 : 2 * n - 1]) {
+        c = [xp + k * (lp + espace), rognure];
+        f = polyligne([c + [lp, Lpied - lp / 2], c + [lp, 0], c, c + [0, Lpied - lp / 2]]);
+        b = arc(c + [lp / 2, Lpied - lp / 2], c + [lp, Lpied - lp / 2], c + [0, Lpied - lp / 2]);
+        joindre(#f, #b);
+        nommer(#f, "pied");
+        x = cercle(c + [lp / 2, Lpied - lp / 2], d_axe / 2);
+        nommer(#x, "axe");
+    }
+echo(str("Plateau ", Lp, " × ", Hp, " mm, trou Ø", D, " à ", 229 * e, " mm du haut ; pieds de ", Lpied, " mm."));
+si (Hp + 2 * rognure > 1220)
+    echo(str("Le plateau réglementaire prend toute la hauteur d'une feuille de 2 440 × 1 220 : le détourer demande ",
+             Hp + 2 * rognure, " mm de brut — ou une feuille plus grande, ou `echelle` = 0.98 (1 196 mm)."));
+
+// ── L'USINAGE, déclaré ──
+si (lisere > 0)
+    usinage("gravure", "liseré", outil = "Pointe V 90", profondeur = 1, nom = "Liserés");
+si (anneau == 1)
+    usinage("gravure", "anneau", outil = "Pointe V 90", profondeur = 1, nom = "Anneaux");
+usinage("contour", "trou", outil = "Fraise droite Ø6", cote = "interieur", profondeur = epaisseur, passe = 3, nom = "Trous");
+si (pieds == 1) {
+    usinage("contour", "axe", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Axes des pieds");
+    usinage("contour", "pied", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+            onglets = 2, onglet_long = 8, onglet_haut = 2, nom = "Pieds");
+}
+usinage("contour", "plateau", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 6, onglet_long = 10, onglet_haut = 2, nom = "Plateaux");

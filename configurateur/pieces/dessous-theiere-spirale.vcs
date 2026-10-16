@@ -1,0 +1,43 @@
+// DESSOUS DE THÉIÈRE EN SPIRALE — un disque traversé d'une spirale d'ajours : l'air passe sous la théière, le bois ne
+// marque pas la table, et la spirale tient d'une seule pièce grâce aux PONTS qui la coupent tous les quarts de tour.
+// thème : Cuisine
+//
+// LE DISQUE : Ø`diametre`. LA SPIRALE : une spirale d'Archimède de `pas_spirale` d'une spire à la suivante, de `rayon_depart`
+// au bord moins `marge` ; fraisée de part en part à la fraise Ø6 (des fentes de 6), coupée tous les quarts de tour par un
+// PONT de `pont` de bois. Entre deux spires, le pas moins 6 de bois.
+//
+// L'USINAGE : la spirale (Rainure, fraise droite Ø6, toute l'épaisseur), puis le disque (Contour extérieur, onglets).
+// Chêne ou frêne de 15 ; quatre patins de liège dessous.
+
+diametre   = 180;    // Ø du disque (mm)
+pas_spirale = 16;    // d'une spire à la suivante (mm)
+rayon_depart = 14;   // rayon où la spirale commence (mm)
+marge      = 16;     // du bout de la spirale au bord (mm)
+pont       = 10;     // longueur des ponts (mm)
+epaisseur  = 15;     // épaisseur (mm) : 18 au plus pour la fraise Ø6
+rognure    = 5;      // du bord du brut au disque (mm)
+
+R = diametre / 2;  b = pas_spirale / 360;      // la spirale : r = r0 + b θ (θ en degrés)
+r0 = rayon_depart;  tmax = (R - marge - 3 - r0) / b;
+nq = floor(tmax / 90);                         // les quarts de tour
+function rs(t) = r0 + b * t;
+function ps(t) = [rs(t) * cos(t), rs(t) * sin(t)];
+// un quart de tour, raccourci aux deux bouts de la moitié d'un pont plus le rayon de la fraise : l'angle de la corde, et 5 %
+// de marge (les deux bouts d'un pont ne sont pas tout à fait au même rayon)
+function d_ang(t) = 1.05 * asin((pont / 2 + 3) / rs(t));
+si (pas_spirale < 6 + 8)
+    echo("Moins de 8 mm de bois entre deux spires : un pas plus grand.");
+planche([2 * R + 2 * rognure, 2 * R + 2 * rognure, epaisseur]);
+c = [rognure + R, rognure + R];
+d = cercle(c, R);
+nommer(#d, "disque");
+pour (k = [0 : nq - 1]) {
+    t0 = 90 * k + d_ang(90 * k);  t1 = 90 * (k + 1) - d_ang(90 * (k + 1));
+    s = polyligne([for (i = [0 : 12]) c + ps(t0 + (t1 - t0) * i / 12)]);
+    nommer(#s, "spirale");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("rainure", "spirale", outil = "Fraise droite Ø6", profondeur = epaisseur, passe = 3, nom = "Spirale");
+usinage("contour", "disque", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Disque");

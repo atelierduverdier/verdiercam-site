@@ -1,0 +1,67 @@
+// FAÇADE OLED ET ENCODEUR — le panneau avant d'un petit montage (une station météo, une commande de machine, un
+// minuteur) : la fenêtre d'un écran OLED de 0,96″, un bouton rotatif EC11, deux boutons-poussoirs. Le bois est aminci par
+// DERRIÈRE là où il le faut : l'écran colle au plus près de sa fenêtre, les écrous des canons trouvent assez de filet.
+// thème : Électronique et boîtiers
+//
+// L'ÉCRAN : un module de `l_module` × `h_module` (la carte), sa partie visible de `l_ecran` × `h_ecran`, décalée de
+// `decalage_ecran` vers le haut de la carte ; une FENÊTRE à la taille visible plus 0,5 autour, et derrière elle un LOGEMENT
+// de la carte plus 0,3, creusé jusqu'à ne laisser que `peau`. L'ENCODEUR : un trou de Ø`d_encodeur`, un LAMAGE de Ø20 par
+// derrière à la même peau (le canon fileté de l'EC11 est court). LES BOUTONS : deux trous de Ø`d_bouton`. Quatre trous de
+// vis aux coins. Les cotes du module varient d'un vendeur à l'autre : LES RELEVER au pied à coulisse.
+//
+// L'USINAGE : les logements et les lamages (Poche, face du dessous, fraise droite Ø6), la fenêtre et les trous (Contour
+// intérieur, fraise droite Ø3), puis la façade (Contour extérieur, onglets). Contreplaqué de bouleau ou noyer de 6.
+
+l_module   = 27.3;   // largeur de la carte de l'écran (mm) — à relever
+h_module   = 27.8;   // hauteur de la carte (mm) — à relever
+l_ecran    = 22;     // largeur de la partie visible (mm) — à relever
+h_ecran    = 11;     // hauteur de la partie visible (mm) — à relever
+decalage_ecran = 2.5;  // le centre de la partie visible, au-dessus du centre de la carte (mm) — à relever
+d_encodeur = 7.2;    // Ø du trou de l'encodeur (canon M7) (mm)
+d_bouton   = 7;      // Ø des trous des boutons-poussoirs (mm)
+peau       = 2;      // le bois laissé devant l'écran et sous les écrous (mm)
+longueur   = 110;    // longueur de la façade (mm)
+hauteur    = 60;     // hauteur de la façade (mm)
+epaisseur  = 6;      // épaisseur (mm)
+rognure    = 5;      // du bord du brut à la façade (mm)
+
+L = longueur;  H = hauteur;
+ce = [30, H / 2];                              // le centre de la carte de l'écran
+cr = [L - 25, H / 2 + 6];                      // l'encodeur
+cb = [[L - 50, 16], [L - 25, 16 - 2]];         // les boutons
+si (peau < 1.5)
+    echo("Moins de 1,5 mm de peau : le bois cassera.");
+planche([L + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+f = rect(o, [L, H], 5);
+nommer(#f, "façade");
+w = rect(o + ce + [-l_ecran / 2 - 0.5, decalage_ecran - h_ecran / 2 - 0.5], [l_ecran + 1, h_ecran + 1], 1.5);
+nommer(#w, "fenêtre");
+e = cercle(o + cr, d_encodeur / 2);
+nommer(#e, "trou");
+pour (b = cb) {
+    t = cercle(o + b, d_bouton / 2);
+    nommer(#t, "trou");
+}
+pour (x = [6, L - 6])
+    pour (y = [6, H - 6]) {
+        v = cercle(o + [x, y], 1.6);
+        nommer(#v, "vis");
+    }
+face("dessous");
+m = rect(o + ce - [l_module / 2 + 0.3, h_module / 2 + 0.3], [l_module + 0.6, h_module + 0.6], 3);
+nommer(#m, "logement");
+la = cercle(o + cr, 10);
+nommer(#la, "lamage");
+face("dessus");
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "logement", outil = "Fraise droite Ø6", profondeur = epaisseur - peau, passe = 2, nom = "Logement de l'écran");
+usinage("poche", "lamage", outil = "Fraise droite Ø6", profondeur = epaisseur - peau, passe = 2, nom = "Lamage de l'encodeur");
+usinage("contour", "fenêtre", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1.5,
+        nom = "Fenêtre");
+usinage("contour", "trou", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1.5,
+        nom = "Trous");
+usinage("percage", "vis", outil = "Foret Ø3", profondeur = epaisseur, nom = "Trous de vis");
+usinage("contour", "façade", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Façade");

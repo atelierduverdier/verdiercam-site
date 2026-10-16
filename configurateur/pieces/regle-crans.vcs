@@ -1,0 +1,59 @@
+// RÈGLE DE TRAÇAGE À CRANS — le trusquin du menuisier, en plus simple : la règle pose sur la planche, son TALON court le
+// long du chant ; la pointe du crayon dans un trou, on glisse, et le trait tombe parallèle au chant, à la distance lue.
+// thème : Atelier et gabarits
+//
+// LA RÈGLE : `largeur` de large, assez longue pour `portee` au-delà du talon. LE TALON est le bout de la règle laissé à
+// pleine épaisseur : tout le reste est creusé par DESSOUS de `hauteur_talon` ; la face intérieure du talon, celle qui
+// touche le chant, est la RÉFÉRENCE. LES TROUS du crayon : un tous les `pas` depuis la référence, en deux rangées en
+// zigzag (le bois tient entre deux trous voisins) ; un trait gravé à chaque trou, plus long tous les centimètres, le
+// nombre de centimètres gravé à côté.
+//
+// L'USINAGE : la feuillure du dessous (Poche, face du dessous), les traits et les nombres (Gravure, Pointe V 90°), les
+// trous (Perçage, Foret Ø3), puis la règle (Contour extérieur, onglets). Hêtre ou érable de 12 ; un crayon à mine fine.
+
+portee     = 150;    // distance tracée la plus grande, depuis le chant (mm)
+pas        = 5;      // d'un trou au suivant (mm)
+largeur    = 40;     // largeur de la règle (mm)
+talon      = 15;     // longueur du talon, à pleine épaisseur (mm)
+hauteur_talon = 6;   // le talon descend de tant le long du chant (mm)
+epaisseur  = 12;     // épaisseur (mm)
+rognure    = 5;      // du bord du brut à la règle (mm)
+
+W = largeur;  n = floor(portee / pas);
+Lr = talon + n * pas + 10;                     // la règle
+ya = W / 2 - 4;  yb = W / 2 + 4;               // les deux rangées de trous
+si (hauteur_talon > epaisseur - 4)
+    echo("Le talon laisse moins de 4 mm de règle : moins haut.");
+si (pas < 3)
+    echo("Un pas de moins de 3 : les trous de Ø3 se touchent.");
+planche([Lr + 2 * rognure, W + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+r = rect(o, [Lr, W], 3);
+nommer(#r, "règle");
+pour (k = [1 : n]) {
+    x = talon + k * pas;
+    t = cercle(o + [x, k % 2 == 0 ? ya : yb], 1.5);
+    nommer(#t, "trou");
+    cm = (k * pas) % 10 == 0;
+    g = ligne(o + [x, W], o + [x, W - (cm ? 8 : 4)]);
+    nommer(#g, "trait");
+    si (cm) {
+        s = str(k * pas / 10);
+        M = mesure_texte(s, 10, "Hershey Sans1") / 10;
+        e = texte(o + [x - 3.5 * (M[2] + M[3]) / 2, 3], 3.5, s, police = "Hershey Sans1");
+        nommer(#e, "nombre");
+    }
+}
+// Le dessous creusé au-delà du talon (débordant de la règle, pour s'ouvrir franchement) ; la référence en x = talon.
+face("dessous");
+f = rect(o + [talon, -3], [Lr - talon + 3, W + 6]);
+nommer(#f, "feuillure");
+face("dessus");
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "feuillure", outil = "Fraise droite Ø8", profondeur = hauteur_talon, passe = 3, nom = "Feuillure du dessous");
+usinage("gravure", "trait", outil = "Pointe V 90", profondeur = 0.4, nom = "Traits");
+usinage("gravure", "nombre", outil = "Pointe V 90", profondeur = 0.4, nom = "Nombres");
+usinage("percage", "trou", outil = "Foret Ø3", profondeur = epaisseur, nom = "Trous du crayon");
+usinage("contour", "règle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Règle");

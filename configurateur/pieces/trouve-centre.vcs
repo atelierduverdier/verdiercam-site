@@ -1,0 +1,49 @@
+// TROUVE-CENTRE — pour tracer le centre d'un rond (un bout de rondin, un disque, une pièce à tourner) : on le pousse dans
+// le V, on tire un trait le long de la règle ; on tourne d'un quart de tour, un second trait ; ils se croisent au centre.
+// thème : Atelier et gabarits
+//
+// LA BASE : une plaque échancrée d'un V à 90°, de `profondeur_v` ; ses deux flancs sont les butées. LA RÈGLE, collée
+// dessus, a son chant exactement sur la bissectrice du V : deux chevilles (Ø5) la posent juste, aux mêmes cotes dans la base
+// et dans la règle. Un rond qui touche les deux flancs a son centre sur la bissectrice, donc sous le chant de la règle.
+//
+// L'USINAGE : les trous des chevilles (Perçage, Foret Ø5), puis la base et la règle (Contour extérieur, onglets). Une
+// fraise droite détoure le V à 90° exact. Contreplaqué de bouleau de 6, ou de l'acrylique.
+
+largeur    = 140;    // largeur de la base (mm)
+hauteur    = 120;    // hauteur de la base (mm)
+profondeur_v = 55;   // profondeur du V (mm) : un rond jusqu'à ≈ 2 × cette profondeur
+largeur_regle = 30;  // largeur de la règle (mm)
+epaisseur  = 6;      // épaisseur (mm)
+espace     = 10;     // entre les deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+W = largeur;  H = hauteur;  a = profondeur_v;  wr = largeur_regle;
+Lr = H + 50;                                   // la règle dépasse le haut de la base de 50
+yt = [15, H - a - 15];                         // les chevilles, le long de la règle (sous elle, dans la base pleine)
+si (H - a < 40)
+    echo("Le V descend presque au bas de la base : moins profond, ou une base plus haute.");
+planche([W + espace + wr + 2 * rognure, max(H, Lr) + 2 * rognure, epaisseur]);
+
+// ── La base : le V au milieu du haut, ses flancs à 45° de part et d'autre de l'axe ──
+o = [rognure, rognure];
+b = polyligne([o, o + [W, 0], o + [W, H], o + [W / 2 + a, H], o + [W / 2, H - a], o + [W / 2 - a, H], o + [0, H]], fermee = vrai);
+nommer(#b, "base");
+pour (y = yt) {
+    c = cercle(o + [W / 2 + wr / 2, y], 2.5);
+    nommer(#c, "cheville");
+}
+// ── La règle : son chant gauche sur l'axe quand ses trous tombent sur ceux de la base ──
+orr = [rognure + W + espace, rognure];
+r = rect(orr, [wr, Lr]);
+nommer(#r, "règle");
+pour (y = yt) {
+    c = cercle(orr + [wr / 2, y], 2.5);
+    nommer(#c, "cheville");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("percage", "cheville", outil = "Foret Ø5", profondeur = epaisseur, nom = "Trous des chevilles");
+usinage("contour", "règle", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1.5,
+        onglets = 2, onglet_long = 4, onglet_haut = 1, nom = "Règle");
+usinage("contour", "base", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1.5,
+        onglets = 3, onglet_long = 4, onglet_haut = 1, nom = "Base");

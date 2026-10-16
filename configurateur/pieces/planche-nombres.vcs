@@ -1,0 +1,62 @@
+// PLANCHE DES NOMBRES — le jeu d'éveil façon Montessori : les chiffres de 1 à 10 gravés, et sous chacun autant de trous
+// où l'enfant plante ses chevilles ; une réserve creusée en bas pour les ranger. Compter, c'est remplir.
+// thème : Jeux et jouets
+//
+// LES COLONNES : de 1 à `jusqua`, chacune de `largeur_colonne`, le chiffre gravé en haut, ses trous dessous sur deux
+// files (au pas `pas_trou`), de `d_trou` (une cheville de Ø10, avec 0,3 de jeu pour qu'un petit l'enfonce et la retire)
+// creusés de `prof_trou`. La RÉSERVE : une poche aux coins ronds en bas de la planche, pour toutes les chevilles.
+//
+// L'USINAGE : les chiffres (Gravure, Pointe V 90°, 1,5 mm), les trous (Poche, fraise droite Ø6 — un fond plat), la
+// réserve (Poche), puis la planche (Contour extérieur, onglets). Bois dur, arêtes adoucies, huile alimentaire.
+
+jusqua     = 10;     // le plus grand nombre (jusqu'à 10)
+largeur_colonne = 34; // largeur d'une colonne (mm)
+d_trou     = 10.3;   // Ø des trous (mm) : la cheville et un peu de jeu
+prof_trou  = 10;     // profondeur des trous (mm)
+pas_trou   = 15;     // d'un trou au suivant (mm)
+reserve    = 1;      // la réserve des chevilles (1 : oui, 0 : non)
+hauteur_reserve = 45; // hauteur de la réserve (mm)
+police     = "Hershey Sans1";    // la police des chiffres
+epaisseur  = 18;     // épaisseur de la planche (mm)
+marge      = 12;     // des bords au jeu (mm)
+rognure    = 5;      // du bord du brut à la planche (mm)
+
+n = min(max(round(jusqua), 1), 10);
+rangs = ceil(n / 2);                           // la plus haute colonne de trous
+hc = 16;                                       // la hauteur des chiffres
+W = 2 * marge + n * largeur_colonne;
+Ht = rangs * pas_trou;                         // la zone des trous
+H = 2 * marge + hc + 8 + Ht + (reserve == 1 ? 10 + hauteur_reserve : 0);
+planche([W + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+p = rect(o, [W, H], 8);
+nommer(#p, "planche");
+y_haut = H - marge - hc - 8;                   // le haut de la zone des trous
+pour (k = [1 : n]) {
+    xc = marge + (k - 0.5) * largeur_colonne;
+    s = str(k);
+    M = mesure_texte(s, 10, police) / 10;
+    t = texte(o + [xc - hc * (M[2] + M[3]) / 2, H - marge - hc], hc, s, police = police);
+    nommer(#t, "chiffre");
+    // les trous : deux files, de haut en bas ; un nombre impair finit au milieu
+    pour (i = [0 : k - 1]) {
+        x = (k % 2 == 1 && i == k - 1) ? xc : xc + (i % 2 == 0 ? -1 : 1) * pas_trou / 2;
+        q = cercle(o + [x, y_haut - pas_trou / 2 - floor(i / 2) * pas_trou], d_trou / 2);
+        nommer(#q, "trou");
+    }
+}
+si (reserve == 1) {
+    r = rect(o + [marge, marge], [W - 2 * marge, hauteur_reserve], 12);
+    nommer(#r, "réserve");
+}
+si (largeur_colonne < pas_trou + d_trou + 4)
+    echo("Les colonnes sont trop étroites pour deux files de trous : plus larges, ou un pas plus petit.");
+echo(str(n * (n + 1) / 2, " chevilles de Ø", d_trou - 0.3, "."));
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "chiffre", outil = "Pointe V 90", profondeur = 1.5, nom = "Chiffres");
+usinage("poche", "trou", outil = "Fraise droite Ø6", profondeur = prof_trou, passe = 3, nom = "Trous des chevilles");
+si (reserve == 1)
+    usinage("poche", "réserve", outil = "Fraise droite Ø6", profondeur = prof_trou, passe = 3, nom = "Réserve");
+usinage("contour", "planche", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Planche");

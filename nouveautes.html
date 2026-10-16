@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#fdfcfa">
+<title>VerdierCAM — les nouveautés, version par version</title>
+<meta name="description" content="Ce qui change dans VerdierCAM, jour après jour : les fonctions ajoutées, les défauts corrigés, avec les numéros de version.">
+<link rel="canonical" href="https://verdiercam.fr/nouveautes.html">
+<link rel="icon" type="image/svg+xml" href="/oiseau.f8508e8c.svg">
+<link rel="preload" href="/polices/Inter-Regular.8af6cbde.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/style/verdiercam.45347f36.css">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VerdierCAM">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="VerdierCAM — les nouveautés, version par version">
+<meta property="og:description" content="Ce qui change dans VerdierCAM, jour après jour : les fonctions ajoutées, les défauts corrigés, avec les numéros de version.">
+<meta property="og:url" content="https://verdiercam.fr/nouveautes.html">
+<meta property="og:image" content="https://verdiercam.fr/partage/carte.b7f5d0cc.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="VerdierCAM">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="saut" href="#contenu">Aller au contenu</a>
+
+<header class="barre">
+  <div class="cadre barre-dedans">
+    <a class="marque" href="/" aria-label="VerdierCAM, accueil">
+      <img src="/oiseau.f8508e8c.svg" alt="" width="30" height="30">
+      <span>Verdier<b>CAM</b></span>
+    </a>
+    <nav class="menu" id="menu-sections" aria-label="Sections">
+      <a href="/#parcours">Le parcours</a>
+      <a href="/#usinage">Opérations</a>
+      <a href="/#modes">Modes</a>
+      <a href="/premiers-pas.html">Premiers pas</a>
+      <a href="/installer.html">Installer</a>
+      <a href="/pieces.html">Pièces</a>
+      <a href="/configurateur/">Configurateur</a>
+      <a href="/nouveautes.html">Nouveautés</a>
+      <a href="/#sortie">Sortie</a>
+      <a href="/#questions">Questions</a>
+    </nav>
+    <button class="menu-bouton" type="button" aria-expanded="false" aria-controls="menu-sections">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14"/></svg><span>Menu</span>
+    </button>
+    <a class="bouton bouton-plein petit" href="/#sortie">Être prévenu</a>
+    
+  </div>
+</header>
+
+<main id="contenu">
+<!-- VerdierCAM — « Nouveautés ». Le texte de chaque jour vient de site/nouveautes.json (écrit pour qui
+     usine, d'après l'historique du logiciel) ; les numéros de version se lisent dans cet historique à la
+     génération, jamais à la main. Voir nouveautes_en_html() dans site/generer.py. -->
+
+<div class="heros papier pp-heros">
+  <div class="cadre">
+    <div class="pp-intro apparait">
+      <span class="surtitre">Nouveautés</span>
+      <h1>Ce qui change, jour après jour</h1>
+      <p class="accroche">
+        VerdierCAM avance par petites versions : chaque correction, chaque fonction ajoutée
+        monte le numéro d'un cran. Voici, en clair, ce que chaque journée de travail a apporté.
+        Version en cours : <b>0.9.645</b>.
+      </p>
+    </div>
+  </div>
+</div>
+
+<section class="nouveautes">
+  <div class="cadre">
+<article class="journee apparait" id="j2026-10-16">
+  <div class="journee-quand">
+    <time datetime="2026-10-16">vendredi 16 octobre</time>
+    <span class="journee-version">0.9.552 à 0.9.645</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Des variables dans le croquis, un solveur cent fois plus rapide, et 33 pièces de plus</h2>
+    <ul>
+      <li>Croquis : les cotes acceptent des variables — une cote suit « A », et taper « A = 32 » la crée ; elles ont leur onglet « Variables », à droite à côté de Contraintes, et celles d'un script joué y apparaissent ; un script collé dans la console se joue d'un bloc.</li>
+      <li>Croquis plus rapide : le solveur découpe le dessin en blocs indépendants — l'échiquier se calcule en 0,07 s au lieu de 25, le différentiel en 0,6 s au lieu de 19,5.</li>
+      <li>Pièces paramétriques : 33 pièces de plus, 134 en tout — échappement à ancre, différentiel plat, gabarit de queues d'aronde, butée d'onglet, jeu de go, boîte à musique, lampe en dentelle, porte-épices aimanté, support de Raspberry Pi 5… ; leur usinage suit l'épaisseur et les variables (profondeur, départ, passe, fraise), et s'exporte avec ses calculs ; la fenêtre grandit avec l'écran.</li>
+      <li>Reliefs et gravure 2.5D : l'ébauche et la finition se règlent dans le même panneau, sous deux onglets Ébauche | Finition, et « Mettre à jour l'usinage » met à jour les deux ; la fraise d'ébauche se choisit dans la bibliothèque d'outils ; l'ébauche adaptative peut « rester au fond entre les fronts ».</li>
+      <li>Pilotage : la recherche nomme les cartes branchées en USB ou en réseau — GRBL, Grbl_ESP32, FluidNC, grblHAL, même sans son nom ; « Lancer » prévient des lignes que la carte refusera et d'une vitesse de broche hors de ses limites ($30/$31) ; les erreurs 9 et 14 sont expliquées en clair.</li>
+      <li>Configurateur en ligne : la pièce s'y voit usinée en 3D, chaque opération à sa profondeur ; elle se tourne au doigt, se pince, se regarde par-dessous ; le lien partagé garde les valeurs réglées.</li>
+      <li>Diagnostic : si VerdierCAM ne démarre pas, il dit ce qui manque à la carte graphique (Vulkan) ; un utilitaire de diagnostic fait le tour du poste, livré dans l'AppImage (« --diagnostic »), et son rapport se copie, sous Windows aussi.</li>
+      <li>Corrigé : avec « rester en bas », une rainure ouverte d'une seule passe repartait en coupe, en ligne droite, vers le début du trait — sur un arc, jusqu'à 11,7 mm hors de la saignée ; l'ARRÊT pendant un déplacement manuel ne fait plus perdre la position (ALARM:3) ; le labyrinthe du catalogue passe de nouveau en Simulation.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-15">
+  <div class="journee-quand">
+    <time datetime="2026-10-15">jeudi 15 octobre</time>
+    <span class="journee-version">0.9.464 à 0.9.551</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Un catalogue de 86 pièces, des parcours plus courts, et le croquis tiré d'un G-code</h2>
+    <ul>
+      <li>Dessin › Pièces paramétriques… : 86 pièces prêtes à régler et à usiner, rangées par thème (jeux et jouets, rangement, atelier et gabarits, cuisine, décoration, boîtiers…) : planche à découper, boîte à doigts, échiquier, horloge, nichoir, casier à bouteilles, gabarit système 32, poulie, pantographe… ; un texte gravé s'y règle aussi, un prénom par exemple.</li>
+      <li>Pièces paramétriques : le script d'une pièce s'ouvre dans l'éditeur de votre choix (Préférences › Général › Éditeur de texte), ou dans celui de VerdierCAM, avec ses numéros de ligne.</li>
+      <li>Simuler un G-code : « Faire le croquis des coupes » relit un programme reçu sans dessin et en refait le croquis, à usiner avec vos propres outils ; l'outil se lit dans le nom du fichier (« 1_5mm », « 15deg ») ; « Ajouter un G-code à la suite… » enchaîne les fichiers d'une même pièce, et un bilan dit le temps passé au-dessus du bois.</li>
+      <li>Poche : l'angle de balayage se choisit seul, celui qui donne le parcours le plus court ; le zigzag tourne avec l'angle et ses demi-tours s'arrondissent ; une trochoïde en D ; la rampe à 3° se fait en un seul aller-retour.</li>
+      <li>Haut rendement : aussi en ébauche 3D adaptative, en couches de la longueur utile de la fraise, l'avance compensée ; et une finition 3D en anneaux qui suit le contour.</li>
+      <li>Parcours plus courts : les traits d'un texte gravé se soudent et s'enchaînent, les tronçons se rangent mieux, les hélices partent en vrais arcs, les passes 3D sont allégées sans perdre de précision.</li>
+      <li>Corrigé : la reprise au crayon et un tronçon retourné pouvaient plonger en rapide dans le bois ; la moulure sautait parfois un coin ; « rester en bas » changeait la matière enlevée au surfaçage ; un palpage refusé n'est plus annoncé « zéro refait » ; aucun outil n'est plus envoyé plus profond que sa longueur utile.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-14">
+  <div class="journee-quand">
+    <time datetime="2026-10-14">mercredi 14 octobre</time>
+    <span class="journee-version">0.9.425 à 0.9.463</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Assemblages à dents, calques, une simulation des deux faces, VerdierCAM sur Raspberry Pi 5</h2>
+    <ul>
+      <li>Raspberry Pi 5 : VerdierCAM tourne sur un Pi 5 en 64 bits, même sous l'image LinuxCNC, pour retoucher un dessin, simuler et piloter à côté de la machine. Pour moi, c'est le vrai gain : j'utilise le logiciel directement sur le lieu d'usinage, sans repasser par le bureau, qui est loin.</li>
+      <li>Dessin › Créer › Assemblage à dents… : un trait devient denté (queues droites ou queues d'aronde vues de dessus, mâle ou femelle, avec le jeu par flanc), un panneau de boîte à doigts, une clé papillon et son logement, aux pointes arrondies au rayon de la fraise.</li>
+      <li>Affichage › Calques… : ranger le dessin par usage, cacher ou verrouiller un calque, le choisir d'un clic ; les calques d'un DXF importé sont gardés, et repartent dans le DXF exporté.</li>
+      <li>Venu de QCAD : l'aire nette d'une pièce percée et son centre de gravité, choisir les contours intérieurs ou extérieurs, éclater une forme, allonger une ligne, des trous posés depuis un fichier de points (CSV) ; et un texte en police pleine qui suit une courbe.</li>
+      <li>Simulation : « Les deux » joue le dessus, puis retourne la planche à l'écran et joue le dessous ; « Aller à » une opération, et la liste du G-code suit la fraise ; elle prévient quand la queue ou le porte-outil frotte le bois.</li>
+      <li>Machine › Course &amp; broche › Pince : ER11 à ER32, avec le Ø de l'écrou ; un outil sans écrou à lui prend celui de la machine en service. La fiche d'une fraise dessinée cote le Ø de la tête sous la pointe, celui de la queue sur la queue.</li>
+      <li>Gravure en V : la fraise droite de dégagement se choisit dans la section même, la pointe ne change plus. Recalculer propose de prendre les formes nouvellement choisies — un rectangle ajouté autour du motif, par exemple.</li>
+      <li>Croquis : « Compléter les cotes » passe de 4 min 34 à 7 s sur un DXF de 25 formes, et propose de verrouiller plutôt que de semer mille cotes ; Suppr efface quel que soit l'outil en main ; le clic droit termine une polyligne au lieu de la perdre ; une barre d'icônes pour montrer ou cacher grille, cotes, contraintes, numéros, axes.</li>
+      <li>Fichier › Importer › Dessins récents : les dix derniers SVG, DXF ou esquisses FreeCAD, relus d'un clic. Usinage et Simulation : les traits du croquis se cachent d'un clic dans la légende.</li>
+      <li>Fichiers : VerdierCAM a sa propre fenêtre Ouvrir et Enregistrer, avec vignettes des SVG et DXF, favoris et dossiers récents, quand celle du système ne s'ouvre pas (sur le Pi, par exemple) ; un clic ouvre un dossier.</li>
+      <li>Corrigé : sous Windows, le téléchargement des modèles d'IA échouait (certificats HTTPS) ; la zone cliquée d'une poche filait ailleurs quand on changeait les cotes de son contour.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-13">
+  <div class="journee-quand">
+    <time datetime="2026-10-13">mardi 13 octobre</time>
+    <span class="journee-version">0.9.362 à 0.9.424</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Graver une image, imprimer en couleurs, usiner un relief par paliers</h2>
+    <ul>
+      <li>Fichier › Graver une image… : une image en aplats de couleur, en trois écrans. Chaque couleur hors de la pièce, creusée, en relief à sa hauteur ou fondue dans sa voisine ; un clic sur un morceau le met à part, à sa propre hauteur.</li>
+      <li>À la fraise : vos fraises droites, chacune avec la part de matière qu'elle enlève et sa durée ; ce qu'elle ne peut pas atteindre se voit en rouge, avant de graver.</li>
+      <li>À l'imprimante 3D : un solide STL fermé, ou un 3MF en couleurs que Bambu Studio et Orca lisent pièce par pièce, au bon filament ; le nombre de filaments se règle (4 pour une AMS lite).</li>
+      <li>Relief à imprimer : chaque forme fermée monte de son bas à son haut ; « Usiner le relief » en fait une poche par palier à la fraise droite, puis le détourage — murs droits, fonds plats.</li>
+      <li>Fichier › Exporter la pièce finie (STL) : la pièce que laissent les parcours, en un solide fermé.</li>
+      <li>Usinage : la fraise se choisit dans l'onglet Outil, rangée par famille, avec recherche et silhouette.</li>
+      <li>Croquis : le rayon d'un cercle ne change plus quand son centre bouge ; deux contraintes qui se contredisent sont nommées ; point sur une courbe de Bézier.</li>
+      <li>Corrigé : changer la planche gelait le logiciel sur un grand dessin importé ; le clic qui valide une valeur traçait parfois une forme en plus.</li>
+    </ul>
+    <figure class="capture journee-capture"><div class="fenetre"><img src="/captures/graver-fraise.3c96dfad.webp" width="1920" height="1080" loading="lazy" alt="Graver une image : la fraise choisie, ce qu&#x27;elle laisse en rouge."></div><figcaption>Graver une image : la fraise choisie, ce qu'elle laisse en rouge.</figcaption></figure>
+    <figure class="capture journee-capture"><div class="fenetre"><img src="/captures/relief-paliers.dbec2b81.webp" width="1920" height="1080" loading="lazy" alt="Le même insigne usiné par paliers, simulé dans le bois."></div><figcaption>Le même insigne usiné par paliers, simulé dans le bois.</figcaption></figure>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-12">
+  <div class="journee-quand">
+    <time datetime="2026-10-12">lundi 12 octobre</time>
+    <span class="journee-version">0.9.297 à 0.9.361</span>
+  </div>
+  <div class="journee-texte">
+    <h2>L'onglet Relief, des menus rangés, un Annuler qui couvre tout</h2>
+    <ul>
+      <li>Onglet Relief, en quatre étapes — Formes, Façonner, Vérifier, Usiner : des contours du croquis bombés ou creusés, des images en gris (PNG, JPEG, PGM) et des modèles 3D (STL, OBJ) posés à l'échelle, un profil de moulure promené le long d'un trait. La pile devient une carte de hauteurs, usinée en Gravure 2.5D : l'ébauche, puis la finition à la boule, les fraises prises dans votre bibliothèque.</li>
+      <li>Le bombé peut suivre la largeur de chaque endroit (un manche qui s'affine), monter jusqu'à des arêtes tracées dans la forme, s'incliner ; les formes de la pile s'ajoutent, se retirent, gardent le plus haut ou le plus bas, ou se multiplient.</li>
+      <li>Croquis : diviser aux intersections, diviser un trait en N points, inverser le sens d'un contour ; cercle par deux ou par trois points ; arc tangent, qui prolonge une ligne sans cassure ; Dessin › Marquer comme › Verrouiller / déverrouiller fige une forme.</li>
+      <li>Dessin › Raccorder › Congé entre deux cercles : l'arc qui les touche tous deux par l'extérieur, de son rayon coté — les grands arcs rentrants entre des bossages ronds, d'un geste ; les ciseaux coupent ensuite les cercles à leurs points de contact.</li>
+      <li>Fichier › Exporter le dessin › Gabarit PDF à l'échelle 1 : le dessin en vraie grandeur sur des feuilles A4 à assembler, avec un carré de 50 mm à mesurer après impression.</li>
+      <li>Imbriquer : les copies peuvent rester liées à l'original — une cote changée les suit — et entrer dans les mêmes opérations.</li>
+      <li>Les menus rangés : Dessin en trois sections, Ctrl+K cherche une commande par quelques lettres (Outils › Rechercher une commande…), un clic droit sur la sélection propose ce qu'on peut en faire. Affichage › Panneaux ramène un panneau perdu dans son coin ; Affichage › Zoom sur une fenêtre (Ctrl+B).</li>
+      <li>Annuler couvre tout : une commande de la console ou un script entier s'annule d'un coup, comme les réglages du brut, les post-its et l'image de fond.</li>
+      <li>Corrigé, après une relecture de toute la journée : un plantage en ramenant tous les panneaux ; le sens inversé d'un trou perdu à l'enregistrement ; un relief trop haut avec « suivre la largeur » ; une forme verrouillée qui bougeait encore aux flèches ; Ctrl+K qui marquait le document modifié ; un cercle qui grandissait quand on changeait la cote qui le place.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-11">
+  <div class="journee-quand">
+    <time datetime="2026-10-11">dimanche 11 octobre</time>
+    <span class="journee-version">0.9.270 à 0.9.296</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Une IA aux commandes, n'importe quel G-code simulé, le creux d'une cuillère</h2>
+    <ul>
+      <li>Outils › Intelligence artificielle : un assistant (Claude Desktop, Claude Code ou tout client MCP) se branche d'un clic. Il dessine, pose les usinages, regarde le résultat et écrit le G-code de votre machine — dans son dossier seulement, jamais la machine, et seulement si vous l'avez autorisé.</li>
+      <li>Fichier › Simuler un G-code : un programme écrit par un autre logiciel se rejoue dans la simulation — la matière qui se creuse, la pièce finie, la vue en coupe. Rien ne part à la machine.</li>
+      <li>Dessin › Creux ou bombé depuis le contour : un contour fermé devient un creux arrondi (une cuillère, un vide-poche) ou un bombé, usiné en Gravure 2.5D — l'ébauche, puis la finition à la boule.</li>
+      <li>Le DXF exporté s'ouvre partout (calques déclarés, un contour d'un seul tenant, arcs gardés) ; à l'import, les textes se gravent et les points deviennent des points ou des trous.</li>
+      <li>Croquis : un miroir par un axe quelconque — deux points cliqués —, l'original gardé ; pendant le tracé, l'accroche finit un trait tangent à un cercle ou d'équerre, la contrainte posée.</li>
+      <li>Chaque opération peut avoir sa propre couleur de parcours.</li>
+      <li>Une poche par zone usine la zone telle qu'on l'a cliquée, et un bout de trait posé sur un contour ne fait plus fuir la zone. Des bords ouverts qui se suivent s'élargissent en une seule bande, et les zones se calculent une fois, pas à chaque image.</li>
+      <li>Croquis : un cercle déplacé par une contrainte garde son rayon ; Coïncidence et Point sur objet posent le centre d'un cercle sur une ligne ou un axe, et deux cercles deviennent concentriques ; la symétrie de trois points prend celui du milieu pour pivot, dans n'importe quel ordre.</li>
+      <li>Sous « Par passe », les passes qui seront faites s'affichent (4 + 4 + 2) ; après un ARRÊT, le message de la carte dit comment reprendre.</li>
+      <li>Corrigé : le plantage du panneau Brut après « Créer une fraise » ou « Nouveau ».</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-10">
+  <div class="journee-quand">
+    <time datetime="2026-10-10">samedi 10 octobre</time>
+    <span class="journee-version">0.9.245 à 0.9.269</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Pièces paramétriques et croquis plus complet</h2>
+    <ul>
+      <li>Le croquis s'exporte en pièce paramétrique : chaque cote devient une variable nommée. Dessin › Pièces paramétriques… les règle et les insère.</li>
+      <li>Un configurateur de pièces sur ce site : le cœur du logiciel tourne dans le navigateur.</li>
+      <li>Exemples en script : un labyrinthe à bille, un engrenage droit à développante de cercle.</li>
+      <li>Croquis : mesurer sans contraindre, couper un trait en un point, tourner ou mettre à l'échelle autour d'un point cliqué, polygone sur plats.</li>
+      <li>Coter l'écart entre deux cercles ; congé et chanfrein entre une ligne et un arc ; « Compléter les cotes » pose celles qui manquent, sans rien faire bouger.</li>
+      <li>Poche concentrique ou en spirale : le centre est usiné, et les raccords ne traversent plus les îlots.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-09">
+  <div class="journee-quand">
+    <time datetime="2026-10-09">vendredi 9 octobre</time>
+    <span class="journee-version">0.9.224 à 0.9.244</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Imbrication et réseaux liés</h2>
+    <ul>
+      <li>Imbriquer sur la plaque : des pièces quelconques posées au plus serré, jusque dans les trous, en évitant les brides.</li>
+      <li>Réseaux liés à l'original : une cote changée sur la première pièce change toute la série.</li>
+      <li>Mettre à l'échelle pour remplir le brut, sans déformer le dessin.</li>
+      <li>Gravure en V entre les traits : ce qui sera creusé se peint sur le dessin avant le calcul.</li>
+      <li>La bibliothèque d'outils importe celles de Fusion 360, et accepte vos propres familles de fraises.</li>
+      <li>Sécurité du G-code : la fraise remonte après chaque outil, un programme périmé n'est plus exporté, une ligne refusée par la carte met en pause.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-08">
+  <div class="journee-quand">
+    <time datetime="2026-10-08">jeudi 8 octobre</time>
+    <span class="journee-version">0.9.178 à 0.9.221</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Fraises spéciales, post-its et vue en coupe</h2>
+    <ul>
+      <li>Rainure en T, queue d'aronde et trou de serrure, avec la vérification que la gorge est creusée d'abord et que la tige ne frotte pas.</li>
+      <li>La simulation garde les creux sous la surface, et une vue en coupe glissante montre le profil exact.</li>
+      <li>Des post-its sur la vue, pour vos notes et la photo de vos croquis papier, enregistrés avec le document.</li>
+      <li>Dessin › Contour extérieur : le seul tour d'un dessin compliqué, en une forme fermée.</li>
+      <li>Dessin › Spirale, textures « Martelé » et « Vagues », et l'ellipse tracée à la souris.</li>
+      <li>Import DXF et SVG plus fidèles : arrondis des polylignes justes, contours presque fermés refermés.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-07">
+  <div class="journee-quand">
+    <time datetime="2026-10-07">mercredi 7 octobre</time>
+    <span class="journee-version">0.9.150 à 0.9.177</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Choisir ses zones d'un clic</h2>
+    <ul>
+      <li>Usinage : cliquer dans une surface choisit la zone, Ctrl+clic en ajoute ou en retire, puis Poche.</li>
+      <li>Ouvrir les bords d'une poche posés sur le tour de la pièce : la fraise sort dans le brut.</li>
+      <li>Import FreeCAD : toute une pièce d'un coup, chaque esquisse à sa place.</li>
+      <li>Vue 3D orthographique ou en perspective, aux mêmes touches que FreeCAD.</li>
+      <li>Pilotage : grands curseurs d'avance et de broche, et l'ondulation de broche contre le broutement.</li>
+      <li>Surépaisseur négative, pour une fraise usée ou un ajustement serré.</li>
+      <li>Aide › Signaler un problème et Aide › Suggérer une idée, captures d'écran comprises.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-06">
+  <div class="journee-quand">
+    <time datetime="2026-10-06">mardi 6 octobre</time>
+    <span class="journee-version">0.9.122 à 0.9.149</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Le croquis en script</h2>
+    <ul>
+      <li>La console construit un croquis entier, et un script façon OpenSCAD (variables, boucles, modules) pilote le dessin.</li>
+      <li>Gravure 2.5D : l'ébauche et la finition ont chacune leur fraise, leur motif et leur angle, et l'ébauche s'arrête à ce que la finition reprendra.</li>
+      <li>Relief par IA : le sommet du relief n'est plus aplati.</li>
+      <li>Thème clair, et des infobulles compactes.</li>
+      <li>La rampe ne coupe plus la pièce en revenant ; le dépassement suit tout le contour.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-05">
+  <div class="journee-quand">
+    <time datetime="2026-10-05">lundi 5 octobre</time>
+    <span class="journee-version">0.9.81 à 0.9.121</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Le mode Débutant en dessins</h2>
+    <ul>
+      <li>Chaque réglage du mode Débutant se pose sur un dessin agrandi : contour, onglets, perçage, deux faces, profondeurs.</li>
+      <li>Gravure en V à fond plat sans relevages de la pointe ; rainure trochoïdale qui fait sa largeur et sort à bouts plats.</li>
+      <li>Convertir une polyligne en courbe de Bézier.</li>
+      <li>Créer une fraise en la dessinant dans un croquis à part.</li>
+      <li>La queue et le porte-outil sont contrôlés sur la matière simulée : une collision arrête l'export.</li>
+      <li>Une profondeur plus grande que le brut est bornée, et le logiciel le dit.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-04">
+  <div class="journee-quand">
+    <time datetime="2026-10-04">dimanche 4 octobre</time>
+    <span class="journee-version">0.9.68 à 0.9.80</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Trois modes de travail</h2>
+    <ul>
+      <li>Trois modes, Débutant, Intermédiaire et Pro, expliqués à l'accueil.</li>
+      <li>Gravure 2.5D : un modèle 3D ébauché et fini en une opération.</li>
+      <li>Lire et écrire les réglages de la carte ($$ de GRBL et grblHAL, arbre de FluidNC) depuis le Pilotage.</li>
+      <li>Les cotes se tapent pendant le tracé ; quatre traits bout à bout font un contour fermé.</li>
+      <li>La version Linux se livre aussi en archive .tar.gz, qui garde le droit d'exécution.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-03">
+  <div class="journee-quand">
+    <time datetime="2026-10-03">samedi 3 octobre</time>
+    <span class="journee-version">0.9.53 à 0.9.67</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Cotes et moulures</h2>
+    <ul>
+      <li>Cotes horizontale et verticale au ruban ; cote d'un point à une ligne ; l'angle posé est celui qu'on voit.</li>
+      <li>Le profil de la moulure se voit dans la vue, au départ du rail.</li>
+      <li>FluidNC reconnu à son identité : un tampon de 1 024 octets au lieu de 128.</li>
+      <li>Réseaux en direct pendant qu'on les règle.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-02">
+  <div class="journee-quand">
+    <time datetime="2026-10-02">vendredi 2 octobre</time>
+    <span class="journee-version">0.9.35 à 0.9.52</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Le pupitre de pilotage refait</h2>
+    <ul>
+      <li>Un pupitre neuf : vitesses Précis et Rapide, pavé avec obliques, palpeur illustré à cinq modes.</li>
+      <li>Atelier Pilotage en plein écran : G-code et console, reprise à une ligne.</li>
+      <li>La version Windows et l'AppImage Linux, essayée sur trois distributions.</li>
+      <li>Les ciseaux gardent les contraintes ; Fichier › Exemples.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-01">
+  <div class="journee-quand">
+    <time datetime="2026-10-01">jeudi 1 octobre</time>
+    <span class="journee-version">0.9.1 à 0.9.34</span>
+  </div>
+  <div class="journee-texte">
+    <h2>La 0.9 : deux faces et plusieurs repères</h2>
+    <ul>
+      <li>Usiner les deux faces : pièce recentrée, goupilles symétriques, perçages du dessous au bon endroit.</li>
+      <li>La même pièce sur plusieurs repères, de G54 à G59.3.</li>
+      <li>La table de la machine et ses brides en 3D ; onglets montrés en surbrillance.</li>
+      <li>Lire le fichier .ini d'une machine LinuxCNC dans les réglages.</li>
+      <li>Le G-code passe par un post-processeur par famille de machines : MASSO, Mach3, Mach4 et UCCNC reviennent (expérimental).</li>
+      <li>Durées justes sur les arcs et les plongées ; import DXF, SVG et photos fidèles.</li>
+    </ul>
+  </div>
+</article>
+  </div>
+</section>
+
+</main>
+
+<footer class="pied">
+  <div class="cadre pied-dedans">
+    <div class="pied-marque">
+      <a class="marque" href="/">
+        <img src="/oiseau.f8508e8c.svg" alt="" width="26" height="26">
+        <span>Verdier<b>CAM</b></span>
+      </a>
+      <p>CAO/FAO pour défonceuse CNC, écrite à
+        l'<a href="https://atelierduverdier.fr">Atelier du Verdier</a>.<br>
+        © 2026 Atelier du Verdier.</p>
+    </div>
+    <nav class="pied-liens" aria-label="Liens">
+      <a href="mailto:contact@verdiercam.fr">contact@verdiercam.fr</a>
+      <a href="https://www.youtube.com/@VerdierCAM">YouTube</a>
+      <a href="/nouveautes.html">Nouveautés</a>
+      <a href="https://atelierduverdier.fr">Atelier du Verdier</a>
+      <a href="/mentions-legales.html">Mentions légales</a>
+      <a href="/confidentialite.html">Confidentialité</a>
+    </nav>
+  </div>
+</footer>
+
+<div class="visionneuse" hidden role="dialog" aria-modal="true" aria-label="Capture agrandie">
+  <img alt="">
+  <button type="button" aria-label="Fermer">×</button>
+</div>
+
+<script src="/style/verdiercam.4403e944.js" defer></script>
+<script>
+  window.goatcounter = { path: function (p) { return '/verdiercam' + p } };
+</script>
+<script data-goatcounter="https://atelierduverdier.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

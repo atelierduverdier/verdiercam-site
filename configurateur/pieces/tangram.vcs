@@ -1,0 +1,51 @@
+// TANGRAM — le casse-tête chinois : sept pièces taillées dans un carré (deux grands triangles, un moyen, deux petits, un
+// carré, un parallélogramme) qui refont un chat, une maison, un cygne… et leur plateau, où elles se rangent en carré.
+// thème : Jeux et jouets
+//
+// LES PIÈCES : le carré de `cote` découpé selon le tracé classique (un quadrillage de 4 × 4), chaque pièce taillée à part,
+// posées en deux rangées. LE PLATEAU : une plaque, creusée d'un carré de `cote` plus le `jeu` de chaque côté, profond de
+// `profondeur_plateau` : les pièces y entrent toutes, et dépassent pour se prendre. Ses coins sont dégagés (l'angle droit du
+// triangle moyen va jusqu'au fond).
+//
+// L'USINAGE : la cuvette du plateau (Poche, coins dégagés), puis les pièces et le plateau (Contour extérieur, onglets).
+// Bois dur de 9 ; deux essences contrastées font un beau jeu.
+
+cote       = 200;    // côté du carré refait (mm)
+jeu        = 0.4;    // jeu des pièces dans le plateau, par côté (mm)
+profondeur_plateau = 6;  // profondeur de la cuvette du plateau (mm)
+bord       = 25;     // largeur du bord du plateau (mm)
+epaisseur  = 9;      // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+u = cote / 4;  g = espace;
+// Le tracé classique, en quarts de côté : [nom, sommets]
+pieces = [["grand triangle", [[0, 0], [4, 0], [2, 2]]], ["grand triangle", [[0, 0], [2, 2], [0, 4]]],
+          ["triangle moyen", [[4, 2], [4, 4], [2, 4]]], ["carré", [[2, 2], [3, 1], [4, 2], [3, 3]]],
+          ["petit triangle", [[3, 1], [4, 0], [4, 2]]], ["petit triangle", [[1, 3], [2, 2], [3, 3]]],
+          ["parallélogramme", [[0, 4], [1, 3], [3, 3], [2, 4]]]];
+// Où chaque pièce va sur la planche (le coin bas-gauche de sa boîte, en mm) : trois grandes en haut, quatre en bas.
+places = [[0, 2 * u + g], [4 * u + g, 2 * u + g], [6 * u + 2 * g, 2 * u + g], [0, 0], [2 * u + g, 0], [3 * u + 2 * g, 0], [5 * u + 3 * g, 0]];
+function mini(pts, k) = min([for (q = pts) q[k]]);
+P = cote + 2 * bord;
+planche([max(8 * u + 3 * g, 8 * u + 2 * g) + espace + P + 2 * rognure, max(6 * u + g, P) + 2 * rognure, epaisseur]);
+pour (k = [0 : 6]) {
+    pts = pieces[k][1];
+    o = [rognure, rognure] + places[k] - u * [mini(pts, 0), mini(pts, 1)];
+    q = polyligne([for (s = pts) o + u * s], fermee = vrai);
+    nommer(#q, "pièce");
+}
+op = [rognure + 8 * u + 3 * g + espace, rognure];
+pl = rect(op, [P, P], 8);
+nommer(#pl, "plateau");
+cv = rect(op + [bord - jeu, bord - jeu], [cote + 2 * jeu, cote + 2 * jeu]);
+nommer(#cv, "cuvette");
+si (profondeur_plateau > epaisseur - 3)
+    echo("La cuvette perce presque le plateau : moins profonde.");
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "cuvette", outil = "Fraise droite Ø6", coins = "dogbone", profondeur = profondeur_plateau, passe = 3, nom = "Cuvette");
+usinage("contour", "pièce", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Pièces");
+usinage("contour", "plateau", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Plateau");

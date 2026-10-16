@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#fdfcfa">
+<title>VerdierCAM — logiciel CAO/FAO pour CNC bois, Linux et Windows</title>
+<meta name="description" content="Dessiner la pièce, calculer les parcours de la défonceuse CNC, simuler la matière et envoyer le G-code à GRBL, grblHAL ou LinuxCNC, dans un seul logiciel : croquis contraint, gravure en V, bas-relief depuis une photo, 18 familles d'opérations. Licence perpétuelle, sans abonnement. Sortie prochaine.">
+<link rel="canonical" href="https://verdiercam.fr/">
+<link rel="icon" type="image/svg+xml" href="oiseau.f8508e8c.svg">
+<link rel="preload" href="polices/Inter-Regular.8af6cbde.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style/verdiercam.45347f36.css">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VerdierCAM">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="VerdierCAM — logiciel CAO/FAO pour CNC bois, Linux et Windows">
+<meta property="og:description" content="Dessiner la pièce, calculer les parcours de la défonceuse CNC, simuler la matière et envoyer le G-code à GRBL, grblHAL ou LinuxCNC, dans un seul logiciel : croquis contraint, gravure en V, bas-relief depuis une photo, 18 familles d'opérations. Licence perpétuelle, sans abonnement. Sortie prochaine.">
+<meta property="og:url" content="https://verdiercam.fr/">
+<meta property="og:image" content="https://verdiercam.fr/partage/carte.b7f5d0cc.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="VerdierCAM">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="saut" href="#contenu">Aller au contenu</a>
+
+<header class="barre">
+  <div class="cadre barre-dedans">
+    <a class="marque" href="" aria-label="VerdierCAM, accueil">
+      <img src="oiseau.f8508e8c.svg" alt="" width="30" height="30">
+      <span>Verdier<b>CAM</b></span>
+    </a>
+    <nav class="menu" id="menu-sections" aria-label="Sections">
+      <a href="#parcours">Le parcours</a>
+      <a href="#usinage">Opérations</a>
+      <a href="#modes">Modes</a>
+      <a href="premiers-pas.html">Premiers pas</a>
+      <a href="installer.html">Installer</a>
+      <a href="pieces.html">Pièces</a>
+      <a href="configurateur/">Configurateur</a>
+      <a href="nouveautes.html">Nouveautés</a>
+      <a href="#sortie">Sortie</a>
+      <a href="#questions">Questions</a>
+    </nav>
+    <button class="menu-bouton" type="button" aria-expanded="false" aria-controls="menu-sections">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14"/></svg><span>Menu</span>
+    </button>
+    <a class="bouton bouton-plein petit" href="#sortie">Être prévenu</a>
+    
+  </div>
+</header>
+
+<main id="contenu">
+<!-- VerdierCAM — la page d'accueil de verdiercam.fr.
+
+     Rien n'est recopié à la main : la version, le nombre et la liste des
+     familles d'opérations se lisent dans le dépôt du logiciel ; les
+     captures et les clips dans realisations/presentation-verdiercam, que
+     capturer.sh refait en rejouant des scénarios dans le vrai logiciel.
+     Voir site/generer.py.
+
+     Chaque affirmation de cette page a été vérifiée dans le code du
+     logiciel avant d'être écrite. Une fonction ajoutée ici sans l'avoir
+     vue dans le code est une promesse, pas une description.
+
+     La page se lit comme une planche de dessin : un papier quadrillé,
+     des cotes, des repères numérotés en mono — et l'orange de l'oiseau
+     pour le parcours de la fraise. -->
+
+<div class="heros papier">
+  <div class="cadre heros-haut">
+    <div class="heros-texte">
+      <svg class="oiseau" viewBox="0 0 256 256" role="img" aria-label="L'oiseau de VerdierCAM"><g transform="translate(13.72,31.78) scale(0.3927)">
+<g fill="none" stroke="#ff8a00" stroke-width="20" stroke-linecap="round" stroke-linejoin="round">
+  <path class="passe" d="M 40 38 C 170 70 296 112 358 152 C 332 202 300 248 262 284 C 196 274 104 176 40 38 Z"/>
+  <path class="passe" d="M 268 268 C 304 214 334 168 358 138 C 374 92 402 50 444 46 C 472 44 484 62 496 74 C 514 76 530 84 542 96 C 524 106 504 112 488 112 C 492 162 486 220 468 266 C 450 310 412 336 356 344"/>
+  <path class="passe" d="M 358 152 C 394 194 398 248 366 280 C 334 308 294 300 258 282"/>
+  <path class="passe" d="M 358 152 C 286 254 196 360 116 444 C 172 432 218 400 256 360"/>
+</g>
+<path class="plein" d="M 284 348 L 348 316 L 350 376 Z" fill="#ff8a00"/>
+<path class="rapide" d="M0 0"/><circle class="fraise" r="13" cx="0" cy="0"/></g></svg>
+      <p class="etiquette"><i></i> <a href="nouveautes.html">Version 0.9.645</a> · sortie prochaine</p>
+      <h1>Du croquis <em>au copeau</em>, dans une seule fenêtre.</h1>
+      <p class="accroche">
+        VerdierCAM dessine la pièce, calcule les parcours, simule la matière enlevée
+        et pilote la défonceuse. Pensé dans un atelier de menuiserie, pour le bois
+        d'abord — et éprouvé sur une vraie machine.
+      </p>
+      <div class="actions">
+        <a class="bouton bouton-plein" href="#sortie">Être prévenu de la sortie</a>
+        
+        <a class="bouton bouton-clair" href="premiers-pas.html">Suivre les premiers pas</a>
+        <a class="bouton bouton-clair" href="#presentation">Voir la présentation en vidéo <span aria-hidden="true">↓</span></a>
+      </div>
+      <p class="essai-heros">À la sortie : <b>15 jours d'essai complets</b>, sans carte bancaire.
+        Ensuite, <b>le dessin et la simulation restent gratuits</b> ; la licence sert à écrire le G-code
+        et à piloter la machine.</p>
+    </div>
+    <ul class="fiche" aria-label="En bref">
+      <li>Linux et Windows</li>
+      <li>18 familles d'opérations</li>
+      <li>Pensé et écrit en français</li>
+      <li>Licence perpétuelle, sans abonnement</li>
+    </ul>
+  </div>
+
+  <div class="cadre large">
+    <div class="vitrine apparait">
+      <figure class="fenetre fenetre-heros">
+        <img src="captures/drakkar.01ff4001.webp" width="1920" height="1080" fetchpriority="high"
+             alt="VerdierCAM en simulation : un drakkar sculpté en bas-relief dans un brut de bois, tiré d'une photo par le relief par IA. L'arbre des opérations à gauche, la simulation en bas.">
+      </figure>
+      <figure class="loupe">
+        <img src="captures/drakkar-detail.28ddc3b3.webp" width="1200" height="675" loading="lazy"
+             alt="Gros plan sur le relief simulé : la proue du drakkar et les vagues, creusées dans le bois avec sa veinure">
+        <figcaption>Le relief simulé, veinure comprise. Calculé <b>sur votre ordinateur</b>, sans connexion.</figcaption>
+      </figure>
+    </div>
+    <p class="cote">Capture réelle de la version 0.9.645</p>
+  </div>
+</div>
+
+<section class="chiffres" aria-label="En quelques chiffres">
+  <div class="cadre">
+    <ul>
+      <li><b>18</b><span>familles d'opérations</span></li>
+      <li><b>8</b><span>commandes numériques servies</span></li>
+      <li><b>2</b><span>systèmes, Linux et Windows</span></li>
+      <li><b>0</b><span>abonnement</span></li>
+      <li><b>0</b><span>connexion pour travailler</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- LA PRÉSENTATION EN VIDÉO (14/10/2026, Christophe : « la vidéo YouTube en plus de présentation »). Une image d'ici et
+     un bouton : YouTube ne se charge qu'au clic (youtube-nocookie), la page ne demande toujours rien à Google avant.
+     Sans script, le lien mène à la vidéo sur YouTube. -->
+<section id="presentation" class="papier">
+  <div class="cadre">
+    <div class="tete apparait">
+      <span class="surtitre">La présentation · en vidéo</span>
+      <h2>Le logiciel en marche, commenté à l'atelier</h2>
+      <p>Les trois niveaux, les ateliers Croquis, Relief, Usinage, Simulation et Pilotage, les menus, la bibliothèque
+        d'outils et une fraise dessinée de bout en bout — montrés et commentés par Christophe, dans le vrai logiciel.</p>
+    </div>
+    <div class="video-yt apparait" data-youtube="I5C7q1V670c">
+      <a class="video-yt-lien" href="https://youtu.be/I5C7q1V670c">
+        <img src="captures/levier.6881f53d.webp" width="1920" height="1080" loading="lazy"
+             alt="Image d'attente de la vidéo : un levier contraint dans le croquis de VerdierCAM">
+        <span class="video-yt-lecture" aria-hidden="true"></span>
+        <span class="video-yt-titre">Présentation de VerdierCAM <small>— lire la vidéo</small></span>
+      </a>
+    </div>
+    <p class="cote">Lue sur YouTube, au clic seulement</p>
+  </div>
+</section>
+
+<!-- L'histoire : les mots de Christophe (11/10/2026, à ChatGPT : « je ne vise aucun marché, j'ai juste été
+     frustré au début de ne pas trouver de logiciel sympa facile et pas cher… »), à peine remis en ordre. -->
+<section id="pourquoi" class="histoire">
+  <div class="cadre">
+    <div class="histoire-texte apparait">
+      <span class="surtitre">Pourquoi VerdierCAM</span>
+      <h2>Le logiciel que je n'ai pas trouvé</h2>
+      <p>Quand j'ai commencé la CNC, je cherchais un logiciel sympa, facile et pas cher. Je ne l'ai pas
+        trouvé. J'ai bidouillé entre plusieurs logiciels, plus ou moins performants : dessiner dans
+        l'un, calculer les parcours dans l'autre, envoyer le programme avec un troisième.</p>
+      <p>Et je n'avais pas envie de mettre plusieurs centaines d'euros dans un logiciel qui ne tourne
+        que sous Windows, alors que je travaille sous Linux.</p>
+      <p>Alors je l'ai fait. Je ne vise aucun marché : VerdierCAM, c'est l'outil que j'aurais aimé
+        trouver en commençant. Tout dans une seule fenêtre, sous Linux comme sous Windows, à un prix
+        qui ne fait pas hésiter.</p>
+      <p>Et depuis qu'il tourne sur le Raspberry Pi 5 de la machine, je l'utilise directement sur le lieu
+        d'usinage, sans repasser par le bureau, qui est loin.</p>
+      <p class="signature">Christophe, Atelier du Verdier</p>
+    </div>
+  </div>
+</section>
+
+<section id="parcours" class="papier">
+  <div class="cadre">
+    <div class="tete apparait">
+      <span class="surtitre">Le parcours · un seul document</span>
+      <h2>Dessiner. Préparer. Vérifier avant de couper.</h2>
+      <p>Une cote change dans le croquis : les parcours se recalculent, la simulation suit,
+        la machine reçoit le bon programme. Sans export entre deux logiciels.</p>
+    </div>
+
+    <div class="parcours">
+      <ol class="jalons" aria-label="Les quatre établis">
+        <li><span class="num">01</span><h3>Croquis</h3>
+          <p>Tracer, contraindre, coter. Importer un SVG, un DXF ou une esquisse FreeCAD.</p></li>
+        <li><span class="num">02</span><h3>Usinage</h3>
+          <p>Choisir les formes, l'opération, la fraise. Les parcours se calculent en tâche de fond.</p></li>
+        <li><span class="num">03</span><h3>Simulation</h3>
+          <p>Voir le bois se creuser, passe après passe, avant de lancer la machine.</p></li>
+        <li><span class="num">04</span><h3>Pilotage</h3>
+          <p>Envoyer le programme à une machine GRBL ou grblHAL, depuis la même fenêtre.</p></li>
+      </ol>
+
+      <div class="vues">
+        <figure class="vue apparait">
+          <span class="num">01 · Croquis</span>
+          <div class="fenetre">
+            <video src="captures/clip-cote.6b6da82b.mp4" poster="captures/clip-cote.3dccfc73.webp"
+                   width="1920" height="1080" muted loop playsinline controls preload="none" data-auto
+                   aria-label="Tracé d'une forme dans VerdierCAM : la longueur et l'angle se tapent au clavier pendant le tracé"></video>
+          </div>
+          <figcaption>La cote se tape <b>pendant le tracé</b> : la longueur, Tab, l'angle, Entrée.</figcaption>
+        </figure>
+        <figure class="vue apparait">
+          <span class="num">02 · Usinage</span>
+          <div class="fenetre">
+            <img src="captures/cadre-parcours.b2966885.webp" width="1920" height="1080" loading="lazy"
+                 alt="Un cadre en bois en vue 3D, avec les parcours d'ébauche en orange et de finition en bleu tracés sur le brut">
+          </div>
+          <figcaption>Un cadre : poche, profils, ébauche puis finition à la cote. L'ébauche en orange, la finition en bleu, sur le brut en 3D.</figcaption>
+        </figure>
+        <figure class="vue apparait">
+          <span class="num">03 · Simulation</span>
+          <div class="fenetre">
+            <video src="captures/clip-simulation.128c184e.mp4" poster="captures/clip-simulation.db8120c4.webp"
+                   width="1920" height="1080" muted loop playsinline controls preload="none" data-auto
+                   aria-label="Simulation d'usinage dans VerdierCAM : la fraise creuse le brut de bois passe après passe"></video>
+          </div>
+          <figcaption>La matière se creuse en direct, avec la <b>veinure du bois</b>. Lecture, pause, vitesse : on revient sur n'importe quelle passe.</figcaption>
+        </figure>
+        <figure class="vue apparait">
+          <span class="num">04 · Pilotage</span>
+          <div class="fenetre">
+            <img src="captures/pupitre.c32a8b71.webp" width="1920" height="1080" loading="lazy"
+                 alt="Le pupitre de pilotage de VerdierCAM : le brut en 3D au centre, les positions et les boutons de jog à droite, le bouton ARRÊT en rouge">
+          </div>
+          <figcaption>Le pupitre : positions, jog, broche et arrêt, à côté de la pièce. <kbd>Ctrl</kbd> + <kbd>.</kbd> arrête la machine, de partout.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="croquis" class="teinte">
+  <div class="cadre">
+    <div class="fonction">
+      <div class="texte apparait">
+        <span class="surtitre">01 · Croquis</span>
+        <h2>Un vrai croquis contraint, avec les gestes de FreeCAD</h2>
+        <p>Les formes ne sont pas des dessins figés : ce sont des points, des traits et des
+          arcs tenus par des contraintes. On tire un point, le solveur fait suivre le reste.
+          On tape une cote, la pièce prend la bonne taille.</p>
+        <ul class="coches">
+          <li><b>Les raccourcis de FreeCAD</b> : <kbd>G</kbd><kbd>L</kbd> pour une ligne,
+            <kbd>K</kbd><kbd>D</kbd> pour une distance, <kbd>C</kbd> pour une coïncidence.</li>
+          <li><b>Import SVG, DXF et FreeCAD</b> : le dessin importé reste un croquis qui se contraint.</li>
+          <li><b>Réseaux liés</b> : une cote changée sur le premier logement change toute la série.</li>
+          <li><b>Imbriquer sur la plaque</b> : les pièces posées au plus serré, pour ne pas gâcher le panneau.</li>
+        </ul>
+        <details class="plus">
+          <summary>Tout le croquis</summary>
+          <ul class="coches">
+            <li>Lignes, arcs, cercles, ellipses, oblongs, courbes de Bézier. Congés, chanfreins, décalages,
+              symétries, ciseaux, prolonger. Annuler et refaire sur tout.</li>
+            <li><b>La planche fait partie du dessin</b> : on cote depuis un bord.</li>
+            <li><b>Une expression dans tous les champs</b> : <code>240/2</code>, <code>W/2</code>, <code>3in</code>.</li>
+            <li><b>Texte</b> en polices monotrait, ou dans les polices TrueType et OpenType du poste.</li>
+            <li><b>Contour extérieur</b> : le seul tour d'un dessin compliqué, en une forme fermée.</li>
+            <li><b>Mettre à l'échelle pour remplir le brut</b>, sans déformer le dessin.</li>
+            <li><b>Des post-its sur la vue</b> : vos notes et la photo de vos croquis papier.</li>
+          </ul>
+        </details>
+      </div>
+      <figure class="capture apparait">
+        <div class="fenetre">
+          <img src="captures/levier.6881f53d.webp" width="1920" height="1080" loading="lazy"
+               alt="Un levier dessiné dans le croquis de VerdierCAM : deux cercles reliés par des arcs tangents, entièrement coté, dans le cadre orange de la planche">
+        </div>
+        <figcaption>Un levier entièrement contraint : arcs <b>tangents</b>, rayons et entraxe cotés.</figcaption>
+      </figure>
+    </div>
+
+    <div class="fonction inverse">
+      <div class="texte apparait">
+        <span class="surtitre">Le croquis en script</span>
+        <h3>Des variables, des boucles — et une IA peut l'écrire</h3>
+        <p>Le croquis s'écrit aussi en quelques lignes, à la façon d'OpenSCAD : on change un
+          nombre en tête du fichier, toute la pièce suit.</p>
+<pre class="code"><code>dents = 44;  bcd = 104;  c = [101, 101];
+planche([202, 202, 3]);
+p = pignon(c, dents);            // profil de chaîne, en vrais arcs
+pour (i = [0 : 3]) {
+    t = cercle(c + bcd/2 * [cos(90*i), sin(90*i)], 5.25);
+    diametre(#t, 10.5);
+}</code></pre>
+        <ul class="coches">
+          <li><b>Variables, boucles, modules</b>, mots-clés en français ; le croquis écrit sort
+            <b>entièrement contraint</b>.</li>
+          <li><b>Une IA l'écrit</b> : quand une ligne ne passe pas, la console dit laquelle et pourquoi.</li>
+          <li><b>Une IA aux commandes</b> : Outils › Intelligence artificielle branche VerdierCAM sur un assistant
+            (Claude Desktop, Claude Code ou tout client MCP) — il dessine, usine, regarde le résultat et écrit le G-code
+            de votre machine, dans son dossier, jamais la machine.</li>
+        </ul>
+      </div>
+      <figure class="capture apparait">
+        <div class="fenetre">
+          <img src="captures/pedalier.7f8b6be8.webp" width="1920" height="1080" loading="lazy"
+               alt="Un plateau de pédalier de 44 dents dans le croquis de VerdierCAM, écrit en script : la denture, quatre pattes de vis et l'ajour, entièrement contraints">
+        </div>
+        <figcaption>Un plateau de 44 dents écrit en <b>script</b> : 21 formes, 0 degré de liberté.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="usinage">
+  <div class="cadre">
+    <div class="usinage-tete apparait">
+      <div class="grand-nombre" aria-hidden="true">18</div>
+      <div class="texte">
+        <span class="surtitre">02 · Usinage</span>
+        <h2>18 familles d'opérations, des réglages qui comptent</h2>
+        <p>Du panneau découpé au relief, jusqu'aux pièces usinées sur les deux faces.
+          Une opération réglée se rappelle sur la suivante.</p>
+        <ul class="coches">
+          <li><b>Cliquer les zones à vider</b> : un clic dans une surface, puis Poche.</li>
+          <li>Poche en zigzag, concentrique, spirale, en équerres ou <b>adaptative</b>.</li>
+          <li><b>Gravure en V</b> : ce qui sera creusé se voit sur le dessin avant le calcul.</li>
+          <li><b>Bibliothèque de fraises</b> et calculateur de régimes ; import des bibliothèques Fusion 360.</li>
+        </ul>
+        <details class="plus">
+          <summary>Tous les réglages</summary>
+          <ul class="coches">
+            <li>Avalant ou opposition, rampe en zigzag ou en hélice.</li>
+            <li>Les bords d'une poche posés sur le tour de la pièce s'ouvrent d'un bouton : la fraise sort dans le brut.</li>
+            <li><b>Rainure en T, queue d'aronde, trou de serrure</b> : une passe qui ferait frotter la tige est refusée.</li>
+            <li><b>Fraises de forme</b>, dessinées d'après leur profil et cotées sur leur dessin.</li>
+            <li><b>Dépassement</b> en fin de tour : la marque d'entrée s'efface.</li>
+            <li><b>Surépaisseur négative</b> pour une fraise usée ou un ajustement serré.</li>
+            <li>En gravure 2.5D, l'ébauche s'arrête à ce que la <b>fraise de finition</b> pourra reprendre.</li>
+            <li><b>Peau d'oignon</b> pour les plaques minces : les pièces tiennent par un voile, sans onglets à poncer.</li>
+          </ul>
+        </details>
+      </div>
+    </div>
+    <details class="plus plus-familles">
+      <summary>Les 18 familles, une par une</summary>
+      <div class="familles">
+<div class="groupe">
+  <h3>Découper et évider</h3>
+  <ul>
+    <li><b>Contour</b>Suivre le contour, à l'intérieur ou à l'extérieur du trait.</li>
+    <li><b>Poche</b>Évider l'intérieur d'un contour fermé.</li>
+    <li><b>Surfaçage</b>Dresser la face supérieure du brut.</li>
+    <li><b>Rainure</b>Au diamètre de l'outil le long d'un trait.</li>
+    <li><b>Finitions</b>Passe de finition à la cote : les parois (contour) ou le fond (balayage fin).</li>
+  </ul>
+</div>
+<div class="groupe">
+  <h3>Percer et fileter</h3>
+  <ul>
+    <li><b>Perçage</b>Percer au centre d'un cercle, au diamètre de l'outil, avec débourrage.</li>
+    <li><b>Hélicoïdal</b>Percer ou aléser en descente hélicoïdale.</li>
+    <li><b>Filetage</b>Fileter un trou ou un tenon à la fraise à fileter, en hélice.</li>
+  </ul>
+</div>
+<div class="groupe">
+  <h3>Graver</h3>
+  <ul>
+    <li><b>Graver</b>Le trait à faible profondeur.</li>
+    <li><b>Gravure en V</b>À profondeur variable selon la largeur.</li>
+    <li><b>Ébavurer</b>Chanfreiner les arêtes du dessus à la pointe V, après la découpe.</li>
+    <li><b>Photo en V</b>Une photo gravée à la pointe en V, en lignes plus profondes là où l'image est sombre.</li>
+    <li><b>Texture</b>Des coups de gouge à la boule, en rangées irrégulières : le bois travaillé à la main.</li>
+  </ul>
+</div>
+<div class="groupe">
+  <h3>Volumes et reliefs</h3>
+  <ul>
+    <li><b>Gravure 2.5D</b>Un modèle 3D (STL, OBJ ou image) : ébauche à la fraise droite, finition à la boule en option.</li>
+    <li><b>Moulure</b>Deux formes — la première est le rail, la seconde la coupe transversale.</li>
+    <li><b>Révolution</b>Un cercle (son centre est l'axe), puis le demi-profil, du centre vers le bord — une assiette, un bol.</li>
+  </ul>
+</div>
+<div class="groupe">
+  <h3>Usiner les deux faces</h3>
+  <ul>
+    <li><b>Goupilles</b>Deux trous symétriques, à travers le brut et dans le martyr : retournée sur ses goupilles, la pièce retombe à sa place.</li>
+    <li><b>Butée</b>Un logement dans le martyr, d'équerre au coin d'origine : le brut y est poussé avant chaque face.</li>
+  </ul>
+</div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="modes" class="teinte">
+  <div class="cadre">
+    <div class="tete apparait">
+      <span class="surtitre">Débutant · Intermédiaire · Pro</span>
+      <h2>Trois façons de travailler, les mêmes calculs</h2>
+      <p>Au premier lancement, VerdierCAM demande comment on veut travailler. Seule la
+        présentation du panneau d'usinage change : les réglages et le G-code sont les mêmes
+        partout, et on passe de l'un à l'autre à tout moment.</p>
+    </div>
+    <div class="bento">
+      <figure class="capture apparait bento-grand">
+        <div class="fenetre">
+          <img src="captures/trois-modes.897e6156.webp" width="1920" height="1080" loading="lazy"
+               alt="La fenêtre d'accueil de VerdierCAM et ses trois cartes : Débutant, Intermédiaire, Pro">
+        </div>
+        <figcaption><b>Débutant</b> : chaque réglage est une ligne, un clic ouvre son grand dessin.
+          <b>Intermédiaire</b> : le panneau complet, avec un petit dessin par section.
+          <b>Pro</b> : le panneau complet, compact.</figcaption>
+      </figure>
+      <figure class="capture apparait">
+        <div class="fenetre">
+          <img src="captures/debutant-profondeurs.7044ae8b.webp" width="1920" height="1080" loading="lazy"
+               alt="Le dessin des profondeurs en mode Débutant : une coupe du bois où la profondeur totale, la passe et la surépaisseur se tapent sur les cotes">
+        </div>
+        <figcaption>Les profondeurs se tapent <b>sur le dessin</b>, là où elles s'appliquent.</figcaption>
+      </figure>
+      <figure class="capture apparait">
+        <div class="fenetre">
+          <img src="captures/debutant-vcarve.17406fe6.webp" width="1920" height="1080" loading="lazy"
+               alt="Le dessin de la gravure en V en mode Débutant : la pointe en V vue en coupe dans le bois, l'angle et la profondeur maximale cotés">
+        </div>
+        <figcaption>La gravure en V : l'angle de la pointe, la profondeur maximale, le fond plat.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="relief">
+  <div class="cadre">
+    <div class="fonction inverse">
+      <div class="texte apparait">
+        <span class="surtitre">Reliefs</span>
+        <h2>Une photo devient un bas-relief, sur votre ordinateur</h2>
+        <p>La gravure 2.5D prend un modèle STL ou OBJ, ou une image en niveaux de gris
+          jusqu'au PNG 16 bits : ébauche à la fraise droite, finition à la boule ou à la
+          boule conique.</p>
+        <ul class="coches">
+          <li><b>Relief par IA</b> : une photo devient une carte de hauteur, avec le modèle
+            Depth Anything 3 réécrit en C++ — sans Python et <b>sans connexion</b>.</li>
+          <li>Réglage <b>bas-relief</b> qui écrase les falaises et garde les détails ; calcul en
+            tuiles pour les grandes images.</li>
+          <li>Et aussi : <b>Photo en V</b>, <b>Texture</b> de gouge, <b>Moulure</b> le long d'un
+            rail, <b>Révolution</b> pour une assiette ou un bol.</li>
+        </ul>
+      </div>
+      <div class="collage apparait">
+        <figure class="capture">
+          <div class="fenetre">
+            <img src="captures/25d-schema.2ac26de9.webp" width="1920" height="1080" loading="lazy"
+                 alt="L'atelier Relief : un modèle 3D importé, couché et ajusté à la planche, dans la pile des formes">
+          </div>
+          <figcaption>Le modèle 3D entre dans l'atelier Relief, couché et ajusté à la planche ; sa hauteur se règle.</figcaption>
+        </figure>
+        <figure class="capture">
+          <div class="fenetre">
+            <img src="captures/25d-bois.f79b2014.webp" width="1920" height="1080" loading="lazy"
+                 alt="Le résultat simulé d'une gravure 2.5D : un motif floral en relief, fini à la boule, dans un bloc de laiton">
+          </div>
+          <figcaption>Le résultat simulé : un relief floral dans le laiton, ébauché à la fraise Ø6 puis fini à la boule Ø3.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="image">
+  <div class="cadre">
+    <div class="fonction">
+      <div class="texte apparait">
+        <span class="surtitre">Image en couleurs</span>
+        <h2>Une image en aplats, gravée ou imprimée</h2>
+        <p>Fichier › Graver une image : trois écrans, des réglages qui marchent d'office.</p>
+        <ul class="coches">
+          <li>Chaque couleur à sa hauteur ; un clic met un morceau à part.</li>
+          <li>À la fraise : ce qu'elle ne peut pas atteindre se voit <b>en rouge</b>, avant de graver.</li>
+          <li>À l'imprimante 3D : <b>STL</b>, ou <b>3MF en couleurs</b> lu par Bambu Studio et Orca.</li>
+          <li>Un relief par paliers s'usine en <b>poches à fraise droite</b> : murs droits, fonds plats.</li>
+        </ul>
+      </div>
+      <div class="collage apparait">
+        <figure class="capture">
+          <div class="fenetre">
+            <img src="captures/graver-image.0b532b07.webp" width="1920" height="1080" loading="lazy"
+                 alt="La fenêtre Graver une image : un insigne en couleurs, chaque couleur avec son rôle et sa hauteur">
+          </div>
+          <figcaption>Les couleurs de l'image, chacune son rôle et sa hauteur.</figcaption>
+        </figure>
+        <figure class="capture">
+          <div class="fenetre">
+            <img src="captures/relief-paliers.dbec2b81.webp" width="1920" height="1080" loading="lazy"
+                 alt="L'insigne usiné par paliers, simulé dans une planche de bois">
+          </div>
+          <figcaption>Usiné par paliers : une poche par hauteur, puis le détourage.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="simulation" class="teinte">
+  <div class="cadre">
+    <div class="fonction">
+      <div class="texte apparait">
+        <span class="surtitre">03 · Simulation</span>
+        <h2>Voir le bois avant de le couper</h2>
+        <p>La simulation enlève la matière comme la fraise le fera. Une erreur se voit à
+          l'écran, pas sur la planche.</p>
+        <ul class="coches">
+          <li>La matière se creuse en direct, avec la <b>veinure du bois</b>.</li>
+          <li><b>Vue en coupe</b> : un plan qu'on fait glisser montre le profil exact.</li>
+          <li>Lecture, pause, vitesse : on revient sur n'importe quelle passe.</li>
+          <li>Une queue de fraise ou un porte-outil qui toucherait la pièce
+            <b>bloque l'export et le lancement</b>.</li>
+        </ul>
+      </div>
+      <figure class="capture apparait">
+        <div class="fenetre">
+          <img src="captures/boite.3ab39837.webp" width="1920" height="1080" loading="lazy"
+               alt="Une boîte à couvercle simulée dans un brut de bois : le logement circulaire et la feuillure du couvercle">
+        </div>
+        <figcaption>Une boîte et son couvercle, simulés dans le brut.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="pilotage">
+  <div class="cadre">
+    <div class="fonction inverse">
+      <div class="texte apparait">
+        <span class="surtitre">04 · Pilotage</span>
+        <h2>Lancer la machine depuis la même fenêtre</h2>
+        <p>Le pupitre parle aux cartes GRBL et grblHAL. Pour les autres commandes
+          numériques, VerdierCAM écrit le G-code qu'elles attendent.</p>
+        <ul class="coches">
+          <li>Jog au pas ou en continu, palpage, changement d'outil guidé.</li>
+          <li><b>Deux faces</b> : la pièce retournée retombe à sa place.</li>
+          <li><kbd>Ctrl</kbd> + <kbd>.</kbd> arrête la machine, de partout.</li>
+        </ul>
+        <details class="plus">
+          <summary>Tout le pupitre</summary>
+          <ul class="coches">
+            <li>Le cadre de la pièce parcouru avant de couper.</li>
+            <li><b>Grands curseurs d'avance et de broche</b> pour corriger en cours d'usinage.</li>
+            <li><b>Onduler la broche</b> contre le broutement, sans toucher au programme.</li>
+            <li><b>Changeur d'outil automatique</b> pour les machines qui en ont un.</li>
+            <li>Un port série refusé par Linux ? VerdierCAM dit pourquoi et l'autorise en un clic.</li>
+          </ul>
+        </details>
+      </div>
+      <div class="postes apparait">
+        <span class="surtitre">Le G-code s'écrit pour</span>
+        <div class="defile" aria-hidden="true">
+          <ul>
+            <li>LinuxCNC</li><li>GRBL</li><li>FluidNC</li><li>grblHAL</li>
+            <li>MASSO <small>(expérimental)</small></li><li>Mach3 <small>(expérimental)</small></li><li>Mach4 <small>(expérimental)</small></li><li>UCCNC <small>(expérimental)</small></li>
+            <li>LinuxCNC</li><li>GRBL</li><li>FluidNC</li><li>grblHAL</li>
+            <li>MASSO <small>(expérimental)</small></li><li>Mach3 <small>(expérimental)</small></li><li>Mach4 <small>(expérimental)</small></li><li>UCCNC <small>(expérimental)</small></li>
+          </ul>
+        </div>
+        <ul class="machines" aria-label="Post-processeurs">
+          <li>LinuxCNC</li><li>GRBL</li><li>FluidNC</li><li>grblHAL</li>
+          <li>MASSO <small>(expérimental)</small></li><li>Mach3 <small>(expérimental)</small></li><li>Mach4 <small>(expérimental)</small></li><li>UCCNC <small>(expérimental)</small></li>
+        </ul>
+        <p>Le pilotage direct, depuis VerdierCAM, se fait avec <b>GRBL</b> et <b>grblHAL</b>.</p>
+        <p class="note-experimental">MASSO, Mach3, Mach4 et UCCNC sont expérimentaux : écrits d'après leur documentation,
+          jamais essayés sur une vraie machine. Relisez le G-code et faites un passage en l'air avant de couper.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="configurateur" class="teinte">
+  <div class="cadre">
+    <div class="tete apparait">
+      <span class="surtitre">Configurateur</span>
+      <h2>134 pièces paramétriques à essayer, sans rien installer</h2>
+      <p>VerdierCAM est livré avec un catalogue de pièces prêtes à usiner, rangées en 7
+        thèmes : jeux et jouets, rangement, atelier et gabarits, technique et mécanique, cuisine, décoration et cadeaux, électronique et boîtiers. Chacune est un script : ses cotes deviennent des réglages.
+        Changez-les ici, dans votre navigateur — le prénom d'un porte-clés, les dents d'un engrenage, les mots d'une
+        enseigne — et téléchargez le dessin en SVG ou en DXF, ou le script à rouvrir dans VerdierCAM, ses usinages
+        compris.</p>
+      <ul class="coches">
+        <li>Le <b>même calcul</b> que le logiciel : le croquis contraint de VerdierCAM, compilé pour le navigateur.</li>
+        <li>Rien n'est envoyé : tout se calcule <b>sur votre ordinateur</b>.</li>
+      </ul>
+      <div class="actions">
+        <a class="bouton bouton-plein" href="configurateur/">Ouvrir le configurateur</a>
+        <a class="bouton bouton-clair" href="pieces.html">Voir les pièces en images</a>
+      </div>
+    </div>
+    <details class="plus plus-pieces">
+      <summary>Les 134 pièces, thème par thème</summary>
+      <div class="catalogue">
+<div class="groupe">
+  <h3>Jeux et jouets</h3>
+  <ul>
+    <li><a href="configurateur/#awale" title="Le jeu de semailles d&#x27;Afrique de l&#x27;Ouest : deux rangées de six cuvettes, un grenier rond à chaque bout, 48 graines. Les cuvettes sont de vraies calottes, creusées à la fraise boule par une Révolution, pas des poches à fond plat.">Awalé</a></li>
+    <li><a href="configurateur/#casse-tete-six-barres" title="Le « nœud du diable » : six barres entaillées qui s&#x27;emboîtent en croix. Assemblé, il est rigide — une seule barre peut bouger, la CLÉ (la barre 1, sans entaille), qui sort droit ; les cinq autres se démontent ensuite. Le remonter, c&#x27;est le casse-tête.">Casse-tête à six barres</a></li>
+    <li><a href="configurateur/#casse-tete-t" title="Quatre pièces, un T à refaire. Notre découpe : un triangle, un parallélogramme, un trapèze, et une pièce à encoche qui pousse à remplir son creux… ce qu&#x27;il ne faut pas faire. Un cadre où le T se range, et le T n&#x27;y entre que bien refait.">Casse-tête des quatre pièces</a></li>
+    <li><a href="configurateur/#catapulte" title="La petite catapulte de bureau à élastique : un socle, deux flasques, un bras à cuillère qui pivote sur une cheville, une butée qui l&#x27;arrête presque debout. Cinq pièces emboîtées, une cheville de Ø6, un élastique.">Catapulte</a></li>
+    <li><a href="configurateur/#circuit-bille" title="Le zigzag mural des billes : une planche accrochée au mur, des rampes qui s&#x27;y emboîtent en pente alternée. La bille roule dans la gorge d&#x27;une rampe, tombe sur la suivante, repart dans l&#x27;autre sens, jusqu&#x27;en bas.">Circuit à bille</a></li>
+    <li><a href="configurateur/#dominos" title="Le jeu double-six, ses 28 pièces découpées dans une même planche, les points creusés et la barre gravée : un jeu de famille qui se fait en un après-midi, et s&#x27;offre dans une boîte de ce catalogue.">Dominos</a></li>
+    <li><a href="configurateur/#echiquier-marqueterie" title="Deux bois, deux poches complémentaires : les cases foncées creusées dans le plateau clair, et la planche foncée creusée autour de ses cases, laissées en relief ; on la retourne, on la colle dedans, on rabote son dos — le damier apparaît, d&#x27;une seule pièce. Le projet fétiche des forums de CNC.">Échiquier en marqueterie</a></li>
+    <li><a href="configurateur/#ferme-la-boite" title="Le jeu de dés des marins (« shut the box ») : neuf tuiles numérotées de 1 à 9 ; on lance deux dés et on retourne des tuiles dont la somme fait celle des dés. Quand plus rien ne va, les tuiles encore ouvertes comptent contre soi ; tout fermer, c&#x27;est gagner.">Ferme la boîte</a></li>
+    <li><a href="configurateur/#jeu-dames" title="Le damier international de 10 × 10 et ses 40 pions : les cases foncées creusées d&#x27;un fond où la teinte tient, les pions d&#x27;un camp marqués d&#x27;un anneau gravé (et de deux pour une dame, en empilant deux pions).">Jeu de dames</a></li>
+    <li><a href="configurateur/#jeu-go" title="Le goban des débutants et des parties rapides : neuf lignes sur neuf gravées, les cinq points marqués (hoshi), et les pierres, la moitié marquées d&#x27;un anneau pour les noires (à teinter).">Jeu de go 9 × 9</a></li>
+    <li><a href="configurateur/#cornhole" title="Les plateaux inclinés percés d&#x27;un trou où l&#x27;on lance des sacs de grains, et leurs pieds pliants : le jeu de jardin que les ateliers CNC vendent peint ou gravé aux couleurs d&#x27;une équipe.">Jeu de palets (cornhole)</a></li>
+    <li><a href="configurateur/#jeu-moulin" title="La marelle des Romains : trois carrés emboîtés reliés par leurs milieux, 24 cases, 9 pions chacun ; aligner trois pions, c&#x27;est faire un moulin et prendre un pion adverse. Le plateau gravé, les cases creusées pour tenir les pions, les 18 pions — ceux d&#x27;un joueur marqués d&#x27;un anneau.">Jeu du moulin</a></li>
+    <li><a href="configurateur/#labyrinthe" title="Généré : chaque « graine » donne un labyrinthe différent, toujours à chemin unique. Algorithme du parcours en profondeur (« recursive backtracker ») : de longs détours et beaucoup de culs-de-sac, et l&#x27;ARRIVÉE est posée sur la case la plus éloignée du départ — le plus long chemin possible.">Labyrinthe à bille</a></li>
+    <li><a href="configurateur/#lancer-echelle" title="Le jeu de jardin (« ladder toss ») en version de table : deux montants à large pied, trois échelons qui les traversent ; on y lance des bolas (deux balles reliées par une cordelette) pour qu&#x27;elles s&#x27;enroulent. Échelon du haut 3 points, du milieu 2, du bas 1 : les points sont gravés dessus.">Lancer à l'échelle</a></li>
+    <li><a href="configurateur/#mini-skee-ball" title="Le jeu de fête foraine sur la table : on fait rouler une balle de ping-pong sur une piste qui monte, elle saute sur la cible penchée, y remonte, ralentit et retombe dans un trou. Plus le trou est haut et petit, plus il rapporte (10, 20, 50, et 100 aux deux coins). Quatre pièces à tenons traversants.">Mini skee-ball</a></li>
+    <li><a href="configurateur/#morpion-puissance4" title="Un plateau de jeu à cases creusées et ses pions découpés dans la même planche, marqués d&#x27;une croix ou d&#x27;un rond : le morpion de voyage (3 × 3) ou le puissance 4 à plat (7 × 6).">Morpion et puissance 4</a></li>
+    <li><a href="configurateur/#petite-voiture" title="Le jouet de bois qu&#x27;on offre à la naissance : une caisse de profil, ses quatre roues, les trous des essieux ; le profil se colle en deux couches pour faire une voiture bien large.">Petite voiture</a></li>
+    <li><a href="configurateur/#planche-nombres" title="Le jeu d&#x27;éveil façon Montessori : les chiffres de 1 à 10 gravés, et sous chacun autant de trous où l&#x27;enfant plante ses chevilles ; une réserve creusée en bas pour les ranger. Compter, c&#x27;est remplir.">Planche des nombres</a></li>
+    <li><a href="configurateur/#cribbage" title="Une piste continue en serpentin, une voie par joueur, 120 trous par voie en groupes de cinq, deux trous de départ et le trou d&#x27;arrivée : le jeu de cartes et de fiches que les forums de CNC montrent sans cesse.">Plateau de cribbage</a></li>
+    <li><a href="configurateur/#puzzle" title="Des pièces à tenons ronds, découpées d&#x27;un trait de fraise fine dans une planchette : un puzzle d&#x27;enfant en bois, à graver d&#x27;une image ou d&#x27;un prénom avant de le découper.">Puzzle</a></li>
+    <li><a href="configurateur/#quarto" title="Le jeu de Blaise Müller : seize pièces toutes différentes, un plateau de 4 × 4. On pose la pièce que l&#x27;adversaire a choisie pour soi ; gagne qui aligne quatre pièces ayant un caractère commun.">Quarto</a></li>
+    <li><a href="configurateur/#solitaire" title="Le casse-tête des 33 billes : une croix de trous, on saute par-dessus une bille pour la prendre, il faut finir avec une seule, au centre. Un plateau rond, une rigole tout autour pour les billes prises.">Solitaire</a></li>
+    <li><a href="configurateur/#tangram" title="Le casse-tête chinois : sept pièces taillées dans un carré (deux grands triangles, un moyen, deux petits, un carré, un parallélogramme) qui refont un chat, une maison, un cygne… et leur plateau, où elles se rangent en carré.">Tangram</a></li>
+    <li><a href="configurateur/#toupie" title="Trois toupies à disque, une spirale gravée qui ondule quand elles tournent, et le lanceur à ficelle : on enroule la ficelle sur la tige, la tige dans la fourche, on tire d&#x27;un coup sec.">Toupies et leur lanceur</a></li>
+    <li><a href="configurateur/#tric-trac" title="Le plateau du jacquet et du backgammon : vingt-quatre flèches en deux rangées, une barre au milieu, et les trente dames (quinze par camp, celles d&#x27;un camp marquées d&#x27;un anneau). Les dés, on les a déjà.">Tric-trac</a></li>
+  </ul>
+</div>
+<div class="groupe">
+  <h3>Rangement</h3>
+  <ul>
+    <li><a href="configurateur/#bloc-cles-allen" title="Chaque clé six pans debout dans SON trou hexagonal, sa taille gravée devant : de 1,5 à 10 mm. La clé qui manque se voit tout de suite, et elle ne tombe plus dans le tiroir.">Bloc à clés allen</a></li>
+    <li><a href="configurateur/#boite-cartes" title="La boîte en strates d&#x27;un jeu de 52 cartes : un fond, des cadres empilés, un couvercle qui PIVOTE sur un tourillon planté dans un coin. Un quart de tour, et tout le jeu est découvert.">Boîte à cartes à jouer</a></li>
+    <li><a href="configurateur/#boite-coulissante" title="La boîte à crayons, à dominos, à thé : le couvercle glisse dans deux rainures des côtés et vient buter dans celle du dos ; il passe par-dessus le devant, plus bas. Six pièces, tenons traversants dans le fond.">Boîte à couvercle coulissant</a></li>
+    <li><a href="configurateur/#boite-queues-droites" title="Une boîte en planches assemblées à doigts (« finger joint »), son fond pris dans les côtés et son couvercle posé : les six panneaux sortent à plat d&#x27;une seule planche et s&#x27;emboîtent sans une vis.">Boîte à queues droites</a></li>
+    <li><a href="configurateur/#caissette-compartiments" title="Un bac sans couvercle, assemblé à doigts, que des cloisons croisées partagent en cases : vis, embouts, crayons, épices. Façon « TypeTray » de boxes.py, découpée à plat dans une seule planche.">Caissette à compartiments</a></li>
+    <li><a href="configurateur/#casier-bouteilles" title="Le croisillon de cave : des planches debout qui se croisent à mi-bois, comme les séparations d&#x27;une boîte à œufs, et font des cases carrées où les bouteilles se couchent. Rien d&#x27;autre : ni colle, ni vis, il se monte et se démonte d&#x27;un geste.">Casier à bouteilles</a></li>
+    <li><a href="configurateur/#etagere-flottante" title="La tablette sans console visible : elle s&#x27;enfile sur des doigts de bois tenus par une latte vissée au mur. Le plateau est fait de deux planches collées face à face, creusées chacune de la moitié du logement des doigts.">Étagère flottante</a></li>
+    <li><a href="configurateur/#marchepied" title="Le petit tabouret-marche de la cuisine ou de la salle de bains : un plateau, deux flancs aux pieds arqués et une traverse, assemblés à tenons traversants. Quatre pièces d&#x27;une planche de 18, sans une vis.">Marchepied</a></li>
+    <li><a href="configurateur/#organisateur-tiroir" title="Un bloc de bois creusé de cases aux coins ronds, à poser dans un tiroir : couverts, crayons, mèches, bijoux. Sans une colle ni un assemblage : tout sort d&#x27;une planche épaisse.">Organisateur de tiroir</a></li>
+    <li><a href="configurateur/#porte-bobines" title="Le présentoir de la table de couture : un plateau penché planté de tourillons, une bobine sur chacun ; on voit toutes les couleurs d&#x27;un coup, et le fil se dévide sans que la bobine tombe.">Porte-bobines de fil</a></li>
+    <li><a href="configurateur/#porte-cles-mural" title="Une plaque à accrocher près de la porte, son mot gravé et une rangée de chevilles où pendre les clés : un cadeau de pendaison de crémaillère, le pendant du porte-clés au prénom.">Porte-clés mural</a></li>
+    <li><a href="configurateur/#porte-epices-aimante" title="La planche murale où les boîtes à épices en métal tiennent toutes seules, couvercle vers soi : les aimants sont noyés par DERRIÈRE, à 2 mm sous la face ; on ne les voit pas, les boîtes tiennent quand même.">Porte-épices aimanté</a></li>
+    <li><a href="configurateur/#porte-lunettes" title="Le nez de bois où l&#x27;on pose ses lunettes le soir, branches repliées de part et d&#x27;autre : elles ne traînent plus verres contre la table. Deux pièces : la tête en profil, debout, et le socle où elle s&#x27;emboîte.">Porte-lunettes</a></li>
+    <li><a href="configurateur/#porte-manteau" title="Une planche murale et ses patères en crochet, emboîtées à tenons traversants : l&#x27;entrée, une chambre d&#x27;enfant, l&#x27;atelier. D&#x27;une seule planche de 18, sans une vis hormis les deux qui le tiennent au mur.">Porte-manteau</a></li>
+    <li><a href="configurateur/#range-cles-usb" title="Le bloc du bureau où chaque clé USB se plante par sa prise, chaque carte SD et microSD debout dans sa fente : plus de clé perdue au fond d&#x27;un tiroir, et l&#x27;on voit d&#x27;un coup d&#x27;œil où est la carte de l&#x27;appareil photo.">Range-clés usb et cartes sd</a></li>
+    <li><a href="configurateur/#range-forets" title="Le bloc où chaque foret a son trou et son diamètre gravé à côté : de 1 à 10 mm de demi en demi, puis 11, 12 et 13. On voit d&#x27;un coup d&#x27;œil celui qui manque, et on le range sans hésiter.">Range-forets gradué</a></li>
+    <li><a href="configurateur/#range-pinceaux" title="L&#x27;étagère murale où les pinceaux pendent poils en bas pour sécher : le manche glisse dans une encoche de sa largeur, la virole bute dessus. Une encoche par taille, de la plus fine à la plus large, la largeur gravée devant.">Range-pinceaux</a></li>
+    <li><a href="configurateur/#range-telecommandes" title="Le bac à gradins de la table basse : un compartiment bas devant pour les petites télécommandes, un haut derrière pour les longues. Six pièces à tenons traversants, sans une vis.">Range-télécommandes</a></li>
+    <li><a href="configurateur/#ratelier-tournevis" title="L&#x27;étagère murale de l&#x27;établi : chaque tournevis pend par sa lame dans un trou à sa taille, le manche posé dessus. Un dos vissé au mur, une tablette percée, deux consoles ; tout s&#x27;emboîte à tenons traversants.">Râtelier à tournevis</a></li>
+    <li><a href="configurateur/#serre-livres" title="Une paire, chacun un montant au sommet arrondi qui entre par deux tenons dans les mortaises de son socle : sans une vis, collé, il tient debout la rangée de livres.">Serre-livres</a></li>
+    <li><a href="configurateur/#support-casque" title="Un montant et un pied qui se croisent à mi-bois, sans vis ni colle : le casque se pose sur la selle arrondie du haut, son serre-tête suit la courbe et ne se marque pas. Se démonte à plat.">Support de casque audio</a></li>
+    <li><a href="configurateur/#support-plantes" title="Une sellette : deux pieds croisés à mi-bois, en X vu de dessus, et un plateau rond qui les coiffe par quatre tenons. Trois pièces, sans vis ; un pot de 20 à 30 cm dessus.">Support de plantes</a></li>
+  </ul>
+</div>
+<div class="groupe">
+  <h3>Atelier et gabarits</h3>
+  <ul>
+    <li><a href="configurateur/#brides-table" title="Des brides de serrage pour fixer le brut sur la table de la CNC (rails en T, inserts) : la barre, percée d&#x27;une lumière pour le boulon, et sa cale en escalier qui la tient à la bonne hauteur. Le premier projet d&#x27;une CNC : elle fabrique de quoi se brider.">Brides de table rainurée</a></li>
+    <li><a href="configurateur/#butee-onglet" title="La règle graduée qui se visse sur le guide de la scie, et son curseur qu&#x27;on bloque d&#x27;un tour de bouton : vingt pièces de la même longueur, sans retracer. Le curseur glisse sur une lumière, un trait gravé sur lui montre la longueur sur la règle.">Butée de scie à onglet</a></li>
+    <li><a href="configurateur/#cales-reglage" title="Le bloc à marches qui règle une hauteur de fraise ou de lame de scie sans règle : chaque marche est à une hauteur ronde (2, 3, 4, 5, 6, 8, 10, 12, 15, 20 mm), gravée derrière elle. On pose la marche voulue sur la table, la fraise vient l&#x27;effleurer.">Cales de réglage en escalier</a></li>
+    <li><a href="configurateur/#equerres-serrage" title="Pour coller un caisson d&#x27;équerre : l&#x27;équerre se serre dans l&#x27;angle intérieur, ses deux chants droits plaqués contre les deux planches, et la tient à 90° le temps que la colle prenne. La machine fait l&#x27;angle droit mieux qu&#x27;on ne le scierait.">Équerres de serrage d'angle</a></li>
+    <li><a href="configurateur/#gabarit-cercle" title="Un compas pour la défonceuse : la semelle vissée sur sa base, un bras percé tous les `pas` d&#x27;un trou de pivot, chacun gravé de son rayon. Une pointe dans le trou choisi, et la défonceuse tourne : plateaux ronds, tables, miroirs.">Gabarit de cercle</a></li>
+    <li><a href="configurateur/#gabarit-charniere" title="Une plaque à copier pour la défonceuse : son encoche donne la mortaise d&#x27;une charnière de porte, au bon décalage de la bague de copie ; une butée vissée dessous la cale contre le chant.">Gabarit de mortaise de charnière</a></li>
+    <li><a href="configurateur/#gabarit-systeme32" title="Une règle percée tous les 32 mm et sa butée, pour percer d&#x27;équerre les rangées de trous des taquets d&#x27;étagère (et des charnières, coulisses, fiches) dans les côtés d&#x27;un meuble : le système de l&#x27;industrie du meuble, à l&#x27;atelier.">Gabarit de perçage « système 32 »</a></li>
+    <li><a href="configurateur/#gabarit-poignees" title="Pour percer les deux trous d&#x27;une poignée de tiroir ou de porte, d&#x27;aplomb, centrés, à la même hauteur sur toute une cuisine : la butée contre le chant de la façade, l&#x27;encoche du milieu sur le trait d&#x27;axe, et on perce dans les trous de l&#x27;entraxe voulu (96, 128, 160 ou 192 mm, les entraxes du commerce).">Gabarit de poignées de meuble</a></li>
+    <li><a href="configurateur/#gabarit-queues-aronde" title="Le traceur du menuisier : accroché au bout de la planche par son talon, il donne la pente des queues d&#x27;un trait de crayon ou de pointe à tracer. Une pente à chaque bout : 1:6 pour les bois tendres, 1:8 pour les bois durs.">Gabarit de queues d'aronde</a></li>
+    <li><a href="configurateur/#gabarit-tourillons" title="Pour percer d&#x27;aplomb et au milieu du chant les trous d&#x27;un assemblage à tourillons : la plaque se pose sur le chant, sa butée contre la face de la planche ; les trous guident la mèche. Le même gabarit, retourné, perce la pièce d&#x27;en face aux mêmes cotes.">Gabarit de tourillons</a></li>
+    <li><a href="configurateur/#grille-calibrage-jeu" title="Un peigne d&#x27;entailles de plus en plus larges, chacune gravée de son jeu, et la clé qui les essaie : on garde le jeu de l&#x27;entaille où la clé entre juste. Le « burn test » de boxes.py, à la fraise.">Grille de calibrage du jeu</a></li>
+    <li><a href="configurateur/#peigne-queues-droites" title="Le gabarit qui fait des assemblages à doigts à la défonceuse à main : posé sur le chant des planches serrées dessous, la bague de copiage suit ses dents. Une fois fait, il sert à toutes les boîtes de la même épaisseur.">Peigne à queues droites</a></li>
+    <li><a href="configurateur/#peigne-presseur" title="La planche à doigts souples qui plaque la pièce contre le guide de la scie ou de la toupie : les doigts, coupés en biais, plient dans le sens d&#x27;avance et s&#x27;arc-boutent si la pièce veut revenir en arrière.">Peigne presseur</a></li>
+    <li><a href="configurateur/#paliers-profondeur" title="Une rangée de poches de plus en plus profondes, chacune gravée de sa cote : on la mesure au pied à coulisse, et l&#x27;on sait ce que la machine creuse vraiment (le zéro Z, la flèche de la fraise, le jeu de l&#x27;axe). Une jauge de bois pour régler ensuite les incrustations, les feuillures, les mi-bois.">Plaque de paliers de profondeur</a></li>
+    <li><a href="configurateur/#porte-fraises" title="Le bloc posé à côté de la machine, où chaque fraise attend debout, rangée par queue : les pinces ER20, puis les queues de 12, 8, 6 et 1/8&quot; (3,175). Chaque rangée a son étiquette gravée ; plus de fraise couchée qui s&#x27;ébrèche contre sa voisine.">Porte-fraises</a></li>
+    <li><a href="configurateur/#pousse-bois" title="La semelle qui pousse la planche contre la lame de la scie circulaire ou la fraise de la toupie : la main reste haut et loin, la planche ne se soulève pas. Un talon accroche le bout de la planche, une poignée fermée tient la main.">Pousse-bois</a></li>
+    <li><a href="configurateur/#poussoirs" title="Les deux qui gardent les doigts loin de la lame : le POUSSOIR long (sa pointe s&#x27;appuie sur la pièce, son cran pousse le bout) et le SABOT (sa semelle plaque la pièce, son talon la pousse), chacun avec sa poignée découpée. À refaire sans regret quand la lame les a entamés : c&#x27;est leur rôle.">Poussoirs de scie sur table</a></li>
+    <li><a href="configurateur/#queues-aronde-plat" title="Deux planches qui s&#x27;emboîtent par leur chant comme un puzzle, en queues d&#x27;aronde vues de dessus : un plateau fait de deux planches, un dessus de coffre, un panneau qui ne s&#x27;ouvre pas en séchant. Ou l&#x27;essai d&#x27;un réglage avant le vrai assemblage.">Queues d'aronde à plat</a></li>
+    <li><a href="configurateur/#regle-crans" title="Le trusquin du menuisier, en plus simple : la règle pose sur la planche, son TALON court le long du chant ; la pointe du crayon dans un trou, on glisse, et le trait tombe parallèle au chant, à la distance lue.">Règle de traçage à crans</a></li>
+    <li><a href="configurateur/#trouve-centre" title="Pour tracer le centre d&#x27;un rond (un bout de rondin, un disque, une pièce à tourner) : on le pousse dans le V, on tire un trait le long de la règle ; on tourne d&#x27;un quart de tour, un second trait ; ils se croisent au centre.">Trouve-centre</a></li>
+  </ul>
+</div>
+<div class="groupe">
+  <h3>Technique et mécanique</h3>
+  <ul>
+    <li><a href="configurateur/#bielle-manivelle" title="Le mécanisme du moteur et de la scie alternative : la manivelle tourne, la bielle pousse et tire, le coulisseau va et vient en ligne droite. Un démonstrateur de table : on tourne la poignée, on voit la course.">Bielle-manivelle</a></li>
+    <li><a href="configurateur/#came" title="Un disque de profil qui transforme la rotation d&#x27;un arbre en va-et-vient d&#x27;un poussoir : automates de bois, jouets mécaniques, une machine de démonstration. Trois lois de levée, en vrai profil calculé point par point.">Came</a></li>
+    <li><a href="configurateur/#charniere-souple" title="Une bande de fentes décalées qui rend un panneau de contreplaqué mince pliable sans casser (la « living hinge » des découpeuses) : un coin arrondi de boîte, une couverture de carnet, un dos de livre de bois.">Charnière souple</a></li>
+    <li><a href="configurateur/#cremaillere" title="La barre dentée qui engrène avec l&#x27;« Engrenage droit » de ce catalogue (même module, même angle de pression) : une rotation devient une translation — un tiroir motorisé, un levage, une table qui coulisse.">Crémaillère</a></li>
+    <li><a href="configurateur/#croix-malte" title="Le mécanisme qui fait avancer une roue par crans : à chaque tour de manivelle, le doigt entre dans une fente, tourne la croix d&#x27;un cran (1/n de tour), ressort ; entre deux, le disque de verrou la tient immobile contre ses arcs creux. Celui des projecteurs de cinéma et des montres. Quatre pièces, deux chevilles d&#x27;axe, une de doigt.">Croix de malte</a></li>
+    <li><a href="configurateur/#differentiel" title="Le différentiel d&#x27;une voiture, en engrenages droits et en bois, pour le voir marcher : on tourne le porte-satellites, les deux volants tournent ensemble ; on retient un volant, l&#x27;autre tourne deux fois plus vite.">Différentiel plat</a></li>
+    <li><a href="configurateur/#echappement-ancre" title="Le cœur d&#x27;une horloge, en bois, à pendre au mur : un poids tire la roue, l&#x27;ancre la retient et la lâche d&#x27;une demi-dent à chaque battement du balancier. Tic, tac : on voit le temps passer dent par dent.">Échappement à ancre</a></li>
+    <li><a href="configurateur/#engrenage-lanterne" title="L&#x27;engrenage des moulins : une roue dentée mène une LANTERNE, deux disques tenus par des fuseaux (des tourillons). Ici couché sur une planchette : on tourne la roue par sa poignée, la lanterne tourne `dents / fuseaux` fois plus vite.">Engrenage à lanterne</a></li>
+    <li><a href="configurateur/#engrenage" title="Une roue dentée à tailler dans la planche, son alésage (clavette ou méplat au besoin) et ses évidements ; et, pour vérifier, la roue qui l&#x27;entraîne, dessinée en tirets à l&#x27;entraxe exact.">Engrenage droit à développante de cercle</a></li>
+    <li><a href="configurateur/#equerre-lumieres" title="Une équerre plate en L, ses deux branches percées de lumières pour régler avant de serrer : coin de cadre, renfort de châssis, support de capteur sur une machine, fixation réglable sur profilé aluminium.">Équerre à lumières</a></li>
+    <li><a href="configurateur/#excentrique" title="Le mouvement des machines à vapeur et des pompes : un disque monté hors de son centre tourne dans le collier d&#x27;une bielle, et le bout de la bielle va et vient, guidé dans une lumière. Une manivelle sans coude.">Excentrique et sa bielle</a></li>
+    <li><a href="configurateur/#flexure" title="Un guide à lames parallèles taillé dans la masse : un bloc mobile tenu au cadre par deux lames minces, qui monte et descend sans jeu, sans frottement, sans pièce rapportée. Pour comprendre la mécanique compliante, ou pour un petit réglage fin (une vis pousse le bloc, les lames le ramènent).">Flexure</a></li>
+    <li><a href="configurateur/#horloge-engrenages" title="La minuterie en bois d&#x27;une horloge murale : l&#x27;aiguille des heures fait un tour quand celle des minutes en fait douze, par deux paires de roues à développante que l&#x27;on voit tourner derrière le cadran ajouré.">Horloge à engrenages</a></li>
+    <li><a href="configurateur/#joint-oldham" title="L&#x27;accouplement qui relie deux arbres parallèles mais pas tout à fait alignés : deux moyeux rainurés, et entre eux un disque à deux languettes croisées qui glisse dans les deux rainures à la fois. Tourner l&#x27;un fait tourner l&#x27;autre, même décalé de quelques millimètres. Un démonstrateur, ou l&#x27;accouplement d&#x27;un petit moteur à une vis.">Joint de oldham</a></li>
+    <li><a href="configurateur/#pantographe" title="L&#x27;instrument à recopier en agrandissant : la pointe suit un dessin, le crayon le refait deux fois plus grand. Quatre bras articulés en parallélogramme et un pied à brider sur la table.">Pantographe</a></li>
+    <li><a href="configurateur/#pignon-chaine" title="Un pignon pour chaîne à rouleaux, profil ISO 606 en vrais arcs, son alésage et ses allègements : pour un vélo de bois, un convoyeur, une transmission de machine.">Pignon de chaîne</a></li>
+    <li><a href="configurateur/#poulie" title="Une poulie de corde ou de câble, faite de trois disques collés : deux joues, et entre elles le noyau plus petit dont le bord est le fond de la gorge. Pour un palan d&#x27;atelier, une corde à linge, une tyrolienne de jardin.">Poulie à joues</a></li>
+    <li><a href="configurateur/#rotule" title="L&#x27;articulation qu&#x27;on oriente dans tous les sens et qui reste où on la laisse : une bille de bois serrée entre un socle (une calotte creusée à la boule) et un chapeau percé, par quatre boulons. Pour une lampe, une caméra, un support de téléphone. Plus on serre, plus elle tient.">Rotule à bille</a></li>
+    <li><a href="configurateur/#rochet" title="Le mécanisme qui ne tourne que dans un sens : celui des treuils, des clés à cliquet, des remontoirs. La roue tourne librement d&#x27;un côté (ses dents en pente soulèvent le cliquet) ; de l&#x27;autre, le flanc droit d&#x27;une dent bute contre la pointe du cliquet, et tout s&#x27;arrête. Un démonstrateur pour comprendre, ou un frein de treuil.">Roue à rochet et cliquet</a></li>
+  </ul>
+</div>
+<div class="groupe">
+  <h3>Cuisine</h3>
+  <ul>
+    <li><a href="configurateur/#bloc-couteaux" title="Des couches de contreplaqué collées en paquet : une couche pleine, une couche entaillée, une pleine… Chaque entaille, prise entre deux couches pleines, devient la fente d&#x27;une lame. Toutes les couches sortent à plat d&#x27;une planche mince.">Bloc à couteaux lamellé</a></li>
+    <li><a href="configurateur/#dessous-theiere-spirale" title="Un disque traversé d&#x27;une spirale d&#x27;ajours : l&#x27;air passe sous la théière, le bois ne marque pas la table, et la spirale tient d&#x27;une seule pièce grâce aux PONTS qui la coupent tous les quarts de tour.">Dessous de théière en spirale</a></li>
+    <li><a href="configurateur/#dessous-plat-articule" title="Des lattes debout sur chant, enfilées sur deux cordelettes avec une rondelle entre deux : il se pose à plat sous la cocotte, et s&#x27;enroule pour se ranger dans un tiroir.">Dessous-de-plat articulé</a></li>
+    <li><a href="configurateur/#egouttoir" title="Deux peignes debout, crantés pour les assiettes, tenus par deux traverses croisées à mi-bois. Quatre pièces, sans colle ni vis : il se démonte pour sécher, et se range à plat.">Égouttoir à assiettes</a></li>
+    <li><a href="configurateur/#lutrin" title="Le pupitre du livre de recettes (ou de la tablette) : un dossier penché et un pied qui le traverse par une fente au bas ; devant, le pied forme le rebord qui retient le livre, derrière il épaule le dossier. Deux pièces, à démonter à plat.">Lutrin</a></li>
+    <li><a href="configurateur/#planche-a-decouper" title="Une planche à coins arrondis, sa rigole à jus tout autour du plan de coupe et une poignée ajourée à un bout : le cadeau de cuisine qui se vend le plus.">Planche à découper</a></li>
+    <li><a href="configurateur/#planche-pain" title="On coupe le pain sur la grille, les miettes tombent dans le bac par ses lumières ; on soulève la grille par les deux encoches des bouts, on vide le bac. Deux pièces.">Planche à pain et grille à miettes</a></li>
+    <li><a href="configurateur/#plateau-fromages" title="La planche de service du dessert : une rigole tout autour (le petit-lait ne coule pas sur la nappe), une fente où le couteau se tient debout, une poignée découpée, un mot gravé.">Plateau à fromages</a></li>
+    <li><a href="configurateur/#plateau-service-verres" title="Un plateau d&#x27;apéritif dont les bouts portent des encoches en trou de serrure : le pied d&#x27;un verre à vin s&#x27;y glisse, le verre pend sous le plateau par son pied, debout à côté du fromage.">Plateau de service à encoches</a></li>
+    <li><a href="configurateur/#plateau-tournant" title="Le plateau qui tourne au milieu de la table (épices, fromages, « lazy susan ») : un dessus, un socle plus petit, et entre les deux un roulement de plateau tournant du commerce, vissé par des trous percés au bon endroit.">Plateau tournant</a></li>
+    <li><a href="configurateur/#porte-couteaux" title="La barre murale de la cuisine où les couteaux tiennent par leur lame : des aimants cachés dans des logements creusés PAR DERRIÈRE, à quelques millimètres de la face ; devant, rien que le bois.">Porte-couteaux aimanté</a></li>
+    <li><a href="configurateur/#porte-rouleau" title="Le socle rond et son mât en croix, que le rouleau enfile. Trois pièces : le socle, deux lames croisées à mi-bois qui font le mât ; la première traverse le socle par un tenon.">Porte-rouleau d'essuie-tout</a></li>
+    <li><a href="configurateur/#porte-sachets-the" title="Le bloc où les sachets en enveloppe se rangent debout, une case par sorte, son nom gravé devant : on voit ce qui reste, on prend celui qu&#x27;on veut d&#x27;un doigt.">Porte-sachets de thé</a></li>
+    <li><a href="configurateur/#range-epices" title="L&#x27;étagère en escalier du fond du plan de travail ou du placard : chaque rangée de pots est plus haute que celle de devant, toutes les étiquettes se lisent. Deux joues en escalier, des tablettes à tenons traversants.">Range-épices à gradins</a></li>
+    <li><a href="configurateur/#sous-verres" title="Une série de sous-verres à cuvette et anneaux gravés, ou un dessous-de-plat ajouré de lumières : les petites pièces de cuisine qui se vendent par lots.">Sous-verres et dessous-de-plat</a></li>
+    <li><a href="configurateur/#support-livre-recettes" title="Le pupitre de cuisine : le livre ouvert, penché, loin des projections, tenu en bas par un rebord. Trois pièces qui s&#x27;emboîtent : le dos, le rebord, la béquille ; elles se démontent pour le ranger à plat.">Support de livre de recettes</a></li>
+  </ul>
+</div>
+<div class="groupe">
+  <h3>Décoration et cadeaux</h3>
+  <ul>
+    <li><a href="configurateur/#boite-musique" title="La boîte en strates qui loge un mouvement à manivelle ou à clef (18 lames, le plus courant) : la clef traverse le fond, le couvercle pivote sur un tourillon et porte une rosace d&#x27;ouïes pour que le son sorte.">Boîtier de boîte à musique</a></li>
+    <li><a href="configurateur/#cadre-photo" title="Un cadre d&#x27;une pièce : la fenêtre sur la photo, la feuillure au dos qui reçoit verre, photo et carton, l&#x27;encoche de l&#x27;accroche ; aux cotes d&#x27;un tirage du commerce.">Cadre photo</a></li>
+    <li><a href="configurateur/#calendrier-perpetuel" title="Le calendrier de bureau qui ne finit jamais : un socle à quatre fentes, et des plaquettes qu&#x27;on y plante chaque matin — le jour de la semaine, les dizaines (0 à 3), les unités (0 à 9), le mois. Les plaquettes du jour se rangent derrière celle qu&#x27;on montre.">Calendrier perpétuel</a></li>
+    <li><a href="configurateur/#carte-courbes-niveau" title="Une île en relief, taillée en marches comme une carte topographique : chaque courbe de niveau est une marche de `pas_niveau`, la mer tout autour est la plus creuse, le sommet reste à fleur de planche. Un cadre garde la hauteur de la planche, le nom de l&#x27;île y est gravé, et le nord.">Carte en courbes de niveau</a></li>
+    <li><a href="configurateur/#decorations-noel" title="Des suspensions pour le sapin, étoile, sapin ou boule, percées pour le fil et gravées d&#x27;un prénom : une par membre de la famille, ce qui se vend le plus en décembre.">Décorations de noël</a></li>
+    <li><a href="configurateur/#enseigne" title="Une plaque gravée à votre texte, une ou deux lignes centrées, un filet qui l&#x27;encadre et deux trous pour l&#x27;accrocher : le nom de la maison, de l&#x27;atelier, un numéro de rue, un cadeau.">Enseigne</a></li>
+    <li><a href="configurateur/#etoile-volume" title="Deux étoiles plates qui s&#x27;emboîtent à angle droit et deviennent une étoile en volume : elle tient debout seule, sur quatre pointes. La décoration de table qui se range à plat, à faire par séries.">Étoile en volume</a></li>
+    <li><a href="configurateur/#horloge-murale" title="Un cadran de bois pour un mouvement à quartz du commerce : le trou de l&#x27;axe au centre, les repères des heures et des minutes, les chiffres arabes ou romains gravés, un mot sous le centre ; au dos, le logement du mouvement.">Horloge murale</a></li>
+    <li><a href="configurateur/#lampe-lamelles" title="Des anneaux de bois enfilés sur trois tiges filetées, espacés par des entretoises : leur rayon suit un galbe de vase, et la lumière d&#x27;une ampoule passe entre les lamelles. Un socle plein en bas, l&#x27;ampoule au milieu.">Lampe à lamelles</a></li>
+    <li><a href="configurateur/#lampe-dentelle" title="Une lanterne carrée aux quatre côtés ajourés d&#x27;un semis de petits trous : la lumière passe en pointillés et dessine la dentelle sur les murs. Quatre côtés assemblés à queues droites, posés dans un socle.">Lampe en dentelle de bois</a></li>
+    <li><a href="configurateur/#mobile" title="Trois fléaux en cascade et quatre étoiles, à la manière de Calder : chaque fléau pend par le point exact où il s&#x27;équilibre, calculé ici d&#x27;après le poids du bois. On l&#x27;accroche au plafond, il tourne au moindre souffle et reste horizontal.">Mobile</a></li>
+    <li><a href="configurateur/#nichoir" title="La petite maison du jardin, emboîtée à tenons traversants : façade percée du trou d&#x27;envol, dos qui dépasse pour l&#x27;accrocher, deux côtés, un fond percé pour l&#x27;eau, deux pans de toit. Le trou fait l&#x27;oiseau : Ø28 pour la mésange bleue (les grosses n&#x27;y passent pas), Ø32 pour la charbonnière.">Nichoir à mésanges</a></li>
+    <li><a href="configurateur/#photophore" title="La lanterne à bougie : quatre faces percées d&#x27;un motif, assemblées à doigts sur leurs arêtes ; la flamme d&#x27;une bougie chauffe-plat (dans son verre) dessine le motif sur les murs.">Photophore ajouré</a></li>
+    <li><a href="configurateur/#porte-cles-prenom" title="Un médaillon oblong qui épouse le prénom gravé, percé pour l&#x27;anneau : le petit cadeau qui se vend par dizaines sur les marchés.">Porte-clés au prénom</a></li>
+    <li><a href="configurateur/#presentoir-bijoux" title="Un panneau debout, percé pour les boucles d&#x27;oreilles à crochet, fendu pour les puces, une rangée de trous en haut pour les chevilles des colliers ; deux pieds le tiennent, emboîtés à mi-bois. Pour la commode, ou un étal de marché.">Présentoir à bijoux</a></li>
+    <li><a href="configurateur/#rosace-ajouree" title="Un disque découpé à jour d&#x27;anneaux de navettes et de perles, comme un vitrail de bois : suspension de fenêtre, dessous-de-plat, fond de lampe, ou pour la regarder.">Rosace ajourée</a></li>
+    <li><a href="configurateur/#sapin-emboite" title="Deux silhouettes de sapin qui se croisent à mi-bois et tiennent debout seules : la décoration de table qui se range à plat dans une enveloppe, à offrir par dizaines.">Sapin de noël emboîté</a></li>
+    <li><a href="configurateur/#silhouette-ville" title="Une ligne de toits à poser sur une étagère ou une cheminée : immeubles, clocher, toits pointus, les fenêtres ajourées ; une bougie LED derrière, et la ville s&#x27;allume. Elle tient debout sur deux pieds emboîtés.">Silhouette de ville</a></li>
+  </ul>
+</div>
+<div class="groupe">
+  <h3>Électronique et boîtiers</h3>
+  <ul>
+    <li><a href="configurateur/#pedale-effet" title="Le boîtier en bois d&#x27;une pédale de guitare, en strates : un fond, des cadres collés, un dessus vissé qui porte tout — interrupteur au pied, trois potentiomètres, la LED, et les prises sur le DESSUS, à l&#x27;arrière (« top jacks ») : on aligne les pédales côte à côte sans câbles qui dépassent sur les côtés.">Boîtier de pédale d'effet</a></li>
+    <li><a href="configurateur/#boitier-electronique" title="Une boîte à queues droites taillée autour d&#x27;une carte : le fond percé à ses trous de fixation, un petit côté ouvert pour ses prises, un couvercle aéré. D&#x27;office, une Arduino Uno.">Boîtier électronique</a></li>
+    <li><a href="configurateur/#casier-composants" title="Le plateau de l&#x27;établi d&#x27;électronique : des cases creusées dans un bloc, à fond arrondi (la fraise boule y laisse un congé), d&#x27;où une résistance ou une vis se tirent d&#x27;un doigt. Chaque case a sa coordonnée : une lettre par rangée, un chiffre par colonne, comme un tableau de bataille navale — « les 10 kΩ en B4 ».">Casier à composants</a></li>
+    <li><a href="configurateur/#facade-pedale" title="Le dessus d&#x27;un boîtier d&#x27;aluminium percé pour une pédale de guitare : potentiomètres, LED, footswitch, et le nom gravé. Le perçage qu&#x27;on fait d&#x27;habitude au foret étagé, gabarit scotché, ici d&#x27;équerre et au dixième.">Façade de pédale d'effet</a></li>
+    <li><a href="configurateur/#facade-rack" title="La plaque avant d&#x27;un tiroir d&#x27;électronique (alimentation, préampli, boîtier de commande d&#x27;une machine) aux cotes du rack : 482,6 de large, `unites` × 44,45 − 0,8 de haut, les lumières de fixation à 465,1 d&#x27;entraxe. De gauche à droite : des embases Neutrik (série D), des interrupteurs, des voyants, un afficheur, et un nom gravé.">Façade de rack 19"</a></li>
+    <li><a href="configurateur/#facade-oled" title="Le panneau avant d&#x27;un petit montage (une station météo, une commande de machine, un minuteur) : la fenêtre d&#x27;un écran OLED de 0,96″, un bouton rotatif EC11, deux boutons-poussoirs. Le bois est aminci par DERRIÈRE là où il le faut : l&#x27;écran colle au plus près de sa fenêtre, les écrous des canons trouvent assez de filet.">Façade oled et encodeur</a></li>
+    <li><a href="configurateur/#panneau-brassage" title="Le « patch » du studio ou de la baie de synthés modulaires, au format rack 19″ : deux rangées de prises jack 6,35, numérotées, chaque prise tenue par son écrou dans un bois aminci par derrière.">Panneau de brassage pour jacks</a></li>
+    <li><a href="configurateur/#pupitre-ecran" title="Le support incliné d&#x27;un écran de Raspberry Pi (l&#x27;officiel de 7 pouces, ou un autre aux cotes données) : pour un pupitre de machine, une domotique, un cadre de recettes. L&#x27;écran se loge par derrière dans la façade, qui ne laisse voir que sa zone d&#x27;affichage ; deux jambes la tiennent penchée, une traverse les relie.">Pupitre pour écran tactile 7"</a></li>
+    <li><a href="configurateur/#range-cables" title="Un peigne à visser sous le bord du bureau ou au mur : chaque encoche reçoit un câble, son entrée plus étroite que lui le pince — les chargeurs ne retombent plus derrière le meuble.">Range-câbles</a></li>
+    <li><a href="configurateur/#support-bobine-filament" title="À côté de l&#x27;imprimante 3D : deux flasques sur un socle, une tige dans leurs encoches en U, la bobine enfilée sur la tige. Elle tourne librement, le filament se dévide sans tirer sur l&#x27;extrudeur.">Support de bobine de filament</a></li>
+    <li><a href="configurateur/#support-carte" title="La plaque qui tient un Arduino Uno ou un Raspberry Pi 4 sur des entretoises M3 : au fond d&#x27;une armoire, sous un plateau, sur le côté d&#x27;une machine. Fini les cartes qui traînent sur leurs fils.">Support de carte</a></li>
+    <li><a href="configurateur/#support-fer-souder" title="Le poste de l&#x27;établi d&#x27;électronique : deux montants en V où le fer se pose penché, par son manche et son col, la panne dans le vide ; une cuvette pour la laine de laiton qui nettoie la panne ; un trou pour la cheville qui porte la bobine d&#x27;étain.">Support de fer à souder</a></li>
+    <li><a href="configurateur/#support-rpi5" title="La platine qui se visse au mur ou sous un plateau : la carte posée sur quatre entretoises, ses écrous prisonniers dans le bois par dessous (on visse sans tenir de clé), des lumières sous le processeur pour que l&#x27;air passe, le contour de la carte gravé pour la poser du premier coup.">Support de raspberry pi 5</a></li>
+  </ul>
+</div>
+<div class="groupe">
+  <h3>Autres</h3>
+  <ul>
+    <li><a href="configurateur/#manivelle" title="Le moyeu percé, son bras, la bande courbe et sa lumière (plan du post-it de Christophe, 09/10/2026). Origine du dessin : le centre du moyeu, posé au milieu de la planche (o). Toutes les cotes du plan sont des variables : changer l&#x27;une d&#x27;elles et rejouer le script redessine la pièce.">Manivelle</a></li>
+  </ul>
+</div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="avancement" class="avancement">
+  <div class="cadre">
+    <div class="tete apparait">
+      <span class="surtitre">Ça avance</span>
+      <h2>626 versions depuis le 1er octobre</h2>
+      <p>Chaque correction, chaque fonction ajoutée monte le numéro d'un cran. Les derniers jours :</p>
+    </div>
+    <ul class="recents apparait">
+<li><a href="nouveautes.html#j2026-10-16"><time datetime="2026-10-16">16 octobre</time><span class="recent-version">0.9.552 à 0.9.645</span><b>Des variables dans le croquis, un solveur cent fois plus rapide, et 33 pièces de plus</b></a></li>
+<li><a href="nouveautes.html#j2026-10-15"><time datetime="2026-10-15">15 octobre</time><span class="recent-version">0.9.464 à 0.9.551</span><b>Un catalogue de 86 pièces, des parcours plus courts, et le croquis tiré d'un G-code</b></a></li>
+<li><a href="nouveautes.html#j2026-10-14"><time datetime="2026-10-14">14 octobre</time><span class="recent-version">0.9.425 à 0.9.463</span><b>Assemblages à dents, calques, une simulation des deux faces, VerdierCAM sur Raspberry Pi 5</b></a></li>
+    </ul>
+    <p class="recents-tout"><a href="nouveautes.html">Toutes les nouveautés →</a></p>
+  </div>
+</section>
+
+<section id="sortie">
+  <div class="cadre">
+    <div class="sortie apparait">
+      <div class="sortie-texte">
+        
+        <span class="surtitre">La sortie</span>
+        <h2>Bientôt disponible</h2>
+        <p>La version 0.9.645 tourne tous les jours à l'atelier. La 1.0 sortira quand
+          elle aura été validée sur le bois — pas à une date choisie d'avance.</p>
+        <div class="actions">
+          <a class="bouton bouton-plein"
+             href="mailto:contact@verdiercam.fr?subject=Pr%C3%A9venez-moi%20de%20la%20sortie%20de%20VerdierCAM&amp;body=Bonjour%2C%0A%0AJe%20souhaite%20%C3%AAtre%20pr%C3%A9venu%20de%20la%20sortie%20de%20VerdierCAM.%0A">
+            Être prévenu de la sortie</a>
+          <a class="bouton bouton-clair" href="mailto:contact@verdiercam.fr">Écrire à contact@verdiercam.fr</a>
+        </div>
+        <p class="note-prevenu">Un simple courriel : vous serez prévenu le jour de la sortie, au prix de lancement.
+          Votre adresse ne sert qu'à ça.</p>
+        
+        
+      </div>
+      <ul class="prevu">
+        <li class="prix">
+          <span class="prix-titre">Prix de lancement</span>
+          <span class="prix-une-fois">Payé une fois, à vous pour toujours — sans abonnement.</span>
+          <span class="prix-montant">59&nbsp;€ <small>TTC</small></span>
+          <span class="prix-suite">puis 79&nbsp;€ après la période de lancement</span>
+          <span class="prix-inclus">Licence perpétuelle · un an de mises à jour compris · sur 3 de vos
+            ordinateurs · sans activation en ligne</span>
+          <span class="prix-suite">Ensuite, si vous le souhaitez : <b>29&nbsp;€ par an</b> pour continuer à recevoir les
+            mises à jour. Sans renouvellement, votre version continue de fonctionner.</span>
+          <span class="prix-essai"><b>15 jours d'essai complets</b> : tout fonctionne, export du G-code et pilotage
+            compris. Ensuite, le dessin et la simulation restent.</span>
+          <span class="prix-tva">TVA non applicable, art. 293&nbsp;B du CGI.</span>
+        </li>
+        <li><b>Linux</b> Une AppImage, un seul fichier à lancer, sans installation.</li>
+        <li><b>Windows 64 bits</b> Un dossier à dézipper, sans installation non plus.</li>
+        <li><b>Raspberry Pi 5</b> Une AppImage pour le Pi 5 en 64 bits, même sous l'image LinuxCNC :
+          <a href="installer.html#raspberry">la marche à suivre</a>.</li>
+        <li><b>En français</b> L'interface, l'aide et les Premiers pas sont écrits en français, par un artisan français.</li>
+        <li><b>À votre écoute</b> Il vous manque quelque chose ? <i>Aide › Suggérer une idée</i>, dans le logiciel,
+          ou <a href="mailto:contact@verdiercam.fr?subject=Suggestion%20pour%20VerdierCAM">un courriel</a> : chaque idée
+          est lue. Un souci ? <i>Aide › Signaler un problème</i> prépare un fichier avec ce que vous avez fait, à joindre
+          au courriel.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="questions" class="teinte">
+  <div class="cadre">
+    <div class="tete apparait">
+      <span class="surtitre">Questions</span>
+      <h2>Avant de l'installer</h2>
+    </div>
+    <div class="questions apparait">
+      <details>
+        <summary>Quel ordinateur faut-il ?</summary>
+        <p>Un PC 64 bits sous Linux ou Windows, avec une carte graphique compatible
+          <b>Vulkan</b>, comme le sont les cartes AMD, NVIDIA et Intel de ces dernières
+          années. Ou un <b>Raspberry Pi 5</b> sous un système 64 bits, à côté de la machine.
+          L'interface s'agrandit de 80 à 150 % pour les écrans à haute densité.
+          <a href="installer.html">Installer, pas à pas</a>.</p>
+      </details>
+      <details>
+        <summary>Faut-il une connexion internet ?</summary>
+        <p>Non. Tout se calcule sur le poste, relief par IA compris. La connexion ne sert qu'à
+          télécharger le modèle du relief par IA (1,3 Go), si on le veut — une fois — et à dire,
+          au lancement, si une version plus récente est publiée : le numéro de version passe au
+          rouge en bas de la fenêtre, et un clic propose de la télécharger. Un assistant d'IA branché
+          (facultatif) passe, lui, par sa propre connexion.</p>
+      </details>
+      <details>
+        <summary>Ma machine est-elle prise en charge ?</summary>
+        <p>Le G-code s'écrit pour LinuxCNC, GRBL, FluidNC, grblHAL, et, à titre expérimental — écrits d'après leur documentation, jamais essayés sur une vraie machine —,
+          MASSO, Mach3, Mach4 et UCCNC. Le pilotage direct, depuis VerdierCAM, se fait avec GRBL et grblHAL.</p>
+      </details>
+      <details>
+        <summary>Je dessine dans FreeCAD, Inkscape ou un logiciel de DAO.</summary>
+        <p>Les esquisses FreeCAD (<code>.FCStd</code>), les SVG et les DXF s'importent
+          directement, et le dessin importé reste un croquis : il se contraint et se retouche.
+          Le dessin s'exporte aussi en SVG et DXF.</p>
+      </details>
+      <details>
+        <summary>Est-ce seulement pour le bois ?</summary>
+        <p>Le bois d'abord : c'est ce que l'atelier usine, et ce que la simulation montre avec
+          sa veinure. Le calculateur de régimes connaît aussi le MDF, le contreplaqué, le plexi,
+          le POM, l'aluminium, le laiton et l'acier doux.</p>
+      </details>
+      <details>
+        <summary>Peut-on l'essayer avant de l'acheter ?</summary>
+        <p>Oui : <b>15 jours d'essai complets</b> dès le premier lancement, sans carte bancaire et sans
+          inscription : à la sortie, on télécharge, on lance, c'est tout. Tout
+          fonctionne, export du G-code et pilotage de la machine compris — de quoi vérifier que votre carte GRBL ou grblHAL
+          suit le pilotage, ou que votre LinuxCNC lit bien le G-code. Ensuite, le dessin et la simulation restent ; seuls l'export et l'envoi à la machine
+          demandent une licence.</p>
+      </details>
+      <details>
+        <summary>Comment s'active la licence ?</summary>
+        <p>Elle arrive par courriel : un petit fichier à votre nom. Dans VerdierCAM, <b>Aide › Licence…</b>, puis
+          « Choisir le fichier de licence… » : elle s'active aussitôt, sans connexion, et vaut sur toutes vos
+          machines.</p>
+      </details>
+      <details>
+        <summary>Comment passer à une nouvelle version ?</summary>
+        <p>Quand une version sort, le numéro en bas de la fenêtre passe au <b>rouge</b>. Un clic : ce qui change, et
+          « Télécharger ». Décompressez, lancez — vos réglages, vos outils et votre licence sont gardés. Pendant vos
+          mises à jour comprises, chaque nouvelle version est à vous.</p>
+      </details>
+      <details>
+        <summary>Il manque une chose dont j'ai besoin.</summary>
+        <p>Dites-le : dans le logiciel, <b>Aide › Suggérer une idée</b> écrit le courrier pour vous ; ou
+          <a href="mailto:contact@verdiercam.fr?subject=Suggestion%20pour%20VerdierCAM">écrivez à contact@verdiercam.fr</a>.
+          Chaque idée est lue par celui qui écrit VerdierCAM. Le logiciel est né dans un atelier ;
+          il grandit avec ceux qui s'en servent — une fonction, un réglage, une machine, un mot mal choisi : tout compte.</p>
+      </details>
+      <details>
+        <summary>Et le prix ?</summary>
+        <p>Payé une fois, à vous pour toujours : une licence perpétuelle, la version achetée fonctionne pour toujours,
+          <b>sans activation en ligne et sur toutes vos machines</b>.
+          Un an de mises à jour est compris ; ensuite, les recevoir encore se renouvelle si on le
+          souhaite, sans obligation, pour <b>29&nbsp;€ par an</b>. <b>59&nbsp;€ TTC au lancement, puis 79&nbsp;€</b>
+          (TVA non applicable, art. 293&nbsp;B du CGI).</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="pied">
+  <div class="cadre pied-dedans">
+    <div class="pied-marque">
+      <a class="marque" href="">
+        <img src="oiseau.f8508e8c.svg" alt="" width="26" height="26">
+        <span>Verdier<b>CAM</b></span>
+      </a>
+      <p>CAO/FAO pour défonceuse CNC, écrite à
+        l'<a href="https://atelierduverdier.fr">Atelier du Verdier</a>.<br>
+        © 2026 Atelier du Verdier.</p>
+    </div>
+    <nav class="pied-liens" aria-label="Liens">
+      <a href="mailto:contact@verdiercam.fr">contact@verdiercam.fr</a>
+      <a href="https://www.youtube.com/@VerdierCAM">YouTube</a>
+      <a href="nouveautes.html">Nouveautés</a>
+      <a href="https://atelierduverdier.fr">Atelier du Verdier</a>
+      <a href="mentions-legales.html">Mentions légales</a>
+      <a href="confidentialite.html">Confidentialité</a>
+    </nav>
+  </div>
+</footer>
+
+<div class="visionneuse" hidden role="dialog" aria-modal="true" aria-label="Capture agrandie">
+  <img alt="">
+  <button type="button" aria-label="Fermer">×</button>
+</div>
+
+<script src="style/verdiercam.4403e944.js" defer></script>
+<script>
+  window.goatcounter = { path: function (p) { return '/verdiercam' + p } };
+</script>
+<script data-goatcounter="https://atelierduverdier.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
