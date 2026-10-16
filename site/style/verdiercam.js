@@ -12,6 +12,31 @@
   function filet() { if (barre) barre.classList.toggle('defile', window.scrollY > 8); }
   window.addEventListener('scroll', filet, { passive: true }); filet();
 
+  // --- Le bouton « Menu », sous 1140 px -------------------------------------
+  // Il déroule les sections sous la barre. Un lien choisi, un clic ailleurs ou
+  // Échap le referment ; Échap rend aussi la main au bouton.
+  var menuBouton = document.querySelector('.menu-bouton');
+  if (barre && menuBouton) {
+    var fin = null;
+    var ouvrirMenu = function (oui) {
+      if (oui === barre.classList.contains('menu-ouvert')) return;
+      clearTimeout(fin);
+      barre.classList.toggle('menu-ouvert', oui);
+      barre.classList.toggle('menu-ferme', !oui);
+      if (!oui) fin = setTimeout(function () { barre.classList.remove('menu-ferme'); }, 150);
+      menuBouton.setAttribute('aria-expanded', oui ? 'true' : 'false');
+    };
+    menuBouton.addEventListener('click', function (e) {
+      e.stopPropagation(); ouvrirMenu(!barre.classList.contains('menu-ouvert'));
+    });
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('#menu-sections') || e.target.closest('a')) ouvrirMenu(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && barre.classList.contains('menu-ouvert')) { ouvrirMenu(false); menuBouton.focus(); }
+    });
+  }
+
   // --- L'apparition des blocs ---------------------------------------------
   // Mesurée au défilement, et non par IntersectionObserver : un saut direct à
   // une ancre (ou un onglet en arrière-plan) laissait des blocs ENTIERS

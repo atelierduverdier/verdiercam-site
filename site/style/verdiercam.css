@@ -102,6 +102,39 @@ b, strong { font-weight: 600; }
 @media (max-width: 1320px) { .menu a { padding: 8px 8px; font-size: .9rem; } }
 @media (max-width: 1140px) { .menu { display: none; } .barre .bouton { margin-left: auto; } }
 
+/* Le bouton « Menu », sous 1140 px (16/10/2026) : jusque-là le menu s'y repliait SANS RIEN À LA
+   PLACE — sur une tablette en portrait, plus aucune section n'était joignable d'en haut. Il déroule
+   les sections sous la barre, à la façon « Menu dropdown » de transitions.dev : il s'ouvre depuis
+   le haut en 250 ms (97 → 100 %) et se referme plus vite, en 150 ms (vers 99 %). Le script le
+   montre (`.js`) : sans lui, le bouton ne ferait rien, il reste caché. */
+.menu-bouton { display: none; align-items: center; gap: 8px; font: 600 .92rem var(--texte); color: var(--encre);
+  background: var(--carte); border: 1px solid var(--trait-2); border-radius: 10px; padding: 8px 14px; cursor: pointer; }
+.menu-bouton:hover { border-color: var(--encre-3); }
+.menu-bouton svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+@media (max-width: 1140px) {
+  .js .menu-bouton { display: inline-flex; margin-left: auto; }
+  .js .barre .bouton { margin-left: 0; }
+  .js .menu { display: flex; flex-direction: column; gap: 2px; margin: 0;
+    position: absolute; top: 100%; left: 0; right: 0; padding: 8px var(--gouttiere) 16px;
+    background: #fdfcfa; border-bottom: 1px solid var(--trait); box-shadow: var(--ombre);
+    max-height: calc(100vh - 68px); overflow-y: auto;
+    transform-origin: top center; opacity: 0; visibility: hidden;
+    transition: opacity .15s cubic-bezier(.2,.7,.2,1), transform .15s cubic-bezier(.2,.7,.2,1), visibility 0s linear .15s; }
+  .js .barre.menu-ouvert .menu { opacity: 1; visibility: visible; transform: none;
+    transition: opacity .25s cubic-bezier(.2,.7,.2,1), transform .25s cubic-bezier(.2,.7,.2,1), visibility 0s; }
+  /* Fermé, il attend à 97 % ; pendant les 150 ms de sa fermeture (`.menu-ferme`, posée par le
+     script), il ne recule que jusqu'à 99 %. */
+  .js .barre:not(.menu-ouvert) .menu { transform: scale(.97); }
+  .js .barre.menu-ferme .menu { transform: scale(.99); }
+  .js .menu a { font-size: 1rem; padding: 12px; }
+}
+/* Sur un téléphone, l'icône seule : le mot ne tient plus à côté du logo et du bouton orange. */
+@media (max-width: 480px) {
+  .menu-bouton { padding: 8px 10px; }
+  .menu-bouton span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .barre-dedans { gap: 12px; }
+}
+
 /* --- Les boutons ------------------------------------------------------ */
 .bouton { display: inline-flex; align-items: center; gap: 8px; font: 600 1rem var(--texte);
   padding: 13px 22px; border-radius: 12px; text-decoration: none; border: 1px solid transparent;
@@ -434,6 +467,7 @@ pre.code code { background: none; border: 0; padding: 0; white-space: pre; font-
   .defile { display: none; }
   .machines { display: flex; }
   .visionneuse, .visionneuse[hidden], .visionneuse img, .visionneuse[hidden] img { transition: none; }
+  .js .menu, .js .barre.menu-ouvert .menu { transition: none; }
   .visionneuse[hidden] img { transform: none; }
 }
 
