@@ -679,6 +679,27 @@ def remplir(gabarit: str, valeurs: dict, nom: str) -> str:
     return gabarit
 
 
+
+def empreinte_configurateur(dossier: Path) -> None:
+    """L'EMPREINTE DU CONFIGURATEUR (16/10/2026, Christophe : « je ne vois pas la 3D sur mon navigateur » — GitHub Pages
+    laisse le navigateur garder un fichier 10 minutes : la page neuve tournait avec l'ancien configurateur.js). Comme
+    les images, nommées par l'empreinte de leur contenu : les adresses de index.html (style.css, configurateur.js,
+    vue3d.js…) reçoivent « ?v=<empreinte> », calculée sur TOUT le dossier ; configurateur.js la reporte sur ce qu'il
+    charge ensuite (le travailleur, le cœur WebAssembly, la liste et les pièces). Une version neuve change toutes les
+    adresses : le cache ne sert plus l'ancienne. Une page sans aucune adresse à marquer arrête la génération."""
+    h = hashlib.sha256()
+    for f in sorted(p for p in dossier.rglob('*') if p.is_file() and p.name != 'index.html'):
+        h.update(str(f.relative_to(dossier)).encode('utf-8'))
+        h.update(f.read_bytes())
+    v = h.hexdigest()[:12]
+    page = dossier / 'index.html'
+    texte = page.read_text(encoding='utf-8')
+    marque, n = re.subn(r'((?:src|href)=")([\w.-]+\.(?:js|css))(")', rf'\g<1>\g<2>?v={v}\g<3>', texte)
+    if n == 0 or 'configurateur.js?v=' not in marque:
+        sys.exit("generer : configurateur/index.html sans script à marquer de son empreinte — la page a changé ?")
+    page.write_text(marque, encoding='utf-8')
+
+
 def main() -> None:
     manquants = chemins.verifier()
     if manquants:
@@ -711,6 +732,7 @@ def main() -> None:
     # LE CONFIGURATEUR DE PIÈCES (10/10/2026) : la page du logiciel (web/configurateur), recopiée telle quelle sous
     # /configurateur/ — sa page, son script, son cœur WebAssembly, ses pièces .vcs. Pas la notice de construction.
     shutil.copytree(chemins.CONFIGURATEUR, PUBLIC / 'configurateur', ignore=shutil.ignore_patterns('README.md', '*.map'))
+    empreinte_configurateur(PUBLIC / 'configurateur')
     captures = publier_captures()
     carte = carte_partage()
     faits = faits_verdiercam()
