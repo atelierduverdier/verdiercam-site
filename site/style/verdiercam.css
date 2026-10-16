@@ -380,10 +380,21 @@ pre.code code { background: none; border: 0; padding: 0; white-space: pre; font-
 .pied-liens a:hover { color: var(--encre); }
 
 /* --- La visionneuse --------------------------------------------------- */
+/* Elle s'ouvre en fondu, l'image grandissant de 96 à 100 % (250 ms), et se
+   referme plus vite (150 ms) : repris de transitions.dev, « Modal open /
+   close », sur la courbe du site. `hidden` reste l'état, posé par le gabarit
+   et par le script, mais il ne vaut plus `display: none` — un navigateur
+   n'anime jamais `display`. `visibility`, si : elle retire la visionneuse
+   fermée du clic et du clavier, et son délai la laisse visible le temps du
+   fondu de sortie. */
 .visionneuse { position: fixed; inset: 0; z-index: 100; background: rgba(21,23,28,.88); display: grid;
-  place-items: center; padding: 24px; cursor: zoom-out; }
-.visionneuse[hidden] { display: none; }
-.visionneuse img { max-height: 92vh; width: auto; border-radius: 10px; box-shadow: 0 30px 80px rgba(0,0,0,.5); }
+  place-items: center; padding: 24px; cursor: zoom-out;
+  transition: opacity .25s cubic-bezier(.2,.7,.2,1), visibility 0s; }
+.visionneuse[hidden] { display: grid; opacity: 0; visibility: hidden;
+  transition: opacity .15s cubic-bezier(.2,.7,.2,1), visibility 0s linear .15s; }
+.visionneuse img { max-height: 92vh; width: auto; border-radius: 10px; box-shadow: 0 30px 80px rgba(0,0,0,.5);
+  transition: transform .25s cubic-bezier(.2,.7,.2,1); }
+.visionneuse[hidden] img { transform: scale(.96); transition: transform .15s cubic-bezier(.2,.7,.2,1); }
 .visionneuse button { position: absolute; top: 14px; right: 18px; background: none; border: 0; color: #fff; font-size: 2.2rem; cursor: pointer; }
 
 /* --- L'apparition au défilement (posée par le script seulement) ------- */
@@ -422,6 +433,8 @@ pre.code code { background: none; border: 0; padding: 0; white-space: pre; font-
   .fenetre, .jalons li { transition: none; }
   .defile { display: none; }
   .machines { display: flex; }
+  .visionneuse, .visionneuse[hidden], .visionneuse img, .visionneuse[hidden] img { transition: none; }
+  .visionneuse[hidden] img { transform: none; }
 }
 
 
