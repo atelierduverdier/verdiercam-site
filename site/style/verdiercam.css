@@ -554,3 +554,24 @@ section.legal { padding-top: 24px; }
 @media (max-width: 520px) { .video-yt-lecture { width: 64px; height: 64px; margin: -32px 0 0 -32px; }
   .video-yt-lecture::after { left: 26px; top: 19px; border-width: 13px 0 13px 21px; }
   .video-yt-titre { font-size: .9rem; left: 14px; bottom: 10px; } .video-yt-titre small { display: none; } }
+
+/* LA PAGE « PIÈCES » (16/10/2026) : une carte par pièce, sa capture simulée, son nom et sa description. */
+.sommaire-pieces { font-size: .95rem; line-height: 1.9; color: var(--encre-3); }
+.sommaire-pieces a { color: var(--orange-encre); white-space: nowrap; }
+.catalogue-images { padding-bottom: clamp(48px, 6vw, 96px); }
+.theme-pieces { margin-top: clamp(40px, 5vw, 64px); scroll-margin-top: 90px; }
+.theme-pieces h2 { font-size: clamp(1.4rem, 2.4vw, 1.9rem); margin-bottom: 18px; }
+.theme-pieces h2 span { font: 500 .85rem var(--mono); color: var(--encre-3); margin-left: 8px; }
+.galerie-pieces { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+.carte-piece { margin: 0; background: var(--carte); border: 1px solid var(--trait); border-radius: var(--rayon);
+  box-shadow: var(--ombre); overflow: hidden; display: flex; flex-direction: column; scroll-margin-top: 90px; }
+.vue-piece { display: block; aspect-ratio: 916 / 628; background: var(--fond-2); }
+.vue-piece img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .25s; }
+.carte-piece:hover .vue-piece img { transform: scale(1.03); }
+.sans-capture { display: flex; height: 100%; align-items: center; justify-content: center; color: var(--encre-3);
+  font: 500 .8rem var(--mono); text-transform: uppercase; letter-spacing: .06em; }
+.carte-piece figcaption { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; line-height: 1.45; }
+.carte-piece figcaption b { color: var(--encre); font-size: 1.02rem; }
+.carte-piece figcaption span { color: var(--encre-3); font-size: .88rem; display: -webkit-box; -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical; overflow: hidden; }
+.carte-piece figcaption a { color: var(--orange-encre); font-size: .88rem; margin-top: auto; padding-top: 4px; }

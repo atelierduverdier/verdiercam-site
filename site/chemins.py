@@ -32,6 +32,10 @@ CONFIGURATEUR = VERDIERCAM / 'web' / 'configurateur'
 PRESENTATION = PROJETS / 'realisations' / 'presentation-verdiercam'
 CAPTURES = PRESENTATION / 'captures'
 CLIPS = PRESENTATION / 'clips'
+# Une capture par pièce du catalogue (16/10/2026), refaite par outils/capturer-pieces.sh dans le vrai logiciel. Pas dans
+# TOUT : une pièce sans capture est signalée à la génération, elle ne l'arrête pas (une pièce poussée hier soir n'a pas
+# encore la sienne quand le minuteur republie).
+CAPTURES_PIECES = PRESENTATION / 'pieces'
 
 TOUT = {
     'CMakeLists (version)': VERDIERCAM_CMAKE,

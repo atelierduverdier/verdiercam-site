@@ -81,6 +81,14 @@ PAGES = [
                        "opérations et la fraise, simuler, puis exporter le G-code.",
     },
     {
+        'contenu': 'pieces.html',
+        'sortie': 'pieces.html',
+        'titre': "VerdierCAM — les pièces paramétriques, en images",
+        'description': "Les {{verdiercam.pieces}} pièces paramétriques livrées avec VerdierCAM, chacune usinée dans la "
+                       "simulation du logiciel : jeux, rangement, gabarits d'atelier, mécanique, cuisine, décoration, "
+                       "électronique. À ouvrir et régler dans le configurateur.",
+    },
+    {
         'contenu': 'installer.html',
         'sortie': 'installer.html',
         'titre': "VerdierCAM — installer sur Linux, Windows et Raspberry Pi 5",
@@ -144,6 +152,7 @@ NAV = [
     ('#modes', 'Modes'),
     ('premiers-pas.html', 'Premiers pas'),
     ('installer.html', 'Installer'),
+    ('pieces.html', 'Pièces'),
     ('configurateur/', 'Configurateur'),
     ('nouveautes.html', 'Nouveautés'),
     ('#sortie', 'Sortie'),
@@ -445,6 +454,59 @@ def faits_verdiercam() -> dict:
 # Le catalogue du configurateur (15/10/2026) : pieces.json, écrit par la construction du cœur WebAssembly
 # (outils/construire-wasm.sh du logiciel) — les pièces COMMITÉES de ressources/pieces, nom, description et thème lus
 # par le logiciel lui-même, dans l'ordre de sa galerie. Rien n'est recopié ici : ni le nombre, ni les thèmes, ni les noms.
+# LA PAGE « PIÈCES » (16/10/2026, Christophe : « un screenshot de chaque pièce […] avec le nom de la pièce ; ça me
+# permettra aussi de la voir pour valider ») : la capture de chaque pièce finie, simulée dans le vrai logiciel par
+# outils/capturer-pieces.sh, rangée par thème dans l'ordre de la galerie. Une pièce sans capture est dite, pas cachée.
+LARGEUR_PIECE = 720
+
+
+def images_des_pieces(pieces: list) -> dict:
+    """Écrit les captures des pièces dans public/captures/pieces/ ; rend {id : chemin servi}."""
+    from PIL import Image
+
+    cible = PUBLIC / 'captures' / 'pieces'
+    servies, manquantes = {}, []
+    for p in pieces:
+        f = chemins.CAPTURES_PIECES / f"{p['id']}.png"
+        if not f.is_file():
+            manquantes.append(p['id'])
+            continue
+        im = Image.open(f).convert('RGB')
+        if im.width > LARGEUR_PIECE:
+            im = im.resize((LARGEUR_PIECE, round(im.height * LARGEUR_PIECE / im.width)), Image.LANCZOS)
+        tampon = io.BytesIO()
+        im.save(tampon, 'WEBP', quality=86, method=6)
+        servies[p['id']] = (servir(tampon.getvalue(), cible, p['id'], 'webp'), im.width, im.height)
+    if manquantes:
+        print(f"  ! {len(manquantes)} pièce(s) sans capture — relancer outils/capturer-pieces.sh : {', '.join(manquantes)}")
+    return servies
+
+
+def galerie_des_pieces(pieces: list, themes: list) -> str:
+    images = images_des_pieces(pieces)
+    sections = []
+    for t in themes:
+        cartes = []
+        for p in (p for p in pieces if p['theme'] == t):
+            nom, lien = html.escape(p['nom'], quote=False), f'{{{{RACINE}}}}configurateur/#{html.escape(p["id"])}'
+            if p['id'] in images:
+                src, l, h = images[p['id']]
+                vue = (f'<img src="{{{{RACINE}}}}{src}" alt="{html.escape(p["nom"])}, usinée dans la simulation de VerdierCAM" '
+                       f'width="{l}" height="{h}" loading="lazy">')
+            else:
+                vue = '<span class="sans-capture">capture à venir</span>'
+            cartes.append(f'<figure class="carte-piece" id="{html.escape(p["id"])}">\n'
+                          f'      <a class="vue-piece" href="{lien}">{vue}</a>\n'
+                          f'      <figcaption><b>{nom}</b><span>{html.escape(p["description"], quote=False)}</span>\n'
+                          f'        <a href="{lien}">Régler dans le configurateur →</a></figcaption>\n'
+                          f'    </figure>')
+        ancre = re.sub(r'[^a-z0-9]+', '-', t.lower().translate(str.maketrans('àâçéèêëîïôûùü', 'aaceeeeiiouuu'))).strip('-')
+        sections.append(f'<section class="theme-pieces" id="{ancre}">\n  <h2>{html.escape(t)} '
+                        f'<span>{sum(1 for p in pieces if p["theme"] == t)}</span></h2>\n  <div class="galerie-pieces">\n    '
+                        + '\n    '.join(cartes) + '\n  </div>\n</section>')
+    return '\n'.join(sections)
+
+
 def pieces_en_html() -> dict:
     pieces = json.loads((chemins.CONFIGURATEUR / 'pieces.json').read_text(encoding='utf-8'))['pieces']
     if not pieces:
@@ -464,7 +526,10 @@ def pieces_en_html() -> dict:
     nommes = [t for t in themes if t != 'Autres']
     return {'pieces': str(len(pieces)), 'themes_pieces': str(len(nommes)),
             'themes_pieces_en_mots': ', '.join(t[:1].lower() + t[1:] for t in nommes),
-            'liste_pieces': '\n'.join(blocs)}
+            'liste_pieces': '\n'.join(blocs), 'galerie_pieces': galerie_des_pieces(pieces, themes),
+            'sommaire_pieces': ' · '.join(
+                f'<a href="#{re.sub(r"[^a-z0-9]+", "-", t.lower().translate(str.maketrans("àâçéèêëîïôûùü", "aaceeeeiiouuu"))).strip("-")}">'
+                f'{html.escape(t)}</a>' for t in themes)}
 
 
 # --- Les nouveautés ------------------------------------------------------

@@ -38,6 +38,12 @@ if ! "$VCAM/outils/construire-wasm.sh" >"$ETAT/wasm.log" 2>&1; then
     prevenir -u critical "Site VerdierCAM" "Le configurateur ne se construit pas (voir $ETAT/wasm.log) : rien de republié."
     exit 1
 fi
+# LES CAPTURES DES PIÈCES (16/10/2026) : celles des pièces nouvelles ou changées, refaites dans le vrai logiciel
+# (outils/capturer-pieces.sh, sa propre copie de travail construite à part). Une capture ratée n'arrête pas la
+# publication : la page « Pièces » montre « capture à venir » à sa place, et on le dit.
+if ! "$SITE/outils/capturer-pieces.sh" >"$ETAT/captures.log" 2>&1; then
+    prevenir "Site VerdierCAM" "Des captures de pièces ont raté (voir $ETAT/captures.log) : la page les annonce « à venir »."
+fi
 # REPUBLIER_SEC=1 : tout refaire sans rien pousser (pour essayer le minuteur).
 if python3 "$SITE/site/publier.py" ${REPUBLIER_SEC:+--sec} >"$ETAT/publier.log" 2>&1; then
     [ -n "${REPUBLIER_SEC:-}" ] && { echo "essai : généré, rien poussé"; exit 0; }

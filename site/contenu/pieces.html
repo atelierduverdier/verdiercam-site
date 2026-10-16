@@ -1,0 +1,23 @@
+<!-- VerdierCAM — « Pièces » : le catalogue des pièces paramétriques en images. Chaque capture est la pièce FINIE, insérée
+     depuis la galerie et simulée en 3D dans le vrai logiciel par outils/capturer-pieces.sh — jamais retouchée. La liste,
+     les noms, les descriptions et les thèmes sont ceux du logiciel (pieces.json du configurateur) : rien n'est recopié
+     ici. Voir site/generer.py, galerie_des_pieces. -->
+
+<div class="heros papier">
+  <div class="cadre">
+    <div class="tete apparait">
+      <span class="surtitre">Le catalogue</span>
+      <h1>{{verdiercam.pieces}} pièces paramétriques, usinées dans la simulation</h1>
+      <p class="accroche">
+        Chaque pièce est un script livré avec VerdierCAM : ses cotes deviennent des réglages, ses usinages sont déjà
+        déclarés. Les images montrent la pièce finie telle que le logiciel la simule — fraise, profondeurs et onglets
+        compris. Cliquez sur une pièce pour la régler dans le configurateur, sans rien installer.
+      </p>
+      <p class="sommaire-pieces">{{verdiercam.sommaire_pieces}}</p>
+    </div>
+  </div>
+</div>
+
+<div class="cadre catalogue-images">
+{{verdiercam.galerie_pieces}}
+</div>
