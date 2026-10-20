@@ -82,7 +82,10 @@
         <b>VerdierCAM-<i>version</i>-linux-aarch64.tar.gz</b>. Il a été essayé sur un Pi 5 de 8 Go.</p>
       <p>Sous <b>Raspberry Pi OS 64 bits</b>, le système à jour, puis la bibliothèque des AppImage :</p>
 <pre class="code"><code>sudo apt update &amp;&amp; sudo apt full-upgrade
-sudo apt install libfuse2 mesa-vulkan-drivers</code></pre>
+sudo apt install libfuse2 mesa-vulkan-drivers
+sudo apt install --no-install-recommends zenity</code></pre>
+      <p><b>zenity</b> dessine la fenêtre « Ouvrir un fichier » : sans lui, Ouvrir et Enregistrer ne montrent rien.
+        Raspberry Pi OS l'a souvent déjà ; la commande ne fait alors rien.</p>
       <p>Puis, dans le dossier du téléchargement :</p>
 <pre class="code"><code>tar xzf VerdierCAM-*-linux-aarch64.tar.gz
 ./VerdierCAM-*-linux-aarch64.AppImage</code></pre>
@@ -114,6 +117,7 @@ sudo apt update</code></pre>
 <pre class="code"><code>sudo apt install -t bookworm-backports mesa-vulkan-drivers libgl1-mesa-dri libglx-mesa0 \
   libegl-mesa0 libgbm1 mesa-va-drivers mesa-vdpau-drivers
 sudo apt install libfuse2
+sudo apt install --no-install-recommends zenity
 sudo reboot</code></pre>
       <p>Ensuite, <code>vulkaninfo --summary</code> doit dire <b>V3D 7.1</b>, et VerdierCAM s'installe comme au
         paragraphe précédent. Relancer LinuxCNC et faire un mouvement à vide avant une vraie pièce : son écran passe aussi

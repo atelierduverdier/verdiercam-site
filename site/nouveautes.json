@@ -2,6 +2,58 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+   "date": "2026-10-20",
+   "titre": "Le bois à la couleur de son opération, deux niveaux seulement, et la Révolution repensée",
+   "points": [
+    "Simulation : le bois creusé prend la couleur de l'opération qui l'a creusé — celle de son trait à l'Usinage, la couleur choisie dans l'opération, sinon ébauche orange et finition bleue ; une case « Couleurs des opérations » rend la couleur du bois.",
+    "Simulation : « Vue en coupe » est dans la barre de la vue 3D, à côté de Dessus | Dessous, pour voir un trou, son filet ou une rainure de l'intérieur ; la face tranchée est plus claire que le bois creusé, le profil s'y lit. Vue de dessus, la fraise se voit à travers sa queue et son écrou.",
+    "Niveaux : Débutant et Pro seulement. Le Pro montre tous les dessins qui expliquent un réglage ; ses réglages rares (dernière passe, rampe, dépouille, reprise…) sont repliés d'office, sauf ceux qui ne sont pas à leur valeur d'office.",
+    "Révolution repensée : « Ce qui tourne » dit quelle forme est le profil et laquelle l'axe, la vue les montre, deux clics suffisent pour les désigner ; le cercle est toujours l'axe, quel que soit l'ordre du choix.",
+    "Filetage : un bouton creuse le trou au bon diamètre, par une Poche comme par un Hélicoïdal, en laissant aux parois le bois du filet ; un double filet se règle (« Nombre de filets ») ; dans un trou à peine plus large que la fraise, « Passer en Hélicoïdal » fait une hélice continue.",
+    "Bibliothèque d'outils : les fraises à fileter ont leur famille, et vous créez, renommez ou retirez les vôtres ; un outil se range en le glissant sur une famille.",
+    "Usinage plus lisible : une puce de section ne montre que sa section, la carte de l'outil n'a plus qu'un bouton « Changer d'outil… », les onglets des panneaux sont plus gros ; « mord à pleine fraise » s'explique par un dessin ; en Poche, « Tout sauf les îlots ».",
+    "Assistant IA branché : l'outil « aide » lui explique le logiciel, le panneau d'une opération relevé tel qu'il s'affiche, infobulles et alertes comprises.",
+    "Corrigé : un cercle tapé « R 2 » puis posé d'un clic prend bien 2 mm de rayon ; l'ARRÊT attend que la machine soit immobile avant de remettre la carte à zéro ; un arc creux ouvert ne casse plus le parcours d'une poche ; un grand contour qui se recoupe ne fige plus VerdierCAM pendant une réunion ou une différence."
+   ]
+  },
+  {
+   "date": "2026-10-19",
+   "titre": "Le filetage à la fraise de bout en bout, et huit projets guidés pas à pas",
+   "points": [
+    "Projets guidés : huit projets pas à pas dans l'appli — une plaque gravée, une poche, une pièce du catalogue, une plaque percée, une enseigne en V, un surfaçage, un dessin importé, le relief d'une image.",
+    "Filetage : la table ISO (pas normal de M1,6 à M52, pas fin de M3 à M24) pose le cercle et le pas, et donne l'écrou et le foret ; un cercle Ø4 naît au pas du M4.",
+    "Filetage : une vue de côté à l'échelle, coupée par le centre, avec la vraie fraise ; la surcourse sous le filet ; le bois laissé aux parois se règle ; la fraise reste dans le trou entre deux passes et ne remonte qu'à la fin ; une fraise trop haute pour le pas est signalée.",
+    "Bibliothèque d'outils : le type « Fraise à fileter » — sa dent, son cou, sa queue — et des fraises à fileter d'une dent, de M3 à M8, toutes réglées, en un clic.",
+    "Poche : quand la fraise « mord à pleine fraise » à cause du pas latéral, le panneau le dit et propose de le ramener à 45 % ; la section « Zone et bords ouverts » est refaite, avec un aperçu de la vraie zone.",
+    "Croquis : « Centrer sur la planche » d'un bloc (F9), et les alignements en icônes dans la section Sélection. Relief : un modèle 3D remplit la planche et s'aplatit à son épaisseur, au lieu de rapetisser.",
+    "Pilotage avec gSender (GRBL) : « M6 pour gSender » lance son changement d'outil guidé, avec palpage ; hors LinuxCNC, les commentaires du G-code s'écrivent en ASCII (« D=3.7 » au lieu de « Ø3.7 », que gSender affichait de travers).",
+    "Corrigé : le filet d'une fraise qui ne coupe pas au centre n'est plus alésé par une rampe en zigzag ; « Reprendre à cette ligne » refuse le milieu d'un cycle de perçage et dit où reprendre ; la poche d'un trou à peine plus large que la fraise n'est plus vide."
+   ]
+  },
+  {
+   "date": "2026-10-18",
+   "titre": "Les premiers essais de la pré-version : fraises à fileter, reliefs plus francs, croquis retouché",
+   "points": [
+    "Filetage : une fraise à fileter, plus large que sa tige, n'est plus refusée — elle file d'une hélice dans le trou creusé, la tige dedans ; seul son col borne la longueur filetée.",
+    "Fraise dessinée : la pointe se pose sur l'axe, et la queue garde son diamètre ; la longueur totale tapée dans la bibliothèque compte même sans sortie de pince.",
+    "Relief : quand un modèle sort de la planche, il dit par où et de combien ; « Ajuster à la planche » explique pourquoi un modèle reste petit ; « La planche à la taille du modèle » ne garde plus 230 mm de marge ; une forme dont le tracé a été effacé se retire de la pile d'un clic.",
+    "Croquis : couper une courbe de Bézier en un point, décaler sans boucle dans les creux, combiner des traits ouverts qui se referment ensemble ; une forme seule s'aligne sur la planche ; un cercle ou un arc se pose tangent à un bord ou à un axe.",
+    "Usinage : Suppr efface les formes choisies quand la souris est sur la vue 2D ; la console se vide d'un clic (le journal joint aux rapports garde tout) ; « Nouvel outil › Autre fraise : la dessiner… » ouvre le dessin de fraise à part ; les fichiers récents se replient en une ligne.",
+    "Corrigé : « Signaler un problème », rouvert après un rapport envoyé, repart à blanc."
+   ]
+  },
+  {
+   "date": "2026-10-17",
+   "titre": "VerdierCAM 0.99, la pré-version de la 1.0",
+   "points": [
+    "VerdierCAM 0.99 : la pré-version de la 1.0, à essayer à l'atelier. Les grandes fonctions sont posées ; viennent maintenant les retouches demandées aux essais.",
+    "Relief par IA : l'aperçu se tourne en 3D dans la vue de l'atelier ; « Garder le plat de la planche » adoucit la forme sans bomber le fond.",
+    "Relief : un modèle 3D se tourne librement avant d'être gravé — la vue de dessus est ce qui sera usiné — et son bord se garde en falaise ou s'adoucit en fondu.",
+    "Windows : VerdierCAM a tourné sur le PC de l'atelier, liaison comprise, par le port COM et en Wi-Fi avec une carte FluidNC.",
+    "Surfaçage : le dessin du panneau tourne avec l'angle de balayage, comme le parcours ; le petit trièdre du coin de la vue n'apparaît plus qu'au Pilotage."
+   ]
+  },
+  {
    "date": "2026-10-16",
    "titre": "Des variables dans le croquis, un solveur cent fois plus rapide, et 33 pièces de plus",
    "points": [
