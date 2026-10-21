@@ -86,8 +86,13 @@ def dernieres_passes(mouvements: list) -> list:
     passes = []
     for c in contours:
         zmin = min(mv[6] for mv in c)
-        # le premier mouvement qui ARRIVE au fond (plongée droite ou fin de rampe) ; les onglets qui suivent en font partie
+        # depuis le premier mouvement qui ARRIVE au fond ; les onglets qui suivent en font partie. S'il y DESCEND (la fin
+        # d'une rampe d'entrée), on part du suivant : la rampe en zigzag de l'alésage de l'engrenage (0.99.108) finit par un
+        # arc qui traverse le trou, et le remplir laissait un croissant de bois au milieu. Le tour au fond se referme de
+        # toute façon sur son départ.
         debut = next(k for k, mv in enumerate(c) if abs(mv[6] - zmin) < 1e-3)
+        if c[debut][3] > zmin + 1e-3 and debut + 1 < len(c):
+            debut += 1
         passe = [mv for mv in c[debut:] if not (mv[1] == mv[4] and mv[2] == mv[5])]   # sans les mouvements en Z seuls
         if passe:
             passes.append((zmin, passe))
