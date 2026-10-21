@@ -74,6 +74,34 @@
     videos.forEach(function (v) { lecteur.observe(v); });
   }
 
+  // --- Le tracé de l'accueil se joue quand on le voit ----------------------
+  // (21/10/2026, Christophe : « lance l'animation quand le tracé devient visible sur mobile ».) Sur un téléphone il est
+  // sous le texte : joué au chargement, il était fini avant qu'on y arrive. L'animation reste en CSS (site/trace_piece.py) ;
+  // le script ne fait que la retenir, à zéro, tant que la carte est hors de la fenêtre, puis la relâche — mesuré au
+  // défilement comme l'apparition des blocs. Sans script ou en mouvement réduit, rien ne change.
+  var trace = document.querySelector('.trace-piece');
+  if (trace && !calme && document.getAnimations) {
+    var animations = function () {
+      return document.getAnimations().filter(function (a) {
+        var t = a.effect && a.effect.target;
+        return t && t.closest && t.closest('.trace-piece') === trace;
+      });
+    };
+    var enVue = function () {
+      var r = trace.getBoundingClientRect();
+      return r.top < window.innerHeight * 0.85 && r.bottom > 0;
+    };
+    if (!enVue()) {
+      animations().forEach(function (a) { a.pause(); a.currentTime = 0; });
+      var lancer = function () {
+        if (!enVue()) return;
+        animations().forEach(function (a) { a.play(); });
+        ['scroll', 'resize', 'hashchange', 'pageshow'].forEach(function (e) { window.removeEventListener(e, lancer); });
+      };
+      ['scroll', 'resize', 'hashchange', 'pageshow'].forEach(function (e) { window.addEventListener(e, lancer, { passive: true }); });
+    }
+  }
+
   // --- Le parcours : le jalon qui correspond à la vue au milieu de l'écran --
   // Les jalons restent fixés à gauche pendant que les vues défilent ; celui
   // de la vue la plus proche du centre prend l'orange. Sans script, les
