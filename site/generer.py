@@ -277,6 +277,8 @@ IMAGES = {
     'graver_image': 'graver-image',
     'graver_fraise': 'graver-fraise',
     'relief_usine': 'relief-paliers',
+    # L'image d'attente de la vidéo « Filetage » (21/10/2026) : la coupe d'un trou fileté, en simulation.
+    'filetage_coupe': 'filetage',
     # La page « Premiers pas » : onze étapes, une plaque percée du croquis au G-code.
     'pp_01_accueil': 'pp-accueil',
     'pp_02_brut': 'pp-brut',
@@ -587,6 +589,17 @@ def nouveautes_en_html() -> dict:
             f'\n    <figure class="capture journee-capture"><div class="fenetre"><img src="{{{{RACINE}}}}captures/{c}" '
             f'width="1920" height="1080" loading="lazy" alt="{html.escape(l)}"></div>'
             f'<figcaption>{html.escape(l, quote=False)}</figcaption></figure>' for c, l in e.get('images', []))
+        # … ET UNE VIDÉO YOUTUBE (clé « video » : [identifiant, capture, titre] — 21/10/2026, le filetage) : comme sur
+        # l'accueil, une capture d'ici et un bouton ; YouTube ne se charge qu'au clic (verdiercam.js).
+        if e.get('video'):
+            ident, capture, titre = e['video']
+            figures += (f'\n    <div class="video-yt journee-video" data-youtube="{html.escape(ident)}">'
+                        f'<a class="video-yt-lien" href="https://youtu.be/{html.escape(ident)}">'
+                        f'<img src="{{{{RACINE}}}}captures/{capture}" width="1920" height="1080" loading="lazy" '
+                        f'alt="Image d\'attente de la vidéo « {html.escape(titre)} », capture de VerdierCAM">'
+                        f'<span class="video-yt-lecture" aria-hidden="true"></span>'
+                        f'<span class="video-yt-titre">{html.escape(titre, quote=False)} <small>— lire la vidéo</small></span>'
+                        f'</a></div>')
         blocs.append(
             f'<article class="journee apparait" id="j{e["date"]}">\n'
             f'  <div class="journee-quand">\n'

@@ -568,6 +568,11 @@ section.legal { padding-top: 24px; }
 .plus[open] > summary::before { transform: rotate(45deg); }
 .plus > summary:hover { text-decoration: underline; }
 .plus > .coches { margin-top: 8px; }
+/* La vidéo d'une opération (21/10/2026, le filetage) : sous le texte de la section, avant les familles ; et dans une
+   journée des Nouveautés. */
+.journee-video { margin-top: 20px; max-width: 720px; }
+.video-operation { margin: clamp(32px, 4vw, 48px) 0 0; max-width: 820px; }
+.video-operation figcaption { font-size: .92rem; line-height: 1.5; color: var(--encre-2); margin-top: 12px; }
 .plus-familles { margin-top: 28px; }
 .plus-familles > .familles { margin-top: 16px; }
 

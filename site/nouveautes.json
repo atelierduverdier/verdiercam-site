@@ -16,6 +16,11 @@
     "Matières : le calcul des vitesses range les essences de bois et les autres matières par famille, et les messages nomment la matière de la planche — « laissez moins d'aluminium aux parois », « la queue frotte le laiton ».",
     "Essai : une fois l'essai fini, les exports 3D demandent la licence, comme le G-code — pièce finie, relief et solides en STL, 3MF en couleurs.",
     "Corrigé : un contour intérieur déclaré par une pièce paramétrique ne reçoit plus les onglets d'une découpe extérieure (les évidements et l'alésage de l'engrenage restaient tenus), et la fraise descend toujours au fond entre deux onglets, même sur un petit trou ; les onglets se posent même si le choix des bords d'une autre poche est resté armé ; Décaler ne laisse plus de cercle entier en trop au raccord de deux arcs tangents ; une ellipse ouverte de partout ne garde plus d'encoche où la fraise tournait en boucle ; les poignées d'une courbe suivent le nœud qu'on tire, et l'ellipse ne devient plus pointue ; une B-spline importée et bloquée ne perd plus ses poignées à l'enregistrement."
+   ],
+   "video": [
+    "G9VYDOW-JG0",
+    "filetage.webp",
+    "Le filetage"
    ]
   },
   {
