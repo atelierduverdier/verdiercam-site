@@ -37,6 +37,11 @@ CLIPS = PRESENTATION / 'clips'
 # encore la sienne quand le minuteur republie).
 CAPTURES_PIECES = PRESENTATION / 'pieces'
 
+# Le mode d'emploi complet (21/10/2026) : sa version web, fabriquée dans son dossier par « python3 fabriquer.py --web »
+# (une page et ses images WebP nommées par leur empreinte, sans les passages laser), recopiée telle quelle sous
+# /mode-emploi/.
+MODE_EMPLOI = PROJETS / 'realisations' / 'manuel-verdiercam' / 'sortie' / 'web'
+
 TOUT = {
     'CMakeLists (version)': VERDIERCAM_CMAKE,
     'Operation.h (familles)': VERDIERCAM_OPERATION,
@@ -48,6 +53,7 @@ TOUT = {
     'configurateur (page)': CONFIGURATEUR / 'index.html',
     'configurateur (cœur WebAssembly, outils/construire-wasm.sh)': CONFIGURATEUR / 'verdiercam-coeur.wasm',
     'configurateur (liste des pièces, outils/construire-wasm.sh)': CONFIGURATEUR / 'pieces.json',
+    "mode d'emploi (manuel-verdiercam : python3 fabriquer.py --web)": MODE_EMPLOI / 'index.html',
 }
 
 

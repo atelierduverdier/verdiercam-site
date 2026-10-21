@@ -151,6 +151,7 @@ NAV = [
     ('#usinage', 'Opérations'),
     ('#modes', 'Modes'),
     ('premiers-pas.html', 'Premiers pas'),
+    ('mode-emploi/', 'Mode d’emploi'),
     ('installer.html', 'Installer'),
     ('pieces.html', 'Pièces'),
     ('configurateur/', 'Configurateur'),
@@ -682,6 +683,32 @@ def remplir(gabarit: str, valeurs: dict, nom: str) -> str:
 
 
 
+def publier_mode_emploi(favicon: str) -> None:
+    """LE MODE D'EMPLOI (21/10/2026) : la version web du manuel (chemins.MODE_EMPLOI), recopiée sous /mode-emploi/. Sa
+    page garde son propre habit ; on y ajoute seulement le chemin du retour vers le site, l'adresse canonique,
+    l'oiseau de l'onglet et le compteur de l'atelier. Une marque introuvable arrête la génération : le gabarit du manuel a changé."""
+    dest = PUBLIC / 'mode-emploi'
+    shutil.copytree(chemins.MODE_EMPLOI, dest)
+    page = dest / 'index.html'
+    texte = page.read_text(encoding='utf-8')
+    ajouts = [
+        ('<span class="doc">Mode d’emploi complet</span>',
+         '<span class="doc"><a href="/">verdiercam.fr</a> › Mode d’emploi</span>'),
+        ('</title>', f'</title>\n<link rel="canonical" href="https://{DOMAINE}/mode-emploi/">'
+                     f'\n<link rel="icon" href="/{favicon}" type="image/svg+xml">'),
+        ('</body>', "<script>window.goatcounter = { path: function (p) { return '" + PREFIXE_COMPTEUR + "' + p } };</script>\n"
+                    '<script data-goatcounter="https://atelierduverdier.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>\n'
+                    '</body>'),
+    ]
+    for avant, apres in ajouts:
+        if texte.count(avant) != 1:
+            sys.exit(f"generer : mode d'emploi — marque « {avant} » introuvable ou multiple dans {page}")
+        texte = texte.replace(avant, apres)
+    page.write_text(texte, encoding='utf-8')
+    images = len(list((dest / 'images').glob('*.webp')))
+    print(f"  mode-emploi/   {page.stat().st_size // 1024} Ko + {images} images")
+
+
 def empreinte_configurateur(dossier: Path) -> None:
     """L'EMPREINTE DU CONFIGURATEUR (16/10/2026, Christophe : « je ne vois pas la 3D sur mon navigateur » — GitHub Pages
     laisse le navigateur garder un fichier 10 minutes : la page neuve tournait avec l'ancien configurateur.js). Comme
@@ -735,6 +762,7 @@ def main() -> None:
     # /configurateur/ — sa page, son script, son cœur WebAssembly, ses pièces .vcs. Pas la notice de construction.
     shutil.copytree(chemins.CONFIGURATEUR, PUBLIC / 'configurateur', ignore=shutil.ignore_patterns('README.md', '*.map'))
     empreinte_configurateur(PUBLIC / 'configurateur')
+    publier_mode_emploi(favicon)
     captures = publier_captures()
     carte = carte_partage()
     faits = faits_verdiercam()

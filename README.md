@@ -21,6 +21,7 @@ python3 site/chemins.py        # dit ce qui manque, d'un coup
 | le logo | `ressources/logo-verdiercam.svg` |
 | la durée de l'essai | `src/scene/Licence.h` (`kJoursEssai`) |
 | les numéros de version de la page Nouveautés | l'historique git du logiciel, jour par jour (le texte, lui, est écrit dans `site/nouveautes.json`) |
+| le mode d'emploi, sous `/mode-emploi/` | `realisations/manuel-verdiercam/sortie/web`, fabriqué là-bas par `python3 fabriquer.py --web` (sans le laser) |
 
 Une famille d'opérations nouvelle que `GROUPES` ne range nulle part, une capture citée
 par la page et que rien ne publie, une marque `{{…}}` restée vide : la génération
