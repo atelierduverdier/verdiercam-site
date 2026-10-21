@@ -187,8 +187,18 @@ b, strong { font-weight: 600; }
 .fiche li { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
 .fiche li::before { content: ""; width: 14px; height: 14px; flex: none; border-radius: 4px; background:
   var(--orange-clair) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.5 10.5l3 3 6-7' fill='none' stroke='%23b54a00' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat; }
+/* Le tracé (21/10/2026) : le parcours réel de la fraise sur une pièce du catalogue, puis la pièce (site/trace_piece.py).
+   Posé comme la loupe, sur une carte, au-dessus de la fiche. */
+.heros-cote { display: grid; gap: 28px; justify-items: start; width: clamp(260px, 27vw, 360px); }
+.trace { margin: 0; width: 100%; background: var(--carte); border: 1px solid var(--trait); border-radius: 14px;
+  padding: 8px; box-shadow: var(--ombre); }
+.trace svg { display: block; width: 100%; height: auto; border-radius: 8px; }
+.trace figcaption { font-size: .8rem; line-height: 1.45; color: var(--encre-2); padding: 8px 6px 2px; }
+.trace figcaption a { color: var(--orange-encre); white-space: nowrap; }
 @media (max-width: 900px) {
   .heros-haut { grid-template-columns: 1fr; align-items: start; gap: 28px; }
+  .heros-cote { width: 100%; }
+  .trace { max-width: 400px; }
   .fiche { grid-template-columns: 1fr 1fr; border-left: 0; padding-left: 0; gap: 8px 16px; }
   .fiche li { white-space: normal; }
 }

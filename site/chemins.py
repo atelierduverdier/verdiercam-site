@@ -36,6 +36,10 @@ CLIPS = PRESENTATION / 'clips'
 # TOUT : une pièce sans capture est signalée à la génération, elle ne l'arrête pas (une pièce poussée hier soir n'a pas
 # encore la sienne quand le minuteur republie).
 CAPTURES_PIECES = PRESENTATION / 'pieces'
+# Le tracé de l'accueil (21/10/2026) : le G-code d'une pièce du catalogue, exporté par le vrai logiciel
+# (outils/exporter-trace.sh), dont la page dessine le parcours de fraise (site/trace_piece.py).
+TRACE_PIECE = 'engrenage'
+TRACE_GCODE = PRESENTATION / 'trace' / f'{TRACE_PIECE}.ngc'
 
 # Le mode d'emploi complet (21/10/2026) : sa version web, fabriquée dans son dossier par « python3 fabriquer.py --web »
 # (une page et ses images WebP nommées par leur empreinte, sans les passages laser), recopiée telle quelle sous
@@ -51,6 +55,7 @@ TOUT = {
     'Licence.h (durée de l\'essai)': VERDIERCAM_LICENCE,
     'captures': CAPTURES,
     'clips': CLIPS,
+    "G-code du tracé de l'accueil (outils/exporter-trace.sh)": TRACE_GCODE,
     'polices du logiciel': POLICES,
     'configurateur (page)': CONFIGURATEUR / 'index.html',
     'configurateur (cœur WebAssembly, outils/construire-wasm.sh)': CONFIGURATEUR / 'verdiercam-coeur.wasm',

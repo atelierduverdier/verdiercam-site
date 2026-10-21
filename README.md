@@ -21,6 +21,7 @@ python3 site/chemins.py        # dit ce qui manque, d'un coup
 | le logo | `ressources/logo-verdiercam.svg` |
 | la durée de l'essai | `src/scene/Licence.h` (`kJoursEssai`) |
 | les numéros de version de la page Nouveautés | l'historique git du logiciel, jour par jour (le texte, lui, est écrit dans `site/nouveautes.json`) |
+| le tracé de l'accueil (parcours de fraise, puis la pièce) | le G-code d'une pièce du catalogue (`TRACE_PIECE` dans `site/chemins.py`), exporté par le vrai logiciel : `outils/exporter-trace.sh`, dessiné par `site/trace_piece.py` |
 | le mode d'emploi, sous `/mode-emploi/` | `realisations/manuel-verdiercam/sortie/web`, fabriqué là-bas par `python3 fabriquer.py --web` (sans le laser) |
 
 Une famille d'opérations nouvelle que `GROUPES` ne range nulle part, une capture citée
@@ -49,7 +50,9 @@ pour tout ce qui est « parcours » (la fraise du logo, le jalon actif, le trait
 fort du titre). Les polices sont celles du logiciel (Inter, JetBrains Mono), réduites au
 latin et servies d'ici en WOFF2 : la page ne demande rien à Google.
 
-La page d'accueil : un héros avec la capture de la gravure florale (le drakkar jusqu'au 21/10/2026) et une
+La page d'accueil : à côté du titre, **le tracé** — le vrai parcours de fraise de l'engrenage du catalogue, lu dans son
+G-code, qui se dessine en sept secondes puis laisse la roue découpée (CSS seul ; d'emblée finie si le visiteur a
+demandé moins d'animations) ; puis un héros avec la capture de la gravure florale (le drakkar jusqu'au 21/10/2026) et une
 **loupe** sur son relief (un recadrage de la même capture, `RECADRAGES` dans `generer.py`), une bande de chiffres, puis
 **le parcours** — quatre jalons fixés à gauche pendant que les quatre vues défilent à droite
 (croquis, usinage, simulation, pilotage) — et les sections de détail, la sortie, les questions.

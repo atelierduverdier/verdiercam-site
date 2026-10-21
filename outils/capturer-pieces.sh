@@ -19,8 +19,6 @@
 # capture sous plafond mémoire et minuterie.
 set -euo pipefail
 
-LOGICIEL=${VERDIERCAM_CAPTURES:-$HOME/Projets/logiciels/verdiercam-captures}
-DEPOT=$HOME/Projets/logiciels/verdiercam-imgui
 SORTIE=$HOME/Projets/realisations/presentation-verdiercam/pieces
 TOUTES=0
 CHOIX=()
@@ -32,25 +30,9 @@ for a in "$@"; do
 done
 mkdir -p "$SORTIE"
 
-# ── Le logiciel, à jour et construit ──
-if [ ! -d "$LOGICIEL" ]; then
-    git -C "$DEPOT" worktree add -q --detach "$LOGICIEL" origin/main
-fi
-git -C "$LOGICIEL" fetch -q origin
-git -C "$LOGICIEL" checkout -q --detach origin/main
-# Les sous-modules (vendor/entt, vendor/imgui) : la copie de travail ne sait pas les cloner d'un chemin local ; on les
-# reprend du clone du minuteur du site, aux mêmes commits.
-CLONE_MINUTEUR=$HOME/.local/state/verdiercam-site/verdiercam-imgui
-for m in entt imgui; do
-    if [ ! -e "$LOGICIEL/vendor/$m/CMakeLists.txt" ] && [ ! -e "$LOGICIEL/vendor/$m/imgui.h" ]; then
-        rsync -a --exclude .git "$CLONE_MINUTEUR/vendor/$m/" "$LOGICIEL/vendor/$m/"
-    fi
-done
-[ -f "$LOGICIEL/build/build.ninja" ] || cmake -S "$LOGICIEL" -B "$LOGICIEL/build" -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo > /dev/null
-echo "construction du logiciel ($(git -C "$LOGICIEL" log --oneline -1 | cut -c1-60))…"
-systemd-run --user --scope -q -p MemoryMax=10G cmake --build "$LOGICIEL/build" --target verdiercam -j3 > "$SORTIE/.construction.log" 2>&1 \
-    || { tail -20 "$SORTIE/.construction.log"; exit 1; }
-EXE=$LOGICIEL/build/src/app/verdiercam
+# ── Le logiciel, à jour et construit (partagé avec exporter-trace.sh) ──
+JOURNAL_CONSTRUCTION=$SORTIE/.construction.log
+source "$(dirname "$(readlink -f "$0")")/logiciel-a-jour.sh"
 
 # Le thème que la galerie ouvre d'office : celui de la première pièce par ordre de nom (comme scene::ListerPieces).
 THEME_OUVERT=$(python3 - "$LOGICIEL/ressources/pieces" <<'PY'

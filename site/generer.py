@@ -15,6 +15,7 @@
 #   les captures et les clips     realisations/presentation-verdiercam
 #   les pièces paramétriques      web/configurateur/pieces.json (écrit par outils/construire-wasm.sh)
 #   le logo, l'oiseau animé       ressources/logo-verdiercam.svg
+#   le tracé de l'accueil         le G-code d'une pièce, exporté par outils/exporter-trace.sh
 #   les polices Inter et Mono     ressources/polices/ du logiciel
 #
 # Une clé absente, une famille sans groupe, une capture manquante, une
@@ -645,6 +646,37 @@ def oiseau_en_ligne() -> str:
             f'aria-label="L\'oiseau de VerdierCAM">{dedans}</svg>')
 
 
+# --- Le tracé de la pièce ------------------------------------------------
+# 21/10/2026 : en tête de l'accueil, le parcours de fraise d'une pièce du catalogue (chemins.TRACE_PIECE), dessiné
+# depuis SON G-code exporté par le vrai logiciel (outils/exporter-trace.sh), puis la pièce découpée (site/trace_piece.py).
+# Le nom de la pièce se lit dans le catalogue du configurateur, la version et le nombre de lignes dans le G-code.
+DUREE_TRACE = 7.0   # secondes, du premier coup de fraise à la pièce
+
+
+def trace_en_ligne(version_site: str) -> str:
+    import trace_piece as tracer
+    pieces = json.loads((chemins.CONFIGURATEUR / 'pieces.json').read_text(encoding='utf-8'))['pieces']
+    piece = next((p for p in pieces if p['id'] == chemins.TRACE_PIECE), None)
+    if not piece:
+        sys.exit(f"generer : la pièce du tracé « {chemins.TRACE_PIECE} » n'est plus au catalogue — chemins.TRACE_PIECE")
+    nom = piece['nom'][:1].lower() + piece['nom'][1:]
+    try:
+        r = tracer.svg(chemins.TRACE_GCODE.read_text(encoding='utf-8'), DUREE_TRACE,
+                       f"Le parcours de la fraise sur un {nom}, tiré du G-code réel, puis la pièce découpée")
+    except ValueError as e:
+        sys.exit(f"generer : tracé illisible ({e}) — {chemins.TRACE_GCODE}")
+    if r['version'] != version_site:
+        nombres = lambda v: tuple(int(x) for x in v.split('.')) if v else ()
+        print(f"  ! tracé : G-code écrit par la {r['version'] or '?'}, le site annonce la {version_site}"
+              + (" — relancer outils/exporter-trace.sh" if nombres(r['version']) < nombres(version_site) else ""))
+    lignes = f"{r['lignes']:,}".replace(',', '\u202f')
+    print(f"  tracé          {chemins.TRACE_GCODE.name}, {r['lignes']} lignes, {len(r['svg']) // 1024} Ko")
+    return (f'<figure class="trace">\n{r["svg"]}\n'
+            f'  <figcaption>Le vrai parcours de la fraise : un {html.escape(nom, quote=False)} du catalogue, '
+            f'{lignes} lignes de G-code. <a href="{{{{RACINE}}}}configurateur/#{html.escape(piece["id"])}">'
+            f'Le régler →</a></figcaption>\n</figure>')
+
+
 # --- La carte de partage -------------------------------------------------
 # 1200 × 630, ce que Facebook, Mastodon et LinkedIn attendent. En JPEG : le
 # robot de Facebook ne lit pas le WebP.
@@ -794,6 +826,7 @@ def main() -> None:
         faits['publiee'] = str(manifeste['version']).strip()
     gabarit = (GABARITS / 'page.html').read_text(encoding='utf-8')
     oiseau = oiseau_en_ligne()
+    trace = trace_en_ligne(faits['version'])
 
     editeur = lire_editeur()
     vente = bool(editeur.get('vente_ouverte'))
@@ -819,7 +852,7 @@ def main() -> None:
         if A_REMPLIR in corps:
             a_remplir.append(page['sortie'])
         corps = injecter_verdiercam(corps, faits, page['contenu'])
-        corps = corps.replace('{{OISEAU}}', oiseau)
+        corps = corps.replace('{{OISEAU}}', oiseau).replace('{{TRACE}}', trace)
         corps = empreinter(corps, captures, page['contenu'], racine)
         corps = corps.replace('{{RACINE}}', racine)
         url = f"https://{DOMAINE}/" + ('' if page['sortie'] == 'index.html' else page['sortie'])

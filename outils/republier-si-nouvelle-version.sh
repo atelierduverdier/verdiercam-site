@@ -59,6 +59,12 @@ fi
 if ! "$SITE/outils/capturer-pieces.sh" >"$ETAT/captures.log" 2>&1; then
     prevenir "Site VerdierCAM" "Des captures de pièces ont raté (voir $ETAT/captures.log) : la page les annonce « à venir »."
 fi
+# LE TRACÉ DE L'ACCUEIL (21/10/2026) : le G-code de la pièce dont la page dessine le parcours, réexporté par le logiciel
+# de cette version (outils/exporter-trace.sh, même copie de travail que les captures). Raté : le G-code d'avant reste, la
+# génération le dessine et dit de quelle version il vient.
+if ! "$SITE/outils/exporter-trace.sh" >"$ETAT/trace.log" 2>&1; then
+    prevenir "Site VerdierCAM" "Le G-code du tracé de l'accueil n'a pas été refait (voir $ETAT/trace.log) : celui d'avant est gardé."
+fi
 # REPUBLIER_SEC=1 : tout refaire sans rien pousser (pour essayer le minuteur).
 if python3 "$SITE/site/publier.py" ${REPUBLIER_SEC:+--sec} >"$ETAT/publier.log" 2>&1; then
     [ -n "${REPUBLIER_SEC:-}" ] && { echo "essai : généré, rien poussé"; exit 0; }
