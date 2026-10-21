@@ -2,6 +2,23 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+   "date": "2026-10-21",
+   "titre": "Le filetage mûrit, la vue en coupe sur l'axe qu'on trace, les groupes d'opérations sous la main, et l'import FreeCAD en vraies courbes",
+   "points": [
+    "Filetage : un cercle trop petit pour le filet se dit, et un bouton le met à la bonne taille ; le trou ajouté d'office prend une fraise qui y entre, et les deux fraises sont nommées ; un filetage neuf suit son cercle au lieu de reprendre le M du précédent ; un trou trop court pour la surcourse se dit et se descend d'un clic ; une fraise à fileter qui a son pas l'impose au filet, et une dent trop courte se règle d'un bouton. La vue de côté montre chaque filet dans sa couleur, et la lecture d'un filetage en Simulation ne rame plus.",
+    "Vue en coupe : selon l'axe que vous tracez vous-même, de deux clics sur la planche — pour voir un trou ou une rainure qui n'est pas au centre. Elle tranche aussi la pièce finie à l'Usinage, sans passer en Simulation.",
+    "Usinage en 3D : une zone se clique en 3D comme en 2D (Ctrl+clic en ajoute ou en retire), et « La pièce finie » s'y montre sous les parcours : on voit ce qui reste à creuser et l'on clique la zone suivante.",
+    "Groupes d'opérations : le clic droit sur une opération donne son nom, sa couleur et son groupe, dont le nom se tape en entier et se range à Entrée ; un œil par groupe cache ses parcours, et la vue dit ce qui est caché.",
+    "Poche, bords ouverts : un bord en courbe s'ouvre d'un clic, de nœud à nœud, et un bord droit jusqu'au bout de sa droite ; « Ouvrir les bords sur le tour » dit quand rien ne s'ouvre ; un tour de pièce ouvert en courbe s'étend en 0,2 s au lieu de 30, sans bord en dents de scie.",
+    "Import FreeCAD : les B-splines entrent en vraies courbes (la caisse d'une guitare n'est plus une suite de points), et plusieurs esquisses s'importent d'un coup, au Ctrl+clic ou au Maj+clic dans la liste.",
+    "Fenêtre de fichiers : elle se rouvre dans le dernier dossier, pour chaque genre de fichier ; « + Ce dossier » le garde dans les favoris le temps du travail ; de vrais fichiers récents, et le tri par type ou à l'envers.",
+    "Sous la main : les dimensions largeur × hauteur s'affichent pendant qu'on tire ou étire une sélection ; Édition › Choisir les formes sans opération (Ctrl+Maj+A) montre ce qui reste à usiner ; à l'Usinage, P mène à la Profondeur de l'opération et D à son Départ ; l'en-tête du G-code dit la profondeur la plus basse où travaille la fraise.",
+    "Matières : le calcul des vitesses range les essences de bois et les autres matières par famille, et les messages nomment la matière de la planche — « laissez moins d'aluminium aux parois », « la queue frotte le laiton ».",
+    "Essai : une fois l'essai fini, les exports 3D demandent la licence, comme le G-code — pièce finie, relief et solides en STL, 3MF en couleurs.",
+    "Corrigé : un contour intérieur déclaré par une pièce paramétrique ne reçoit plus les onglets d'une découpe extérieure (les évidements et l'alésage de l'engrenage restaient tenus), et la fraise descend toujours au fond entre deux onglets, même sur un petit trou ; les onglets se posent même si le choix des bords d'une autre poche est resté armé ; Décaler ne laisse plus de cercle entier en trop au raccord de deux arcs tangents ; une ellipse ouverte de partout ne garde plus d'encoche où la fraise tournait en boucle ; les poignées d'une courbe suivent le nœud qu'on tire, et l'ellipse ne devient plus pointue ; une B-spline importée et bloquée ne perd plus ses poignées à l'enregistrement."
+   ]
+  },
+  {
    "date": "2026-10-20",
    "titre": "Le bois à la couleur de son opération, deux niveaux seulement, la Révolution repensée, et les formes plus faciles à prendre",
    "points": [
