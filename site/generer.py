@@ -260,7 +260,7 @@ def publier_polices() -> dict:
 # nom dans la présentation -> nom servi. Les PNG font 2880 × 1620 : ramenés
 # à 1920 de large, le texte de l'interface ne perd rien à l'écran.
 IMAGES = {
-    'drakkar_bois': 'drakkar',
+    'floral_heros': 'floral',
     'boite_couvercle_bois': 'boite',
     'cadre_parcours': 'cadre-parcours',
     'levier_croquis': 'levier',
@@ -290,16 +290,18 @@ IMAGES = {
 }
 LARGEUR = 1920
 
-# La carte de partage montre le drakkar seul, sans l'interface autour
+# La carte de partage montre la pièce seule, sans l'interface autour
 # (06/10/2026, Christophe : « une assiette c'est pas terrible, met le
-# drakkar »). Boîte en pixels de la capture 2880 × 1620.
-RECADRAGE_CARTE = ('drakkar_bois', (790, 300, 2250, 1274))
+# drakkar » ; 21/10/2026 : la gravure florale à sa place — la carte de relief
+# du drakkar, refaite le 18/10, est presque plate). Boîte en pixels de la
+# capture 2880 × 1620.
+RECADRAGE_CARTE = ('floral_heros', (640, 300, 2200, 1340))
 
-# Des DÉTAILS tirés des captures : une loupe posée sur le relief du drakkar,
+# Des DÉTAILS tirés des captures : une loupe posée sur le relief floral,
 # en tête de page. Boîte en pixels de la capture 2880 × 1620, et largeur
 # servie. On lit toujours la source dans chemins.CAPTURES, jamais une copie.
 RECADRAGES = {
-    'drakkar-detail': ('drakkar_bois', (1000, 520, 1800, 970), 1200),
+    'floral-detail': ('floral_heros', (900, 520, 1700, 970), 1200),
 }
 
 CLIPS = {

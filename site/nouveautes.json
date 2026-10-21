@@ -3,17 +3,22 @@
  "jours": [
   {
    "date": "2026-10-20",
-   "titre": "Le bois à la couleur de son opération, deux niveaux seulement, et la Révolution repensée",
+   "titre": "Le bois à la couleur de son opération, deux niveaux seulement, la Révolution repensée, et les formes plus faciles à prendre",
    "points": [
     "Simulation : le bois creusé prend la couleur de l'opération qui l'a creusé — celle de son trait à l'Usinage, la couleur choisie dans l'opération, sinon ébauche orange et finition bleue ; une case « Couleurs des opérations » rend la couleur du bois.",
     "Simulation : « Vue en coupe » est dans la barre de la vue 3D, à côté de Dessus | Dessous, pour voir un trou, son filet ou une rainure de l'intérieur ; la face tranchée est plus claire que le bois creusé, le profil s'y lit. Vue de dessus, la fraise se voit à travers sa queue et son écrou.",
-    "Niveaux : Débutant et Pro seulement. Le Pro montre tous les dessins qui expliquent un réglage, et tous ses réglages en vue — les plus rares (dernière passe, rampe, dépouille, reprise…) se cachent d'un clic au pied du panneau.",
-    "Révolution repensée : « Ce qui tourne » dit quelle forme est le profil et laquelle l'axe, la vue les montre, deux clics suffisent pour les désigner ; le cercle est toujours l'axe, quel que soit l'ordre du choix.",
-    "Filetage : un bouton creuse le trou au bon diamètre, par une Poche comme par un Hélicoïdal, en laissant aux parois le bois du filet ; un double filet se règle (« Nombre de filets ») ; dans un trou à peine plus large que la fraise, « Passer en Hélicoïdal » fait une hélice continue.",
+    "Niveaux : Débutant et Pro seulement. Le Pro montre tous les dessins qui expliquent un réglage ; tous les réglages restent en vue, les plus rares (dernière passe, rampe, dépouille, reprise…) compris.",
+    "Révolution repensée : « Ce qui tourne » dit quelle forme est le profil et laquelle l'axe, la vue les montre, deux clics suffisent pour les désigner ; le cercle est toujours l'axe, quel que soit l'ordre du choix, et deux traits ouverts ne peuvent plus prendre sa place.",
+    "Filetage : le M choisi à la table ISO reste le filet, et un cercle déjà au diamètre du trou à percer est reconnu comme tel (trop petit, le panneau le dit) ; un bouton creuse le trou au bon diamètre, par une Poche comme par un Hélicoïdal, en laissant aux parois le bois du filet ; un double filet se règle (« Nombre de filets ») ; dans un trou à peine plus large que la fraise, « Passer en Hélicoïdal » fait une hélice continue.",
     "Bibliothèque d'outils : les fraises à fileter ont leur famille, et vous créez, renommez ou retirez les vôtres ; un outil se range en le glissant sur une famille.",
     "Usinage plus lisible : une puce de section ne montre que sa section, la carte de l'outil n'a plus qu'un bouton « Changer d'outil… », les onglets des panneaux sont plus gros ; une opération créée au ruban s'ouvre sur le choix de son outil ; « mord à pleine fraise » s'explique par un dessin ; en Poche, « Tout sauf les îlots ».",
+    "Prendre les formes : un clic dans un trou suffit à l'Hélicoïdal, au Filetage et au Perçage ; le Contour, la Rainure, les Finitions, l'Ébavurage et la Gravure prennent les formes qui bordent une zone cliquée ; « + Ajouter les N choisies » complète une opération déjà faite. Un clic prend tout le contour relié et le dit dans une bulle ; Maj+clic en retire une forme.",
+    "Contour : l'entrée et la sortie ne mordent plus le mur d'à côté, en hélice continue comme en dernière passe à l'envers.",
+    "Croquis : les Ciseaux coupent aussi les courbes de Bézier ; une Symétrie de deux points ou de deux cercles, sans pivot choisi, se fait autour du centre de la planche.",
+    "Relief : « Pas de photo ? » copie une consigne à donner à une IA d'images — le sujet sculpté en bas-relief dans du marbre blanc mat : une image toute blanche ne montre que les formes, le relief suit le modelé sans être trompé par les couleurs.",
+    "Windows : le dossier décompressé ne montre plus que VerdierCAM.exe et son mode d'emploi ; tout le reste est rangé dans le dossier « programme ».",
     "Assistant IA branché : l'outil « aide » lui explique le logiciel, le panneau d'une opération relevé tel qu'il s'affiche, infobulles et alertes comprises.",
-    "Corrigé : un cercle tapé « R 2 » puis posé d'un clic prend bien 2 mm de rayon ; l'ARRÊT attend que la machine soit immobile avant de remettre la carte à zéro ; un arc creux ouvert ne casse plus le parcours d'une poche ; un grand contour qui se recoupe ne fige plus VerdierCAM pendant une réunion ou une différence."
+    "Corrigé : un cercle tapé « R 2 » puis posé d'un clic prend bien 2 mm de rayon ; l'ARRÊT attend que la machine soit immobile avant de remettre la carte à zéro ; un arc creux ouvert ne casse plus le parcours d'une poche ; un grand contour qui se recoupe ne fige plus VerdierCAM pendant une réunion ou une différence ; le même document donne toujours le même parcours, quelle que soit la charge du poste ; la grille d'essai laser ne grave plus deux colonnes identiques au plafond du laser."
    ]
   },
   {

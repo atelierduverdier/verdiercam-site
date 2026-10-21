@@ -48,8 +48,8 @@ pour tout ce qui est « parcours » (la fraise du logo, le jalon actif, le trait
 fort du titre). Les polices sont celles du logiciel (Inter, JetBrains Mono), réduites au
 latin et servies d'ici en WOFF2 : la page ne demande rien à Google.
 
-La page d'accueil : un héros avec la capture du drakkar et une **loupe** sur son relief (un
-recadrage de la même capture, `RECADRAGES` dans `generer.py`), une bande de chiffres, puis
+La page d'accueil : un héros avec la capture de la gravure florale (le drakkar jusqu'au 21/10/2026) et une
+**loupe** sur son relief (un recadrage de la même capture, `RECADRAGES` dans `generer.py`), une bande de chiffres, puis
 **le parcours** — quatre jalons fixés à gauche pendant que les quatre vues défilent à droite
 (croquis, usinage, simulation, pilotage) — et les sections de détail, la sortie, les questions.
 

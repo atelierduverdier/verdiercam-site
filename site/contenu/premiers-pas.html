@@ -166,7 +166,9 @@
           sélectionné, un clic sur <b>Contour</b> crée l'opération — par défaut sur le côté
           <b>Extérieur</b> : la fraise découpe la pièce en restant à l'extérieur du trait.</p>
         <p>Les deux trous ensuite : un clic sur le premier, <kbd>Ctrl</kbd> + clic sur le
-          second, puis <b>Perçage</b>. Deux opérations, deux boutons du même ruban.</p>
+          second, puis <b>Perçage</b>. Deux opérations, deux boutons du même ruban. Chaque
+          opération créée s'ouvre sur son <b>Outil</b> : la fraise choisie d'office est en vue
+          tout de suite.</p>
         <p>Une section « Onglets de maintien » accompagne le Contour : quelques ponts de
           matière, automatiques ou posés à la main, pour qu'une pièce détourée ne parte pas
           toute seule à la dernière passe. Quatre sont posés d'office quand la découpe traverse
@@ -175,7 +177,7 @@
       <figure class="capture apparait">
         <div class="fenetre">
           <img src="{{RACINE}}captures/pp-usinage.webp" width="1920" height="1080" loading="lazy"
-               alt="Le panneau Usinage de VerdierCAM : deux opérations dans la liste, Contour sur la plaque et Perçage sur les deux trous">
+               alt="Le panneau Usinage de VerdierCAM : deux opérations dans la liste, Contour sur la plaque et Perçage sur les deux trous ; l'onglet Outil devant, le foret Ø5 du Perçage">
         </div>
         <figcaption>Deux opérations posées : <b>Contour</b> et <b>Perçage</b>.</figcaption>
       </figure>
@@ -189,10 +191,11 @@
       <div class="texte apparait">
         <span class="surtitre">07 · Usinage</span>
         <h2>Choisir la fraise</h2>
-        <p>Dans le panneau d'une opération, la ligne <b>Outil</b> (section « Général ») ouvre
-          une liste déroulante : toutes les fraises de l'atelier, rangées — droites, pointes en
-          V, boules, forets — avec leur diamètre. Un clic en choisit une autre pour l'opération
-          en cours.</p>
+        <p>L'onglet <b>Outil</b> d'une opération montre sa fraise : sa silhouette, son
+          diamètre, sa coupe. Le bouton <b>Changer d'outil…</b> ouvre la bibliothèque sur elle :
+          toutes les fraises de l'atelier, rangées par famille — droites, pointes en V, boules,
+          forets, fraises à fileter — avec leur diamètre ; <b>Utiliser pour l'opération</b> en
+          met une autre.</p>
         <p>Pour le <b>Contour</b> de cette plaque, c'est déjà une <b>Fraise droite Ø6</b> — le
           choix que fait le logiciel tout seul pour une découpe, dès la création de
           l'opération. Rien à changer ici ; juste à savoir où le faire le jour où il le faut.</p>
@@ -200,7 +203,7 @@
       <figure class="capture apparait">
         <div class="fenetre">
           <img src="{{RACINE}}captures/pp-fraise.webp" width="1920" height="1080" loading="lazy"
-               alt="Le panneau de l'opération Contour dans VerdierCAM, la liste déroulante Outil ouverte : Fraise droite Ø3, Ø6 (choisie), Ø8, et les forets Ø3, Ø5">
+               alt="L'onglet Outil de l'opération Contour dans VerdierCAM : la Fraise droite Ø6 2Z, sa silhouette et ses cotes, et le bouton Changer d'outil">
         </div>
         <figcaption>La fraise <b>Ø6</b> du Contour, choisie d'office pour une découpe.</figcaption>
       </figure>
