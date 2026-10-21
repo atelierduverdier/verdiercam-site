@@ -41,6 +41,8 @@ CAPTURES_PIECES = PRESENTATION / 'pieces'
 # (une page et ses images WebP nommées par leur empreinte, sans les passages laser), recopiée telle quelle sous
 # /mode-emploi/.
 MODE_EMPLOI = PROJETS / 'realisations' / 'manuel-verdiercam' / 'sortie' / 'web'
+# Sa vignette de partage (Facebook…) part d'une de ses captures d'écran, refaites par son capturer.sh.
+MODE_EMPLOI_VIGNETTE = PROJETS / 'realisations' / 'manuel-verdiercam' / 'captures' / '00-atelier-simulation.png'
 
 TOUT = {
     'CMakeLists (version)': VERDIERCAM_CMAKE,
@@ -54,6 +56,7 @@ TOUT = {
     'configurateur (cœur WebAssembly, outils/construire-wasm.sh)': CONFIGURATEUR / 'verdiercam-coeur.wasm',
     'configurateur (liste des pièces, outils/construire-wasm.sh)': CONFIGURATEUR / 'pieces.json',
     "mode d'emploi (manuel-verdiercam : python3 fabriquer.py --web)": MODE_EMPLOI / 'index.html',
+    "mode d'emploi (capture de sa vignette)": MODE_EMPLOI_VIGNETTE,
 }
 
 

@@ -648,12 +648,16 @@ def oiseau_en_ligne() -> str:
 # --- La carte de partage -------------------------------------------------
 # 1200 × 630, ce que Facebook, Mastodon et LinkedIn attendent. En JPEG : le
 # robot de Facebook ne lit pas le WebP.
-def carte_partage() -> str:
+def carte_partage(image: Path = None, boite: tuple = None, titre: str = '', ligne: str = '', nom: str = 'carte') -> str:
+    """La vignette 1200 × 630 qu'affichent Facebook et les autres au partage d'un lien : une capture, un bandeau
+    clair, « VerdierCAM » et une ligne. Sans argument : celle du site ; le mode d'emploi a la sienne."""
     from PIL import Image, ImageDraw, ImageFont
     L, H, bandeau = 1200, 630, 116
-    src, boite = RECADRAGE_CARTE
+    if image is None:
+        src, boite = RECADRAGE_CARTE
+        image = chemins.CAPTURES / f'{src}.png'
     carte = Image.new('RGB', (L, H), (251, 250, 247))
-    im = Image.open(chemins.CAPTURES / f'{src}.png').convert('RGB').crop(boite)
+    im = Image.open(image).convert('RGB').crop(boite)
     im = im.resize((L, round(im.height * L / im.width)), Image.LANCZOS)
     haut = (im.height - (H - bandeau)) // 2
     carte.paste(im.crop((0, haut, L, haut + H - bandeau)), (0, 0))
@@ -663,13 +667,15 @@ def carte_partage() -> str:
     gras = ImageFont.truetype(str(chemins.POLICES / 'Inter-SemiBold.ttf'), 46)
     texte = ImageFont.truetype(str(chemins.POLICES / 'Inter-Regular.ttf'), 24)
     d.text((44, H - bandeau + 16), "Verdier", font=gras, fill=(22, 24, 29))
-    d.text((44 + d.textlength("Verdier", font=gras), H - bandeau + 16), "CAM",
-           font=gras, fill=(255, 109, 0))
-    d.text((46, H - bandeau + 74), "CAO/FAO pour défonceuse CNC  ·  verdiercam.fr",
+    x = 44 + d.textlength("Verdier", font=gras)
+    d.text((x, H - bandeau + 16), "CAM", font=gras, fill=(255, 109, 0))
+    if titre:
+        d.text((x + d.textlength("CAM", font=gras) + 18, H - bandeau + 16), titre, font=gras, fill=(22, 24, 29))
+    d.text((46, H - bandeau + 74), ligne or "CAO/FAO pour défonceuse CNC  ·  verdiercam.fr",
            font=texte, fill=(74, 79, 90))
     tampon = io.BytesIO()
     carte.save(tampon, 'JPEG', quality=88, optimize=True)
-    return servir(tampon.getvalue(), PUBLIC / 'partage', 'carte', 'jpg')
+    return servir(tampon.getvalue(), PUBLIC / 'partage', nom, 'jpg')
 
 
 # --- Les pages -----------------------------------------------------------
@@ -691,11 +697,26 @@ def publier_mode_emploi(favicon: str) -> None:
     shutil.copytree(chemins.MODE_EMPLOI, dest)
     page = dest / 'index.html'
     texte = page.read_text(encoding='utf-8')
+    # LA VIGNETTE DE PARTAGE (21/10/2026, Christophe : « fais en sorte que l'on ait une vignette sur le post ») : sans
+    # og:image, Facebook montrait un lien sans image. La description reprend celle du manuel (sa version y est).
+    m = re.search(r'<meta name="description" content="([^"]*)">', texte)
+    if not m:
+        sys.exit(f"generer : mode d'emploi — pas de <meta name=\"description\"> dans {page}")
+    carte = carte_partage(chemins.MODE_EMPLOI_VIGNETTE, (0, 0, 2160, 925), "· Mode d’emploi",
+                          "Chaque atelier, chaque bouton, chaque réglage  ·  verdiercam.fr", 'mode-emploi')
+    url = f"https://{DOMAINE}/mode-emploi/"
+    partage = ''.join(f'\n<meta property="{k}" content="{html.escape(v)}">' for k, v in (
+        ('og:type', 'website'), ('og:site_name', 'VerdierCAM'), ('og:locale', 'fr_FR'),
+        ('og:title', "VerdierCAM — le mode d’emploi complet"), ('og:description', html.unescape(m.group(1))),
+        ('og:url', url), ('og:image', f"https://{DOMAINE}/{carte}"), ('og:image:type', 'image/jpeg'),
+        ('og:image:width', '1200'), ('og:image:height', '630'),
+        ('og:image:alt', "VerdierCAM, mode d’emploi : l’écran du logiciel en simulation"))) \
+        + '\n<meta name="twitter:card" content="summary_large_image">'
     ajouts = [
         ('<span class="doc">Mode d’emploi complet</span>',
          '<span class="doc"><a href="/">verdiercam.fr</a> › Mode d’emploi</span>'),
         ('</title>', f'</title>\n<link rel="canonical" href="https://{DOMAINE}/mode-emploi/">'
-                     f'\n<link rel="icon" href="/{favicon}" type="image/svg+xml">'),
+                     f'\n<link rel="icon" href="/{favicon}" type="image/svg+xml">' + partage),
         ('</body>', "<script>window.goatcounter = { path: function (p) { return '" + PREFIXE_COMPTEUR + "' + p } };</script>\n"
                     '<script data-goatcounter="https://atelierduverdier.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>\n'
                     '</body>'),
