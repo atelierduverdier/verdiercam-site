@@ -421,7 +421,10 @@ def faits_verdiercam() -> dict:
 
     motif = r'case OperationFamily::(\w+):\s*return "([^"]+)";'
     noms = dict(re.findall(motif, corps_fonction('FamilyLabel(')))
-    phrases = dict(re.findall(motif, corps_fonction('FamilyTip(')))
+    # Une bulle longue s'écrit en plusieurs morceaux (« … : "\n "… ») : ils se recollent (22/10/2026, Finitions).
+    phrases = {f: ''.join(re.findall(r'"([^"]*)"', morceaux))
+               for f, morceaux in re.findall(r'case OperationFamily::(\w+):\s*return\s*((?:"[^"]*"\s*)+);',
+                                             corps_fonction('FamilyTip('))}
     faites = re.findall(r'OperationFamily::(\w+)', corps_fonction('FamilyIsImplemented('))
     if not noms or not faites:
         sys.exit(f"generer : familles illisibles dans {chemins.VERDIERCAM_OPERATION}")
