@@ -2,6 +2,14 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+   "date": "2026-10-23",
+   "titre": "Le relief par IA mieux nourri, et le filetage à la console",
+   "points": [
+    "Relief par IA : deux consignes à copier pour une IA d'images — « Plaque blanche », à la lumière égale et sans coin assombri, et « Fond noir », où l'IA d'images remplit les vides du sujet (entre une voile et une coque) que la plaque blanche laisse voir et que le calcul prenait pour du lointain. Une image déjà en niveaux de gris est reconnue : un avis la dit sans doute carte de hauteurs, et la prend telle quelle d'un clic.",
+    "Filetage : le champ Pas garde un calcul — « pas » suit une variable, et les deux filetages d'une vis et de son écrou changent ensemble. La console pose un filetage : « usinage filetage #3 exterieur pas=pas passes=2 » ; profondeur, départ, passe et pas y acceptent un calcul (« profondeur=T-fond »), et une pièce paramétrique exportée écrit ses filetages."
+   ]
+  },
+  {
    "date": "2026-10-22",
    "titre": "Le G-code se retouche à la main, la photo de la pièce, le filet extérieur à la boule, des variables qui suivent la planche, et des fenêtres de réglages plus claires",
    "points": [
@@ -11,10 +19,11 @@
     "Variables : une ligne par variable et une fiche qui s'ouvre d'un clic, qui dit ce qui la suit. Une variable peut citer la planche (« W/2 » pour le milieu) : agrandissez la planche, la pièce reste centrée. L'onglet Contraintes range les cotes par forme, avec la variable de chaque cote en puce.",
     "Finitions : la fraise droite d'office, une sortie en arc qui ne marque plus la paroi, un fond qui reste en bas et s'arrête avant la paroi, et « Tout » pour le fond puis les parois. La Gravure 2.5D garde sa fraise boule pour la finition.",
     "Réglages machine : chaque réglage sur une ligne, le libellé à gauche avec sa note dessous, des interrupteurs à la place des cases ; la carte de configuration LinuxCNC ne paraît plus pour une machine GRBL, FluidNC ou grblHAL.",
-    "Simulation : les options se déplient dans un encadré au lieu d'un menu volant ; la case « Couleurs » montre le bois creusé seul, sans la couleur des opérations, et se retient ; les parois de la pièce finie ne sont plus striées de fins filets clairs.",
+    "Simulation : les options se déplient dans un encadré au lieu d'un menu volant ; la case « Couleurs » montre le bois creusé seul, sans la couleur des opérations, et se retient ; les parois de la pièce finie ne sont plus striées de fins filets clairs ; une paroi creusée sous une autre opération garde une seule couleur, et la légende de la vue passe à la ligne au lieu de cacher « Croquis » sous le cube.",
     "Affichage : le thème Clair est celui d'une première installation ; le texte dessiné à la main est net (plus de lettres floues coupées en bas) ; les onglets du bas sont à la taille du texte.",
     "Révolution et moulure : un profil tracé trait par trait se prend en entier, et la profondeur suit le profil changé ; la moulure dit d'où viennent ses profils.",
-    "Exemple : une boîte ronde à couvercle vissé (Ø50 × 50), deux pots dans une planche de 30 mm, toutes les cotes en variables, le filet rond à la fraise boule sur tige."
+    "Exemple : une boîte ronde à couvercle vissé (Ø50 × 50), deux pots dans une planche de 30 mm, toutes les cotes en variables, le filet rond à la fraise boule sur tige.",
+    "Corrigé après la relecture du soir : le bouton Lancer du pupitre n'envoie plus un G-code retouché qu'un recalcul a rendu périmé ; un hélicoïdal « autour » d'un tenon donne lui aussi son creux au filet."
    ]
   },
   {
