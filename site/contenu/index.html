@@ -450,8 +450,8 @@ pour (i = [0 : 3]) {
       <div class="texte apparait">
         <span class="surtitre">04 · Pilotage</span>
         <h2>Lancer la machine depuis la même fenêtre</h2>
-        <p>Le pupitre parle aux cartes GRBL et grblHAL. Pour les autres commandes
-          numériques, VerdierCAM écrit le G-code qu'elles attendent.</p>
+        <p>Le pupitre parle aux cartes GRBL, grblHAL et FluidNC, branchées en USB ou sur le réseau (Wi-Fi, Ethernet).
+          Pour les autres commandes numériques, VerdierCAM écrit le G-code qu'elles attendent.</p>
         <ul class="coches">
           <li>Jog au pas ou en continu, palpage, changement d'outil guidé.</li>
           <li><b>Deux faces</b> : la pièce retournée retombe à sa place.</li>
@@ -464,6 +464,8 @@ pour (i = [0 : 3]) {
             <li><b>Grands curseurs d'avance et de broche</b> pour corriger en cours d'usinage.</li>
             <li><b>Onduler la broche</b> contre le broutement, sans toucher au programme.</li>
             <li><b>Changeur d'outil automatique</b> pour les machines qui en ont un.</li>
+            <li><b>Chercher les cartes</b> : chaque port USB et chaque carte du réseau, en tableau ; une FluidNC se trouve
+              par son nom. Ses vitesses, courses et broche se prennent d'un clic dans les réglages de la machine.</li>
             <li>Un port série refusé par Linux ? VerdierCAM dit pourquoi et l'autorise en un clic.</li>
           </ul>
         </details>
@@ -621,7 +623,7 @@ pour (i = [0 : 3]) {
       <details>
         <summary>Ma machine est-elle prise en charge ?</summary>
         <p>Le G-code s'écrit pour LinuxCNC, GRBL, FluidNC, grblHAL, et, à titre expérimental — écrits d'après leur documentation, jamais essayés sur une vraie machine —,
-          MASSO, Mach3, Mach4 et UCCNC. Le pilotage direct, depuis VerdierCAM, se fait avec GRBL et grblHAL.</p>
+          MASSO, Mach3, Mach4 et UCCNC. Le pilotage direct, depuis VerdierCAM, se fait avec GRBL, grblHAL et FluidNC.</p>
       </details>
       <details>
         <summary>Je dessine dans FreeCAD, Inkscape ou un logiciel de DAO.</summary>
