@@ -110,7 +110,17 @@ PAGES = [
         'sortie': 'confidentialite.html',
         'titre': "VerdierCAM — confidentialité",
         'description': "Ce que verdiercam.fr sait de ses visiteurs et de ses clients : aucun cookie, "
-                       "une mesure d'audience sans cookie, et les données d'une commande.",
+                       "une mesure d'audience sans cookie, les données d'une commande, et l'outil "
+                       "qui met nos vidéos sur YouTube.",
+    },
+    # Exigée par l'audit des services API YouTube (24/10/2026) : renvoie aux
+    # conditions de YouTube. Rien à voir avec la vente, donc toujours en ligne.
+    {
+        'contenu': 'conditions-utilisation.html',
+        'sortie': 'conditions-utilisation.html',
+        'titre': "VerdierCAM — conditions d'utilisation",
+        'description': "Conditions d'utilisation de verdiercam.fr, de nos vidéos YouTube et de l'outil "
+                       "interne qui les met en ligne par les services API YouTube.",
     },
     {
         'contenu': 'cgv.html',
@@ -168,6 +178,7 @@ LIENS_PIED = [
     ('https://atelierduverdier.fr', 'Atelier du Verdier'),
     ('{{RACINE}}mentions-legales.html', 'Mentions légales'),
     ('{{RACINE}}confidentialite.html', 'Confidentialité'),
+    ('{{RACINE}}conditions-utilisation.html', 'Conditions d’utilisation'),
 ]
 # Seulement quand la vente est ouverte.
 LIENS_PIED_VENTE = [
