@@ -1,0 +1,43 @@
+// QUEUES D'ARONDE À PLAT — deux planches qui s'emboîtent par leur chant comme un puzzle, en queues d'aronde vues de
+// dessus : un plateau fait de deux planches, un dessus de coffre, un panneau qui ne s'ouvre pas en séchant. Ou l'essai
+// d'un réglage avant le vrai assemblage.
+// thème : Atelier et gabarits
+//
+// L'ASSEMBLAGE : la planche de gauche porte les QUEUES sur son chant droit (`parts` parts, une queue à chaque bout), celle
+// de droite les ENTAILLES sur son chant gauche ; les flancs penchent de `angle` (1:6, 9,5°, dans les bois durs ; 1:8,
+// 7°, dans les tendres) — la pièce ne peut plus sortir dans le plan. Les queues entrent de `profondeur` ; chaque entaille
+// est plus large de `jeu` de chaque côté. C'est la commande `dents … aronde` de la console, sur un côté de chaque planche.
+// Montées, les deux planches font `largeur` × 2 − `profondeur` de large.
+//
+// L'USINAGE : chaque planche en Contour extérieur, fraise droite Ø6, coins dégagés (le fond des entailles reçoit des
+// angles vifs), onglets. Ajuster `jeu` d'après la Grille de calibrage du jeu de ce catalogue.
+
+largeur    = 150;    // largeur d'une planche (mm)
+hauteur    = 300;    // longueur du joint (mm)
+parts      = 5;      // parts le long du joint (impair : une queue à chaque bout)
+profondeur = 25;     // longueur des queues (mm)
+angle      = 9.5;    // pente des flancs (°) : 9,5 bois dur, 7 bois tendre
+jeu        = 0.1;    // jeu par flanc (mm)
+epaisseur  = 18;     // épaisseur (mm)
+espace     = 15;     // entre les deux planches (mm)
+rognure    = 5;      // du bord du brut aux planches (mm)
+
+n = max(3, 2 * floor(round(parts) / 2) + 1);
+si (n != round(parts))
+    echo(str("Un nombre de parts impair : ", n, "."));
+si (hauteur / n < 6 + 2 * jeu + 2 * profondeur * tan(angle))
+    echo("Les entailles se resserrent sous le Ø de la fraise à leur bouche : moins de parts, ou des queues plus courtes.");
+planche([2 * largeur + espace + 2 * rognure, hauteur + 2 * rognure, epaisseur]);
+g = rect([rognure, rognure], [largeur, hauteur]);
+dents(#g.2, n, profondeur, jeu, aronde = vrai);
+nommer(#g, "queues");
+d = rect([rognure + largeur + espace, rognure], [largeur, hauteur]);
+dents(#d.4, n, profondeur, jeu, aronde = vrai, femelle = vrai);
+nommer(#d, "entailles");
+echo(str("Montées : ", 2 * largeur - profondeur, " × ", hauteur, " mm."));
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "queues", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Planche à queues");
+usinage("contour", "entailles", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Planche à entailles");

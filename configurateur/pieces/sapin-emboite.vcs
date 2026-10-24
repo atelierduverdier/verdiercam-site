@@ -1,0 +1,60 @@
+// SAPIN DE NOËL EMBOÎTÉ — deux silhouettes de sapin qui se croisent à mi-bois et tiennent debout seules : la décoration
+// de table qui se range à plat dans une enveloppe, à offrir par dizaines.
+// thème : Décoration et cadeaux
+//
+// LA SILHOUETTE : `hauteur` de haut, `etages` étages en dents de scie, le plus large de `largeur` ; un tronc de
+// `largeur_tronc` × `hauteur_tronc`. LE PREMIER SAPIN est fendu par le BAS (à travers le tronc) jusqu'à `croisement` de sa
+// hauteur ; LE SECOND par le HAUT jusqu'au même endroit — et il s'arrête, en haut, là où la fente laisserait moins de 4 mm de
+// bois de chaque côté : c'est la pointe du premier qui fait le haut du sapin monté. Fentes de l'épaisseur plus le `jeu` de
+// chaque côté.
+//
+// L'USINAGE : les deux sapins (Contour extérieur, fraise droite Ø3, coins dégagés au fond des fentes, onglets).
+// Contreplaqué de bouleau de 6, ou de 4 pour de petits sapins ; une teinte verte, ou rien.
+
+hauteur    = 220;    // hauteur du sapin (mm)
+largeur    = 160;    // largeur de l'étage du bas (mm)
+etages     = 3;      // nombre d'étages
+largeur_tronc = 30;  // largeur du tronc (mm)
+hauteur_tronc = 25;  // hauteur du tronc (mm)
+croisement = 0.5;    // où les fentes se rencontrent, en part de la hauteur
+jeu        = 0.15;   // jeu des fentes, par côté (mm)
+epaisseur  = 6;      // épaisseur (mm)
+espace     = 10;     // entre les deux sapins (mm)
+rognure    = 5;      // du bord du brut aux sapins (mm)
+
+H = hauteur;  n = max(1, round(etages));  B = largeur / 2;  tw = largeur_tronc / 2;  th = hauteur_tronc;
+w = epaisseur + 2 * jeu;  ym = croisement * H;
+hk = (H - th) / (n * 0.75 + 0.25);             // la hauteur d'un étage (ils se chevauchent d'un quart)
+function y(k) = th + k * 0.75 * hk;            // la base de l'étage k
+function b(k) = B * (1 - 0.6 * k / max(n, 1)); // sa demi-largeur à la base
+function c(k) = 0.45 * b(k + 1);               // le creux entre l'étage k et le suivant
+// Le côté gauche, de bas en haut : le tronc, puis chaque étage (sa pointe extérieure, le creux au-dessus).
+gauche = concat([[-tw, 0], [-tw, th]], [for (k = [0 : n - 1]) for (q = [[-b(k), y(k)], [-(k < n - 1 ? c(k) : 0), y(k) + (k < n - 1 ? 0.75 * hk : hk)]]) q]);
+function droite(pts) = [for (q = pts) [-q[0], q[1]]];                    // le côté droit, de bas en haut
+function descendre(pts) = [for (k = [len(pts) - 1 : -1 : 0]) pts[k]];   // un côté parcouru de haut en bas
+// Le haut du second sapin : là où le dernier étage a encore 4 mm de bois de chaque côté de la fente.
+yt = y(n - 1) + hk * (1 - (w / 2 + 4) / b(n - 1));
+xt = w / 2 + 4;
+si (ym > yt - 15 || ym < th + 15)
+    echo("Le croisement tombe trop haut ou trop bas : entre le tronc et le haut du second sapin.");
+si (tw - w / 2 < 6)
+    echo("Le tronc est trop étroit pour la fente : plus large.");
+planche([4 * B + espace + 2 * rognure, H + 2 * rognure, epaisseur]);
+
+// ── Le premier : la silhouette entière, fendue par le bas jusqu'au croisement ──
+o1 = [rognure + B, rognure];
+// le bas (la fente), le côté droit en montant jusqu'à la pointe, le côté gauche en descendant (sans repasser la pointe)
+pts1 = concat([[-w / 2, 0], [-w / 2, ym], [w / 2, ym], [w / 2, 0]], droite(gauche), [for (k = [len(gauche) - 2 : -1 : 0]) gauche[k]]);
+s1 = polyligne([for (q = pts1) o1 + q], fermee = vrai);
+nommer(#s1, "sapin");
+
+// ── Le second : fendu par le haut, arrêté en haut à `yt` ──
+o2 = [rognure + 3 * B + espace, rognure];
+gauche2 = [for (q = gauche) if (q[1] < yt - 0.01) q];
+pts2 = concat(droite(gauche2), [[xt, yt], [w / 2, yt], [w / 2, ym], [-w / 2, ym], [-w / 2, yt], [-xt, yt]], descendre(gauche2));
+s2 = polyligne([for (q = pts2) o2 + q], fermee = vrai);
+nommer(#s2, "sapin");
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "sapin", outil = "Fraise droite Ø3", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 1.5,
+        onglets = 3, onglet_long = 4, onglet_haut = 1, nom = "Sapins");

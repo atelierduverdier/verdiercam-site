@@ -1,0 +1,942 @@
+{
+  "pieces": [
+    {
+      "id": "awale",
+      "nom": "Awalé",
+      "description": "Le jeu de semailles d'Afrique de l'Ouest : deux rangées de six cuvettes, un grenier rond à chaque bout, 48 graines. Les cuvettes sont de vraies calottes, creusées à la fraise boule par une Révolution, pas des poches à fond plat.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/awale.vcs"
+    },
+    {
+      "id": "casse-tete-six-barres",
+      "nom": "Casse-tête à six barres",
+      "description": "Le « nœud du diable » : six barres entaillées qui s'emboîtent en croix. Assemblé, il est rigide — une seule barre peut bouger, la CLÉ (la barre 1, sans entaille), qui sort droit ; les cinq autres se démontent ensuite. Le remonter, c'est le casse-tête.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/casse-tete-six-barres.vcs"
+    },
+    {
+      "id": "casse-tete-t",
+      "nom": "Casse-tête des quatre pièces",
+      "description": "Quatre pièces, un T à refaire. Notre découpe : un triangle, un parallélogramme, un trapèze, et une pièce à encoche qui pousse à remplir son creux… ce qu'il ne faut pas faire. Un cadre où le T se range, et le T n'y entre que bien refait.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/casse-tete-t.vcs"
+    },
+    {
+      "id": "catapulte",
+      "nom": "Catapulte",
+      "description": "La petite catapulte de bureau à élastique : un socle, deux flasques, un bras à cuillère qui pivote sur une cheville, une butée qui l'arrête presque debout. Cinq pièces emboîtées, une cheville de Ø6, un élastique.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/catapulte.vcs"
+    },
+    {
+      "id": "circuit-bille",
+      "nom": "Circuit à bille",
+      "description": "Le zigzag mural des billes : une planche accrochée au mur, des rampes qui s'y emboîtent en pente alternée. La bille roule dans la gorge d'une rampe, tombe sur la suivante, repart dans l'autre sens, jusqu'en bas.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/circuit-bille.vcs"
+    },
+    {
+      "id": "dominos",
+      "nom": "Dominos",
+      "description": "Le jeu double-six, ses 28 pièces découpées dans une même planche, les points creusés et la barre gravée : un jeu de famille qui se fait en un après-midi, et s'offre dans une boîte de ce catalogue.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/dominos.vcs"
+    },
+    {
+      "id": "echiquier-marqueterie",
+      "nom": "Échiquier en marqueterie",
+      "description": "Deux bois, deux poches complémentaires : les cases foncées creusées dans le plateau clair, et la planche foncée creusée autour de ses cases, laissées en relief ; on la retourne, on la colle dedans, on rabote son dos — le damier apparaît, d'une seule pièce. Le projet fétiche des forums de CNC.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/echiquier-marqueterie.vcs"
+    },
+    {
+      "id": "ferme-la-boite",
+      "nom": "Ferme la boîte",
+      "description": "Le jeu de dés des marins (« shut the box ») : neuf tuiles numérotées de 1 à 9 ; on lance deux dés et on retourne des tuiles dont la somme fait celle des dés. Quand plus rien ne va, les tuiles encore ouvertes comptent contre soi ; tout fermer, c'est gagner.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/ferme-la-boite.vcs"
+    },
+    {
+      "id": "jeu-dames",
+      "nom": "Jeu de dames",
+      "description": "Le damier international de 10 × 10 et ses 40 pions : les cases foncées creusées d'un fond où la teinte tient, les pions d'un camp marqués d'un anneau gravé (et de deux pour une dame, en empilant deux pions).",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/jeu-dames.vcs"
+    },
+    {
+      "id": "jeu-go",
+      "nom": "Jeu de go 9 × 9",
+      "description": "Le goban des débutants et des parties rapides : neuf lignes sur neuf gravées, les cinq points marqués (hoshi), et les pierres, la moitié marquées d'un anneau pour les noires (à teinter).",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/jeu-go.vcs"
+    },
+    {
+      "id": "cornhole",
+      "nom": "Jeu de palets (cornhole)",
+      "description": "Les plateaux inclinés percés d'un trou où l'on lance des sacs de grains, et leurs pieds pliants : le jeu de jardin que les ateliers CNC vendent peint ou gravé aux couleurs d'une équipe.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/cornhole.vcs"
+    },
+    {
+      "id": "jeu-moulin",
+      "nom": "Jeu du moulin",
+      "description": "La marelle des Romains : trois carrés emboîtés reliés par leurs milieux, 24 cases, 9 pions chacun ; aligner trois pions, c'est faire un moulin et prendre un pion adverse. Le plateau gravé, les cases creusées pour tenir les pions, les 18 pions — ceux d'un joueur marqués d'un anneau.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/jeu-moulin.vcs"
+    },
+    {
+      "id": "labyrinthe",
+      "nom": "Labyrinthe à bille",
+      "description": "Généré : chaque « graine » donne un labyrinthe différent, toujours à chemin unique. Algorithme du parcours en profondeur (« recursive backtracker ») : de longs détours et beaucoup de culs-de-sac, et l'ARRIVÉE est posée sur la case la plus éloignée du départ — le plus long chemin possible.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/labyrinthe.vcs"
+    },
+    {
+      "id": "lancer-echelle",
+      "nom": "Lancer à l'échelle",
+      "description": "Le jeu de jardin (« ladder toss ») en version de table : deux montants à large pied, trois échelons qui les traversent ; on y lance des bolas (deux balles reliées par une cordelette) pour qu'elles s'enroulent. Échelon du haut 3 points, du milieu 2, du bas 1 : les points sont gravés dessus.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/lancer-echelle.vcs"
+    },
+    {
+      "id": "mini-skee-ball",
+      "nom": "Mini skee-ball",
+      "description": "Le jeu de fête foraine sur la table : on fait rouler une balle de ping-pong sur une piste qui monte, elle saute sur la cible penchée, y remonte, ralentit et retombe dans un trou. Plus le trou est haut et petit, plus il rapporte (10, 20, 50, et 100 aux deux coins). Quatre pièces à tenons traversants.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/mini-skee-ball.vcs"
+    },
+    {
+      "id": "morpion-puissance4",
+      "nom": "Morpion et puissance 4",
+      "description": "Un plateau de jeu à cases creusées et ses pions découpés dans la même planche, marqués d'une croix ou d'un rond : le morpion de voyage (3 × 3) ou le puissance 4 à plat (7 × 6).",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/morpion-puissance4.vcs"
+    },
+    {
+      "id": "petite-voiture",
+      "nom": "Petite voiture",
+      "description": "Le jouet de bois qu'on offre à la naissance : une caisse de profil, ses quatre roues, les trous des essieux ; le profil se colle en deux couches pour faire une voiture bien large.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/petite-voiture.vcs"
+    },
+    {
+      "id": "planche-nombres",
+      "nom": "Planche des nombres",
+      "description": "Le jeu d'éveil façon Montessori : les chiffres de 1 à 10 gravés, et sous chacun autant de trous où l'enfant plante ses chevilles ; une réserve creusée en bas pour les ranger. Compter, c'est remplir.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/planche-nombres.vcs"
+    },
+    {
+      "id": "cribbage",
+      "nom": "Plateau de cribbage",
+      "description": "Une piste continue en serpentin, une voie par joueur, 120 trous par voie en groupes de cinq, deux trous de départ et le trou d'arrivée : le jeu de cartes et de fiches que les forums de CNC montrent sans cesse.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/cribbage.vcs"
+    },
+    {
+      "id": "puzzle",
+      "nom": "Puzzle",
+      "description": "Des pièces à tenons ronds, découpées d'un trait de fraise fine dans une planchette : un puzzle d'enfant en bois, à graver d'une image ou d'un prénom avant de le découper.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/puzzle.vcs"
+    },
+    {
+      "id": "quarto",
+      "nom": "Quarto",
+      "description": "Le jeu de Blaise Müller : seize pièces toutes différentes, un plateau de 4 × 4. On pose la pièce que l'adversaire a choisie pour soi ; gagne qui aligne quatre pièces ayant un caractère commun.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/quarto.vcs"
+    },
+    {
+      "id": "solitaire",
+      "nom": "Solitaire",
+      "description": "Le casse-tête des 33 billes : une croix de trous, on saute par-dessus une bille pour la prendre, il faut finir avec une seule, au centre. Un plateau rond, une rigole tout autour pour les billes prises.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/solitaire.vcs"
+    },
+    {
+      "id": "tangram",
+      "nom": "Tangram",
+      "description": "Le casse-tête chinois : sept pièces taillées dans un carré (deux grands triangles, un moyen, deux petits, un carré, un parallélogramme) qui refont un chat, une maison, un cygne… et leur plateau, où elles se rangent en carré.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/tangram.vcs"
+    },
+    {
+      "id": "toupie",
+      "nom": "Toupies et leur lanceur",
+      "description": "Trois toupies à disque, une spirale gravée qui ondule quand elles tournent, et le lanceur à ficelle : on enroule la ficelle sur la tige, la tige dans la fourche, on tire d'un coup sec.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/toupie.vcs"
+    },
+    {
+      "id": "tric-trac",
+      "nom": "Tric-trac",
+      "description": "Le plateau du jacquet et du backgammon : vingt-quatre flèches en deux rangées, une barre au milieu, et les trente dames (quinze par camp, celles d'un camp marquées d'un anneau). Les dés, on les a déjà.",
+      "theme": "Jeux et jouets",
+      "fichier": "pieces/tric-trac.vcs"
+    },
+    {
+      "id": "bloc-cles-allen",
+      "nom": "Bloc à clés allen",
+      "description": "Chaque clé six pans debout dans SON trou hexagonal, sa taille gravée devant : de 1,5 à 10 mm. La clé qui manque se voit tout de suite, et elle ne tombe plus dans le tiroir.",
+      "theme": "Rangement",
+      "fichier": "pieces/bloc-cles-allen.vcs"
+    },
+    {
+      "id": "boite-cartes",
+      "nom": "Boîte à cartes à jouer",
+      "description": "La boîte en strates d'un jeu de 52 cartes : un fond, des cadres empilés, un couvercle qui PIVOTE sur un tourillon planté dans un coin. Un quart de tour, et tout le jeu est découvert.",
+      "theme": "Rangement",
+      "fichier": "pieces/boite-cartes.vcs"
+    },
+    {
+      "id": "boite-coulissante",
+      "nom": "Boîte à couvercle coulissant",
+      "description": "La boîte à crayons, à dominos, à thé : le couvercle glisse dans deux rainures des côtés et vient buter dans celle du dos ; il passe par-dessus le devant, plus bas. Six pièces, tenons traversants dans le fond.",
+      "theme": "Rangement",
+      "fichier": "pieces/boite-coulissante.vcs"
+    },
+    {
+      "id": "boite-queues-droites",
+      "nom": "Boîte à queues droites",
+      "description": "Une boîte en planches assemblées à doigts (« finger joint »), son fond pris dans les côtés et son couvercle posé : les six panneaux sortent à plat d'une seule planche et s'emboîtent sans une vis.",
+      "theme": "Rangement",
+      "fichier": "pieces/boite-queues-droites.vcs"
+    },
+    {
+      "id": "caissette-compartiments",
+      "nom": "Caissette à compartiments",
+      "description": "Un bac sans couvercle, assemblé à doigts, que des cloisons croisées partagent en cases : vis, embouts, crayons, épices. Façon « TypeTray » de boxes.py, découpée à plat dans une seule planche.",
+      "theme": "Rangement",
+      "fichier": "pieces/caissette-compartiments.vcs"
+    },
+    {
+      "id": "casier-bouteilles",
+      "nom": "Casier à bouteilles",
+      "description": "Le croisillon de cave : des planches debout qui se croisent à mi-bois, comme les séparations d'une boîte à œufs, et font des cases carrées où les bouteilles se couchent. Rien d'autre : ni colle, ni vis, il se monte et se démonte d'un geste.",
+      "theme": "Rangement",
+      "fichier": "pieces/casier-bouteilles.vcs"
+    },
+    {
+      "id": "etagere-flottante",
+      "nom": "Étagère flottante",
+      "description": "La tablette sans console visible : elle s'enfile sur des doigts de bois tenus par une latte vissée au mur. Le plateau est fait de deux planches collées face à face, creusées chacune de la moitié du logement des doigts.",
+      "theme": "Rangement",
+      "fichier": "pieces/etagere-flottante.vcs"
+    },
+    {
+      "id": "marchepied",
+      "nom": "Marchepied",
+      "description": "Le petit tabouret-marche de la cuisine ou de la salle de bains : un plateau, deux flancs aux pieds arqués et une traverse, assemblés à tenons traversants. Quatre pièces d'une planche de 18, sans une vis.",
+      "theme": "Rangement",
+      "fichier": "pieces/marchepied.vcs"
+    },
+    {
+      "id": "organisateur-tiroir",
+      "nom": "Organisateur de tiroir",
+      "description": "Un bloc de bois creusé de cases aux coins ronds, à poser dans un tiroir : couverts, crayons, mèches, bijoux. Sans une colle ni un assemblage : tout sort d'une planche épaisse.",
+      "theme": "Rangement",
+      "fichier": "pieces/organisateur-tiroir.vcs"
+    },
+    {
+      "id": "porte-bobines",
+      "nom": "Porte-bobines de fil",
+      "description": "Le présentoir de la table de couture : un plateau penché planté de tourillons, une bobine sur chacun ; on voit toutes les couleurs d'un coup, et le fil se dévide sans que la bobine tombe.",
+      "theme": "Rangement",
+      "fichier": "pieces/porte-bobines.vcs"
+    },
+    {
+      "id": "porte-cles-mural",
+      "nom": "Porte-clés mural",
+      "description": "Une plaque à accrocher près de la porte, son mot gravé et une rangée de chevilles où pendre les clés : un cadeau de pendaison de crémaillère, le pendant du porte-clés au prénom.",
+      "theme": "Rangement",
+      "fichier": "pieces/porte-cles-mural.vcs"
+    },
+    {
+      "id": "porte-epices-aimante",
+      "nom": "Porte-épices aimanté",
+      "description": "La planche murale où les boîtes à épices en métal tiennent toutes seules, couvercle vers soi : les aimants sont noyés par DERRIÈRE, à 2 mm sous la face ; on ne les voit pas, les boîtes tiennent quand même.",
+      "theme": "Rangement",
+      "fichier": "pieces/porte-epices-aimante.vcs"
+    },
+    {
+      "id": "porte-lunettes",
+      "nom": "Porte-lunettes",
+      "description": "Le nez de bois où l'on pose ses lunettes le soir, branches repliées de part et d'autre : elles ne traînent plus verres contre la table. Deux pièces : la tête en profil, debout, et le socle où elle s'emboîte.",
+      "theme": "Rangement",
+      "fichier": "pieces/porte-lunettes.vcs"
+    },
+    {
+      "id": "porte-manteau",
+      "nom": "Porte-manteau",
+      "description": "Une planche murale et ses patères en crochet, emboîtées à tenons traversants : l'entrée, une chambre d'enfant, l'atelier. D'une seule planche de 18, sans une vis hormis les deux qui le tiennent au mur.",
+      "theme": "Rangement",
+      "fichier": "pieces/porte-manteau.vcs"
+    },
+    {
+      "id": "range-cles-usb",
+      "nom": "Range-clés usb et cartes sd",
+      "description": "Le bloc du bureau où chaque clé USB se plante par sa prise, chaque carte SD et microSD debout dans sa fente : plus de clé perdue au fond d'un tiroir, et l'on voit d'un coup d'œil où est la carte de l'appareil photo.",
+      "theme": "Rangement",
+      "fichier": "pieces/range-cles-usb.vcs"
+    },
+    {
+      "id": "range-forets",
+      "nom": "Range-forets gradué",
+      "description": "Le bloc où chaque foret a son trou et son diamètre gravé à côté : de 1 à 10 mm de demi en demi, puis 11, 12 et 13. On voit d'un coup d'œil celui qui manque, et on le range sans hésiter.",
+      "theme": "Rangement",
+      "fichier": "pieces/range-forets.vcs"
+    },
+    {
+      "id": "range-pinceaux",
+      "nom": "Range-pinceaux",
+      "description": "L'étagère murale où les pinceaux pendent poils en bas pour sécher : le manche glisse dans une encoche de sa largeur, la virole bute dessus. Une encoche par taille, de la plus fine à la plus large, la largeur gravée devant.",
+      "theme": "Rangement",
+      "fichier": "pieces/range-pinceaux.vcs"
+    },
+    {
+      "id": "range-telecommandes",
+      "nom": "Range-télécommandes",
+      "description": "Le bac à gradins de la table basse : un compartiment bas devant pour les petites télécommandes, un haut derrière pour les longues. Six pièces à tenons traversants, sans une vis.",
+      "theme": "Rangement",
+      "fichier": "pieces/range-telecommandes.vcs"
+    },
+    {
+      "id": "ratelier-tournevis",
+      "nom": "Râtelier à tournevis",
+      "description": "L'étagère murale de l'établi : chaque tournevis pend par sa lame dans un trou à sa taille, le manche posé dessus. Un dos vissé au mur, une tablette percée, deux consoles ; tout s'emboîte à tenons traversants.",
+      "theme": "Rangement",
+      "fichier": "pieces/ratelier-tournevis.vcs"
+    },
+    {
+      "id": "serre-livres",
+      "nom": "Serre-livres",
+      "description": "Une paire, chacun un montant au sommet arrondi qui entre par deux tenons dans les mortaises de son socle : sans une vis, collé, il tient debout la rangée de livres.",
+      "theme": "Rangement",
+      "fichier": "pieces/serre-livres.vcs"
+    },
+    {
+      "id": "support-casque",
+      "nom": "Support de casque audio",
+      "description": "Un montant et un pied qui se croisent à mi-bois, sans vis ni colle : le casque se pose sur la selle arrondie du haut, son serre-tête suit la courbe et ne se marque pas. Se démonte à plat.",
+      "theme": "Rangement",
+      "fichier": "pieces/support-casque.vcs"
+    },
+    {
+      "id": "support-plantes",
+      "nom": "Support de plantes",
+      "description": "Une sellette : deux pieds croisés à mi-bois, en X vu de dessus, et un plateau rond qui les coiffe par quatre tenons. Trois pièces, sans vis ; un pot de 20 à 30 cm dessus.",
+      "theme": "Rangement",
+      "fichier": "pieces/support-plantes.vcs"
+    },
+    {
+      "id": "brides-table",
+      "nom": "Brides de table rainurée",
+      "description": "Des brides de serrage pour fixer le brut sur la table de la CNC (rails en T, inserts) : la barre, percée d'une lumière pour le boulon, et sa cale en escalier qui la tient à la bonne hauteur. Le premier projet d'une CNC : elle fabrique de quoi se brider.",
+      "theme": "Atelier et gabarits",
+      "fichier": "pieces/brides-table.vcs"
+    },
+    {
+      "id": "butee-onglet",
+      "nom": "Butée de scie à onglet",
+      "description": "La règle graduée qui se visse sur le guide de la scie, et son curseur qu'on bloque d'un tour de bouton : vingt pièces de la même longueur, sans retracer. Le curseur glisse sur une lumière, un trait gravé sur lui montre la longueur sur la règle.",
+      "theme": "Atelier et gabarits",
+      "fichier": "pieces/butee-onglet.vcs"
+    },
+    {
+      "id": "cales-reglage",
+      "nom": "Cales de réglage en escalier",
+      "description": "Le bloc à marches qui règle une hauteur de fraise ou de lame de scie sans règle : chaque marche est à une hauteur ronde (2, 3, 4, 5, 6, 8, 10, 12, 15, 20 mm), gravée derrière elle. On pose la marche voulue sur la table, la fraise vient l'effleurer.",
+      "theme": "Atelier et gabarits",
+      "fichier": "pieces/cales-reglage.vcs"
+    },
+    {
+      "id": "equerres-serrage",
+      "nom": "Équerres de serrage d'angle",
+      "description": "Pour coller un caisson d'équerre : l'équerre se serre dans l'angle intérieur, ses deux chants droits plaqués contre les deux planches, et la tient à 90° le temps que la colle prenne. La machine fait l'angle droit mieux qu'on ne le scierait.",
+      "theme": "Atelier et gabarits",
+      "fichier": "pieces/equerres-serrage.vcs"
+    },
+    {
+      "id": "gabarit-cercle",
+      "nom": "Gabarit de cercle",
+      "description": "Un compas pour la défonceuse : la semelle vissée sur sa base, un bras percé tous les `pas` d'un trou de pivot, chacun gravé de son rayon. Une pointe dans le trou choisi, et la défonceuse tourne : plateaux ronds, tables, miroirs.",
+      "theme": "Atelier et gabarits",
+      "fichier": "pieces/gabarit-cercle.vcs"
+    },
+    {
+      "id": "gabarit-charniere",
+      "nom": "Gabarit de mortaise de charnière",
+      "description": "Une plaque à copier pour la défonceuse : son encoche donne la mortaise d'une charnière de porte, au bon décalage de la bague de copie ; une butée vissée dessous la cale contre le chant.",
+      "theme": "Atelier et gabarits",
+      "fichier": "pieces/gabarit-charniere.vcs"
+    },
+    {
+      "id": "gabarit-systeme32",
+      "nom": "Gabarit de perçage « système 32 »",
+      "description": "Une règle percée tous les 32 mm et sa butée, pour percer d'équerre les rangées de trous des taquets d'étagère (et des charnières, coulisses, fiches) dans les côtés d'un meuble : le système de l'industrie du meuble, à l'atelier.",
+      "theme": "Atelier et gabarits",
+      "fichier": "pieces/gabarit-systeme32.vcs"
+    },
+    {
+      "id": "gabarit-poignees",
+      "nom": "Gabarit de poignées de meuble",
+      "description": "Pour percer les deux trous d'une poignée de tiroir ou de porte, d'aplomb, centrés, à la même hauteur sur toute une cuisine : la butée contre le chant de la façade, l'encoche du milieu sur le trait d'axe, et on perce dans les trous de l'entraxe voulu (96, 128, 160 ou 192 mm, les entraxes du commerce).",
+      "theme": "Atelier et gabarits",
+      "fichier": "pieces/gabarit-poignees.vcs"
+    },
+    {
+      "id": "gabarit-queues-aronde",
+      "nom": "Gabarit de queues d'aronde",
+      "description": "Le traceur du menuisier : accroché au bout de la planche par son talon, il donne la pente des queues d'un trait de crayon ou de pointe à tracer. Une pente à chaque bout : 1:6 pour les bois tendres, 1:8 pour les bois durs.",
+      "theme": "Atelier et gabarits",
+      "fichier": "pieces/gabarit-queues-aronde.vcs"
+    },
+    {
+      "id": "gabarit-tourillons",
+      "nom": "Gabarit de tourillons",
+      "description": "Pour percer d'aplomb et au milieu du chant les trous d'un assemblage à tourillons : la plaque se pose sur le chant, sa butée contre la face de la planche ; les trous guident la mèche. Le même gabarit, retourné, perce la pièce d'en face aux mêmes cotes.",
+      "theme": "Atelier et gabarits",
+      "fichier": "pieces/gabarit-tourillons.vcs"
+    },
+    {
+      "id": "grille-calibrage-jeu",
+      "nom": "Grille de calibrage du jeu",
+      "description": "Un peigne d'entailles de plus en plus larges, chacune gravée de son jeu, et la clé qui les essaie : on garde le jeu de l'entaille où la clé entre juste. Le « burn test » de boxes.py, à la fraise.",
+      "theme": "Atelier et gabarits",
+      "fichier": "pieces/grille-calibrage-jeu.vcs"
+    },
+    {
+      "id": "peigne-queues-droites",
+      "nom": "Peigne à queues droites",
+      "description": "Le gabarit qui fait des assemblages à doigts à la défonceuse à main : posé sur le chant des planches serrées dessous, la bague de copiage suit ses dents. Une fois fait, il sert à toutes les boîtes de la même épaisseur.",
+      "theme": "Atelier et gabarits",
+      "fichier": "pieces/peigne-queues-droites.vcs"
+    },
+    {
+      "id": "peigne-presseur",
+      "nom": "Peigne presseur",
+      "description": "La planche à doigts souples qui plaque la pièce contre le guide de la scie ou de la toupie : les doigts, coupés en biais, plient dans le sens d'avance et s'arc-boutent si la pièce veut revenir en arrière.",
+      "theme": "Atelier et gabarits",
+      "fichier": "pieces/peigne-presseur.vcs"
+    },
+    {
+      "id": "paliers-profondeur",
+      "nom": "Plaque de paliers de profondeur",
+      "description": "Une rangée de poches de plus en plus profondes, chacune gravée de sa cote : on la mesure au pied à coulisse, et l'on sait ce que la machine creuse vraiment (le zéro Z, la flèche de la fraise, le jeu de l'axe). Une jauge de bois pour régler ensuite les incrustations, les feuillures, les mi-bois.",
+      "theme": "Atelier et gabarits",
+      "fichier": "pieces/paliers-profondeur.vcs"
+    },
+    {
+      "id": "porte-fraises",
+      "nom": "Porte-fraises",
+      "description": "Le bloc posé à côté de la machine, où chaque fraise attend debout, rangée par queue : les pinces ER20, puis les queues de 12, 8, 6 et 1/8\" (3,175). Chaque rangée a son étiquette gravée ; plus de fraise couchée qui s'ébrèche contre sa voisine.",
+      "theme": "Atelier et gabarits",
+      "fichier": "pieces/porte-fraises.vcs"
+    },
+    {
+      "id": "pousse-bois",
+      "nom": "Pousse-bois",
+      "description": "La semelle qui pousse la planche contre la lame de la scie circulaire ou la fraise de la toupie : la main reste haut et loin, la planche ne se soulève pas. Un talon accroche le bout de la planche, une poignée fermée tient la main.",
+      "theme": "Atelier et gabarits",
+      "fichier": "pieces/pousse-bois.vcs"
+    },
+    {
+      "id": "poussoirs",
+      "nom": "Poussoirs de scie sur table",
+      "description": "Les deux qui gardent les doigts loin de la lame : le POUSSOIR long (sa pointe s'appuie sur la pièce, son cran pousse le bout) et le SABOT (sa semelle plaque la pièce, son talon la pousse), chacun avec sa poignée découpée. À refaire sans regret quand la lame les a entamés : c'est leur rôle.",
+      "theme": "Atelier et gabarits",
+      "fichier": "pieces/poussoirs.vcs"
+    },
+    {
+      "id": "queues-aronde-plat",
+      "nom": "Queues d'aronde à plat",
+      "description": "Deux planches qui s'emboîtent par leur chant comme un puzzle, en queues d'aronde vues de dessus : un plateau fait de deux planches, un dessus de coffre, un panneau qui ne s'ouvre pas en séchant. Ou l'essai d'un réglage avant le vrai assemblage.",
+      "theme": "Atelier et gabarits",
+      "fichier": "pieces/queues-aronde-plat.vcs"
+    },
+    {
+      "id": "regle-crans",
+      "nom": "Règle de traçage à crans",
+      "description": "Le trusquin du menuisier, en plus simple : la règle pose sur la planche, son TALON court le long du chant ; la pointe du crayon dans un trou, on glisse, et le trait tombe parallèle au chant, à la distance lue.",
+      "theme": "Atelier et gabarits",
+      "fichier": "pieces/regle-crans.vcs"
+    },
+    {
+      "id": "trouve-centre",
+      "nom": "Trouve-centre",
+      "description": "Pour tracer le centre d'un rond (un bout de rondin, un disque, une pièce à tourner) : on le pousse dans le V, on tire un trait le long de la règle ; on tourne d'un quart de tour, un second trait ; ils se croisent au centre.",
+      "theme": "Atelier et gabarits",
+      "fichier": "pieces/trouve-centre.vcs"
+    },
+    {
+      "id": "bielle-manivelle",
+      "nom": "Bielle-manivelle",
+      "description": "Le mécanisme du moteur et de la scie alternative : la manivelle tourne, la bielle pousse et tire, le coulisseau va et vient en ligne droite. Un démonstrateur de table : on tourne la poignée, on voit la course.",
+      "theme": "Technique et mécanique",
+      "fichier": "pieces/bielle-manivelle.vcs"
+    },
+    {
+      "id": "came",
+      "nom": "Came",
+      "description": "Un disque de profil qui transforme la rotation d'un arbre en va-et-vient d'un poussoir : automates de bois, jouets mécaniques, une machine de démonstration. Trois lois de levée, en vrai profil calculé point par point.",
+      "theme": "Technique et mécanique",
+      "fichier": "pieces/came.vcs"
+    },
+    {
+      "id": "charniere-souple",
+      "nom": "Charnière souple",
+      "description": "Une bande de fentes décalées qui rend un panneau de contreplaqué mince pliable sans casser (la « living hinge » des découpeuses) : un coin arrondi de boîte, une couverture de carnet, un dos de livre de bois.",
+      "theme": "Technique et mécanique",
+      "fichier": "pieces/charniere-souple.vcs"
+    },
+    {
+      "id": "cremaillere",
+      "nom": "Crémaillère",
+      "description": "La barre dentée qui engrène avec l'« Engrenage droit » de ce catalogue (même module, même angle de pression) : une rotation devient une translation — un tiroir motorisé, un levage, une table qui coulisse.",
+      "theme": "Technique et mécanique",
+      "fichier": "pieces/cremaillere.vcs"
+    },
+    {
+      "id": "croix-malte",
+      "nom": "Croix de malte",
+      "description": "Le mécanisme qui fait avancer une roue par crans : à chaque tour de manivelle, le doigt entre dans une fente, tourne la croix d'un cran (1/n de tour), ressort ; entre deux, le disque de verrou la tient immobile contre ses arcs creux. Celui des projecteurs de cinéma et des montres. Quatre pièces, deux chevilles d'axe, une de doigt.",
+      "theme": "Technique et mécanique",
+      "fichier": "pieces/croix-malte.vcs"
+    },
+    {
+      "id": "differentiel",
+      "nom": "Différentiel plat",
+      "description": "Le différentiel d'une voiture, en engrenages droits et en bois, pour le voir marcher : on tourne le porte-satellites, les deux volants tournent ensemble ; on retient un volant, l'autre tourne deux fois plus vite.",
+      "theme": "Technique et mécanique",
+      "fichier": "pieces/differentiel.vcs"
+    },
+    {
+      "id": "echappement-ancre",
+      "nom": "Échappement à ancre",
+      "description": "Le cœur d'une horloge, en bois, à pendre au mur : un poids tire la roue, l'ancre la retient et la lâche d'une demi-dent à chaque battement du balancier. Tic, tac : on voit le temps passer dent par dent.",
+      "theme": "Technique et mécanique",
+      "fichier": "pieces/echappement-ancre.vcs"
+    },
+    {
+      "id": "engrenage-lanterne",
+      "nom": "Engrenage à lanterne",
+      "description": "L'engrenage des moulins : une roue dentée mène une LANTERNE, deux disques tenus par des fuseaux (des tourillons). Ici couché sur une planchette : on tourne la roue par sa poignée, la lanterne tourne `dents / fuseaux` fois plus vite.",
+      "theme": "Technique et mécanique",
+      "fichier": "pieces/engrenage-lanterne.vcs"
+    },
+    {
+      "id": "engrenage",
+      "nom": "Engrenage droit à développante de cercle",
+      "description": "Une roue dentée à tailler dans la planche, son alésage (clavette ou méplat au besoin) et ses évidements ; et, pour vérifier, la roue qui l'entraîne, dessinée en tirets à l'entraxe exact.",
+      "theme": "Technique et mécanique",
+      "fichier": "pieces/engrenage.vcs"
+    },
+    {
+      "id": "equerre-lumieres",
+      "nom": "Équerre à lumières",
+      "description": "Une équerre plate en L, ses deux branches percées de lumières pour régler avant de serrer : coin de cadre, renfort de châssis, support de capteur sur une machine, fixation réglable sur profilé aluminium.",
+      "theme": "Technique et mécanique",
+      "fichier": "pieces/equerre-lumieres.vcs"
+    },
+    {
+      "id": "excentrique",
+      "nom": "Excentrique et sa bielle",
+      "description": "Le mouvement des machines à vapeur et des pompes : un disque monté hors de son centre tourne dans le collier d'une bielle, et le bout de la bielle va et vient, guidé dans une lumière. Une manivelle sans coude.",
+      "theme": "Technique et mécanique",
+      "fichier": "pieces/excentrique.vcs"
+    },
+    {
+      "id": "flexure",
+      "nom": "Flexure",
+      "description": "Un guide à lames parallèles taillé dans la masse : un bloc mobile tenu au cadre par deux lames minces, qui monte et descend sans jeu, sans frottement, sans pièce rapportée. Pour comprendre la mécanique compliante, ou pour un petit réglage fin (une vis pousse le bloc, les lames le ramènent).",
+      "theme": "Technique et mécanique",
+      "fichier": "pieces/flexure.vcs"
+    },
+    {
+      "id": "horloge-engrenages",
+      "nom": "Horloge à engrenages",
+      "description": "La minuterie en bois d'une horloge murale : l'aiguille des heures fait un tour quand celle des minutes en fait douze, par deux paires de roues à développante que l'on voit tourner derrière le cadran ajouré.",
+      "theme": "Technique et mécanique",
+      "fichier": "pieces/horloge-engrenages.vcs"
+    },
+    {
+      "id": "joint-oldham",
+      "nom": "Joint de oldham",
+      "description": "L'accouplement qui relie deux arbres parallèles mais pas tout à fait alignés : deux moyeux rainurés, et entre eux un disque à deux languettes croisées qui glisse dans les deux rainures à la fois. Tourner l'un fait tourner l'autre, même décalé de quelques millimètres. Un démonstrateur, ou l'accouplement d'un petit moteur à une vis.",
+      "theme": "Technique et mécanique",
+      "fichier": "pieces/joint-oldham.vcs"
+    },
+    {
+      "id": "pantographe",
+      "nom": "Pantographe",
+      "description": "L'instrument à recopier en agrandissant : la pointe suit un dessin, le crayon le refait deux fois plus grand. Quatre bras articulés en parallélogramme et un pied à brider sur la table.",
+      "theme": "Technique et mécanique",
+      "fichier": "pieces/pantographe.vcs"
+    },
+    {
+      "id": "pignon-chaine",
+      "nom": "Pignon de chaîne",
+      "description": "Un pignon pour chaîne à rouleaux, profil ISO 606 en vrais arcs, son alésage et ses allègements : pour un vélo de bois, un convoyeur, une transmission de machine.",
+      "theme": "Technique et mécanique",
+      "fichier": "pieces/pignon-chaine.vcs"
+    },
+    {
+      "id": "poulie",
+      "nom": "Poulie à joues",
+      "description": "Une poulie de corde ou de câble, faite de trois disques collés : deux joues, et entre elles le noyau plus petit dont le bord est le fond de la gorge. Pour un palan d'atelier, une corde à linge, une tyrolienne de jardin.",
+      "theme": "Technique et mécanique",
+      "fichier": "pieces/poulie.vcs"
+    },
+    {
+      "id": "rotule",
+      "nom": "Rotule à bille",
+      "description": "L'articulation qu'on oriente dans tous les sens et qui reste où on la laisse : une bille de bois serrée entre un socle (une calotte creusée à la boule) et un chapeau percé, par quatre boulons. Pour une lampe, une caméra, un support de téléphone. Plus on serre, plus elle tient.",
+      "theme": "Technique et mécanique",
+      "fichier": "pieces/rotule.vcs"
+    },
+    {
+      "id": "rochet",
+      "nom": "Roue à rochet et cliquet",
+      "description": "Le mécanisme qui ne tourne que dans un sens : celui des treuils, des clés à cliquet, des remontoirs. La roue tourne librement d'un côté (ses dents en pente soulèvent le cliquet) ; de l'autre, le flanc droit d'une dent bute contre la pointe du cliquet, et tout s'arrête. Un démonstrateur pour comprendre, ou un frein de treuil.",
+      "theme": "Technique et mécanique",
+      "fichier": "pieces/rochet.vcs"
+    },
+    {
+      "id": "bloc-couteaux",
+      "nom": "Bloc à couteaux lamellé",
+      "description": "Des couches de contreplaqué collées en paquet : une couche pleine, une couche entaillée, une pleine… Chaque entaille, prise entre deux couches pleines, devient la fente d'une lame. Toutes les couches sortent à plat d'une planche mince.",
+      "theme": "Cuisine",
+      "fichier": "pieces/bloc-couteaux.vcs"
+    },
+    {
+      "id": "dessous-theiere-spirale",
+      "nom": "Dessous de théière en spirale",
+      "description": "Un disque traversé d'une spirale d'ajours : l'air passe sous la théière, le bois ne marque pas la table, et la spirale tient d'une seule pièce grâce aux PONTS qui la coupent tous les quarts de tour.",
+      "theme": "Cuisine",
+      "fichier": "pieces/dessous-theiere-spirale.vcs"
+    },
+    {
+      "id": "dessous-plat-articule",
+      "nom": "Dessous-de-plat articulé",
+      "description": "Des lattes debout sur chant, enfilées sur deux cordelettes avec une rondelle entre deux : il se pose à plat sous la cocotte, et s'enroule pour se ranger dans un tiroir.",
+      "theme": "Cuisine",
+      "fichier": "pieces/dessous-plat-articule.vcs"
+    },
+    {
+      "id": "egouttoir",
+      "nom": "Égouttoir à assiettes",
+      "description": "Deux peignes debout, crantés pour les assiettes, tenus par deux traverses croisées à mi-bois. Quatre pièces, sans colle ni vis : il se démonte pour sécher, et se range à plat.",
+      "theme": "Cuisine",
+      "fichier": "pieces/egouttoir.vcs"
+    },
+    {
+      "id": "lutrin",
+      "nom": "Lutrin",
+      "description": "Le pupitre du livre de recettes (ou de la tablette) : un dossier penché et un pied qui le traverse par une fente au bas ; devant, le pied forme le rebord qui retient le livre, derrière il épaule le dossier. Deux pièces, à démonter à plat.",
+      "theme": "Cuisine",
+      "fichier": "pieces/lutrin.vcs"
+    },
+    {
+      "id": "planche-a-decouper",
+      "nom": "Planche à découper",
+      "description": "Une planche à coins arrondis, sa rigole à jus tout autour du plan de coupe et une poignée ajourée à un bout : le cadeau de cuisine qui se vend le plus.",
+      "theme": "Cuisine",
+      "fichier": "pieces/planche-a-decouper.vcs"
+    },
+    {
+      "id": "planche-pain",
+      "nom": "Planche à pain et grille à miettes",
+      "description": "On coupe le pain sur la grille, les miettes tombent dans le bac par ses lumières ; on soulève la grille par les deux encoches des bouts, on vide le bac. Deux pièces.",
+      "theme": "Cuisine",
+      "fichier": "pieces/planche-pain.vcs"
+    },
+    {
+      "id": "plateau-fromages",
+      "nom": "Plateau à fromages",
+      "description": "La planche de service du dessert : une rigole tout autour (le petit-lait ne coule pas sur la nappe), une fente où le couteau se tient debout, une poignée découpée, un mot gravé.",
+      "theme": "Cuisine",
+      "fichier": "pieces/plateau-fromages.vcs"
+    },
+    {
+      "id": "plateau-service-verres",
+      "nom": "Plateau de service à encoches",
+      "description": "Un plateau d'apéritif dont les bouts portent des encoches en trou de serrure : le pied d'un verre à vin s'y glisse, le verre pend sous le plateau par son pied, debout à côté du fromage.",
+      "theme": "Cuisine",
+      "fichier": "pieces/plateau-service-verres.vcs"
+    },
+    {
+      "id": "plateau-tournant",
+      "nom": "Plateau tournant",
+      "description": "Le plateau qui tourne au milieu de la table (épices, fromages, « lazy susan ») : un dessus, un socle plus petit, et entre les deux un roulement de plateau tournant du commerce, vissé par des trous percés au bon endroit.",
+      "theme": "Cuisine",
+      "fichier": "pieces/plateau-tournant.vcs"
+    },
+    {
+      "id": "porte-couteaux",
+      "nom": "Porte-couteaux aimanté",
+      "description": "La barre murale de la cuisine où les couteaux tiennent par leur lame : des aimants cachés dans des logements creusés PAR DERRIÈRE, à quelques millimètres de la face ; devant, rien que le bois.",
+      "theme": "Cuisine",
+      "fichier": "pieces/porte-couteaux.vcs"
+    },
+    {
+      "id": "porte-rouleau",
+      "nom": "Porte-rouleau d'essuie-tout",
+      "description": "Le socle rond et son mât en croix, que le rouleau enfile. Trois pièces : le socle, deux lames croisées à mi-bois qui font le mât ; la première traverse le socle par un tenon.",
+      "theme": "Cuisine",
+      "fichier": "pieces/porte-rouleau.vcs"
+    },
+    {
+      "id": "porte-sachets-the",
+      "nom": "Porte-sachets de thé",
+      "description": "Le bloc où les sachets en enveloppe se rangent debout, une case par sorte, son nom gravé devant : on voit ce qui reste, on prend celui qu'on veut d'un doigt.",
+      "theme": "Cuisine",
+      "fichier": "pieces/porte-sachets-the.vcs"
+    },
+    {
+      "id": "range-epices",
+      "nom": "Range-épices à gradins",
+      "description": "L'étagère en escalier du fond du plan de travail ou du placard : chaque rangée de pots est plus haute que celle de devant, toutes les étiquettes se lisent. Deux joues en escalier, des tablettes à tenons traversants.",
+      "theme": "Cuisine",
+      "fichier": "pieces/range-epices.vcs"
+    },
+    {
+      "id": "sous-verres",
+      "nom": "Sous-verres et dessous-de-plat",
+      "description": "Une série de sous-verres à cuvette et anneaux gravés, ou un dessous-de-plat ajouré de lumières : les petites pièces de cuisine qui se vendent par lots.",
+      "theme": "Cuisine",
+      "fichier": "pieces/sous-verres.vcs"
+    },
+    {
+      "id": "support-livre-recettes",
+      "nom": "Support de livre de recettes",
+      "description": "Le pupitre de cuisine : le livre ouvert, penché, loin des projections, tenu en bas par un rebord. Trois pièces qui s'emboîtent : le dos, le rebord, la béquille ; elles se démontent pour le ranger à plat.",
+      "theme": "Cuisine",
+      "fichier": "pieces/support-livre-recettes.vcs"
+    },
+    {
+      "id": "boite-musique",
+      "nom": "Boîtier de boîte à musique",
+      "description": "La boîte en strates qui loge un mouvement à manivelle ou à clef (18 lames, le plus courant) : la clef traverse le fond, le couvercle pivote sur un tourillon et porte une rosace d'ouïes pour que le son sorte.",
+      "theme": "Décoration et cadeaux",
+      "fichier": "pieces/boite-musique.vcs"
+    },
+    {
+      "id": "cadre-photo",
+      "nom": "Cadre photo",
+      "description": "Un cadre d'une pièce : la fenêtre sur la photo, la feuillure au dos qui reçoit verre, photo et carton, l'encoche de l'accroche ; aux cotes d'un tirage du commerce.",
+      "theme": "Décoration et cadeaux",
+      "fichier": "pieces/cadre-photo.vcs"
+    },
+    {
+      "id": "calendrier-perpetuel",
+      "nom": "Calendrier perpétuel",
+      "description": "Le calendrier de bureau qui ne finit jamais : un socle à quatre fentes, et des plaquettes qu'on y plante chaque matin — le jour de la semaine, les dizaines (0 à 3), les unités (0 à 9), le mois. Les plaquettes du jour se rangent derrière celle qu'on montre.",
+      "theme": "Décoration et cadeaux",
+      "fichier": "pieces/calendrier-perpetuel.vcs"
+    },
+    {
+      "id": "carte-courbes-niveau",
+      "nom": "Carte en courbes de niveau",
+      "description": "Une île en relief, taillée en marches comme une carte topographique : chaque courbe de niveau est une marche de `pas_niveau`, la mer tout autour est la plus creuse, le sommet reste à fleur de planche. Un cadre garde la hauteur de la planche, le nom de l'île y est gravé, et le nord.",
+      "theme": "Décoration et cadeaux",
+      "fichier": "pieces/carte-courbes-niveau.vcs"
+    },
+    {
+      "id": "decorations-noel",
+      "nom": "Décorations de noël",
+      "description": "Des suspensions pour le sapin, étoile, sapin ou boule, percées pour le fil et gravées d'un prénom : une par membre de la famille, ce qui se vend le plus en décembre.",
+      "theme": "Décoration et cadeaux",
+      "fichier": "pieces/decorations-noel.vcs"
+    },
+    {
+      "id": "enseigne",
+      "nom": "Enseigne",
+      "description": "Une plaque gravée à votre texte, une ou deux lignes centrées, un filet qui l'encadre et deux trous pour l'accrocher : le nom de la maison, de l'atelier, un numéro de rue, un cadeau.",
+      "theme": "Décoration et cadeaux",
+      "fichier": "pieces/enseigne.vcs"
+    },
+    {
+      "id": "etoile-volume",
+      "nom": "Étoile en volume",
+      "description": "Deux étoiles plates qui s'emboîtent à angle droit et deviennent une étoile en volume : elle tient debout seule, sur quatre pointes. La décoration de table qui se range à plat, à faire par séries.",
+      "theme": "Décoration et cadeaux",
+      "fichier": "pieces/etoile-volume.vcs"
+    },
+    {
+      "id": "horloge-murale",
+      "nom": "Horloge murale",
+      "description": "Un cadran de bois pour un mouvement à quartz du commerce : le trou de l'axe au centre, les repères des heures et des minutes, les chiffres arabes ou romains gravés, un mot sous le centre ; au dos, le logement du mouvement.",
+      "theme": "Décoration et cadeaux",
+      "fichier": "pieces/horloge-murale.vcs"
+    },
+    {
+      "id": "lampe-lamelles",
+      "nom": "Lampe à lamelles",
+      "description": "Des anneaux de bois enfilés sur trois tiges filetées, espacés par des entretoises : leur rayon suit un galbe de vase, et la lumière d'une ampoule passe entre les lamelles. Un socle plein en bas, l'ampoule au milieu.",
+      "theme": "Décoration et cadeaux",
+      "fichier": "pieces/lampe-lamelles.vcs"
+    },
+    {
+      "id": "lampe-dentelle",
+      "nom": "Lampe en dentelle de bois",
+      "description": "Une lanterne carrée aux quatre côtés ajourés d'un semis de petits trous : la lumière passe en pointillés et dessine la dentelle sur les murs. Quatre côtés assemblés à queues droites, posés dans un socle.",
+      "theme": "Décoration et cadeaux",
+      "fichier": "pieces/lampe-dentelle.vcs"
+    },
+    {
+      "id": "mobile",
+      "nom": "Mobile",
+      "description": "Trois fléaux en cascade et quatre étoiles, à la manière de Calder : chaque fléau pend par le point exact où il s'équilibre, calculé ici d'après le poids du bois. On l'accroche au plafond, il tourne au moindre souffle et reste horizontal.",
+      "theme": "Décoration et cadeaux",
+      "fichier": "pieces/mobile.vcs"
+    },
+    {
+      "id": "nichoir",
+      "nom": "Nichoir à mésanges",
+      "description": "La petite maison du jardin, emboîtée à tenons traversants : façade percée du trou d'envol, dos qui dépasse pour l'accrocher, deux côtés, un fond percé pour l'eau, deux pans de toit. Le trou fait l'oiseau : Ø28 pour la mésange bleue (les grosses n'y passent pas), Ø32 pour la charbonnière.",
+      "theme": "Décoration et cadeaux",
+      "fichier": "pieces/nichoir.vcs"
+    },
+    {
+      "id": "photophore",
+      "nom": "Photophore ajouré",
+      "description": "La lanterne à bougie : quatre faces percées d'un motif, assemblées à doigts sur leurs arêtes ; la flamme d'une bougie chauffe-plat (dans son verre) dessine le motif sur les murs.",
+      "theme": "Décoration et cadeaux",
+      "fichier": "pieces/photophore.vcs"
+    },
+    {
+      "id": "porte-cles-prenom",
+      "nom": "Porte-clés au prénom",
+      "description": "Un médaillon oblong qui épouse le prénom gravé, percé pour l'anneau : le petit cadeau qui se vend par dizaines sur les marchés.",
+      "theme": "Décoration et cadeaux",
+      "fichier": "pieces/porte-cles-prenom.vcs"
+    },
+    {
+      "id": "presentoir-bijoux",
+      "nom": "Présentoir à bijoux",
+      "description": "Un panneau debout, percé pour les boucles d'oreilles à crochet, fendu pour les puces, une rangée de trous en haut pour les chevilles des colliers ; deux pieds le tiennent, emboîtés à mi-bois. Pour la commode, ou un étal de marché.",
+      "theme": "Décoration et cadeaux",
+      "fichier": "pieces/presentoir-bijoux.vcs"
+    },
+    {
+      "id": "rosace-ajouree",
+      "nom": "Rosace ajourée",
+      "description": "Un disque découpé à jour d'anneaux de navettes et de perles, comme un vitrail de bois : suspension de fenêtre, dessous-de-plat, fond de lampe, ou pour la regarder.",
+      "theme": "Décoration et cadeaux",
+      "fichier": "pieces/rosace-ajouree.vcs"
+    },
+    {
+      "id": "sapin-emboite",
+      "nom": "Sapin de noël emboîté",
+      "description": "Deux silhouettes de sapin qui se croisent à mi-bois et tiennent debout seules : la décoration de table qui se range à plat dans une enveloppe, à offrir par dizaines.",
+      "theme": "Décoration et cadeaux",
+      "fichier": "pieces/sapin-emboite.vcs"
+    },
+    {
+      "id": "silhouette-ville",
+      "nom": "Silhouette de ville",
+      "description": "Une ligne de toits à poser sur une étagère ou une cheminée : immeubles, clocher, toits pointus, les fenêtres ajourées ; une bougie LED derrière, et la ville s'allume. Elle tient debout sur deux pieds emboîtés.",
+      "theme": "Décoration et cadeaux",
+      "fichier": "pieces/silhouette-ville.vcs"
+    },
+    {
+      "id": "pedale-effet",
+      "nom": "Boîtier de pédale d'effet",
+      "description": "Le boîtier en bois d'une pédale de guitare, en strates : un fond, des cadres collés, un dessus vissé qui porte tout — interrupteur au pied, trois potentiomètres, la LED, et les prises sur le DESSUS, à l'arrière (« top jacks ») : on aligne les pédales côte à côte sans câbles qui dépassent sur les côtés.",
+      "theme": "Électronique et boîtiers",
+      "fichier": "pieces/pedale-effet.vcs"
+    },
+    {
+      "id": "boitier-electronique",
+      "nom": "Boîtier électronique",
+      "description": "Une boîte à queues droites taillée autour d'une carte : le fond percé à ses trous de fixation, un petit côté ouvert pour ses prises, un couvercle aéré. D'office, une Arduino Uno.",
+      "theme": "Électronique et boîtiers",
+      "fichier": "pieces/boitier-electronique.vcs"
+    },
+    {
+      "id": "casier-composants",
+      "nom": "Casier à composants",
+      "description": "Le plateau de l'établi d'électronique : des cases creusées dans un bloc, à fond arrondi (la fraise boule y laisse un congé), d'où une résistance ou une vis se tirent d'un doigt. Chaque case a sa coordonnée : une lettre par rangée, un chiffre par colonne, comme un tableau de bataille navale — « les 10 kΩ en B4 ».",
+      "theme": "Électronique et boîtiers",
+      "fichier": "pieces/casier-composants.vcs"
+    },
+    {
+      "id": "facade-pedale",
+      "nom": "Façade de pédale d'effet",
+      "description": "Le dessus d'un boîtier d'aluminium percé pour une pédale de guitare : potentiomètres, LED, footswitch, et le nom gravé. Le perçage qu'on fait d'habitude au foret étagé, gabarit scotché, ici d'équerre et au dixième.",
+      "theme": "Électronique et boîtiers",
+      "fichier": "pieces/facade-pedale.vcs"
+    },
+    {
+      "id": "facade-rack",
+      "nom": "Façade de rack 19\"",
+      "description": "La plaque avant d'un tiroir d'électronique (alimentation, préampli, boîtier de commande d'une machine) aux cotes du rack : 482,6 de large, `unites` × 44,45 − 0,8 de haut, les lumières de fixation à 465,1 d'entraxe. De gauche à droite : des embases Neutrik (série D), des interrupteurs, des voyants, un afficheur, et un nom gravé.",
+      "theme": "Électronique et boîtiers",
+      "fichier": "pieces/facade-rack.vcs"
+    },
+    {
+      "id": "facade-oled",
+      "nom": "Façade oled et encodeur",
+      "description": "Le panneau avant d'un petit montage (une station météo, une commande de machine, un minuteur) : la fenêtre d'un écran OLED de 0,96″, un bouton rotatif EC11, deux boutons-poussoirs. Le bois est aminci par DERRIÈRE là où il le faut : l'écran colle au plus près de sa fenêtre, les écrous des canons trouvent assez de filet.",
+      "theme": "Électronique et boîtiers",
+      "fichier": "pieces/facade-oled.vcs"
+    },
+    {
+      "id": "panneau-brassage",
+      "nom": "Panneau de brassage pour jacks",
+      "description": "Le « patch » du studio ou de la baie de synthés modulaires, au format rack 19″ : deux rangées de prises jack 6,35, numérotées, chaque prise tenue par son écrou dans un bois aminci par derrière.",
+      "theme": "Électronique et boîtiers",
+      "fichier": "pieces/panneau-brassage.vcs"
+    },
+    {
+      "id": "pupitre-ecran",
+      "nom": "Pupitre pour écran tactile 7\"",
+      "description": "Le support incliné d'un écran de Raspberry Pi (l'officiel de 7 pouces, ou un autre aux cotes données) : pour un pupitre de machine, une domotique, un cadre de recettes. L'écran se loge par derrière dans la façade, qui ne laisse voir que sa zone d'affichage ; deux jambes la tiennent penchée, une traverse les relie.",
+      "theme": "Électronique et boîtiers",
+      "fichier": "pieces/pupitre-ecran.vcs"
+    },
+    {
+      "id": "range-cables",
+      "nom": "Range-câbles",
+      "description": "Un peigne à visser sous le bord du bureau ou au mur : chaque encoche reçoit un câble, son entrée plus étroite que lui le pince — les chargeurs ne retombent plus derrière le meuble.",
+      "theme": "Électronique et boîtiers",
+      "fichier": "pieces/range-cables.vcs"
+    },
+    {
+      "id": "support-bobine-filament",
+      "nom": "Support de bobine de filament",
+      "description": "À côté de l'imprimante 3D : deux flasques sur un socle, une tige dans leurs encoches en U, la bobine enfilée sur la tige. Elle tourne librement, le filament se dévide sans tirer sur l'extrudeur.",
+      "theme": "Électronique et boîtiers",
+      "fichier": "pieces/support-bobine-filament.vcs"
+    },
+    {
+      "id": "support-carte",
+      "nom": "Support de carte",
+      "description": "La plaque qui tient un Arduino Uno ou un Raspberry Pi 4 sur des entretoises M3 : au fond d'une armoire, sous un plateau, sur le côté d'une machine. Fini les cartes qui traînent sur leurs fils.",
+      "theme": "Électronique et boîtiers",
+      "fichier": "pieces/support-carte.vcs"
+    },
+    {
+      "id": "support-fer-souder",
+      "nom": "Support de fer à souder",
+      "description": "Le poste de l'établi d'électronique : deux montants en V où le fer se pose penché, par son manche et son col, la panne dans le vide ; une cuvette pour la laine de laiton qui nettoie la panne ; un trou pour la cheville qui porte la bobine d'étain.",
+      "theme": "Électronique et boîtiers",
+      "fichier": "pieces/support-fer-souder.vcs"
+    },
+    {
+      "id": "support-rpi5",
+      "nom": "Support de raspberry pi 5",
+      "description": "La platine qui se visse au mur ou sous un plateau : la carte posée sur quatre entretoises, ses écrous prisonniers dans le bois par dessous (on visse sans tenir de clé), des lumières sous le processeur pour que l'air passe, le contour de la carte gravé pour la poser du premier coup.",
+      "theme": "Électronique et boîtiers",
+      "fichier": "pieces/support-rpi5.vcs"
+    },
+    {
+      "id": "manivelle",
+      "nom": "Manivelle",
+      "description": "Le moyeu percé, son bras, la bande courbe et sa lumière (plan du post-it de Christophe, 09/10/2026). Origine du dessin : le centre du moyeu, posé au milieu de la planche (o). Toutes les cotes du plan sont des variables : changer l'une d'elles et rejouer le script redessine la pièce.",
+      "theme": "Autres",
+      "fichier": "pieces/manivelle.vcs"
+    }
+  ]
+}

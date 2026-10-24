@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configurateur de pièces — VerdierCAM</title>
+<meta name="description" content="Le catalogue des pièces paramétriques de VerdierCAM : jeux, rangement, gabarits, mécanique, cuisine, décoration, boîtiers. Choisissez une pièce, changez ses cotes, téléchargez le dessin en SVG ou en DXF. Tout se calcule dans votre navigateur.">
+<link rel="icon" href="logo-verdiercam.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css?v=9ab7662c0d54">
+</head>
+<body>
+<header class="entete">
+  <a class="marque" href="/" title="verdiercam.fr">
+    <img src="logo-verdiercam.svg" alt="" width="40" height="40">
+    <span>VerdierCAM</span>
+  </a>
+  <h1>Configurateur de pièces</h1>
+</header>
+
+<main class="page">
+  <section class="reglages" aria-labelledby="titre-piece">
+    <label class="choix-piece" for="piece">
+      <span id="titre-piece">Pièce</span>
+      <select id="piece" disabled><option>Chargement…</option></select>
+    </label>
+    <p id="description" class="description"></p>
+
+    <form id="formulaire" class="formulaire" autocomplete="off" novalidate>
+      <!-- un champ par variable du script, écrit par configurateur.js -->
+    </form>
+    <button type="button" id="origine" class="lien" disabled>Revenir aux valeurs d'origine</button>
+  </section>
+
+  <section class="apercu" aria-label="Aperçu">
+    <!-- DEUX VUES (16/10/2026) : le dessin, et la 3D simplifiée de ce que l'usinage enlève (vue3d.js). -->
+    <div class="onglets" role="tablist" aria-label="Vue">
+      <button type="button" id="onglet-dessin" role="tab" aria-selected="true" class="onglet actif">Dessin</button>
+      <button type="button" id="onglet-3d" role="tab" aria-selected="false" class="onglet" hidden>3D usinée</button>
+    </div>
+    <div id="cadre" class="cadre" aria-busy="true">
+      <img id="dessin" alt="Aperçu du dessin" hidden>
+      <canvas id="vue3d" class="vue3d" hidden aria-label="Vue 3D simplifiée de la pièce usinée"></canvas>
+      <p id="attente" class="attente">Chargement du calcul…</p>
+    </div>
+    <div id="vues3d" class="vues3d" hidden>
+      <button type="button" data-vue="dessus">Dessus</button>
+      <button type="button" data-vue="dessous">Dessous</button>
+      <button type="button" data-vue="face">Face</button>
+      <button type="button" data-vue="trois-quarts">3/4</button>
+    </div>
+    <p id="note3d" class="note" hidden>3D simplifiée : la planche, et ce que chaque opération enlève à sa profondeur
+      (en orange) — sans les trajets de la fraise. Un doigt (ou la souris) fait tourner la pièce, deux doigts ou la molette
+      la rapprochent ; pour faire défiler la page, touchez à côté de la vue.</p>
+    <p id="etat" class="etat" role="status" aria-live="polite"></p>
+    <div id="erreur" class="erreur" role="alert" hidden></div>
+    <div class="actions">
+      <button type="button" id="svg" class="principal" disabled>Télécharger le SVG</button>
+      <button type="button" id="dxf" disabled>Télécharger le DXF</button>
+      <button type="button" id="vcs" disabled>Ouvrir dans VerdierCAM</button>
+      <button type="button" id="lien" disabled title="Copie l'adresse de cette pièce avec vos valeurs : qui l'ouvre la retrouve telle quelle">Copier le lien</button>
+      <span id="lien-copie" class="script-copie" role="status" aria-live="polite"></span>
+    </div>
+    <!-- CE QU'IL FAUT POUR L'USINER (16/10/2026) : les « usinage(…) » du script, aux valeurs du formulaire. -->
+    <!-- Repliable (16/10/2026) : ouvert sur un ordinateur, replié sur un téléphone (configurateur.js, PLIER_AU_TELEPHONE). -->
+    <details id="usinage-bloc" class="usinage" open hidden>
+      <summary><span id="usinage-titre" class="usinage-titre">Pour l'usiner</span>
+        <span id="usinage-compte" class="script-sous"></span></summary>
+      <p id="usinage-planche" class="usinage-planche"></p>
+      <ul id="usinage" class="usinage-liste"></ul>
+      <p class="note">Ce que la pièce déclare. Dans VerdierCAM, chaque ligne devient une opération ; les avances et le pas
+        latéral viennent de votre machine et de votre fraise.</p>
+    </details>
+    <p class="note">Dessin en millimètres, origine au coin bas-gauche de la planche. « Ouvrir dans VerdierCAM » télécharge
+      le script de la pièce avec vos valeurs, ses usinages déclarés compris : posé dans le dossier
+      VerdierCAM/pieces de votre dossier personnel, il se retrouve sous « Vos pièces » de Dessin › Pièces paramétriques… ; ou rejouez-le par
+      Outils › Exécuter un script….</p>
+    <!-- LE SCRIPT SOUS LE DESSIN (10/10/2026, Christophe : « montrer le script en dessous du dessin, ce n'est pas
+         privé ») : la pièce telle que VerdierCAM la lit, avec les valeurs du formulaire. -->
+    <details id="script-bloc" class="script" open>
+      <summary>Le script de la pièce <span class="script-sous">— avec vos valeurs, dans le langage de VerdierCAM</span></summary>
+      <div class="script-outils">
+        <button type="button" id="copier" class="lien" disabled>Copier le script</button>
+        <span id="copie" class="script-copie" role="status" aria-live="polite"></span>
+      </div>
+      <pre id="script" class="script-texte" tabindex="0"></pre>
+    </details>
+  </section>
+</main>
+
+<footer class="pied">
+  Calculé dans votre navigateur par le cœur de VerdierCAM : rien n'est envoyé à un serveur.
+</footer>
+
+<noscript><p class="erreur">Le configurateur a besoin de JavaScript.</p></noscript>
+<script src="vue3d.js?v=9ab7662c0d54"></script>
+<script src="configurateur.js?v=9ab7662c0d54"></script>
+</body>
+</html>

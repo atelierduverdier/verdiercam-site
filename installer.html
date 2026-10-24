@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#fdfcfa">
+<title>VerdierCAM — installer sur Linux, Windows et Raspberry Pi 5</title>
+<meta name="description" content="Installer VerdierCAM : une AppImage sous Linux, un dossier sous Windows, une AppImage ARM64 sur Raspberry Pi 5 — y compris un Pi sous Debian 12 ou l'image LinuxCNC.">
+<link rel="canonical" href="https://verdiercam.fr/installer.html">
+<link rel="icon" type="image/svg+xml" href="/oiseau.f8508e8c.svg">
+<link rel="preload" href="/polices/Inter-Regular.8af6cbde.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/style/verdiercam.195a171e.css">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VerdierCAM">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="VerdierCAM — installer sur Linux, Windows et Raspberry Pi 5">
+<meta property="og:description" content="Installer VerdierCAM : une AppImage sous Linux, un dossier sous Windows, une AppImage ARM64 sur Raspberry Pi 5 — y compris un Pi sous Debian 12 ou l'image LinuxCNC.">
+<meta property="og:url" content="https://verdiercam.fr/installer.html">
+<meta property="og:image" content="https://verdiercam.fr/partage/carte.8ff9876f.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="VerdierCAM">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="saut" href="#contenu">Aller au contenu</a>
+
+<header class="barre">
+  <div class="cadre barre-dedans">
+    <a class="marque" href="/" aria-label="VerdierCAM, accueil">
+      <img src="/oiseau.f8508e8c.svg" alt="" width="30" height="30">
+      <span>Verdier<b>CAM</b></span>
+    </a>
+    <nav class="menu" id="menu-sections" aria-label="Sections">
+      <a href="/#parcours">Le parcours</a>
+      <a href="/#usinage">Opérations</a>
+      <a href="/#modes">Modes</a>
+      <a href="/premiers-pas.html">Premiers pas</a>
+      <a href="/mode-emploi/">Mode d’emploi</a>
+      <a href="/installer.html">Installer</a>
+      <a href="/pieces.html">Pièces</a>
+      <a href="/configurateur/">Configurateur</a>
+      <a href="/nouveautes.html">Nouveautés</a>
+      <a href="/#sortie">Sortie</a>
+      <a href="/#questions">Questions</a>
+    </nav>
+    <button class="menu-bouton" type="button" aria-expanded="false" aria-controls="menu-sections">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14"/></svg><span>Menu</span>
+    </button>
+    <a class="bouton bouton-plein petit" href="/#sortie">Être prévenu</a>
+    
+  </div>
+</header>
+
+<main id="contenu">
+<!-- VerdierCAM — « Installer » (14/10/2026, Christophe : « mets la version Raspberry Pi 5 sur le site, et la procédure
+     d'installation sur LinuxCNC et sur une Debian normale »). Chaque commande a été vérifiée : le paquet Linux est une
+     AppImage dans une archive .tar.gz (outils/linux/assembler.sh) ; le paquet Windows un dossier zippé avec VerdierCAM.exe
+     (outils/construire-windows.sh) ; le paquet Raspberry Pi une AppImage ARM64 (outils/construire-raspberry.sh). La
+     procédure Pi sous Debian 12 / LinuxCNC est celle faite sur le Pi 5 de la PrintNC de l'atelier le 14/10/2026 : Mesa
+     22.3 de Debian 12 ne connaît pas le GPU du Pi 5 (Vulkan retombait sur llvmpipe), Mesa 25 des backports si. -->
+
+<div class="heros papier pp-heros">
+  <div class="cadre">
+    <div class="pp-intro apparait">
+      <span class="surtitre">Installer</span>
+      <h1>Installer VerdierCAM</h1>
+      <p class="accroche">
+        Rien à installer au sens habituel : un fichier à lancer sous Linux, un dossier à dézipper sous Windows.
+        À la sortie, le paquet de votre système se téléchargera ici même, directement, sans inscription :
+        15 jours d'essai complets, sans carte bancaire.
+         Vos réglages, vos
+        outils et votre licence sont gardés d'une version à l'autre.
+      </p>
+    </div>
+    
+    <ol class="pp-sommaire" aria-label="Les systèmes">
+      <li><a href="#linux"><span>01</span>Linux (PC)</a></li>
+      <li><a href="#windows"><span>02</span>Windows</a></li>
+      <li><a href="#raspberry"><span>03</span>Raspberry Pi 5</a></li>
+      <li><a href="#linuxcnc"><span>04</span>Pi sous LinuxCNC</a></li>
+    </ol>
+  </div>
+</div>
+
+<section id="linux" class="pp-etape">
+  <div class="cadre">
+    <div class="texte apparait installer">
+      <span class="surtitre">01 · Linux, sur PC</span>
+      <h2>Debian, Ubuntu, Mint, Fedora, Arch…</h2>
+      <p>Le paquet est une archive <b>VerdierCAM-<i>version</i>-linux-x86_64.tar.gz</b>. Clic droit, <b>Extraire ici</b> :
+        il en sort <b>VerdierCAM-<i>version</i>-linux-x86_64.AppImage</b>, prêt à lancer d'un double-clic. L'archive
+        garde le droit d'exécution, qu'un téléchargement direct perdrait. Toute distribution de 2022 ou après convient.</p>
+      <p>Si le double-clic ne lance rien, il manque souvent la petite bibliothèque qui ouvre les AppImage. Sur Debian 12 et
+        Ubuntu 22.04 :</p>
+<pre class="code"><code>sudo apt install libfuse2</code></pre>
+      <p>Sur Ubuntu 24.04 et après, elle s'appelle <b>libfuse2t64</b>. Ou, sans rien installer, depuis un terminal :</p>
+<pre class="code"><code>./VerdierCAM-*-linux-x86_64.AppImage --appimage-extract-and-run</code></pre>
+      <p>L'affichage passe par <b>Vulkan</b>. Avec une carte AMD ou Intel, le pilote libre suffit
+        (<code>sudo apt install mesa-vulkan-drivers</code> sur Debian et Ubuntu) ; avec NVIDIA, le pilote de NVIDIA.</p>
+    </div>
+  </div>
+</section>
+
+<section id="windows" class="pp-etape teinte">
+  <div class="cadre">
+    <div class="texte apparait installer">
+      <span class="surtitre">02 · Windows</span>
+      <h2>Windows 64 bits</h2>
+      <p>Le paquet est un fichier <b>VerdierCAM-<i>version</i>-windows-x64.zip</b>. Clic droit, <b>Extraire tout</b>, puis
+        <b>VerdierCAM.exe</b> dans le dossier obtenu : c'est le seul fichier à lancer. Le dossier <b>programme</b>, à côté,
+        contient tout le reste du logiciel ; il reste avec lui.</p>
+      <p>Au premier lancement, Windows peut afficher « Windows a protégé votre ordinateur » : le programme est neuf, son
+        éditeur pas encore connu de Windows. Cliquer <b>Informations complémentaires</b>, puis <b>Exécuter quand même</b>.
+        Ou, avant d'extraire : clic droit sur le .zip, <b>Propriétés</b>, cocher <b>Débloquer</b>.</p>
+      <p>Un antivirus (Avast, AVG…) peut aussi le retenir quelques heures, le temps d'analyser ce programme qu'il ne
+        connaît pas encore : « Il faudrait qu'on regarde cela de plus près ». Attendre la fin de l'analyse, ou mettre le
+        dossier de VerdierCAM dans ses exceptions.</p>
+      <p>Extraire le dossier <b>hors de OneDrive</b> — dans <code>C:\VerdierCAM</code>, par exemple. Le Bureau et les
+        Documents sont souvent synchronisés : OneDrive bute sur les centaines de fichiers du dossier <b>programme</b>, et le
+        logiciel peut ne plus démarrer.</p>
+    </div>
+  </div>
+</section>
+
+<section id="raspberry" class="pp-etape">
+  <div class="cadre">
+    <div class="texte apparait installer">
+      <span class="surtitre">03 · Raspberry Pi 5</span>
+      <h2>Raspberry Pi 5, système 64 bits</h2>
+      <p>VerdierCAM tourne aussi sur un <b>Raspberry Pi 5</b>, sous un système <b>64 bits</b> : un poste d'atelier à côté
+        de la machine, pour retoucher un dessin, simuler et piloter. Le paquet est
+        <b>VerdierCAM-<i>version</i>-linux-aarch64.tar.gz</b>. Il a été essayé sur un Pi 5 de 8 Go.</p>
+      <p>Sous <b>Raspberry Pi OS 64 bits</b>, le système à jour, puis la bibliothèque des AppImage :</p>
+<pre class="code"><code>sudo apt update &amp;&amp; sudo apt full-upgrade
+sudo apt install libfuse2 mesa-vulkan-drivers
+sudo apt install --no-install-recommends zenity</code></pre>
+      <p><b>zenity</b> dessine la fenêtre « Ouvrir un fichier » : sans lui, Ouvrir et Enregistrer ne montrent rien.
+        Raspberry Pi OS l'a souvent déjà ; la commande ne fait alors rien.</p>
+      <p>Puis, dans le dossier du téléchargement :</p>
+<pre class="code"><code>tar xzf VerdierCAM-*-linux-aarch64.tar.gz
+./VerdierCAM-*-linux-aarch64.AppImage</code></pre>
+      <p><b>Vérifier que la carte graphique du Pi est bien utilisée</b> : sans elle, tout fonctionne, mais lentement.</p>
+<pre class="code"><code>sudo apt install vulkan-tools
+vulkaninfo --summary | grep -i devicename</code></pre>
+      <p>La ligne doit dire <b>V3D 7.1</b>. Si elle dit <b>llvmpipe</b>, le pilote graphique est trop ancien pour le Pi 5 :
+        voir le cas suivant.</p>
+      <p>Le Pi est moins puissant qu'un PC : le dessin, l'usinage et la simulation y sont à l'aise, les calculs lourds
+        (simulation en finesse « fine », grands reliefs, relief par IA) prennent nettement plus de temps.</p>
+    </div>
+  </div>
+</section>
+
+<section id="linuxcnc" class="pp-etape teinte">
+  <div class="cadre">
+    <div class="texte apparait installer">
+      <span class="surtitre">04 · Pi sous Debian 12 ou LinuxCNC</span>
+      <h2>Un Pi 5 sous Debian 12, ou l'image LinuxCNC</h2>
+      <p>C'est le cas du Pi qui pilote la machine de l'atelier : Debian 12 avec le noyau temps réel de LinuxCNC. Son
+        pilote graphique (Mesa 22.3) date d'avant le Pi 5 : Vulkan y tourne sur le processeur (<b>llvmpipe</b>), et
+        VerdierCAM rame. Le remède : le Mesa plus récent des <b>backports</b> de Debian 12. Il ne change que les pilotes
+        graphiques, ni le noyau temps réel ni LinuxCNC.</p>
+      <p><b>LinuxCNC fermé, machine à l'arrêt.</b> Si les backports ne sont pas déjà dans les sources :</p>
+<pre class="code"><code>echo "deb http://deb.debian.org/debian bookworm-backports main contrib non-free non-free-firmware" \
+  | sudo tee /etc/apt/sources.list.d/backports.list
+sudo apt update</code></pre>
+      <p>Puis les pilotes graphiques, et un redémarrage :</p>
+<pre class="code"><code>sudo apt install -t bookworm-backports mesa-vulkan-drivers libgl1-mesa-dri libglx-mesa0 \
+  libegl-mesa0 libgbm1 mesa-va-drivers mesa-vdpau-drivers
+sudo apt install libfuse2
+sudo apt install --no-install-recommends zenity
+sudo reboot</code></pre>
+      <p>Ensuite, <code>vulkaninfo --summary</code> doit dire <b>V3D 7.1</b>, et VerdierCAM s'installe comme au
+        paragraphe précédent. Relancer LinuxCNC et faire un mouvement à vide avant une vraie pièce : son écran passe aussi
+        par le nouveau pilote.</p>
+      <p><b>Si le curseur de la souris clignote</b> (bureau Xfce, comme sur l'image LinuxCNC) : couper la composition
+        des fenêtres. Seules les ombres sous les fenêtres disparaissent.</p>
+<pre class="code"><code>xfconf-query -c xfwm4 -p /general/use_compositing -s false</code></pre>
+      <p>Un souci ? <a href="mailto:contact@verdiercam.fr?subject=Installation%20de%20VerdierCAM">contact@verdiercam.fr</a>,
+        avec la sortie de <code>vulkaninfo --summary</code>.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="pied">
+  <div class="cadre pied-dedans">
+    <div class="pied-marque">
+      <a class="marque" href="/">
+        <img src="/oiseau.f8508e8c.svg" alt="" width="26" height="26">
+        <span>Verdier<b>CAM</b></span>
+      </a>
+      <p>CAO/FAO pour défonceuse CNC, écrite à
+        l'<a href="https://atelierduverdier.fr">Atelier du Verdier</a>.<br>
+        © 2026 Atelier du Verdier.</p>
+    </div>
+    <nav class="pied-liens" aria-label="Liens">
+      <a href="mailto:contact@verdiercam.fr">contact@verdiercam.fr</a>
+      <a href="https://www.youtube.com/@VerdierCAM">YouTube</a>
+      <a href="/nouveautes.html">Nouveautés</a>
+      <a href="https://atelierduverdier.fr">Atelier du Verdier</a>
+      <a href="/mentions-legales.html">Mentions légales</a>
+      <a href="/confidentialite.html">Confidentialité</a>
+      <a href="/conditions-utilisation.html">Conditions d’utilisation</a>
+    </nav>
+  </div>
+</footer>
+
+<div class="visionneuse" hidden role="dialog" aria-modal="true" aria-label="Capture agrandie">
+  <img alt="">
+  <button type="button" aria-label="Fermer">×</button>
+</div>
+
+<script src="/style/verdiercam.71c7ac6a.js" defer></script>
+<script>
+  window.goatcounter = { path: function (p) { return '/verdiercam' + p } };
+</script>
+<script data-goatcounter="https://atelierduverdier.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

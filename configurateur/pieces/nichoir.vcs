@@ -1,0 +1,118 @@
+// NICHOIR À MÉSANGES — la petite maison du jardin, emboîtée à tenons traversants : façade percée du trou d'envol, dos qui
+// dépasse pour l'accrocher, deux côtés, un fond percé pour l'eau, deux pans de toit. Le trou fait l'oiseau : Ø28 pour la
+// mésange bleue (les grosses n'y passent pas), Ø32 pour la charbonnière.
+// thème : Décoration et cadeaux
+//
+// LA CAISSE : `largeur` × `profondeur` à l'intérieur, `hauteur` sous le toit, le pignon à 45°. Les CÔTÉS portent sur
+// leurs chants avant et arrière deux TENONS qui traversent la façade et le dos ; le FOND, deux tenons de chaque côté qui
+// traversent les côtés, 8 mm au-dessus du bas. Mortaises du `jeu` de chaque côté, coins dégagés. Le TROU D'ENVOL à
+// `hauteur_trou` du fond (un chat ne passe pas la patte jusqu'à la couvée). LE TOIT : deux pans qui débordent de 25 devant
+// et sur les côtés, vissés dans le chant des pignons (avant-trous percés dans les pans) — dévisser le pan avant en septembre pour nettoyer.
+//
+// L'USINAGE : les trous (Perçage, fraise droite Ø6 ; Contour pour le trou d'envol), les mortaises (Contour intérieur,
+// coins dégagés), puis les pièces (Contour extérieur, onglets). Bois brut non traité dedans (douglas, mélèze) de 12 à 18 ;
+// accroché à 2 m au moins, trou tourné à l'est ou au sud-est.
+
+d_entree   = 28;     // Ø du trou d'envol (mm) : 28 mésange bleue, 32 charbonnière
+largeur    = 120;    // largeur intérieure (mm)
+profondeur = 120;    // profondeur intérieure (mm)
+hauteur    = 180;    // hauteur intérieure des côtés, du bas au toit (mm)
+hauteur_trou = 130;  // du dessus du fond au centre du trou (mm)
+jeu        = 0.1;    // jeu des tenons dans les mortaises, par côté (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  Wi = largeur;  Di = profondeur;  Hc = hauteur;
+Wf = Wi + 2 * ep + 20;                         // la façade et le dos : 10 de bois au-delà des côtés
+Hf = Hc + Wf / 2;                              // leur pointe (pignon à 45°)
+yf = 8;                                        // le dessous du fond, au-dessus du bas des côtés
+ty = [20, Hc - 50];                            // les tenons des côtés : leur bas (30 de haut chacun)
+tf = [15, Di - 45];                            // les tenons du fond : leur début le long de la profondeur (30 chacun)
+Lp = (Wf / 2) / cos(45) + 25;                  // un pan du toit, du faîtage au débord
+Dp = Di + 2 * ep + 2 * 25;
+si (hauteur_trou + d_entree / 2 > Hc - 10)
+    echo("Le trou d'envol touche le toit : moins haut, ou une caisse plus haute.");
+si (hauteur_trou < 100)
+    echo("Le trou est bas : un chat atteindrait la couvée. 100 mm au moins au-dessus du fond.");
+planche([max(2 * (Wf + espace) + 2 * (Di + 2 * ep) + espace, 2 * Lp + espace) + 2 * rognure, max(Hf + 60 + espace + Dp, Hc + espace + Wi + 2 * ep) + 2 * rognure, epaisseur]);
+
+// ── La façade et le dos : pignons, deux mortaises par côté ; la façade a le trou, le dos dépasse en bas de 60 ──
+module pignon(o, bas, nom) {
+    q = polyligne([o + [0, -bas], o + [Wf, -bas], o + [Wf, Hc], o + [Wf / 2, Hf], o + [0, Hc]], fermee = vrai);
+    nommer(#q, nom);
+    pour (x = [10, Wf - 10 - ep])
+        pour (y = ty) {
+            m = rect(o + [x - jeu, y - jeu], [ep + 2 * jeu, 30 + 2 * jeu]);
+            nommer(#m, "mortaise");
+        }
+}
+of = [rognure, rognure + 60];
+pignon(of, 0, "façade");
+e = cercle(of + [Wf / 2, yf + ep + hauteur_trou], d_entree / 2);
+nommer(#e, "envol");
+od = [rognure + Wf + espace, rognure + 60];
+pignon(od, 60, "dos");
+h = cercle(od + [Wf / 2, -35], 4);
+nommer(#h, "accroche");
+
+// ── Les côtés : un tenon en haut et en bas de chaque chant ; les deux mortaises du fond ──
+module cote(o) {
+    p = [o + [ep, 0], o + [ep + Di, 0]];
+    d = [for (j = [0 : 7]) o + [ep + Di + [0, ep, ep, 0][j % 4], ty[floor(j / 4)] + [0, 0, 30, 30][j % 4]]];
+    g = [for (j = [0 : 7]) o + [ep - [0, ep, ep, 0][j % 4], ty[1 - floor(j / 4)] + [30, 30, 0, 0][j % 4]]];
+    c = polyligne(concat(p, d, [o + [ep + Di, Hc], o + [ep, Hc]], g), fermee = vrai);
+    nommer(#c, "côté");
+    pour (x = tf) {
+        m = rect(o + [ep + x - jeu, yf - jeu], [30 + 2 * jeu, ep + 2 * jeu]);
+        nommer(#m, "mortaise");
+    }
+}
+x2 = rognure + 2 * (Wf + espace);
+cote([x2, rognure]);
+cote([x2 + Di + 2 * ep + espace, rognure]);
+
+// ── Le fond : deux tenons de chaque côté ; quatre trous pour l'eau ──
+ofd = [x2, rognure + Hc + espace];
+fd = polyligne(concat([ofd + [ep, ep]],
+                      [for (j = [0 : 7]) ofd + [ep + tf[floor(j / 4)] + [0, 0, 30, 30][j % 4], [0, -ep, -ep, 0][j % 4]] + [0, ep]],
+                      [ofd + [ep + Di, ep]], [ofd + [ep + Di, ep + Wi]],
+                      [for (j = [0 : 7]) ofd + [ep + tf[1 - floor(j / 4)] + [30, 30, 0, 0][j % 4], [0, ep, ep, 0][j % 4]] + [0, ep + Wi]],
+                      [ofd + [ep, ep + Wi]]), fermee = vrai);
+nommer(#fd, "fond");
+pour (x = [Di / 3, 2 * Di / 3])
+    pour (y = [Wi / 3, 2 * Wi / 3]) {
+        t = cercle(ofd + [ep + x, ep + y], 3);
+        nommer(#t, "trou");
+    }
+
+// ── Les deux pans du toit ──
+// Deux vis par pignon, dans l'axe de son épaisseur (le pan déborde de 25 devant et derrière).
+pour (k = [0 : 1]) {
+    ot = [rognure + k * (Lp + espace), rognure + Hf + 60 + espace];
+    t = rect(ot, [Lp, Dp], 3);
+    nommer(#t, "toit");
+    pour (x = [0.3 * (Lp - 25), 0.75 * (Lp - 25)])
+        pour (y = [25 + ep / 2, Dp - 25 - ep / 2]) {
+            v = cercle(ot + [x, y], 1.5);
+            nommer(#v, "vis");
+        }
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("percage", "trou", outil = "Fraise droite Ø6", profondeur = epaisseur, nom = "Trous du fond");
+usinage("percage", "vis", outil = "Foret Ø3", profondeur = epaisseur, nom = "Avant-trous des vis du toit");
+usinage("contour", "envol", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Trou d'envol");
+usinage("contour", "accroche", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Accroche");
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaises");
+usinage("contour", "côté", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 2, nom = "Côtés");
+usinage("contour", "fond", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 2, nom = "Fond");
+usinage("contour", "façade", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 2, nom = "Façade");
+usinage("contour", "dos", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 2, nom = "Dos");
+usinage("contour", "toit", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 2, nom = "Toit");

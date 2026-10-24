@@ -1,0 +1,64 @@
+// PIGNON DE CHAÎNE — un pignon pour chaîne à rouleaux, profil ISO 606 en vrais arcs, son alésage et ses allègements :
+// pour un vélo de bois, un convoyeur, une transmission de machine.
+// thème : Technique et mécanique
+//
+// LE PROFIL est celui de l'outil Pignon de l'éditeur (la commande `pignon`) : creux qui reçoivent les rouleaux, flancs
+// tangents, têtes arrondies, ISO 606. La chaîne se règle par son `pas` et le Ø de son `rouleau` : 12,7 × 7,95 pour la
+// chaîne de vélo et la 08B (1/2 pouce), 9,525 × 6,35 pour la 06B (3/8), 15,875 × 10,16 pour la 10B (5/8). Le Ø de tête
+// est le milieu de la tolérance ISO : entre d + p (1 − 1,6 / dents) − d1 et d + 1,25 p − d1 (d le primitif, d1 le rouleau).
+//
+// L'ALÉSAGE au centre ; autour, `vis` trous de fixation sur le cercle `d_vis` (un moyeu, un plateau de pédalier) ; et
+// `allegements` jours ronds entre le moyeu et la denture, pour la légèreté et le coup d'œil.
+//
+// L'USINAGE : alésage, trous et jours en Contour intérieur, puis la denture en Contour extérieur, fraise droite Ø3 (elle
+// entre au fond des creux de rouleau), trois onglets. Contreplaqué de bouleau, ou aluminium avec les régimes de l'atelier.
+
+dents      = 30;     // nombre de dents
+pas        = 12.7;   // pas de la chaîne (mm)
+rouleau    = 7.95;   // Ø des rouleaux de la chaîne (mm)
+alesage    = 12;     // Ø de l'alésage (mm)
+vis        = 4;      // trous de fixation autour de l'alésage (0 : aucun)
+d_vis      = 34;     // Ø du cercle des trous de fixation (mm)
+trou_vis   = 5.5;    // Ø d'un trou de fixation (mm)
+allegements = 6;     // jours d'allègement (0 : aucun)
+epaisseur  = 9;      // épaisseur (mm) — 9 au plus : la fraise Ø3 n'a que 9 mm utiles
+marge      = 8;      // de la denture au bord du brut (mm)
+
+z = max(round(dents), 9);
+dp = pas / sin(180 / z);                             // le Ø primitif (les centres des rouleaux)
+da = dp + pas * (1.25 + 1 - 1.6 / z) / 2 - rouleau;  // le Ø de tête : le milieu de la tolérance ISO 606
+df = dp - rouleau;                                   // le Ø de pied
+cote = ceil(da + 2 * marge);
+c = [cote / 2, cote / 2];
+planche([cote, cote, epaisseur]);
+
+p = pignon(c, z, pas, rouleau);
+nommer(#p, "denture");
+a = cercle(c, alesage / 2);
+nommer(#a, "trou");
+si (vis > 0)
+    pour (i = [0 : vis - 1]) {
+        t = cercle(c + d_vis / 2 * [cos(45 + 360 * i / vis), sin(45 + 360 * i / vis)], trou_vis / 2);
+        nommer(#t, "trou");
+    }
+
+// ── Les jours : entre le moyeu (les trous de fixation et 6 mm) et la jante (6 mm sous le pied), autant que la place permet ──
+r_in = max(alesage / 2, vis > 0 ? d_vis / 2 + trou_vis / 2 : 0) + 6;
+r_out = df / 2 - 6;
+d_jour = min(r_out - r_in, 2 * PI * (r_in + r_out) / 2 / max(allegements, 1) - 6);
+ok_jours = allegements > 0 && d_jour >= 8;
+si (allegements > 0 && !ok_jours)
+    echo("Allègement : pas la place pour des jours d'au moins 8 mm — le pignon reste plein.");
+si (ok_jours)
+    pour (i = [0 : allegements - 1]) {
+        j = cercle(c + (r_in + r_out) / 2 * [cos(360 * (i + 0.5) / allegements), sin(360 * (i + 0.5) / allegements)], d_jour / 2);
+        nommer(#j, "jour");
+    }
+echo(str("Pignon ", z, " dents, pas ", pas, " : Ø de tête ", round(da * 100) / 100, ", primitif ", round(dp * 100) / 100, "."));
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "trou", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1.5, nom = "Alésage et fixations");
+si (ok_jours)
+    usinage("contour", "jour", outil = "Fraise droite Ø3", cote = "interieur", profondeur = epaisseur, passe = 1.5, nom = "Jours");
+usinage("contour", "denture", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1.5,
+        onglets = 3, onglet_long = 4, onglet_haut = 1.5, nom = "Denture");

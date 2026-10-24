@@ -1,0 +1,55 @@
+// TOUPIES ET LEUR LANCEUR — trois toupies à disque, une spirale gravée qui ondule quand elles tournent, et le lanceur à
+// ficelle : on enroule la ficelle sur la tige, la tige dans la fourche, on tire d'un coup sec.
+// thème : Jeux et jouets
+//
+// LES TOUPIES : des disques de Ø`d_toupie`, puis `ecart` de plus pour chacune, percés au centre EXACT pour la tige (un
+// tourillon de Ø`d_tige`, taillé en pointe dessous, `pied` sous le disque) : un trou décentré, et elle bat. Une spirale
+// d'Archimède de `tours` tours gravée dessus. LE LANCEUR : une poignée de `longueur_lanceur`, une FOURCHE au bout de la
+// largeur de la tige plus 1, et le trou de la ficelle juste à côté, à un rayon de tige de l'axe de la fourche : la
+// ficelle part tangente à la tige.
+//
+// L'USINAGE : les spirales (Gravure, Pointe V 90°), les trous (Poche, fraise droite Ø3), puis les toupies et le lanceur
+// (Contour extérieur, onglets). Hêtre de 9 ; un tourillon de Ø8 par toupie, une ficelle de 60 cm.
+
+toupies    = 3;      // nombre de toupies
+d_toupie   = 50;     // Ø de la plus petite (mm)
+ecart      = 10;     // chaque toupie a tant de plus que la précédente (mm)
+tours      = 3;      // tours de la spirale
+d_tige     = 8;      // Ø de la tige (mm)
+longueur_lanceur = 170;  // longueur du lanceur (mm)
+epaisseur  = 9;      // épaisseur (mm)
+espace     = 8;      // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+nt = max(1, round(toupies));  rt = d_tige / 2;  wl = 34;
+function dt(k) = d_toupie + k * ecart;
+function cx(k) = k == 0 ? dt(0) / 2 : cx(k - 1) + dt(k - 1) / 2 + espace + dt(k) / 2;
+W = max(cx(nt - 1) + dt(nt - 1) / 2, longueur_lanceur);
+planche([W + 2 * rognure, dt(nt - 1) + espace + wl + 2 * rognure, epaisseur]);
+pour (k = [0 : nt - 1]) {
+    c = [rognure + cx(k), rognure + wl + espace + dt(nt - 1) / 2];
+    d = cercle(c, dt(k) / 2);
+    nommer(#d, "toupie");
+    t = cercle(c, rt);
+    nommer(#t, "trou de tige");
+    r0 = rt + 4;  r1 = dt(k) / 2 - 4;
+    s = polyligne([for (i = [0 : 60 * tours]) c + (r0 + (r1 - r0) * i / (60 * tours)) * [cos(6 * i), sin(6 * i)]]);
+    nommer(#s, "spirale");
+}
+// ── Le lanceur, couché en bas : la poignée à gauche, la fourche ouverte à droite ──
+ol = [rognure, rognure];
+L = longueur_lanceur;  wf = d_tige + 1;  pf = 16;   // la fourche : largeur, profondeur
+l = polyligne([for (q = [[0, 0], [L, 0], [L, wl / 2 - wf / 2], [L - pf, wl / 2 - wf / 2], [L - pf, wl / 2 + wf / 2], [L, wl / 2 + wf / 2],
+                         [L, wl], [0, wl]]) ol + q], fermee = vrai);
+nommer(#l, "lanceur");
+f = cercle(ol + [L - pf - 2 - 6, wl / 2 + rt], 2);
+nommer(#f, "trou de ficelle");
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "spirale", outil = "Pointe V 90", profondeur = 0.5, nom = "Spirales");
+usinage("poche", "trou de tige", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1.5, nom = "Trous de tige");
+usinage("poche", "trou de ficelle", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1.5, nom = "Trou de ficelle");
+usinage("contour", "toupie", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 4, onglet_haut = 1.5, nom = "Toupies");
+usinage("contour", "lanceur", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Lanceur");

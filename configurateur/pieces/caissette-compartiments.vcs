@@ -1,0 +1,132 @@
+// CAISSETTE À COMPARTIMENTS — un bac sans couvercle, assemblé à doigts, que des cloisons croisées partagent en cases :
+// vis, embouts, crayons, épices. Façon « TypeTray » de boxes.py, découpée à plat dans une seule planche.
+// thème : Rangement
+//
+// LES COTES sont celles des CASES : `colonnes` × `rangees` cases de `largeur_case` × `profondeur_case`, séparées par des
+// cloisons de l'épaisseur du bois ; la caissette en découle (dehors : les cases, les cloisons, deux côtés). Les côtés et le
+// fond s'assemblent à doigts comme la « Boîte à queues droites » de ce catalogue (les côtés longs gardent les coins).
+//
+// LES CLOISONS se croisent À MI-BOIS : celles qui courent le long de la caissette sont entaillées par le haut, celles qui
+// la traversent par le bas, chaque entaille de la moitié de leur hauteur et de l'épaisseur plus le `jeu` de chaque côté.
+// Leurs bouts entrent de `prof_rainure` dans des RAINURES creusées dans la face intérieure des côtés (la face dessinée :
+// la tourner vers l'intérieur au montage). Elles reposent sur le fond.
+//
+// L'USINAGE : d'abord les rainures des côtés (Poche, fraise droite Ø6, coins dégagés — un bout de cloison à angles vifs
+// y entre jusqu'au fond), puis chaque pièce en Contour extérieur, toute l'épaisseur, coins « dogbone » pour les entailles.
+
+colonnes   = 4;      // nombre de cases sur la longueur
+rangees    = 3;      // nombre de cases sur la profondeur
+largeur_case = 60;   // largeur d'une case, dedans (mm)
+profondeur_case = 60; // profondeur d'une case, dedans (mm)
+hauteur    = 60;     // hauteur de la caissette, fond compris (mm)
+epaisseur  = 18;     // épaisseur des planches (mm)
+largeur_doigt = 30;  // largeur visée d'un doigt (mm)
+jeu        = 0.1;    // jeu de coupe, par flanc (mm)
+prof_rainure = 6;    // profondeur des rainures qui tiennent les cloisons (mm)
+espace     = 12;     // entre deux pièces sur la planche (mm)
+marge      = 10;     // des pièces au bord de la planche (mm)
+
+ep = epaisseur;
+Xi = colonnes * largeur_case + (colonnes - 1) * ep;     // le dedans
+Yi = rangees * profondeur_case + (rangees - 1) * ep;
+X = Xi + 2 * ep;  Y = Yi + 2 * ep;  H = hauteur;
+hc = H - ep;                                            // la hauteur des cloisons (posées sur le fond)
+
+// ── Les doigts (le même dessin que la Boîte à queues droites) ──
+function impair(L) = max(3, 2 * round((L / largeur_doigt - 1) / 2) + 1);
+nX = impair(X);  nY = impair(Y);  nH = impair(H);
+function vn(u) = [-u[1], u[0]];
+function enc(g, i) = g == 0 ? faux : (g > 0 ? i % 2 == 1 : i % 2 == 0);
+function bout(g) = enc(g, 0) ? ep : 0;
+function pt(a, u, s, t) = a + s * u + t * vn(u);
+function s0(i, w) = i * w - (i > 0 ? jeu : 0);
+function s1(i, w, n) = (i + 1) * w + (i < n - 1 ? jeu : 0);
+function entaille(a, u, i, w, n, k) = k == 0 ? pt(a, u, s0(i, w), 0) : k == 1 ? pt(a, u, s0(i, w), ep)
+                                    : k == 2 ? pt(a, u, s1(i, w, n), ep) : pt(a, u, s1(i, w, n), 0);
+function garder(i, n, k) = i == 0 ? k >= 2 : (i == n - 1 ? k <= 1 : vrai);
+function interieur(a, u, Lk, g, n) = [for (j = [0 : 4 * n - 1]) if (enc(g, floor(j / 4)) && garder(floor(j / 4), n, j % 4))
+                                          entaille(a, u, floor(j / 4), Lk / n, n, j % 4)];
+function profil(c, L, H, G, N) = profil2([c, c + [L, 0], c + [L, H], c + [0, H]], [[1, 0], [0, 1], [-1, 0], [0, -1]], [L, H, L, H], G, N);
+function profil2(A, U, Lk, G, N) = [for (k = [0 : 3])
+    for (q = concat([A[k] + bout(G[(k + 3) % 4]) * vn(U[(k + 3) % 4]) + bout(G[k]) * vn(U[k])],
+                    interieur(A[k], U[k], Lk[k], G[k], N[k]))) q];
+module panneau(c, L, H, G, N, nom) {
+    p = polyligne(profil(c, L, H, G, N), fermee = vrai);
+    nommer(#p, nom);
+}
+
+// ── Les cloisons : l'axe de la cloison k (1 … n − 1) depuis le début du dedans ──
+function axe(k, case) = k * case + (k - 1) * ep + ep / 2;
+e = ep + 2 * jeu;                                       // la largeur d'une entaille, d'une rainure
+// Une cloison de longueur L (bouts compris) et de hauteur hc, posée par son coin `c` ; ses entailles de mi-bois aux
+// axes `A` (comptés depuis le début du dedans, soit `prof_rainure` après son bout), par le HAUT (haut = 1) ou par le BAS.
+function cloison(c, L, A, haut) = haut == 1
+    ? concat([c, c + [L, 0], c + [L, hc]],
+             [for (j = [0 : 4 * len(A) - 1]) c + [prof_rainure + A[len(A) - 1 - floor(j / 4)] + (j % 4 < 2 ? e / 2 : -e / 2),
+                                                   j % 4 == 0 || j % 4 == 3 ? hc : hc / 2]],
+             [c + [0, hc]])
+    : concat([c],
+             [for (j = [0 : 4 * len(A) - 1]) c + [prof_rainure + A[floor(j / 4)] + (j % 4 < 2 ? -e / 2 : e / 2),
+                                                   j % 4 == 0 || j % 4 == 3 ? 0 : hc / 2]],
+             [c + [L, 0], c + [L, hc], c + [0, hc]]);
+AX = [for (k = [1 : max(colonnes - 1, 1)]) axe(k, largeur_case)];    // les cloisons qui traversent, sur la longueur
+AY = [for (k = [1 : max(rangees - 1, 1)]) axe(k, profondeur_case)];  // celles qui courent, sur la profondeur
+nTr = colonnes - 1;  nCo = rangees - 1;
+Lco = Xi + 2 * prof_rainure;     // une cloison qui court le long de la caissette
+Ltr = Yi + 2 * prof_rainure;     // une cloison qui la traverse
+
+// ── La planche : côtés longs, côtés courts, puis le fond et les cloisons ──
+y1 = marge + H + espace;
+y2 = y1 + H + espace;
+xc = marge + X + espace;                                   // la colonne des cloisons qui courent
+xt = xc + (nCo > 0 ? Lco + espace : 0);                    // celle des cloisons qui traversent
+large = max(2 * X + espace, 2 * Y + espace, xt - marge + (nTr > 0 ? Ltr : 0));
+haut_cl = max(nCo, nTr) * (hc + espace) - espace;
+planche([2 * marge + large, y2 + max(Y, haut_cl) + marge, epaisseur]);
+
+panneau([marge, marge], X, H, [1, 1, 0, 1], [nX, nH, 1, nH], "côté long");
+panneau([marge + X + espace, marge], X, H, [1, 1, 0, 1], [nX, nH, 1, nH], "côté long");
+panneau([marge, y1], Y, H, [1, -1, 0, -1], [nY, nH, 1, nH], "côté court");
+panneau([marge + Y + espace, y1], Y, H, [1, -1, 0, -1], [nY, nH, 1, nH], "côté court");
+panneau([marge, y2], X, Y, [-1, -1, -1, -1], [nX, nY, nX, nY], "fond");
+
+// Les rainures, dans la face dessinée des côtés : du dessus du fond jusqu'en haut, dépassant du bord de 4 mm (la poche
+// ouvre ainsi le bout franc).
+module rainures(c, A) {
+    pour (a = A) {
+        r = rect(c + [ep + a - e / 2, ep], [e, H - ep + 4]);
+        nommer(#r, "rainure");
+    }
+}
+si (nTr > 0) {
+    rainures([marge, marge], AX);
+    rainures([marge + X + espace, marge], AX);
+}
+si (nCo > 0) {
+    rainures([marge, y1], AY);
+    rainures([marge + Y + espace, y1], AY);
+}
+
+pour (k = [0 : nCo - 1]) {
+    q = polyligne(cloison([xc, y2 + k * (hc + espace)], Lco, AX, 1), fermee = vrai);
+    nommer(#q, "cloison");
+}
+pour (k = [0 : nTr - 1]) {
+    q = polyligne(cloison([xt, y2 + k * (hc + espace)], Ltr, AY, 0), fermee = vrai);
+    nommer(#q, "cloison");
+}
+echo(str("Caissette ", X, " × ", Y, " × ", H, " mm dehors : ", colonnes * rangees, " cases de ", largeur_case, " × ",
+         profondeur_case, " × ", hc, " mm."));
+
+// ── L'USINAGE, déclaré ──
+si (nTr > 0 || nCo > 0)
+    usinage("poche", "rainure", outil = "Fraise droite Ø6", profondeur = prof_rainure, passe = 3, coins = "dogbone", nom = "Rainures des cloisons");
+usinage("contour", "fond", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3, coins = "dogbone",
+        onglets = 4, onglet_long = 6, onglet_haut = 2, nom = "Fond");
+usinage("contour", "côté long", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3, coins = "dogbone",
+        onglets = 4, onglet_long = 6, onglet_haut = 2, nom = "Côtés longs");
+usinage("contour", "côté court", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3, coins = "dogbone",
+        onglets = 4, onglet_long = 6, onglet_haut = 2, nom = "Côtés courts");
+si (nTr > 0 || nCo > 0)
+    usinage("contour", "cloison", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3, coins = "dogbone",
+            onglets = 2, onglet_long = 6, onglet_haut = 2, nom = "Cloisons");

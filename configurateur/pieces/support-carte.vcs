@@ -1,0 +1,68 @@
+// SUPPORT DE CARTE — la plaque qui tient un Arduino Uno ou un Raspberry Pi 4 sur des entretoises M3 : au fond d'une
+// armoire, sous un plateau, sur le côté d'une machine. Fini les cartes qui traînent sur leurs fils.
+// thème : Électronique et boîtiers
+//
+// LA CARTE : `carte` = 1 pour un Arduino Uno (68,6 × 53,3, ses quatre trous de Ø3,2 aux cotes du fabricant), 2 pour un
+// Raspberry Pi 4 (85 × 56, trous à 3,5 des bords, entraxe 58 × 49). Son contour se GRAVE sur la plaque, pour la poser à
+// l'endroit ; ses trous (`d_entretoise`) prennent les entretoises. Dessous, des AÉRATIONS (`aerations` = 0 : aucune). La
+// PLAQUE déborde de `marge` autour de la carte, coins arrondis, un trou de fixation (`d_fixation`) dans chaque coin, et le
+// nom de la carte gravé en bas.
+//
+// L'USINAGE : contour et nom (Gravure), trous des entretoises et de fixation (Contour intérieur, sans onglets), aérations
+// (Contour intérieur), puis la plaque (Contour extérieur, onglets). Plexiglas, MDF ou contreplaqué de 5 à 6.
+
+carte      = 1;      // 1 : Arduino Uno, 2 : Raspberry Pi 4
+d_entretoise = 3.2;  // Ø des trous des entretoises (mm)
+d_fixation = 4.5;    // Ø des trous de fixation de la plaque (mm)
+marge      = 15;     // de la carte au bord de la plaque (mm)
+aerations  = 1;      // 1 : des fentes d'aération sous la carte, 0 : aucune
+epaisseur  = 6;      // épaisseur de la plaque (mm)
+rognure    = 5;      // du bord du brut à la plaque (mm)
+
+pi = carte == 2;
+bw = pi ? 85 : 68.58;  bh = pi ? 56 : 53.34;
+trous = pi ? [[3.5, 3.5], [61.5, 3.5], [3.5, 52.5], [61.5, 52.5]]
+           : [[13.97, 2.54], [15.24, 50.8], [66.04, 7.62], [66.04, 35.56]];
+nom = pi ? "Raspberry Pi 4" : "Arduino Uno";
+bas = 12;                                      // la bande du nom, sous la carte
+W = bw + 2 * marge;  H = bh + 2 * marge + bas;
+planche([W + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+c0 = o + [marge, marge + bas];                 // le coin de la carte
+
+p = rect(o, [W, H], 6);
+nommer(#p, "plaque");
+g = rect(c0, [bw, bh], pi ? 3 : 0);
+nommer(#g, "contour carte");
+pour (t = trous) {
+    q = cercle(c0 + t, d_entretoise / 2);
+    nommer(#q, "trou");
+}
+pour (x = [7, W - 7])
+    pour (y = [7, H - 7]) {
+        f = cercle(o + [x, y], d_fixation / 2);
+        nommer(#f, "trou");
+    }
+M = mesure_texte(nom, 10, "Hershey Sans1") / 10;
+hn = 6;
+n = texte(o + [W / 2 - hn * (M[2] + M[3]) / 2, 5 + bas / 2 - hn / 2], hn, nom, police = "Hershey Sans1");
+nommer(#n, "nom");
+
+// Les aérations : des fentes en long sous le milieu de la carte, loin de ses trous.
+si (aerations == 1) {
+    x0 = 12;  x1 = bw - (pi ? 30 : 18);
+    k = floor((x1 - x0) / 8);
+    pour (i = [0 : k]) {
+        a = oblong(c0 + [x0 + i * (x1 - x0) / max(k, 1), bh / 2], bh - 24, 4, 90);
+        nommer(#a, "aération");
+    }
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "contour carte", outil = "Pointe V 90", profondeur = 0.4, nom = "Contour de la carte");
+usinage("gravure", "nom", outil = "Pointe V 90", profondeur = 0.5, nom = "Nom");
+usinage("contour", "trou", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1, nom = "Trous");
+si (aerations == 1)
+    usinage("contour", "aération", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1, nom = "Aérations");
+usinage("contour", "plaque", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1,
+        onglets = 3, onglet_long = 5, onglet_haut = 1, nom = "Plaque");

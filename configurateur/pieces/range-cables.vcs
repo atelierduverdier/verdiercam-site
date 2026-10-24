@@ -1,0 +1,64 @@
+// RANGE-CÂBLES — un peigne à visser sous le bord du bureau ou au mur : chaque encoche reçoit un câble, son entrée plus
+// étroite que lui le pince — les chargeurs ne retombent plus derrière le meuble.
+// thème : Électronique et boîtiers
+//
+// LES ENCOCHES : `nombre` encoches au pas `pas`, ouvertes sur le bord du haut. Chacune est un logement rond de `d_cable`
+// (le câble y tourne librement), au fond d'une entrée large de `pince` × `d_cable` : le câble s'y enfonce en se serrant un
+// peu, puis tient. Le bois mince de part et d'autre fait ressort : du contreplaqué de bouleau ou un bois dur. Deux trous
+// de vis dans le bas. Le contour est UN trait (les encoches jointes au bord) : une pièce paramétrique n'a pas de booléens.
+//
+// L'USINAGE : les trous de vis (Perçage, Foret Ø5), puis le peigne en Contour extérieur, fraise droite Ø3 (elle entre
+// dans les entrées : au moins 3,5 mm), onglets dans le bas.
+
+nombre     = 6;      // nombre d'encoches
+d_cable    = 6;      // Ø du câble (mm) : 3 à 4 pour un USB, 6 pour un chargeur, 8 pour un secteur
+pince      = 0.75;   // largeur de l'entrée, en part du Ø du câble
+pas        = 20;     // d'une encoche à la suivante (mm)
+profondeur = 12;     // du bord du haut au centre d'un logement (mm)
+hauteur    = 40;     // hauteur du peigne (mm)
+marge      = 15;     // des encoches extrêmes aux bouts (mm)
+trous      = 1;      // deux trous de vis (1 : oui, 0 : non)
+epaisseur  = 9;      // épaisseur du bois (mm) — 9 au plus : la fraise Ø3 n'a que 9 mm utiles
+rognure    = 5;      // du bord du brut au peigne (mm)
+
+n = max(1, round(nombre));
+rc = d_cable / 2;
+w = max(pince * d_cable, 3.5);                 // l'entrée : la fraise Ø3 doit y passer
+si (pince * d_cable < 3.5)
+    echo(str("L'entrée fait moins que les 3,5 mm qu'il faut à la fraise Ø3 : élargie à 3,5 (le câble y serrera moins)."));
+si (w >= d_cable)
+    echo("L'entrée est aussi large que le câble : il ne sera pas pincé.");
+L = 2 * marge + (n - 1) * pas;
+H = hauteur;
+yi = profondeur - sqrt(rc * rc - w * w / 4);   // de la crête du haut au point où l'entrée rejoint le logement
+planche([L + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+function P(x, y) = o + [x, y];
+
+// ── Le contour : le bas, le côté droit, puis le bord du haut de droite à gauche, encoche après encoche, le côté gauche.
+// Chaque point se calcule une fois : les bouts se partagent exactement, « joindre » en fait un seul trait. ──
+function xk(k) = marge + k * pas;
+premier = polyligne([P(0, H), P(0, 0), P(L, 0), P(L, H), P(xk(n - 1) + w / 2, H), P(xk(n - 1) + w / 2, H - yi)]);
+pour (k = [n - 1 : -1 : 0]) {
+    si (k < n - 1) {
+        d = polyligne([P(xk(k + 1) - w / 2, H - yi), P(xk(k + 1) - w / 2, H), P(xk(k) + w / 2, H), P(xk(k) + w / 2, H - yi)]);
+        joindre(#premier, #d);
+    }
+    a = arc(P(xk(k), H - profondeur), P(xk(k) - w / 2, H - yi), P(xk(k) + w / 2, H - yi));   // le logement, par le bas
+    joindre(#premier, #a);
+}
+f = polyligne([P(xk(0) - w / 2, H - yi), P(xk(0) - w / 2, H), P(0, H)]);
+joindre(#premier, #f);
+nommer(#premier, "peigne");
+
+si (trous == 1)
+    pour (x = [marge / 2 + 2, L - marge / 2 - 2]) {
+        t = cercle(P(x, (H - profondeur - rc) / 2), 2.5);
+        nommer(#t, "trou");
+    }
+
+// ── L'USINAGE, déclaré ──
+si (trous == 1)
+    usinage("percage", "trou", outil = "Foret Ø5", profondeur = epaisseur, nom = "Trous de vis");
+usinage("contour", "peigne", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1.5,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Peigne");

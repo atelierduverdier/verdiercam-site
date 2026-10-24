@@ -1,0 +1,56 @@
+// PORTE-CLÉS AU PRÉNOM — un médaillon oblong qui épouse le prénom gravé, percé pour l'anneau : le petit cadeau qui se
+// vend par dizaines sur les marchés.
+// thème : Décoration et cadeaux
+//
+// LE PRÉNOM se tape dans `prenom` ; il se grave dans une police monotrait (`police` : « Hershey Script1 » pour une
+// écriture liée, « Hershey Sans1 » pour des capitales nettes). Le médaillon se taille SUR LE MOT : son encre mesurée,
+// plus `marge` dessus, dessous et à droite ; à gauche, le trou de l'anneau au centre du demi-cercle, et `paroi` entre
+// le trou et la première lettre. `exemplaires` en pose autant, en colonne.
+//
+// L'USINAGE (déclaré en bas) :
+//   · le prénom : Gravure, Pointe V 90°, `profondeur_texte` ;
+//   · le trou de l'anneau : Perçage, Foret Ø5 ;
+//   · le médaillon : Contour extérieur, fraise droite Ø6, deux onglets.
+// Une chute de 6 à 10 mm suffit ; du bois dur pour que l'anneau n'use pas le trou.
+
+prenom     = "Léa";            // le prénom gravé
+police     = "Hershey Script1"; // la police monotrait
+hauteur_lettres = 14;  // hauteur des capitales (mm)
+marge      = 6;      // de l'encre au bord du médaillon (mm)
+d_trou     = 5;      // Ø du trou de l'anneau (mm)
+paroi      = 4;      // du trou de l'anneau à la première lettre (mm)
+profondeur_texte = 1;  // profondeur de la gravure (mm)
+exemplaires = 1;     // nombre de porte-clés
+epaisseur  = 8;      // épaisseur du bois (mm)
+espace     = 10;     // entre deux porte-clés (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+// ── Le mot, mesuré : son encre pour 1 mm de capitales ──
+M = mesure_texte(prenom, 10, police) / 10;
+h = hauteur_lettres;
+l_encre = (M[3] - M[2]) * h;
+h_encre = (M[5] - M[4]) * h;
+H = h_encre + 2 * marge;                       // la hauteur du médaillon
+a = H / 2 + d_trou / 2 + paroi;                // du bout gauche à la première lettre : le trou, au centre du demi-cercle
+L = max(a + l_encre + marge + H / 4, H + 4);   // sa longueur (à droite, la marge et l'arrondi du bout)
+n = max(1, round(exemplaires));
+planche([L + 2 * rognure, n * H + (n - 1) * espace + 2 * rognure, epaisseur]);
+
+pour (k = [0 : n - 1]) {
+    c = [rognure + L / 2, rognure + H / 2 + k * (H + espace)];   // le centre du médaillon
+    m = oblong(c, L, H);
+    nommer(#m, "porte-clés");
+    t = cercle([rognure + H / 2, c[1]], d_trou / 2);          // le trou, au centre du bout gauche
+    nommer(#t, "trou");
+    // L'encre du mot commence à `a` du bout gauche, centrée en hauteur.
+    g = texte([rognure + a - h * M[2], c[1] - h * (M[4] + M[5]) / 2], h, prenom, police = police);
+    nommer(#g, "prénom");
+}
+si (H / 2 < d_trou / 2 + 2)
+    echo("Le trou de l'anneau est trop près du bord : des lettres plus hautes, ou un trou plus petit.");
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "prénom", outil = "Pointe V 90", profondeur = profondeur_texte, nom = "Prénom");
+usinage("percage", "trou", outil = "Foret Ø5", profondeur = epaisseur, nom = "Trou de l'anneau");
+usinage("contour", "porte-clés", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2,
+        onglets = 2, onglet_long = 4, onglet_haut = 1.5, nom = "Détourage");

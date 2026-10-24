@@ -1,0 +1,72 @@
+// TRIC-TRAC — le plateau du jacquet et du backgammon : vingt-quatre flèches en deux rangées, une barre au milieu, et les
+// trente dames (quinze par camp, celles d'un camp marquées d'un anneau). Les dés, on les a déjà.
+// thème : Jeux et jouets
+//
+// LE PLATEAU : deux moitiés de six flèches par rangée, de `largeur_fleche` à la base et de `longueur_fleche` de long,
+// séparées par la BARRE de `largeur_barre` ; un `cadre` autour. Les flèches alternent : une creusée de `creux` (pour la
+// teinte), une gravée à son pourtour. Deux flèches qui se font face sont de couleurs opposées, comme sur tous les plateaux ;
+// entre leurs pointes, au moins une dame. LES DAMES : `d_dame` de Ø (moins que la base d'une flèche : elles s'y empilent
+// en ligne, cinq au moins sur une flèche).
+//
+// L'USINAGE : les anneaux, les flèches claires et la barre (Gravure, Pointe V 90°), les flèches foncées (Poche, fraise
+// droite Ø3 : les pointes restent fines), puis le plateau et les dames (Contour extérieur, onglets). Hêtre ou érable de 12 ;
+// une teinte noyer dans les creux.
+
+largeur_fleche = 36;   // base d'une flèche (mm)
+longueur_fleche = 160; // longueur d'une flèche (mm)
+largeur_barre = 30;    // la barre du milieu (mm)
+ecart      = 50;     // entre les pointes de deux flèches qui se font face (mm)
+cadre      = 18;     // largeur du cadre (mm)
+creux      = 1;      // profondeur des flèches foncées (mm)
+d_dame     = 30;     // Ø d'une dame (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 8;      // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+w = largeur_fleche;  Lf = longueur_fleche;  m = cadre;  bb = largeur_barre;
+Wp = 12 * w + bb + 2 * m;  Hp = 2 * Lf + ecart + 2 * m;     // le plateau
+nd = 30;
+par = floor(Hp / (d_dame + espace));  colonnes = ceil(nd / par);
+si (d_dame > w - 2)
+    echo("Les dames sont plus larges que les flèches : plus petites.");
+si (ecart < d_dame)
+    echo("Une dame ne passe pas entre les pointes : plus d'écart, ou des flèches plus courtes.");
+si (Lf < 5 * d_dame)
+    echo("Moins de cinq dames tiennent sur une flèche : des flèches plus longues.");
+planche([Wp + espace + colonnes * (d_dame + espace) + 2 * rognure, Hp + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+p = rect(o, [Wp, Hp], 8);
+nommer(#p, "plateau");
+// La barre : son pourtour gravé.
+b = rect(o + [m + 6 * w, m], [bb, Hp - 2 * m]);
+nommer(#b, "barre");
+// Les flèches, de gauche à droite (1 mm de bois entre deux bases) : la position i (0 à 11) le long d'une rangée, la
+// barre après la sixième. En bas, les paires foncées ; en haut, les impaires : deux flèches face à face sont de couleurs
+// opposées.
+function x0(i) = m + i * w + (i >= 6 ? bb : 0);
+pour (i = [0 : 11]) {
+    f = polyligne([o + [x0(i) + 1, m], o + [x0(i) + w - 1, m], o + [x0(i) + w / 2, m + Lf]], fermee = vrai);
+    nommer(#f, i % 2 == 0 ? "flèche foncée" : "flèche claire");
+    g = polyligne([o + [x0(i) + 1, Hp - m], o + [x0(i) + w / 2, Hp - m - Lf], o + [x0(i) + w - 1, Hp - m]], fermee = vrai);
+    nommer(#g, i % 2 == 1 ? "flèche foncée" : "flèche claire");
+}
+// ── Les dames, en colonnes à droite du plateau ; la première moitié marquée d'un anneau ──
+pour (k = [0 : nd - 1]) {
+    cp = [rognure + Wp + espace + d_dame / 2 + floor(k / par) * (d_dame + espace), rognure + d_dame / 2 + (k % par) * (d_dame + espace)];
+    d = cercle(cp, d_dame / 2);
+    nommer(#d, "dame");
+    si (k < nd / 2) {
+        a = cercle(cp, d_dame / 2 - 5);
+        nommer(#a, "anneau");
+    }
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "anneau", outil = "Pointe V 90", profondeur = 0.8, nom = "Anneaux");
+usinage("gravure", "flèche claire", outil = "Pointe V 90", profondeur = 0.6, nom = "Flèches claires");
+usinage("gravure", "barre", outil = "Pointe V 90", profondeur = 0.6, nom = "Barre");
+usinage("poche", "flèche foncée", outil = "Fraise droite Ø3", profondeur = creux, passe = 1, nom = "Flèches foncées");
+usinage("contour", "dame", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 4, onglet_haut = 1.5, nom = "Dames");
+usinage("contour", "plateau", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 10, onglet_haut = 2, nom = "Plateau");

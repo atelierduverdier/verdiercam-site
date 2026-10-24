@@ -1,0 +1,85 @@
+// LAMPE EN DENTELLE DE BOIS — une lanterne carrée aux quatre côtés ajourés d'un semis de petits trous : la lumière passe
+// en pointillés et dessine la dentelle sur les murs. Quatre côtés assemblés à queues droites, posés dans un socle.
+// thème : Décoration et cadeaux
+//
+// LES CÔTÉS : `largeur` × `hauteur`, deux à doigts SORTANTS, deux à doigts RENTRANTS (`doigts` doigts sur la hauteur, de
+// la profondeur de l'épaisseur) : ils s'emboîtent aux quatre coins. Les AJOURS : des trous de Ø`d_trou` en quinconce au
+// `pas`, à `marge` des bords et des doigts. Deux TENONS sous chaque côté entrent dans le SOCLE, un carré percé au milieu
+// pour le câble. Une ampoule à LED seulement (elle ne chauffe pas).
+//
+// L'USINAGE : les ajours et le passage du câble (Contour intérieur, fraise droite Ø3), les mortaises (Contour intérieur,
+// coins dégagés), puis les pièces (Contour extérieur, fraise droite Ø3, coins dégagés aux doigts, onglets). Contreplaqué de
+// bouleau de 4 ; une douille E14 et une ampoule à LED.
+
+largeur    = 120;    // largeur d'un côté, dehors (mm)
+hauteur    = 180;    // hauteur des côtés (mm)
+doigts     = 9;      // doigts sur la hauteur (impair)
+d_trou     = 8;      // Ø des ajours (mm)
+pas        = 11;     // d'un ajour au suivant (mm)
+marge      = 10;     // des ajours aux bords et aux doigts (mm)
+jeu        = 0.1;    // jeu des tenons, par côté (mm) ; les doigts sont à la cote : poncer pour ajuster
+epaisseur  = 4;      // épaisseur (mm)
+espace     = 8;      // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+W = largeur;  H = hauteur;  ep = epaisseur;  nd = 2 * floor(round(doigts) / 2) + 1;  hd = H / nd;
+lt = 30;  xt = [W / 4 - lt / 2, 3 * W / 4 - lt / 2];   // les tenons du bas
+S = W + 2 * 12;                                 // le socle
+si (pas - d_trou < 3)
+    echo("Moins de 3 mm de bois entre deux ajours : un pas plus grand.");
+planche([4 * (W + espace) - espace + 2 * rognure, H + ep + espace + S + 2 * rognure, epaisseur]);
+
+// ── Un côté : son bord gauche et son bord droit en créneaux (sortants si s = 1 : les doigts pairs dépassent), ses tenons ──
+// Le corps va de x = ep à W − ep ; un doigt sortant va jusqu'à 0 (ou W).
+function bord(s, x_in, x_out, monte) = [for (k = monte ? [0 : nd - 1] : [nd - 1 : -1 : 0])
+                                            for (q = (k % 2 == 0) == (s == 1)
+                                                     ? (monte ? [[x_out, k * hd], [x_out, (k + 1) * hd]] : [[x_out, (k + 1) * hd], [x_out, k * hd]])
+                                                     : (monte ? [[x_in, k * hd], [x_in, (k + 1) * hd]] : [[x_in, (k + 1) * hd], [x_in, k * hd]]))
+                                                q];
+module cote(o, s, nom) {
+    bas = [for (x = xt) for (q = [[x, 0], [x, -ep], [x + lt, -ep], [x + lt, 0]]) q];
+    pts = concat(bas, bord(s, W - ep, W, vrai), bord(s, ep, 0, faux));
+    c = polyligne([for (q = pts) o + q], fermee = vrai);
+    nommer(#c, nom);
+    // les ajours en quinconce, dans le corps à `marge` des bords
+    nx = floor((W - 2 * ep - 2 * marge - d_trou) / pas);  ny = floor((H - 2 * marge - d_trou) / (pas * 0.866));
+    x0 = (W - nx * pas) / 2;  y0 = (H - ny * pas * 0.866) / 2;
+    pour (j = [0 : ny])
+        pour (i = [0 : nx - (j % 2)]) {
+            t = cercle(o + [x0 + i * pas + (j % 2) * pas / 2, y0 + j * pas * 0.866], d_trou / 2);
+            nommer(#t, "ajour");
+        }
+}
+pour (k = [0 : 3])
+    cote([rognure + k * (W + espace), rognure + ep], k % 2, k % 2 == 1 ? "côté sortant" : "côté rentrant");
+
+// ── Le socle : quatre paires de mortaises (les plans des côtés, à ep / 2 de leur face extérieure), le passage du câble ──
+os = [rognure, rognure + H + ep + espace];
+cs = os + [S / 2, S / 2];
+s = rect(os, [S, S], 8);
+nommer(#s, "socle");
+pour (r = [0 : 3])
+    pour (x = xt) {
+        // le côté r, vu du centre : son plan à W / 2 − ep / 2, ses tenons le long de lui
+        u = [cos(90 * r), sin(90 * r)];  v = [-sin(90 * r), cos(90 * r)];
+        a = cs + (W / 2 - ep - jeu) * u + (x - W / 2 - jeu) * v;
+        b = cs + (W / 2 + jeu) * u + (x - W / 2 - jeu) * v;
+        m = polyligne([a, b, b + (lt + 2 * jeu) * v, a + (lt + 2 * jeu) * v], fermee = vrai);
+        nommer(#m, "mortaise");
+    }
+p = cercle(cs, 14);
+nommer(#p, "passage du câble");
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "ajour", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 2,
+        nom = "Ajours");
+usinage("contour", "passage du câble", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 2,
+        nom = "Passage du câble");
+usinage("contour", "mortaise", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, coins = "dogbone", profondeur = epaisseur,
+        passe = 2, nom = "Mortaises");
+usinage("contour", "côté sortant", outil = "Fraise droite Ø3", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 2,
+        onglets = 2, onglet_long = 4, onglet_haut = 1, nom = "Côtés sortants");
+usinage("contour", "côté rentrant", outil = "Fraise droite Ø3", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 2,
+        onglets = 2, onglet_long = 4, onglet_haut = 1, nom = "Côtés rentrants");
+usinage("contour", "socle", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 2,
+        onglets = 3, onglet_long = 5, onglet_haut = 1, nom = "Socle");

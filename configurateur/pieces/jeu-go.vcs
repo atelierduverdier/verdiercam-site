@@ -1,0 +1,56 @@
+// JEU DE GO 9 × 9 — le goban des débutants et des parties rapides : neuf lignes sur neuf gravées, les cinq points
+// marqués (hoshi), et les pierres, la moitié marquées d'un anneau pour les noires (à teinter).
+// thème : Jeux et jouets
+//
+// LE GOBAN : 9 × 9 lignes au `pas` (plus que le Ø d'une pierre : deux pierres voisines ne se poussent pas), un `bord`
+// autour ; les cinq hoshi (les 3-3 des coins et le centre), de petits creux ronds. LES PIERRES : `pierres` de Ø`d_pierre`,
+// la moitié marquées d'un anneau gravé.
+//
+// L'USINAGE : les lignes et les anneaux (Gravure, Pointe V 90°), les hoshi (Poche, fraise droite Ø3), puis le goban et
+// les pierres (Contour extérieur, onglets). Érable ou tilleul de 12 ; une teinte noyer sur les pierres marquées.
+
+pas        = 23;     // d'une ligne à la suivante (mm)
+d_pierre   = 21;     // Ø d'une pierre (mm)
+bord       = 20;     // du bord du goban à la première ligne (mm)
+pierres    = 80;     // nombre de pierres (moitié noires, moitié blanches)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 6;      // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+n = 9;  G = 8 * pas + 2 * bord;                // le goban
+np = 2 * round(pierres / 2);
+par = floor(G / (d_pierre + espace));  colonnes = ceil(np / par);
+si (d_pierre > pas - 1)
+    echo("Des pierres de plus de pas − 1 : deux voisines se poussent.");
+planche([G + espace + colonnes * (d_pierre + espace) + 2 * rognure, G + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+g = rect(o, [G, G], 6);
+nommer(#g, "goban");
+pour (k = [0 : n - 1]) {
+    a = ligne(o + [bord + k * pas, bord], o + [bord + k * pas, bord + 8 * pas]);
+    nommer(#a, "ligne");
+    b = ligne(o + [bord, bord + k * pas], o + [bord + 8 * pas, bord + k * pas]);
+    nommer(#b, "ligne");
+}
+pour (q = [[2, 2], [6, 2], [2, 6], [6, 6], [4, 4]]) {
+    h = cercle(o + [bord, bord] + pas * q, 2);
+    nommer(#h, "hoshi");
+}
+pour (k = [0 : np - 1]) {
+    cp = [rognure + G + espace + d_pierre / 2 + floor(k / par) * (d_pierre + espace), rognure + d_pierre / 2 + (k % par) * (d_pierre + espace)];
+    d = cercle(cp, d_pierre / 2);
+    nommer(#d, "pierre");
+    si (k < np / 2) {
+        r = cercle(cp, d_pierre / 2 - 3);
+        nommer(#r, "anneau");
+    }
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "ligne", outil = "Pointe V 90", profondeur = 0.5, nom = "Lignes");
+usinage("gravure", "anneau", outil = "Pointe V 90", profondeur = 0.6, nom = "Anneaux");
+usinage("poche", "hoshi", outil = "Fraise droite Ø3", profondeur = 1, passe = 1, nom = "Hoshi");
+usinage("contour", "pierre", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 3, onglet_haut = 1.5, nom = "Pierres");
+usinage("contour", "goban", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Goban");

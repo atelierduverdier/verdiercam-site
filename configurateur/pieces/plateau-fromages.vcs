@@ -1,0 +1,46 @@
+// PLATEAU À FROMAGES — la planche de service du dessert : une rigole tout autour (le petit-lait ne coule pas sur la nappe),
+// une fente où le couteau se tient debout, une poignée découpée, un mot gravé.
+// thème : Cuisine
+//
+// LA PLANCHE : `longueur` × `largeur`, coins arrondis de `arrondi`. LA RIGOLE : une gorge ronde (fraise boule) à `retrait`
+// du bord, tout autour de la surface de service, creusée de `profondeur_rigole`. LA FENTE À COUTEAU : `longueur_fente` de
+// long, à la largeur de la fraise Ø3, profonde de 9 : la lame s'y plante. LA POIGNÉE : une lumière de 28 au bout droit.
+//
+// L'USINAGE : l'inscription (Gravure, Pointe V 90°), la rigole (Rainure, Boule Ø6), la fente (Rainure, fraise droite Ø3), la
+// poignée (Contour intérieur, fraise droite Ø8 : la Ø6 n'a que 18 mm utiles), puis la planche (Contour extérieur,
+// onglets). Bois dur à grain fin (hêtre, érable, noyer), huile alimentaire.
+
+longueur   = 380;    // longueur (mm)
+largeur    = 240;    // largeur (mm)
+arrondi    = 30;     // rayon des coins (mm)
+retrait    = 16;     // du bord à l'axe de la rigole (mm)
+profondeur_rigole = 3;  // profondeur de la rigole (mm)
+longueur_fente = 100;   // longueur de la fente à couteau (mm)
+inscription = "Fromages";
+epaisseur  = 20;     // épaisseur (mm) : 24 au plus pour la fraise Ø8
+rognure    = 5;      // du bord du brut à la planche (mm)
+
+L = longueur;  W = largeur;  r = retrait;
+lp = 80;                                       // la zone de la poignée, au bout droit
+si (W < longueur_fente + 2 * r + 20)
+    echo("La fente est plus longue que la planche n'est large : plus courte.");
+planche([L + 2 * rognure, W + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+p = rect(o, [L, W], arrondi);
+nommer(#p, "planche");
+g = rect(o + [r, r], [L - lp - r, W - 2 * r], max(arrondi - r, 4));
+nommer(#g, "rigole");
+f = ligne(o + [L - lp + 12, W / 2 - longueur_fente / 2], o + [L - lp + 12, W / 2 + longueur_fente / 2]);
+nommer(#f, "fente");
+m = oblong(o + [L - lp / 2 + 8, W / 2], 100, 28, 90);
+nommer(#m, "poignée");
+t = texte(o + [r + 20, r + 12], 14, inscription, police = "Hershey Script1");
+nommer(#t, "inscription");
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "inscription", outil = "Pointe V 90", profondeur = 1, nom = "Inscription");
+usinage("rainure", "rigole", outil = "Boule Ø6", profondeur = profondeur_rigole, passe = 1.5, nom = "Rigole");
+usinage("rainure", "fente", outil = "Fraise droite Ø3", profondeur = 9, passe = 1.5, nom = "Fente à couteau");
+usinage("contour", "poignée", outil = "Fraise droite Ø8", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 4, nom = "Poignée");
+usinage("contour", "planche", outil = "Fraise droite Ø8", cote = "exterieur", profondeur = epaisseur, passe = 4,
+        onglets = 4, onglet_long = 10, onglet_haut = 2, nom = "Planche");

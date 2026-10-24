@@ -1,0 +1,66 @@
+// PHOTOPHORE AJOURÉ — la lanterne à bougie : quatre faces percées d'un motif, assemblées à doigts sur leurs arêtes ; la
+// flamme d'une bougie chauffe-plat (dans son verre) dessine le motif sur les murs.
+// thème : Décoration et cadeaux
+//
+// LES FACES : `largeur` × `hauteur` (sans les doigts), deux à doigts « pairs », deux à doigts « impairs » : `doigts`
+// (impair) doigts sur chaque arête verticale, de l'épaisseur de la planche, raccourcis du `jeu` à chaque bout. LE MOTIF
+// (`motif` = 1 : losanges en quinconce, 2 : ronds) remplit la face à `marge` de ses bords, au `pas` donné.
+//
+// L'USINAGE : les ajours (Contour intérieur, fraise droite Ø3, sans onglets), puis les faces (Contour extérieur, coins
+// dégagés au pied des doigts, onglets). Contreplaqué de 6. JAMAIS de bougie nue : une bougie chauffe-plat dans un verre.
+
+largeur    = 80;     // largeur d'une face, sans les doigts (mm)
+hauteur    = 120;    // hauteur (mm)
+doigts     = 5;      // doigts par arête (impair)
+motif      = 1;      // 1 : losanges, 2 : ronds
+pas        = 16;     // pas du motif (mm)
+taille     = 10;     // largeur d'un ajour (mm)
+marge      = 12;     // des bords de la face au motif (mm)
+jeu        = 0.1;    // jeu des doigts, à chaque bout (mm)
+epaisseur  = 6;      // épaisseur (mm)
+espace     = 10;     // entre deux faces (mm)
+rognure    = 5;      // du bord du brut aux faces (mm)
+
+ep = epaisseur;  W = largeur;  H = hauteur;
+n = max(3, 2 * floor(round(doigts) / 2) + 1);   // impair
+h = H / n;
+nx = floor((W - 2 * marge - taille) / pas) + 1;  ny = floor((H - 2 * marge - 1.6 * taille) / (pas * 0.75)) + 1;
+x0 = (W - (nx - 1) * pas) / 2;  y0 = (H - (ny - 1) * pas * 0.75) / 2;
+si (h < 3 * ep)
+    echo("Les doigts sont trop courts : moins de doigts.");
+planche([4 * (W + 2 * ep) + 3 * espace + 2 * rognure, H + 2 * rognure, epaisseur]);
+
+// Une arête : les points de x = `xd` (un doigt) ou `xb` (le corps), du bas au haut ; `pair` = 1 : doigts aux rangs pairs.
+function bas(k) = k == 0 ? 0 : k * h + jeu;
+function haut(k) = k == n - 1 ? H : (k + 1) * h - jeu;
+function doigt(k, pair) = (k % 2 == 0) == (pair == 1);
+function arete(o, xb, xd, pair) = [for (j = [0 : 2 * n - 1]) o + [doigt(floor(j / 2), pair) ? xd : xb,
+                                   doigt(floor(j / 2), pair) ? (j % 2 == 0 ? bas(floor(j / 2)) : haut(floor(j / 2)))
+                                                             : (j % 2 == 0 ? floor(j / 2) * h - (floor(j / 2) > 0 ? jeu : 0)
+                                                                           : (floor(j / 2) + 1) * h + (floor(j / 2) < n - 1 ? jeu : 0))]];
+module face(o, pair) {
+    d = arete(o, W, W + ep, pair);
+    g = arete(o, 0, -ep, pair);
+    q = polyligne(concat(d, [for (j = [0 : 2 * n - 1]) g[2 * n - 1 - j]]), fermee = vrai);
+    nommer(#q, "face");
+    pour (i = [0 : nx - 1])
+        pour (j = [0 : ny - 1]) {
+            c = o + [x0 + i * pas + (j % 2) * pas / 2, y0 + j * pas * 0.75];
+            si (c[0] - o[0] + taille / 2 <= W - marge + 0.01) {
+                si (motif == 2) {
+                    a = cercle(c, taille / 2);
+                    nommer(#a, "ajour");
+                } sinon {
+                    a = polyligne([c + [0, -0.8 * taille], c + [taille / 2, 0], c + [0, 0.8 * taille], c + [-taille / 2, 0]], fermee = vrai);
+                    nommer(#a, "ajour");
+                }
+            }
+        }
+}
+pour (k = [0 : 3])
+    face([rognure + ep + k * (W + 2 * ep + espace), rognure], k % 2);
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "ajour", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1.5, nom = "Ajours");
+usinage("contour", "face", outil = "Fraise droite Ø3", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 1.5,
+        onglets = 2, onglet_long = 4, onglet_haut = 1, nom = "Faces");

@@ -1,0 +1,91 @@
+// ÉCHAPPEMENT À ANCRE — le cœur d'une horloge, en bois, à pendre au mur : un poids tire la roue, l'ancre la retient et la
+// lâche d'une demi-dent à chaque battement du balancier. Tic, tac : on voit le temps passer dent par dent.
+// thème : Technique et mécanique
+//
+// LA ROUE D'ÉCHAPPEMENT : 30 dents en dents de scie de `rayon` à la pointe, creuses de `rayon` / 8. L'ANCRE embrasse
+// 7,5 dents ; son axe est au-dessus de la roue, à la distance où ses deux palettes touchent la roue en tangente. Chaque
+// palette a une face de REPOS (la dent bute dessus : la roue s'arrête) et une face d'IMPULSION en pente (la pointe de la
+// dent y glisse en repoussant la palette : c'est elle qui entretient le balancier). Le BALANCIER, monté sur l'axe de
+// l'ancre derrière la planche, la fait battre. Géométrie mise au point en simulation : la roue avance d'une dent par
+// aller-retour du balancier, pour une amplitude de 3° à 5° de chaque côté.
+//
+// L'USINAGE : les trous des axes (Poche : ceux de la planche tournent, ceux des pièces serrent l'axe), puis les pièces
+// (Contour extérieur, fraise droite Ø3 pour la roue et l'ancre, onglets). Contreplaqué de bouleau de 6 ; deux axes en
+// tourillon de Ø8, un fil enroulé sur l'axe de la roue et un poids de 200 à 500 g.
+
+rayon      = 50;     // rayon de la roue, à la pointe des dents (mm)
+longueur_balancier = 300;  // de l'axe de l'ancre au centre de la lentille (mm)
+d_lentille = 70;     // Ø de la lentille du balancier (mm)
+d_axe      = 8;      // Ø des axes (mm)
+epaisseur  = 6;      // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+z = 30;  R = rayon;  h = R / 8.33;  p = 360 / z;  // 6 de creux pour 50 de rayon
+s1 = R / 50;  i = 1 * s1;  sp = 1.6 * s1;  sortie = 6 * s1;   // les palettes : plongée, pente, hauteur au-dessus de la roue
+wP = 0.42 * p;  demi = 7.5 * p / 2;
+ae = 90 + demi;  ax = 90 - demi;               // les palettes d'entrée (à gauche) et de sortie
+d = R / cos(demi);                             // de l'axe de la roue à l'axe de l'ancre
+function pol(a, r) = r * [cos(a), sin(a)];
+planche([2 * R + 60 + espace + 2 * R + 30 + espace + d_lentille + 2 * rognure,
+         max(d + R + 70, 2 * R + espace + d + 10, longueur_balancier + d_lentille / 2 + 14) + 2 * rognure, epaisseur]);
+
+// ── La planche du fond : l'axe de la roue en bas, celui de l'ancre au-dessus ; deux trous pour la pendre ──
+Wf = 2 * R + 60;  Hf = d + R + 40 + 30;
+of = [rognure, rognure];
+f = rect(of, [Wf, Hf], 8);
+nommer(#f, "planche");
+cr = of + [Wf / 2, R + 20];
+pour (q = [cr, cr + [0, d]]) {
+    t = cercle(q, d_axe / 2 + 0.3);
+    nommer(#t, "palier");
+}
+pour (x = [15, Wf - 15]) {
+    t = cercle(of + [x, Hf - 15], 2.5);
+    nommer(#t, "accroche");
+}
+
+// ── La roue : chaque dent monte en pente jusqu'à sa pointe, puis tombe presque droit (sa face d'attaque, côté où elle
+// tourne : le sens trigonométrique) ──
+c0 = [rognure + Wf + espace + R, rognure + R];
+w = polyligne([for (k = [0 : z - 1]) for (q = [pol(k * p - 0.65 * p, R - h), pol(k * p, R), pol(k * p + 0.1 * p, R - h)]) c0 + q],
+              fermee = vrai);
+nommer(#w, "roue");
+a = cercle(c0, d_axe / 2);
+nommer(#a, "moyeu");
+
+// ── L'ancre, telle qu'elle se tient au-dessus de la roue (son axe à d du centre), posée au-dessus de la roue dessinée ──
+piv = [0, d];
+ancre = [piv + [-10, 10], pol(ae + wP, R + sortie + 8), pol(ae + wP, R + sortie), pol(ae + wP, R - i + sp), pol(ae, R - i),
+         pol(ae, R + sortie), piv + [-6, -10], piv + [6, -10], pol(ax + wP, R + sortie), pol(ax + wP, R - i + sp), pol(ax, R - i),
+         pol(ax, R + sortie), pol(ax, R + sortie + 8), piv + [10, 10]];
+ca = c0 + [0, R + espace - pol(ae + wP, R - i + sp)[1]];   // le centre de roue qu'elle « voit »
+n = polyligne([for (q = ancre) ca + q], fermee = vrai);
+nommer(#n, "ancre");
+b = cercle(ca + piv, d_axe / 2);
+nommer(#b, "moyeu");
+
+// ── Le balancier : un moyeu en haut, une tige de 14, la lentille en bas ──
+L = longueur_balancier;  rl = d_lentille / 2;  rw = 7;  be = asin(rw / rl);
+ob = [rognure + Wf + espace + 2 * R + espace + rl, rognure + rl];   // le centre de la lentille
+bal = concat([ob + [rw, rl * cos(be)], ob + [rw, L - 12.12]],
+             [for (k = [0 : 15]) ob + [0, L] + 14 * [cos(-60 + 20 * k), sin(-60 + 20 * k)]],
+             [ob + [-rw, L - 12.12], ob + [-rw, rl * cos(be)]],
+             [for (k = [1 : 23]) ob + rl * [cos(90 + be + (360 - 2 * be) * k / 24), sin(90 + be + (360 - 2 * be) * k / 24)]]);
+v = polyligne(bal, fermee = vrai);
+nommer(#v, "balancier");
+e = cercle(ob + [0, L], d_axe / 2);
+nommer(#e, "moyeu");
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "palier", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1.5, nom = "Paliers");
+usinage("poche", "moyeu", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1.5, nom = "Moyeux");
+usinage("poche", "accroche", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1.5, nom = "Accroches");
+usinage("contour", "roue", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1.5,
+        onglets = 3, onglet_long = 4, onglet_haut = 1, nom = "Roue");
+usinage("contour", "ancre", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1.5,
+        onglets = 2, onglet_long = 4, onglet_haut = 1, nom = "Ancre");
+usinage("contour", "balancier", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 1.5, nom = "Balancier");
+usinage("contour", "planche", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Planche");

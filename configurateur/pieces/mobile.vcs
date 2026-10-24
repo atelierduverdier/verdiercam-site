@@ -1,0 +1,75 @@
+// MOBILE — trois fléaux en cascade et quatre étoiles, à la manière de Calder : chaque fléau pend par le point exact où il
+// s'équilibre, calculé ici d'après le poids du bois. On l'accroche au plafond, il tourne au moindre souffle et reste
+// horizontal.
+// thème : Décoration et cadeaux
+//
+// LES ÉTOILES : quatre étoiles à cinq branches, de `rayon_etoile` pour la plus grande, chacune `reduction` fois plus petite
+// que la précédente ; un trou d'accroche à la naissance de la pointe du haut. LES FLÉAUX : des baguettes de `largeur_fleau`, de
+// `longueur_fleau` pour le haut, chacune `reduction` fois plus courte en descendant ; un trou à chaque bout. Le fléau du
+// bas porte les deux plus petites étoiles ; chaque fléau au-dessus porte une étoile à gauche et le fléau du dessous à
+// droite. LE TROU DE SUSPENSION de chaque fléau est percé là où les poids s'équilibrent : le poids de chaque pièce est
+// celui de son bois (sa surface, à épaisseur égale), trous déduits.
+//
+// L'USINAGE : les trous (Perçage, Foret Ø3), puis les étoiles et les fléaux (Contour extérieur, fraise droite Ø3,
+// onglets). Contreplaqué de bouleau de 3 ou 4, d'une seule planche : le calcul suppose le même bois partout. Du fil de
+// pêche ; une perle de colle sur chaque nœud.
+
+rayon_etoile = 45;   // rayon de la plus grande étoile (mm)
+reduction  = 0.78;   // chaque étoile, chaque fléau, tant de fois le précédent
+longueur_fleau = 260;  // longueur du fléau du haut (mm)
+largeur_fleau = 8;   // largeur des fléaux (mm)
+epaisseur  = 4;      // épaisseur (mm)
+espace     = 8;      // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+rt = 1.5;  b = 6;                              // le rayon des trous, leur distance au bout d'un fléau
+function re(k) = rayon_etoile * pow(reduction, k);                    // étoile k (0 : la plus grande)
+function ri(k) = re(k) * 0.42;
+function aire_etoile(k) = 5 * re(k) * ri(k) * sin(36) - PI * rt * rt;
+function lf(k) = longueur_fleau * pow(reduction, k);                  // fléau k (0 : le haut)
+function aire_fleau(k) = lf(k) * largeur_fleau - (4 - PI) * 9 - 2 * PI * rt * rt;   // coins de 3, trous des bouts déduits
+function trou() = PI * rt * rt;                // le trou de suspension : au pivot, il ne pèse que dans le total
+// Le fléau du bas (2) : l'étoile 2 à gauche, l'étoile 3 à droite. Le fléau 1 : l'étoile 1 à gauche, le fléau 2 à droite.
+// Le fléau 0 : l'étoile 0 à gauche, le fléau 1 à droite. Chaque poids pend au trou de son bout (à b du bout).
+function masse2() = aire_etoile(2) + aire_etoile(3) + aire_fleau(2) - trou();
+function xs2() = (aire_etoile(2) * b + aire_etoile(3) * (lf(2) - b) + aire_fleau(2) * lf(2) / 2) / (masse2() + trou());
+function masse1() = aire_etoile(1) + masse2() + aire_fleau(1) - trou();
+function xs1() = (aire_etoile(1) * b + masse2() * (lf(1) - b) + aire_fleau(1) * lf(1) / 2) / (masse1() + trou());
+function xs0() = (aire_etoile(0) * b + masse1() * (lf(0) - b) + aire_fleau(0) * lf(0) / 2) / (aire_etoile(0) + masse1() + aire_fleau(0));
+xs = [xs0(), xs1(), xs2()];
+si (reduction < 0.5 || reduction > 0.95)
+    echo("Une réduction de 0,5 à 0,95 : en dehors, le mobile n'a plus d'allure.");
+planche([max(lf(0), 2 * re(0) + espace + 2 * re(1) + espace + 2 * re(2) + espace + 2 * re(3)) + 2 * rognure,
+         3 * (largeur_fleau + espace) + 2 * re(0) + 2 * rognure, epaisseur]);
+
+// ── Les fléaux, l'un sous l'autre : un trou à chaque bout, celui de la suspension à l'équilibre ──
+pour (k = [0 : 2]) {
+    o = [rognure, rognure + k * (largeur_fleau + espace)];
+    f = rect(o, [lf(k), largeur_fleau], 3);
+    nommer(#f, str("fléau ", k + 1));
+    pour (x = [b, lf(k) - b]) {
+        t = cercle(o + [x, largeur_fleau / 2], rt);
+        nommer(#t, "accroche");
+    }
+    s = cercle(o + [xs[k], largeur_fleau / 2], rt);
+    nommer(#s, "suspension");
+}
+// ── Les étoiles, en rang dessous : une pointe en haut, le trou d'accroche sur l'axe, à la naissance de cette pointe ──
+function cx(k) = k == 0 ? re(0) : cx(k - 1) + re(k - 1) + espace + re(k);
+pour (k = [0 : 3]) {
+    c = [rognure + cx(k), rognure + 3 * (largeur_fleau + espace) + re(0)];
+    e = polyligne([for (i = [0 : 9]) c + (i % 2 == 0 ? re(k) : ri(k)) * [cos(90 + 36 * i), sin(90 + 36 * i)]], fermee = vrai);
+    nommer(#e, str("étoile ", k + 1));
+    t = cercle(c + [0, ri(k)], rt);
+    nommer(#t, "accroche");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("percage", "accroche", outil = "Foret Ø3", profondeur = epaisseur, nom = "Accroches");
+usinage("percage", "suspension", outil = "Foret Ø3", profondeur = epaisseur, nom = "Suspensions");
+pour (k = [1 : 4])
+    usinage("contour", str("étoile ", k), outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1.5,
+            onglets = 2, onglet_long = 3, onglet_haut = 1, nom = str("Étoile ", k));
+pour (k = [1 : 3])
+    usinage("contour", str("fléau ", k), outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1.5,
+            onglets = 2, onglet_long = 3, onglet_haut = 1, nom = str("Fléau ", k));

@@ -1,0 +1,82 @@
+// MARCHEPIED — le petit tabouret-marche de la cuisine ou de la salle de bains : un plateau, deux flancs aux pieds
+// arqués et une traverse, assemblés à tenons traversants. Quatre pièces d'une planche de 18, sans une vis.
+// thème : Rangement
+//
+// L'ASSEMBLAGE : chaque flanc porte en haut deux TENONS qui traversent le plateau (ses quatre mortaises) ; la traverse porte
+// à chaque bout un tenon qui traverse son flanc, sous le plateau. Mortaises plus grandes que les tenons de `jeu` de chaque
+// côté, leurs coins dégagés (dogbone) ; les pieds des tenons aussi. Collé, chevillé si l'on veut.
+//
+// LES COTES : plateau `longueur` × `profondeur`, hauteur totale `hauteur` (plateau compris). Les flancs sont en retrait de
+// `retrait` des bouts du plateau ; leur pied est évidé d'une arche (`arche` de haut) qui laisse deux pieds de `pied`.
+// L'USINAGE : les mortaises (Contour intérieur, coins dégagés), puis le plateau, les flancs et la traverse (Contour
+// extérieur, coins dégagés, onglets). Poncer, arrondir les arêtes du plateau à la main ou à la fraise quart-de-rond.
+
+longueur   = 400;    // longueur du plateau (mm)
+profondeur = 260;    // profondeur du plateau et des flancs (mm)
+hauteur    = 230;    // hauteur totale, plateau compris (mm)
+retrait    = 40;     // des bouts du plateau aux flancs (mm)
+arche      = 60;     // hauteur de l'arche sous les flancs (mm)
+pied       = 45;     // largeur d'un pied (mm)
+hauteur_traverse = 70;  // hauteur de la traverse (mm)
+jeu        = 0.1;    // jeu des tenons dans les mortaises, par côté (mm)
+epaisseur  = 18;     // épaisseur (mm)
+espace     = 12;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  L = longueur;  D = profondeur;
+Hf = hauteur - ep;                             // le flanc sous le plateau (sans ses tenons)
+lt = D / 5;                                    // largeur d'un tenon du flanc
+xt = [D / 5, 3 * D / 5];                       // leurs bords gauches, sur le haut du flanc
+Lt = L - 2 * retrait;                          // la traverse : d'un flanc extérieur à l'autre
+yt = Hf - 25 - hauteur_traverse;               // le bas de la traverse sur le flanc
+si (yt < arche + 15)
+    echo("La traverse touche l'arche : un marchepied plus haut, une arche plus basse ou une traverse plus étroite.");
+planche([max(L, 2 * D + espace, Lt) + 2 * rognure, D + espace + hauteur + espace + hauteur_traverse + 2 * rognure, epaisseur]);
+
+// ── Le plateau et ses quatre mortaises ──
+o1 = [rognure, rognure];
+p = rect(o1, [L, D], 6);
+nommer(#p, "plateau");
+pour (x = [retrait, L - retrait - ep])
+    pour (y = xt) {
+        m = rect(o1 + [x - jeu, y - jeu], [ep + 2 * jeu, lt + 2 * jeu]);
+        nommer(#m, "mortaise");
+    }
+
+// ── Les flancs, debout : le bas évidé d'une arche, le haut à deux tenons (ils dépassent de `ep`) ──
+module flanc(o) {
+    a = polyligne(concat([o + [D - pied, 0], o + [D, 0], o + [D, Hf]],
+                         [o + [xt[1] + lt, Hf], o + [xt[1] + lt, Hf + ep], o + [xt[1], Hf + ep], o + [xt[1], Hf],
+                          o + [xt[0] + lt, Hf], o + [xt[0] + lt, Hf + ep], o + [xt[0], Hf + ep], o + [xt[0], Hf],
+                          o + [0, Hf], o + [0, 0], o + [pied, 0]]));
+    // l'arche : un arc de cercle du bas d'un pied au bas de l'autre, qui monte à `arche` en son milieu
+    w2 = D / 2 - pied;
+    rA = (w2 * w2 + arche * arche) / (2 * arche);
+    b = arc(o + [D / 2, arche - rA], o + [D - pied, 0], o + [pied, 0]);
+    joindre(#a, #b);
+    nommer(#a, "flanc");
+    // la mortaise de la traverse : au milieu de la profondeur, aussi haute que son tenon
+    t = rect(o + [D / 2 - ep / 2 - jeu, yt + 10 - jeu], [ep + 2 * jeu, hauteur_traverse - 20 + 2 * jeu]);
+    nommer(#t, "mortaise");
+}
+y2 = rognure + D + espace;
+flanc([rognure, y2]);
+flanc([rognure + D + espace, y2]);
+
+// ── La traverse : à chaque bout un tenon de l'épaisseur d'un flanc, épaulé de 10 en haut et en bas ──
+y3 = y2 + hauteur + espace;
+o3 = [rognure, y3];
+h = hauteur_traverse;
+c = polyligne([o3 + [ep, 0], o3 + [Lt - ep, 0], o3 + [Lt - ep, 10], o3 + [Lt, 10], o3 + [Lt, h - 10], o3 + [Lt - ep, h - 10],
+               o3 + [Lt - ep, h], o3 + [ep, h], o3 + [ep, h - 10], o3 + [0, h - 10], o3 + [0, 10], o3 + [ep, 10]], fermee = vrai);
+nommer(#c, "traverse");
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaises");
+usinage("contour", "flanc", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Flancs");
+usinage("contour", "traverse", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 8, onglet_haut = 2, nom = "Traverse");
+usinage("contour", "plateau", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Plateau");
