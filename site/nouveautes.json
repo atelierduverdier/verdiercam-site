@@ -3,11 +3,23 @@
  "jours": [
   {
    "date": "2026-10-24",
-   "titre": "Un relief qui se lit dans la simulation, et une bande entre deux traits choisie d'un clic",
+   "titre": "Le relief qui se lit et se règle, le pilotage qui dit où va la fraise, et le chanfrein avant le filet",
    "points": [
     "Simulation : la lumière vient maintenant du haut à gauche de l'image, quelle que soit la vue, plus rasante, et le bois prend un léger reflet satiné. Un relief fini à la boule se lit enfin : chaque pente s'éclaire ou s'assombrit, les yeux, le nez, les plis d'une capuche sortent du bois — de dessus comme en biais. Le même crâne ci-dessous, même fraise, même finesse : seule la lumière change.",
     "Poche : deux traits d'un bord à l'autre de la planche bordent une bande qu'un clic choisit — le bord de la planche ferme la zone, plus besoin d'y tracer deux traits de plus. « Ouvrir les bords sur le tour de la pièce » ouvre les deux côtés de la bande, ou, d'un clic, l'un d'eux seulement.",
-    "Les dessins des réglages : la fraise ressemble à une fraise — deux goujures en hélice, une silhouette entaillée, un bout adouci — et, dans « Profondeurs », elle prend la place libre au-dessus du cadre au lieu de s'écraser."
+    "Les dessins des réglages : la fraise ressemble à une fraise — deux goujures en hélice, une silhouette entaillée, un bout adouci — et, dans « Profondeurs », elle prend la place libre au-dessus du cadre au lieu de s'écraser.",
+    "Répartir : choisissez une ligne avec les formes, elle devient le cadre — trois trous se rangent le long d'une ligne de 120 mm, avec le même écart entre eux qu'aux deux bouts.",
+    "Finitions : le fond reste en bas d'un côté des îlots à l'autre, sans remonter entre eux.",
+    "Pilotage : sous X Y Z, « Cible et reste du mouvement » dit où va la fraise et ce qu'il lui reste par axe — jusqu'à la fin de la ligne, du prochain changement de direction ou de la passe, au choix. Le petit chiffre à droite de la position n'apparaît plus que s'il dit autre chose (la position machine ou pièce), et lisiblement. Après un arrêt, « Du début », à côté de « Reprendre », relance le programme depuis sa première ligne.",
+    "Brancher la carte : quand aucune carte n'est trouvée, VerdierCAM dit pourquoi — une puce CH340 sans son pilote sous Windows (avec le lien pour le prendre), une puce désactivée, un port pris par un autre service sous Linux, un câble qui ne fait que charger. Sous Windows, une carte ESP32 ne redémarre plus quand on ouvre son port, et les ports Bluetooth ne passent plus pour des cartes USB.",
+    "Réglages machine › Carte : les paramètres de la carte (courses, pas par millimètre, fins de course, vitesses) quittent le Pilotage — on les règle une fois, à l'installation de la machine.",
+    "Simulation : la ligne du bas dit l'avance de la fraise pendant le déplacement en cours, en mm/min.",
+    "Filetage : « Chanfreiner l'entrée » pose un chanfrein entre le trou et le filet — perçage, chanfrein, puis filet : le filet commence sous le chanfrein, sans première spire en lame de couteau, et la vis s'engage seule. À la pointe en V de la bibliothèque ; sans elle, à la fraise droite, qui part du bas du chanfrein et remonte en hélice. Ébavurer sait aussi chanfreiner à la fraise droite.",
+    "Poche : une poche neuve va au trait — la surépaisseur réglée sur une opération ne passe plus à la suivante.",
+    "Relief, étape Usiner : « Où usiner » se lit avec la planche — trois vignettes vues de dessus et en coupe, le bois creusé en clair. L'ébauche à la fraise droite et la finition à la boule deviennent deux opérations, à régler chacune ; ce qui descend sous le plan zéro (un motif posé dans un creux) s'usine aussi.",
+    "Relief : la vue 3D montre la vraie hauteur, et grossir les hauteurs reste à un bouton. Un modèle 3D posé sur un plat (« Socle du modèle ») se garde ou se retire. Et la matière « Bois clair uni » laisse lire un relief à la seule lumière, sans cernes qui se confondent avec les passes.",
+    "Croquis : le relief se voit sous le dessin, à sa place sur la planche, pour tracer la découpe autour (Affichage › Montrer sur le dessin). Le relief s'ouvre par son onglet, en haut : son icône a quitté le ruban d'Usinage.",
+    "Et les corrections de la revue du soir : l'aperçu « Dans la pièce » du Relief ne montre plus tout creusé quand la pièce est à côté du relief, un modèle dont on a retiré le socle n'est plus relu de travers par une version plus ancienne, et « Reprendre » tient dans la barre étroite du Pilotage."
    ],
    "images": [
     [
