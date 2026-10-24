@@ -279,6 +279,9 @@ IMAGES = {
     'relief_usine': 'relief-paliers',
     # L'image d'attente de la vidéo « Filetage » (21/10/2026) : la coupe d'un trou fileté, en simulation.
     'filetage_coupe': 'filetage',
+    # L'éclairage de la vue 3D (24/10/2026, 0.99.189) : le même crâne, avant et après. Une image composée une fois
+    # (presentation-verdiercam/sources/eclairage-avant-apres.sh) : l'avant ne se refait qu'avec un binaire d'avant la 0.99.189.
+    'eclairage_avant_apres': 'eclairage',
     # La page « Premiers pas » : onze étapes, une plaque percée du croquis au G-code.
     'pp_01_accueil': 'pp-accueil',
     'pp_02_brut': 'pp-brut',

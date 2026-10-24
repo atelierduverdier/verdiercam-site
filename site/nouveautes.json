@@ -2,6 +2,21 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+   "date": "2026-10-24",
+   "titre": "Un relief qui se lit dans la simulation, et une bande entre deux traits choisie d'un clic",
+   "points": [
+    "Simulation : la lumière vient maintenant du haut à gauche de l'image, quelle que soit la vue, plus rasante, et le bois prend un léger reflet satiné. Un relief fini à la boule se lit enfin : chaque pente s'éclaire ou s'assombrit, les yeux, le nez, les plis d'une capuche sortent du bois — de dessus comme en biais. Le même crâne ci-dessous, même fraise, même finesse : seule la lumière change.",
+    "Poche : deux traits d'un bord à l'autre de la planche bordent une bande qu'un clic choisit — le bord de la planche ferme la zone, plus besoin d'y tracer deux traits de plus. « Ouvrir les bords sur le tour de la pièce » ouvre les deux côtés de la bande, ou, d'un clic, l'un d'eux seulement.",
+    "Les dessins des réglages : la fraise ressemble à une fraise — deux goujures en hélice, une silhouette entaillée, un bout adouci — et, dans « Profondeurs », elle prend la place libre au-dessus du cadre au lieu de s'écraser."
+   ],
+   "images": [
+    [
+     "eclairage.webp",
+     "Le même crâne fini à la boule Ø6 : à gauche l'éclairage d'avant, à droite le nouveau."
+    ]
+   ]
+  },
+  {
    "date": "2026-10-23",
    "titre": "L'ordre des opérations libre, la pièce du relief, et les cartes trouvées sur le réseau",
    "points": [
