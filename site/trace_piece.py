@@ -12,7 +12,12 @@
 #                           à quelques millimètres) ;
 #   - les déplacements      en gris fin, trois fois plus vite qu'une coupe ;
 #   - le trait de scie      ce même centre, épaissi au Ø de la fraise lu dans l'en-tête, à bouts et coins ronds : c'est
-#                           exactement la matière enlevée ; là où la dernière passe remonte (les onglets), le bois reste ;
+#                           exactement la matière enlevée. Il est ÔTÉ du bois par un masque, pas peint en blanc par-dessus
+#                           (26/10/2026, Christophe : « un problème d'affichage sur l'engrenage ») : peint, sa moitié
+#                           extérieure faisait un liseré blanc ombré autour de la roue et les jours un double contour ;
+#                           ôté, la feuille se voit à travers les jours et l'ombre suit le vrai bord. Les onglets y sont
+#                           compris : la planche n'étant pas dessinée, le pont de bois d'un onglet s'arrêtait au centre du
+#                           trait et faisait une pointe rougie au fond de quatre dents ; la roue s'affiche détachée ;
 #   - la pièce              l'intérieur du contour le plus long, moins l'intérieur des autres ;
 #   - le perçage (G81…)     un trou du Ø de l'outil.
 #
@@ -174,18 +179,7 @@ def svg(gcode: str, duree: float = 7.0, legende: str = '') -> dict:
     exterieur = max(coupes, key=lambda c: c[1])
     interieurs = [c for c in coupes if c is not exterieur]
 
-    def scie(c):
-        """Les morceaux de la dernière passe qui vont au fond : le trait de scie. Les onglets en sont exclus."""
-        morceaux, d = [], ''
-        for mv in c[2]:
-            if mv[3] <= c[3] + 1e-3 and mv[6] <= c[3] + 1e-3:
-                d = (d or f'M{P(mv[1], mv[2])}') + segment(mv)[0]
-            elif d:
-                morceaux.append(d)
-                d = ''
-        return morceaux + ([d] if d else [])
-
-    scies = [d for c in coupes for d in scie(c)]
+    # Ce que le masque ôte du bois : l'intérieur des jours, les trous, le trait de scie de chaque passe, onglets compris.
     trous = [f'<circle class="trace-jour" cx="{P(px, py).split()[0]}" cy="{P(px, py).split()[1]}" r="{dd / 2:.2f}"/>'
              for px, py, dd in lu['percages']]
 
@@ -221,8 +215,8 @@ def svg(gcode: str, duree: float = 7.0, legende: str = '') -> dict:
   transform-origin:center;transform:scale(0);animation:trace-percer .35s forwards}}
 .trace-piece .trace-bois,.trace-piece .trace-apres{{opacity:0;animation:trace-montrer .8s var(--fin) forwards}}
 .trace-piece .trace-apres{{animation-delay:calc(var(--fin) + .4s)}}
-.trace-piece .trace-scie{{fill:none;stroke:#fdfcfa;stroke-width:{fraise:.2f};stroke-linejoin:round;stroke-linecap:round}}
-.trace-piece .trace-jour{{fill:#fdfcfa}}
+.trace-piece .trace-scie{{fill:none;stroke:#000;stroke-width:{fraise:.2f};stroke-linejoin:round;stroke-linecap:round}}
+.trace-piece .trace-jour{{fill:#000}}
 .trace-piece .trace-cote-trait{{fill:none;stroke:#6a7080;stroke-width:{trait * .3:.3f}}}
 .trace-piece .trace-cote{{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:{L / 30:.2f}px;fill:#474c57;
   text-anchor:middle}}
@@ -246,12 +240,15 @@ def svg(gcode: str, duree: float = 7.0, legende: str = '') -> dict:
   <filter id="trace-ombre" x="-10%" y="-10%" width="120%" height="120%">
     <feDropShadow dx="0" dy="{trait * .9:.2f}" stdDeviation="{trait * 1.3:.2f}" flood-color="#15171c" flood-opacity=".18"/>
   </filter>
+  <mask id="trace-decoupe" maskUnits="userSpaceOnUse" x="0" y="0" width="{L:.2f}" height="{H:.2f}">
+    <rect width="{L:.2f}" height="{H:.2f}" fill="#fff"/>
+    {''.join(f'<path class="trace-jour" d="{c[0]}Z"/>' for c in interieurs)}{''.join(trous)}
+    {''.join(f'<path class="trace-scie" d="{c[0]}"/>' for c in coupes)}
+  </mask>
 </defs>
 <path class="trace-grille" d="{grille}"/>
 <g class="trace-bois" filter="url(#trace-ombre)">
-<path d="{exterieur[0]}Z" fill="url(#trace-fil-du-bois)"/>
-{''.join(f'<path class="trace-jour" d="{c[0]}Z"/>' for c in interieurs)}{''.join(trous)}
-{''.join(f'<path class="trace-scie" d="{d}"/>' for d in scies)}
+<path d="{exterieur[0]}Z" fill="url(#trace-fil-du-bois)" mask="url(#trace-decoupe)"/>
 </g>
 <g>
 {chr(10).join(traits)}
