@@ -9,7 +9,7 @@
 # porte souvent le travail en cours d'autres sessions. Construite sous plafond mémoire.
 #
 # Entrée : JOURNAL_CONSTRUCTION, le fichier où écrire la sortie de la construction.
-# Sortie : LOGICIEL (la copie de travail) et EXE (le binaire construit).
+# Sortie : LOGICIEL (la copie de travail) et EXE (le binaire : déjà compilé à la bonne version, sinon construit ici).
 
 LOGICIEL=${VERDIERCAM_CAPTURES:-$HOME/Projets/logiciels/verdiercam-captures}
 DEPOT=$HOME/Projets/logiciels/verdiercam-imgui
@@ -27,8 +27,29 @@ for m in entt imgui; do
         rsync -a --exclude .git "$CLONE_MINUTEUR/vendor/$m/" "$LOGICIEL/vendor/$m/"
     fi
 done
-[ -f "$LOGICIEL/build/build.ninja" ] || cmake -S "$LOGICIEL" -B "$LOGICIEL/build" -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo > /dev/null
-echo "construction du logiciel ($(git -C "$LOGICIEL" log --oneline -1 | cut -c1-60))…"
-systemd-run --user --scope -q -p MemoryMax=10G cmake --build "$LOGICIEL/build" --target verdiercam -j3 > "$JOURNAL_CONSTRUCTION" 2>&1 \
-    || { tail -20 "$JOURNAL_CONSTRUCTION"; exit 1; }
-EXE=$LOGICIEL/build/src/app/verdiercam
+# LA DERNIÈRE VERSION DÉJÀ COMPILÉE D'ABORD (26/10/2026, Christophe : « par la suite il faudrait prendre la dernière
+# version déjà compilée du logiciel, c'est plus rapide » — l'export du tracé reconstruisait toute cette copie, à trois
+# compilations à la fois). Un binaire du poste qui dit la version d'origin/main sert tel quel : le plus récent, un
+# construit sans travail en cours (« -modifie ») d'abord. Aucun : on construit, comme avant. VERDIERCAM_CONSTRUIRE=1 force
+# la construction.
+VOULUE=$(git -C "$LOGICIEL" show HEAD:CMakeLists.txt | sed -n 's/^project([^ ]* VERSION \([0-9.]*\).*/\1/p' | head -1)
+EXE=
+if [ "${VERDIERCAM_CONSTRUIRE:-0}" != 1 ]; then
+    meilleur=
+    for b in "$DEPOT/build/src/app/verdiercam" "$LOGICIEL/build/src/app/verdiercam" "$DEPOT/build-soir/src/app/verdiercam"; do
+        [ -x "$b" ] || continue
+        dit=$(timeout 20 "$b" --version 2>/dev/null | head -1)
+        case "$dit" in "VerdierCAM $VOULUE,"*) ;; *) continue ;; esac
+        propre=1; case "$dit" in *-modifie*) propre=0 ;; esac
+        cle="$propre $(stat -c %Y "$b")"
+        if [ -z "$meilleur" ] || [[ "$cle" > "$meilleur" ]]; then meilleur=$cle; EXE=$b; DIT=$dit; fi
+    done
+    [ -n "$EXE" ] && echo "logiciel déjà compilé : $EXE ($DIT)"
+fi
+if [ -z "$EXE" ]; then
+    [ -f "$LOGICIEL/build/build.ninja" ] || cmake -S "$LOGICIEL" -B "$LOGICIEL/build" -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo > /dev/null
+    echo "construction du logiciel ($(git -C "$LOGICIEL" log --oneline -1 | cut -c1-60))…"
+    systemd-run --user --scope -q -p MemoryMax=10G cmake --build "$LOGICIEL/build" --target verdiercam -j3 > "$JOURNAL_CONSTRUCTION" 2>&1 \
+        || { tail -20 "$JOURNAL_CONSTRUCTION"; exit 1; }
+    EXE=$LOGICIEL/build/src/app/verdiercam
+fi
