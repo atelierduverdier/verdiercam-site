@@ -12,14 +12,14 @@
       <h1>Une plaque, du premier trait au G-code</h1>
       <p class="accroche">
         Onze étapes, chacune avec une capture du vrai logiciel, en mode <b>Débutant</b>.
-        La pièce : une plaque de bois de 120 × 80 mm, détourée avec de la marge dans une
-        planche de 160 × 120 mm, et deux trous de fixation — de quoi suivre tout le chemin,
+        La pièce : une plaque de bois de 120 × 80 mm, détourée avec de la marge dans un
+        brut de 160 × 120 mm, et deux trous de fixation — de quoi suivre tout le chemin,
         du croquis à la machine, sans rien connaître de l'informatique.
       </p>
     </div>
     <ol class="pp-sommaire" aria-label="Les onze étapes">
       <li><a href="#etape-01"><span>01</span>Choisir Débutant</a></li>
-      <li><a href="#etape-02"><span>02</span>La planche</a></li>
+      <li><a href="#etape-02"><span>02</span>Le brut</a></li>
       <li><a href="#etape-03"><span>03</span>Tracer la plaque</a></li>
       <li><a href="#etape-04"><span>04</span>Les deux trous</a></li>
       <li><a href="#etape-05"><span>05</span>Coter</a></li>
@@ -62,21 +62,21 @@
     <div class="fonction inverse">
       <div class="texte apparait">
         <span class="surtitre">02 · Le brut</span>
-        <h2>Régler la planche</h2>
-        <p>L'onglet <b>Planche</b>, à droite, décrit la planche réelle : un clic sur
+        <h2>Régler le brut</h2>
+        <p>L'onglet <b>Brut</b>, à droite, décrit le bloc réel à usiner : un clic sur
           « Dimensions &amp; matière » ouvre son dessin, trois cotes — <b>Largeur X</b>,
           <b>Longueur Y</b>, <b>Épaisseur Z</b> — et un choix de <b>Matière</b> ; <b>Appliquer</b> les prend.</p>
         <p>Un double-clic sur une cote ouvre la saisie au clavier — une expression comme
-          <code>240/2</code> est aussi acceptée. Ici : une planche de <b>bois</b>,
+          <code>240/2</code> est aussi acceptée. Ici : un brut de <b>bois</b>,
           160 × 120 × 18 mm — plus grande que la plaque de 120 × 80 qu'on va y détourer,
           avec de la marge tout autour.</p>
       </div>
       <figure class="capture apparait">
         <div class="fenetre">
           <img src="{{RACINE}}captures/pp-brut.webp" width="1920" height="1080" loading="lazy"
-               alt="Le dessin Dimensions et matière de VerdierCAM : la planche en perspective, Largeur X 160, Longueur Y 120, Épaisseur Z 18 mm, matière Bois">
+               alt="Le dessin Dimensions et matière de VerdierCAM : le brut en perspective, Largeur X 160, Longueur Y 120, Épaisseur Z 18 mm, matière Bois">
         </div>
-        <figcaption>La planche fait partie du dessin, avant le premier trait.</figcaption>
+        <figcaption>Le brut fait partie du dessin, avant le premier trait.</figcaption>
       </figure>
     </div>
   </div>
@@ -93,12 +93,12 @@
           à <b>Hauteur</b>, <kbd>Entrée</kbd> pose le coin opposé.</p>
         <p>Ici, <b>120</b> puis <b>80</b> : la plaque prend sa taille exacte sans toucher la
           souris une fois le premier coin posé — deux gestes pour une cote, pas quatre. Posée
-          avec de la marge sur la planche de 160 × 120, elle ne touche aucun bord.</p>
+          avec de la marge sur le brut de 160 × 120, elle ne touche aucun bord.</p>
       </div>
       <figure class="capture apparait">
         <div class="fenetre">
           <img src="{{RACINE}}captures/pp-tracer.webp" width="1920" height="1080" loading="lazy"
-               alt="Le tracé d'un rectangle dans VerdierCAM : la largeur 120 et la hauteur 80 tapées au clavier pendant le tracé, avec de la marge sur la planche 160 × 120">
+               alt="Le tracé d'un rectangle dans VerdierCAM : la largeur 120 et la hauteur 80 tapées au clavier pendant le tracé, avec de la marge sur le brut 160 × 120">
         </div>
         <figcaption>La cote se tape <b>pendant le tracé</b>, pas après.</figcaption>
       </figure>
@@ -118,12 +118,12 @@
           de fixation.</p>
         <p>Rien à importer, rien à préfabriquer : une plaque percée est un rectangle et deux
           cercles, posés l'un après l'autre sur la même feuille — nettement <b>à l'intérieur</b>
-          de la planche, qu'on voit tout autour.</p>
+          du brut, qu'on voit tout autour.</p>
       </div>
       <figure class="capture apparait">
         <div class="fenetre">
           <img src="{{RACINE}}captures/pp-trous.webp" width="1920" height="1080" loading="lazy"
-               alt="Le croquis complet dans VerdierCAM : une plaque rectangulaire et ses deux perçages Ø5, nettement à l'intérieur du cadre orange de la planche, avec de la marge tout autour">
+               alt="Le croquis complet dans VerdierCAM : une plaque rectangulaire et ses deux perçages Ø5, nettement à l'intérieur du cadre orange du brut, avec de la marge tout autour">
         </div>
         <figcaption>La plaque et ses deux trous, prêts à coter.</figcaption>
       </figure>
@@ -172,7 +172,7 @@
         <p>Une section « Onglets de maintien » accompagne le Contour : quelques ponts de
           matière, automatiques ou posés à la main, pour qu'une pièce détourée ne parte pas
           toute seule à la dernière passe. Quatre sont posés d'office quand la découpe traverse
-          la planche ; leur nombre, leur taille et leur place se changent dans la section.</p>
+          le brut ; leur nombre, leur taille et leur place se changent dans la section.</p>
       </div>
       <figure class="capture apparait">
         <div class="fenetre">
@@ -220,8 +220,8 @@
         <p>En mode Débutant, chaque profondeur se règle directement sur un dessin en coupe :
           <b>Départ</b>, <b>Profondeur</b>, et les autres réglages qu'une opération peut
           demander, chacun posé sur sa cote. Un double-clic sur un champ ouvre la saisie au
-          clavier, exactement comme pour la planche.</p>
-        <p>Pour un Contour, la Profondeur naît déjà à <b>l'épaisseur de la planche</b> — 18 mm
+          clavier, exactement comme pour le brut.</p>
+        <p>Pour un Contour, la Profondeur naît déjà à <b>l'épaisseur du brut</b> — 18 mm
           ici : une découpe qui détoure la pièce traverse tout, par définition. Essayer d'aller
           plus loin (pour « être sûr » de traverser) ne marche pas : le logiciel refuse et le
           dit — <i>« profondeur ramenée à 18.00 mm : plus que le brut sous le départ »</i> — il
@@ -230,9 +230,9 @@
       <figure class="capture apparait">
         <div class="fenetre">
           <img src="{{RACINE}}captures/pp-profondeurs.webp" width="1920" height="1080" loading="lazy"
-               alt="Le dessin des profondeurs du Contour en mode Débutant dans VerdierCAM : une coupe du bois avec la Profondeur posée à 18 mm, toute l'épaisseur de la planche">
+               alt="Le dessin des profondeurs du Contour en mode Débutant dans VerdierCAM : une coupe du brut avec la Profondeur posée à 18 mm, toute son épaisseur">
         </div>
-        <figcaption>18 mm de profondeur pour 18 mm de planche : la découpe traverse.</figcaption>
+        <figcaption>18 mm de profondeur pour 18 mm de brut : la découpe traverse.</figcaption>
       </figure>
     </div>
   </div>
@@ -265,21 +265,21 @@
     <div class="fonction inverse">
       <div class="texte apparait">
         <span class="surtitre">10 · Simulation</span>
-        <h2>Voir le bois se creuser</h2>
-        <p>L'onglet <b>Simulation</b> rejoue l'usinage à l'écran : <b>Montrer › la planche qui se
+        <h2>Voir la matière se creuser</h2>
+        <p>L'onglet <b>Simulation</b> rejoue l'usinage à l'écran : <b>Montrer › Le brut qui se
           creuse</b> pour voir le brut se creuser passe après passe (lecture / pause, ou <kbd>Espace</kbd>),
-          veinure du bois comprise — ou <b>la pièce finie</b> pour sauter directement au
+          avec la veinure si c'est du bois — ou <b>la pièce finie</b> pour sauter directement au
           résultat.</p>
         <p>Avec « la pièce finie », la preuve est là : le Contour traverse toute l'épaisseur
           autour de la plaque, pas juste une rainure en surface. Seuls restent les quatre
-          <b>onglets de maintien</b> que la découpe pose d'office : la plaque reste tenue dans la
-          planche jusqu'à la fin, on les tranche au ciseau (section Onglets pour les changer). Une erreur — profondeur fausse, trou au mauvais
-          endroit — se verrait ici. Pas sur la planche, et pas après coup.</p>
+          <b>onglets de maintien</b> que la découpe pose d'office : la plaque reste tenue dans le
+          brut jusqu'à la fin, on les tranche au ciseau (section Onglets pour les changer). Une erreur — profondeur fausse, trou au mauvais
+          endroit — se verrait ici. Pas sur la pièce, et pas après coup.</p>
       </div>
       <figure class="capture apparait">
         <div class="fenetre">
           <img src="{{RACINE}}captures/pp-simulation.webp" width="1920" height="1080" loading="lazy"
-               alt="La simulation de VerdierCAM, la pièce finie montrée : la plaque détourée dans toute l'épaisseur, avec ses deux trous, tenue à la planche par ses onglets">
+               alt="La simulation de VerdierCAM, la pièce finie montrée : la plaque détourée dans toute l'épaisseur, avec ses deux trous, tenue au brut par ses onglets">
         </div>
         <figcaption>La plaque détourée, perçages compris, tenue par ses onglets — la pièce finie le prouve.</figcaption>
       </figure>
