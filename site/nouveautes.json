@@ -2,6 +2,39 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+   "date": "2026-10-26",
+   "titre": "Le banc d'essai de l'atelier, et un logiciel plus rapide sur les petites machines",
+   "points": [
+    "Banc d'essai : les mêmes documents et les mêmes gestes sur les trois machines de l'atelier — le PC de bureau, le vieux PC Windows (un Core i7 de 2016) et un Raspberry Pi 5 qui garde deux cœurs pour piloter la machine. Ouvrir VerdierCAM : 0,2 à 0,5 s ; un grand panneau gravé en V de près de 350 000 lignes : 3 à 10 s. Tous les chiffres sur la page Installer, « Quelle machine ? ».",
+    "Plusieurs opérations se calculent en même temps, jusqu'à quatre : quatre poches en spirale, 3,7 s → 3,0 s sur le PC de bureau. Sur le Raspberry Pi de la machine, les cœurs gardés pour le pilotage restent libres.",
+    "Vue 3D allégée : une suite de coupes droites se simplifie avant d'aller à la carte graphique. Sur le Raspberry Pi 5, une image des trajets de quatre poches en spirale passe de 175 à 50 ms.",
+    "Gravure en V : sans fond plat, la pointe ne descend plus sous son cône — plus bas, c'est la queue qui couperait. Là où la forme est plus large qu'elle, elle longe les parois à la profondeur de son cône, et un avertissement dit la surface laissée en relief, avec « Fond plat » ou les zones cliquées pour la vider. Les grands panneaux gravés en V se calculent aussi plus vite.",
+    "Relief : « À la taille du fichier (300 ppp) » met une image à la taille que son fichier déclare — un dessin préparé à 205 × 319 mm reste à 205 × 319 mm sur la planche.",
+    "Fiabilité : chaque lecteur de fichiers a été nourri de 17 400 fichiers abîmés (documents, dessins, G-code, bibliothèques d'outils). Un fichier d'outils tronqué n'empêche plus VerdierCAM de démarrer, et un défaut rare dans l'écriture des hélices du G-code est corrigé.",
+    "Disposition : un panneau resté caché derrière la vue revient seul dans son coin à l'ouverture, et la console dit lequel — le reste de vos panneaux ne bouge plus.",
+    "Usinage : un réglage changé dans le panneau Opération se voit tout de suite dans la vue."
+   ]
+  },
+  {
+   "date": "2026-10-25",
+   "titre": "Une boîte vissée de bout en bout : une simulation nette, des trajets discrets, un filetage qui guide",
+   "points": [
+    "Simulation : la gorge d'un filet se dessine ronde et nette — plus d'escalier de cases ni de rayures claires sur le tour. Au bout du programme, la planche creusée prend la finesse choisie et des parois lisses : elle est la pièce finie.",
+    "Simulation plus rapide : la pièce se maille trois à quatre fois plus vite, l'image ne se fige plus quand la pièce finie arrive, et les surfaces plates (le dessus, les fonds de poche) demandent quatre à six fois moins de travail à la carte graphique.",
+    "Simulation : les mêmes gestes qu'à l'Usinage — un clic dans une zone, un trait qui prend tout son contour, les onglets posés à la main.",
+    "Usinage : les trajets se tracent en fil fin et translucide, en 2D comme en 3D ; l'opération choisie reste un peu plus marquée, les autres s'effacent. La pièce se lit à travers. La touche T montre tour à tour la pièce seule, les trajets seuls, puis les deux.",
+    "Usinage : un détourage qui traverse la planche passe en dernier, après les filets — pendant le filetage, la pièce est encore tenue par toute la planche, pas par trois onglets.",
+    "Poche concentrique ou spirale : plus de fine paroi oubliée au milieu d'un anneau, comme autour du tenon d'un couvercle. Et dans une poche étroite, la rampe ne fait plus des dizaines de petits allers-retours sur place : elle descend le long de la plus longue droite libre.",
+    "Filetage : le panneau dit quand un filet extérieur n'a pas de tenon, et pourquoi — la poche autour du tenon s'arrête plus haut que le filet, le cercle choisi est le tenon lui-même, ou il est au fond d'un trou — avec le bouton qui le règle (« Fileter sur 10.00 mm, la hauteur du tenon », « Prendre le cercle Ø39.00 », « Filet intérieur »).",
+    "Filetage : un filetage neuf devine son côté d'après le dessin — extérieur autour d'un tenon, intérieur dans un trou. Un pas tapé à la main (6 mm pour une boîte en bois) se garde au filetage suivant : deux filets qui se vissent ont le même pas. Et la bulle de « Pas » le dit : n'importe quel pas de 0,2 à 10 mm, pas seulement ceux de la table.",
+    "Cercle : la première case est le diamètre, le rayon est à un Tab — une cote d'atelier se tape telle qu'elle est sur le plan.",
+    "Usinage : un clic dans une zone ne prend plus le disque d'à côté quand les cercles de l'opération précédente sont encore choisis.",
+    "Post-it, G-code et console : le texte glisse à la molette, trois lignes par cran, au lieu de sauter.",
+    "Plus fluide : poser un chemin ne fait plus souffler l'ordinateur, une grande poche et son programme se calculent sans gêner le reste, Annuler ne recalcule que ce qui a changé, et un croquis de plusieurs centaines de formes ne ralentit plus la souris.",
+    "Licence : le renouvellement des mises à jour se pose dans Aide › Licence, et une licence plus ancienne recollée par mégarde ne remplace plus l'active sans demander."
+   ]
+  },
+  {
    "date": "2026-10-24",
    "titre": "Le relief qui se lit et se règle, le pilotage qui dit où va la fraise, et le chanfrein avant le filet",
    "points": [
