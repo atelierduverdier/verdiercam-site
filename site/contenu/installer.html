@@ -35,6 +35,7 @@
       <li><a href="#windows"><span>02</span>Windows</a></li>
       <li><a href="#raspberry"><span>03</span>Raspberry Pi 5</a></li>
       <li><a href="#linuxcnc"><span>04</span>Pi sous LinuxCNC</a></li>
+      <li><a href="#machines"><span>05</span>Quelle machine ?</a></li>
     </ol>
   </div>
 </div>
@@ -134,6 +135,27 @@ sudo reboot</code></pre>
 <pre class="code"><code>xfconf-query -c xfwm4 -p /general/use_compositing -s false</code></pre>
       <p>Un souci ? <a href="mailto:contact@verdiercam.fr?subject=Installation%20de%20VerdierCAM">contact@verdiercam.fr</a>,
         avec la sortie de <code>vulkaninfo --summary</code>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- QUELLE MACHINE ? (26/10/2026, Christophe : « une sorte de benchmark pour mes 3 PC […] avec les 3 configurations
+     différentes ») : le tableau, la version et le jour viennent de docs/performances.json du logiciel (outils/banc/). -->
+<section id="machines" class="pp-etape">
+  <div class="cadre">
+    <div class="texte apparait installer">
+      <span class="surtitre">05 · Quelle machine ?</span>
+      <h2>Trois machines de l'atelier, chronométrées</h2>
+      <p>Les mêmes documents, ouverts et calculés par VerdierCAM {{verdiercam.version_banc}} sur les trois machines de
+        l'atelier, le {{verdiercam.date_banc}}. Chaque temps va du lancement du programme à l'image finie, parcours
+        calculés et programme écrit (la médiane de trois passages). Tout fonctionne sur chacune ; seul le temps change.</p>
+      {{verdiercam.tableau_performances}}
+      {{verdiercam.machines_performances}}
+      <p>Le <b>Raspberry Pi 5</b> suffit pour dessiner, régler et lancer l'usinage : un document courant s'y calcule en
+        quelques secondes, et une image du croquis le plus chargé se dessine encore 28 fois par seconde. Sur celui de
+        l'atelier, deux de ses quatre cœurs restent réservés à LinuxCNC, qui pilote la machine : un Pi sans LinuxCNC
+        calcule plus vite. Le <b>PC de l'atelier</b>, au processeur de 2016, fait le même travail en deux fois le temps du
+        PC de bureau.</p>
     </div>
   </div>
 </section>

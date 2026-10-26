@@ -470,7 +470,42 @@ def faits_verdiercam() -> dict:
         sys.exit(f"generer : pas de kJoursEssai dans {chemins.VERDIERCAM_LICENCE}")
     return {'version': m.group(1), 'familles': str(len(set(faites))),
             'liste_familles': '\n'.join(blocs), 'essai': essai.group(1),
-            **pieces_en_html(), **nouveautes_en_html()}
+            **pieces_en_html(), **nouveautes_en_html(), **performances_en_html()}
+
+
+# --- Les performances ------------------------------------------------------
+# LE BANC D'ESSAI DES TROIS MACHINES DE L'ATELIER (26/10/2026, Christophe : « on pourra mettre ça sur le site internet,
+# avec les 3 configurations différentes ») : docs/performances.json du logiciel, écrit par outils/banc/resumer.py — les
+# machines, les essais et leurs médianes. Rien n'est recopié ici : le tableau, la version et le jour se lisent là.
+def en_mots_fr(nombre: float, unite: str) -> str:
+    """« 0,12 s », « 4,5 s », « 15 s », « 35 ms » : deux chiffres qui comptent, la virgule française."""
+    if unite == 'ms':
+        texte = f'{nombre:.0f}'
+    elif nombre < 1:
+        texte = f'{nombre:.2f}'
+    elif nombre < 10:
+        texte = f'{nombre:.1f}'
+    else:
+        texte = f'{nombre:.0f}'
+    return texte.replace('.', ',') + '\u202f' + unite
+
+
+def performances_en_html() -> dict:
+    banc = json.loads(chemins.VERDIERCAM_PERFORMANCES.read_text(encoding='utf-8'))
+    machines, essais = banc.get('machines', []), banc.get('essais', [])
+    if not machines or not essais:
+        sys.exit(f"generer : {chemins.VERDIERCAM_PERFORMANCES} sans machine ou sans essai — relancer outils/banc/resumer.py")
+    tete = ''.join(f'<th scope="col">{html.escape(m["nom"])}</th>' for m in machines)
+    lignes = []
+    for e in essais:
+        cases = ''.join(f'<td>{en_mots_fr(e["valeurs"][m["id"]], e["unite"])}</td>' for m in machines)
+        lignes.append(f'<tr><th scope="row">{html.escape(e["nom"])}<span>{html.escape(e["detail"])}</span></th>{cases}</tr>')
+    tableau = ('<div class="banc"><table>\n  <thead><tr><th scope="col">Essai</th>' + tete + '</tr></thead>\n  <tbody>\n    '
+               + '\n    '.join(lignes) + '\n  </tbody>\n</table></div>')
+    fiches = '\n'.join(f'<li><b>{html.escape(m["nom"])}</b>{html.escape(m["description"])}</li>' for m in machines)
+    a, mo, j = (int(x) for x in banc['date'].split('-'))
+    return {'tableau_performances': tableau, 'machines_performances': f'<ul class="banc-machines">\n{fiches}\n</ul>',
+            'version_banc': html.escape(banc['version']), 'date_banc': f'{j}{"er" if j == 1 else ""} {MOIS_FR[mo - 1]} {a}'}
 
 
 # --- Les pièces paramétriques --------------------------------------------

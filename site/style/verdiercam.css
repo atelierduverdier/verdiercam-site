@@ -637,3 +637,29 @@ section.legal { padding-top: 24px; }
 .carte-piece figcaption span { color: var(--encre-3); font-size: .88rem; display: -webkit-box; -webkit-line-clamp: 4;
   -webkit-box-orient: vertical; overflow: hidden; }
 .carte-piece figcaption a { color: var(--orange-encre); font-size: .88rem; margin-top: auto; padding-top: 4px; }
+
+/* QUELLE MACHINE ? (26/10/2026, page Installer) : le banc d'essai des trois machines de l'atelier, lu dans
+   docs/performances.json du logiciel. Les chiffres en mono, alignés à droite ; l'essai et sa phrase à gauche. Sur un
+   téléphone (375 px), quatre colonnes tiennent : la phrase passe sous l'essai, les noms des machines sur deux lignes. */
+.banc { margin: 8px 0 18px; }
+.banc table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+.banc th, .banc td { padding: 9px 8px; border-bottom: 1px solid var(--trait); vertical-align: top; }
+.banc thead th { font: 600 .78rem var(--mono); text-transform: uppercase; letter-spacing: .04em; color: var(--encre-2);
+  text-align: right; border-bottom: 1px solid var(--trait-2); }
+.banc thead th:first-child { text-align: left; }
+.banc tbody th { text-align: left; font-weight: 600; color: var(--encre); }
+.banc tbody th span { display: block; font-weight: 400; font-size: .84rem; color: var(--encre-3); margin-top: 2px; }
+.banc td { text-align: right; font: 500 .9rem var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap;
+  color: var(--encre); }
+.banc tbody tr:nth-child(odd) { background: var(--fond-2); }
+.banc-machines { list-style: none; padding: 0; margin: 0 0 18px; display: grid; gap: 6px; font-size: .9rem;
+  color: var(--encre-2); }
+.banc-machines b { color: var(--encre); margin-right: 8px; }
+@media (max-width: 520px) {
+  .banc table { font-size: .82rem; }
+  .banc th, .banc td { padding: 8px 4px; }
+  .banc thead th { font-size: .66rem; letter-spacing: 0; }
+  .banc td { font-size: .78rem; }
+  .banc tbody th span { font-size: .76rem; }
+  .banc-machines b { display: block; margin: 0; }
+}

@@ -27,6 +27,9 @@ POLICES = VERDIERCAM / 'ressources' / 'polices'        # Inter, JetBrains Mono
 # Le configurateur de pièces (10/10/2026) : la page et le cœur WebAssembly, construit par outils/construire-wasm.sh
 # du logiciel (le .wasm n'est pas versionné : il se construit, puis le site le recopie).
 CONFIGURATEUR = VERDIERCAM / 'web' / 'configurateur'
+# Le banc d'essai des trois machines de l'atelier (26/10/2026) : docs/performances.json, écrit par
+# outils/banc/resumer.py du logiciel à partir des relevés de outils/banc/banc.sh et banc.ps1.
+VERDIERCAM_PERFORMANCES = VERDIERCAM / 'docs' / 'performances.json'
 
 # Les captures et les clips : refaits par capturer.sh, dans le vrai logiciel.
 PRESENTATION = PROJETS / 'realisations' / 'presentation-verdiercam'
@@ -53,6 +56,7 @@ TOUT = {
     'Operation.h (familles)': VERDIERCAM_OPERATION,
     'logo VerdierCAM': VERDIERCAM_LOGO,
     'Licence.h (durée de l\'essai)': VERDIERCAM_LICENCE,
+    "performances.json (banc d'essai : outils/banc/resumer.py)": VERDIERCAM_PERFORMANCES,
     'captures': CAPTURES,
     'clips': CLIPS,
     "G-code du tracé de l'accueil (outils/exporter-trace.sh)": TRACE_GCODE,
