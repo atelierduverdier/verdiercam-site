@@ -89,29 +89,32 @@ b, strong { font-weight: 600; }
      ses propres boutons dans l'aperçu (06/10/2026). */
   border-bottom: 1px solid transparent; transition: border-color .3s; }
 .barre.defile { border-bottom-color: var(--trait); }
-.barre-dedans { display: flex; align-items: center; gap: 24px; height: 68px; }
+.barre-dedans { display: flex; align-items: center; gap: 16px; height: 68px; }
 .marque { display: inline-flex; align-items: center; gap: 10px; color: var(--encre);
   text-decoration: none; font-weight: 600; font-size: 1.15rem; letter-spacing: -.02em; }
 .marque b { color: var(--orange-encre); font-weight: 600; }
 .menu { display: flex; gap: 2px; margin-left: auto; }
-.menu a { color: var(--encre-2); text-decoration: none; font-size: .95rem; padding: 8px 12px; border-radius: 10px; }
+.menu a { color: var(--encre-2); text-decoration: none; font-size: .9rem; padding: 8px; border-radius: 10px; }
 .menu a:hover { color: var(--encre); background: var(--fond-2); }
-/* Huit entrées depuis « Nouveautés » (11/10/2026) : jamais sur deux lignes ; resserrées, puis repliées
-   avant de pousser le bouton hors de l'écran. */
+/* Jamais sur deux lignes, et repliées avant de pousser le bouton hors de l'écran. Onze entrées
+   (26/10/2026) : la barre réclamait 1 418 px, elle n'en avait que 1 180 (le cadre) — de 1 141 à
+   1 555 px de large, « Être prévenu » était coupé à droite. Elle prend désormais le cadre large, celui
+   de la capture juste dessous (1 320 px), et ses entrées restent resserrées : 1 296 px au plus (vente
+   ouverte, « Acheter » et « Télécharger »), qui tiennent dès 1 360 px de fenêtre, barre de défilement
+   comprise. Une entrée de plus : remesurer, et replier plus tôt. */
 .menu a { white-space: nowrap; }
-@media (max-width: 1320px) { .menu a { padding: 8px 8px; font-size: .9rem; } }
-@media (max-width: 1140px) { .menu { display: none; } .barre .bouton { margin-left: auto; } }
+@media (max-width: 1359px) { .menu { display: none; } .barre .bouton { margin-left: auto; } }
 
-/* Le bouton « Menu », sous 1140 px (16/10/2026) : jusque-là le menu s'y repliait SANS RIEN À LA
-   PLACE — sur une tablette en portrait, plus aucune section n'était joignable d'en haut. Il déroule
-   les sections sous la barre, à la façon « Menu dropdown » de transitions.dev : il s'ouvre depuis
-   le haut en 250 ms (97 → 100 %) et se referme plus vite, en 150 ms (vers 99 %). Le script le
-   montre (`.js`) : sans lui, le bouton ne ferait rien, il reste caché. */
+/* Le bouton « Menu », sous 1360 px (sous 1140 du 16 au 26/10/2026) : avant lui, le menu se repliait
+   SANS RIEN À LA PLACE — sur une tablette en portrait, plus aucune section n'était joignable d'en
+   haut. Il déroule les sections sous la barre, à la façon « Menu dropdown » de transitions.dev : il
+   s'ouvre depuis le haut en 250 ms (97 → 100 %) et se referme plus vite, en 150 ms (vers 99 %). Le
+   script le montre (`.js`) : sans lui, le bouton ne ferait rien, il reste caché. */
 .menu-bouton { display: none; align-items: center; gap: 8px; font: 600 .92rem var(--texte); color: var(--encre);
   background: var(--carte); border: 1px solid var(--trait-2); border-radius: 10px; padding: 8px 14px; cursor: pointer; }
 .menu-bouton:hover { border-color: var(--encre-3); }
 .menu-bouton svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
-@media (max-width: 1140px) {
+@media (max-width: 1359px) {
   .js .menu-bouton { display: inline-flex; margin-left: auto; }
   .js .barre .bouton { margin-left: 0; }
   .js .menu { display: flex; flex-direction: column; gap: 2px; margin: 0;
@@ -128,11 +131,13 @@ b, strong { font-weight: 600; }
   .js .barre.menu-ferme .menu { transform: scale(.99); }
   .js .menu a { font-size: 1rem; padding: 12px; }
 }
-/* Sur un téléphone, l'icône seule : le mot ne tient plus à côté du logo et du bouton orange. */
+/* Sur un téléphone, l'icône seule : le mot ne tient plus à côté du logo et du bouton orange. Le reste
+   se resserre aussi (26/10/2026) : sur 360 px de large, « Être prévenu » passait sur deux lignes. */
 @media (max-width: 480px) {
-  .menu-bouton { padding: 8px 10px; }
+  .menu-bouton { padding: 8px; }
   .menu-bouton span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-  .barre-dedans { gap: 12px; }
+  .barre-dedans { gap: 8px; }
+  .barre .bouton.petit { padding-inline: 12px; }
 }
 
 /* --- Les boutons ------------------------------------------------------ */

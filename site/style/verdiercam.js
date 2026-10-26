@@ -12,7 +12,7 @@
   function filet() { if (barre) barre.classList.toggle('defile', window.scrollY > 8); }
   window.addEventListener('scroll', filet, { passive: true }); filet();
 
-  // --- Le bouton « Menu », sous 1140 px -------------------------------------
+  // --- Le bouton « Menu », sous 1360 px -------------------------------------
   // Il déroule les sections sous la barre. Un lien choisi, un clic ailleurs ou
   // Échap le referment ; Échap rend aussi la main au bouton.
   var menuBouton = document.querySelector('.menu-bouton');
