@@ -2,8 +2,65 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+   "date": "2026-10-29",
+   "titre": "Courbes et textes qui se travaillent à la main, et le changement de fraise au palpeur fixe",
+   "points": [
+    "Courbes de Bézier : les poignées se voient sur la forme choisie ; Suppr sur un nœud garde la courbe au lieu d'y faire un trou ; « Ajouter un point sur le trait » (Ctrl+K le trouve aussi par « couper » ou « nœud ») ; plusieurs points choisis se tirent ensemble, et un nœud tiré ne tremble plus.",
+    "Déplacer, Tourner, Mettre à l'échelle et Miroir partent directement sur le dessin : un clic sur l'icône, puis le point de base ; la fenêtre des valeurs exactes vient au second appel.",
+    "Décaler peut ne garder que le tour de l'ensemble — extérieur, intérieur ou les deux : les morceaux qui se touchent n'en font plus qu'un. Simplifier accepte un tracé qui porte des arcs : les arcs restent, les traits entre eux se simplifient.",
+    "Textes : un texte se rouvre depuis l'arbre (son crayon, ou un double-clic). Posé sur une courbe, il la suit quand on la tire ou la déplace ; modifié, il garde son numéro et les opérations qui le gravent ; avec « Courber les lettres avec la courbe », les lettres d'une écriture attachée restent jointes sur un arrondi serré. Une police remplacée sur le disque se relit sans relancer VerdierCAM.",
+    "« Tracé seul » : un bouton cache d'un coup nœuds, poignées, numéros, contraintes et cotes, au Croquis et à l'Usinage ; un second clic les remet.",
+    "Supprimer des formes dit quelles opérations les perdent — « Gravure en V n'a plus aucune forme : elle n'usinera rien » — et comment y revenir.",
+    "Changement de fraise à la main, mesuré au palpeur fixe : Réglages machine › Table, « Changement de fraise : À la main ». La broche va à la position de changement et attend ; la fraise montée, le palpeur fixe la mesure (la fraise du zéro d'abord, qui sert de référence). Avec FluidNC ou grblHAL, c'est la macro de la carte, écrite par VerdierCAM et essayée sur une vraie carte ; sur une carte GRBL, c'est le Pilotage qui mène la mesure.",
+    "Magasin d'outils : au-delà du dernier poste, une fraise se change à la main à la position de changement, au lieu d'une alarme ; et la broche peut attendre sa vitesse avant de plonger dans le siège.",
+    "Imports SVG, DXF et esquisses FreeCAD : 950 fichiers réels passés au crible — plus de traits fantômes ni de cotes fausses à l'arrivée.",
+    "Documents : un document enregistré se rouvre à l'identique — dix-neuf petites pertes silencieuses corrigées, chacune gardée par un contrôle.",
+    "Pilotage face aux pannes : une carte qui redémarre seule, une fin de course, un Wi-Fi qui se tait ou des octets abîmés ne font plus croire à une position sûre.",
+    "Windows : la suite entière des contrôles passe sur un vrai Windows 11. Quand le « Contrôle intelligent des applications » de Windows bloque VerdierCAM, le LISEZMOI explique quoi faire, et VerdierCAM-Diagnostic dit s'il est actif.",
+    "Usinage et Simulation : la broche passe de pleine à translucide en fondu, au lieu de sauter d'une image à l'autre."
+   ]
+  },
+  {
+   "date": "2026-10-28",
+   "titre": "Une pièce neuve qui garde vos réglages, un magasin à votre image, et une grande revue de l'usinage",
+   "points": [
+    "Une nouvelle pièce prend le post-processeur de la machine en service, et « Garder pour les nouvelles pièces » (onglet Brut) retient pour chaque machine la matière, l'origine et les hauteurs — un premier réglage, une fois pour toutes.",
+    "Une machine neuve n'a plus de post-processeur d'office : l'écran dit « Vous n'avez pas choisi votre post-processeur », et rien ne s'exporte avant.",
+    "Contour extérieur : une fente plus étroite que la fraise ne supprime plus tout le parcours, et les recoins fermés derrière elle sont creusés d'abord, tant que la pièce tient au brut.",
+    "Usiner un seul côté d'une forme : en Usinage, un second clic sur un trait déjà choisi ne garde que lui, et le Contour ne suit que ce côté.",
+    "Numéros d'outil : deux fraises n'ont plus le même numéro T, et une fraise prise dans la bibliothèque apporte le sien.",
+    "Magasin d'outils : votre propre modèle 3D (STL) posé à chaque poste, en plusieurs pièces si besoin, suivi en direct pendant qu'on le règle.",
+    "Changeur d'outil : VerdierCAM lit la macro de la carte et la compare à ses réglages ; « Lancer » attend la bonne, un bouton l'envoie. Et la broche ne peut plus plonger dans la table : un programme dont le magasin tomberait sous le dessus du martyr est refusé (une carte qui n'a pas fait sa prise d'origine).",
+    "Usinage et Simulation : la broche devient translucide pendant que la fraise travaille, pour voir la coupe, et reste pleine pendant un changement d'outil.",
+    "Gravure « entre les traits » : un avertissement quand les traits du dessin sont trop fins pour la pointe.",
+    "Pilotage : la légende cache ses tracés d'un clic, comme en Usinage ; les avertissements de vitesse de « Lancer » disent ce qui se passera et quoi faire.",
+    "Poche dans un anneau étroit : la rampe descend en hélice au lieu de centaines de demi-tours — l'avant-trou d'un M4 passe de 634 à 222 Ko de G-code.",
+    "Copier-coller : la copie d'un polygone coté reste un polygone, avec son nom et sa famille.",
+    "Revue de l'usinage : dix cartes et logiciels de pilotage confrontés à leur documentation ; ce que la Simulation montre est ce qui part à la machine, vérifié pour tous les documents et tous les post-processeurs. Les nombres du G-code gardent le point quelle que soit la langue de l'ordinateur. Et jamais de travail perdu : un document abîmé ne fait plus fermer VerdierCAM, documents et réglages s'écrivent sur le disque pour de bon."
+   ]
+  },
+  {
+   "date": "2026-10-27",
+   "titre": "Le changeur d'outil automatique : le magasin dessiné, simulé, et sa macro écrite par VerdierCAM",
+   "points": [
+    "Changeur d'outil automatique (cartes FluidNC et grblHAL) : la case « Changeur d'outil automatique (ATC) » des réglages machine, et le magasin d'outils réglé dans Réglages machine › Table — ses postes, leur position, le Z machine des sièges — puis dessiné sur la table et dans la vue 3D. La carte change seule de fraise ; « Lancer » lui dit d'abord laquelle tient la broche.",
+    "Simulation : le cycle complet d'un magasin à vis — dévissage en tournant à l'envers, vissage à l'endroit, mesure au palpeur d'outil, couvercle — joué avec ses vrais temps et compté dans la durée du programme. Les mêmes réglages écrivent la macro de la carte : « Écrire la macro de la carte… ».",
+    "Pilotage : le trajet de la carte jusqu'au magasin se trace en tirets ambre, et la broche ne repasse jamais sous le magasin.",
+    "Une bibliothèque pour débuter : vingt-cinq fraises d'office au lieu de dix — droites de Ø1 à Ø4, une dent, coupe basse, compression, fraise à surfacer Ø22, boules, pointes en V à 30° et 60°, forets — chacune avec son régime de départ et une note qui dit à quoi elle sert. Les fraises à fileter M4, M6 et M8 de la bibliothèque sont réparées.",
+    "À l'ouverture, l'onglet Brut passe devant : la pièce brute d'abord. Le ruban ne répète plus Nouveau et Ouvrir (ils sont dans le menu Fichier) ; Enregistrer reste.",
+    "Contour d'un tour fait de traits et d'arcs reliés : le panneau propose Intérieur / Extérieur, comme le calcul le voit — il proposait à gauche / à droite, sans effet.",
+    "Pilotage : « Brut neuf » remet la vue au brut entier ; la matière en direct suit la fraise dès la première passe, et ne saute plus en avant quand on relance un programme.",
+    "Pilotage : la liste à cocher avant chaque programme devient une option — Réglages machine › Pupitre & palpeur, « Liste à cocher avant de lancer ».",
+    "Pilotage : un seul VerdierCAM à la fois sur une carte ; un second ne s'y branche plus (rapports mêlés, position qui saute). Le jog tenu marche pendant un changement d'outil, et la fraise montée est nommée juste en haut de la vue.",
+    "Réglages machine › Carte : le dossier des sauvegardes des réglages de la carte s'écrit en clair, et une sauvegarde se restaure d'un clic.",
+    "Ctrl+K trouve aussi les réglages du Pilotage : « anti » ou « onduler » mènent à « Onduler la broche (anti-broutement) ».",
+    "Post-processeur RichAuto DSP (boîtiers A11, A18 et leurs copies), expérimental : le G-code à copier sur la clé USB du boîtier.",
+    "Schémas des réglages : les petits dessins des tuiles se lisent, et leurs titres ne passent plus dessous."
+   ]
+  },
+  {
    "date": "2026-10-26",
-   "titre": "Le banc d'essai de l'atelier, et un logiciel plus rapide sur les petites machines",
+   "titre": "Le banc d'essai de l'atelier, le zéro à la feuille et le plan coté en PDF",
    "points": [
     "Banc d'essai : les mêmes documents et les mêmes gestes sur les trois machines de l'atelier — le PC de bureau, le vieux PC Windows (un Core i7 de 2016) et un Raspberry Pi 5 qui garde deux cœurs pour piloter la machine. Ouvrir VerdierCAM : 0,2 à 0,5 s ; un grand panneau gravé en V de près de 350 000 lignes : 3 à 10 s. Tous les chiffres sur la page Installer, « Quelle machine ? ».",
     "Plusieurs opérations se calculent en même temps, jusqu'à quatre : quatre poches en spirale, 3,7 s → 3,0 s sur le PC de bureau. Sur le Raspberry Pi de la machine, les cœurs gardés pour le pilotage restent libres.",
@@ -12,7 +69,17 @@
     "Relief : « À la taille du fichier (300 ppp) » met une image à la taille que son fichier déclare — un dessin préparé à 205 × 319 mm reste à 205 × 319 mm sur la planche.",
     "Fiabilité : chaque lecteur de fichiers a été nourri de 17 400 fichiers abîmés (documents, dessins, G-code, bibliothèques d'outils). Un fichier d'outils tronqué n'empêche plus VerdierCAM de démarrer, et un défaut rare dans l'écriture des hélices du G-code est corrigé.",
     "Disposition : un panneau resté caché derrière la vue revient seul dans son coin à l'ouverture, et la console dit lequel — le reste de vos panneaux ne bouge plus.",
-    "Usinage : un réglage changé dans le panneau Opération se voit tout de suite dans la vue."
+    "Usinage : un réglage changé dans le panneau Opération se voit tout de suite dans la vue.",
+    "Pilotage : le zéro Z à la feuille de papier. Onglet Palpeur, « Z à la feuille » : la fraise au-dessus de la pièce, une feuille glissée dessous, on descend pas à pas (de 0,01 à 0,5 mm) et l'on pose Z0 dès qu'elle accroche — l'épaisseur de la feuille est comptée.",
+    "Pilotage : au changement d'outil fait à la main, la fraise se déplace (pavé de Déplacer ou flèches du clavier) jusqu'à un endroit plat pour refaire le zéro, et la fenêtre rappelle où est le Z0 du programme : sur le dessus de la pièce ou sur le martyr.",
+    "Pilotage : à la connexion d'une machine, l'onglet Déplacer s'ouvre de lui-même ; la tête va aussi à une cote tapée, refusée si elle dépasse la course de l'axe.",
+    "Plan coté en PDF, depuis le croquis : Fichier › Exporter le dessin › Plan coté (PDF)… — un titre et une note au cartouche, A4 ou A3, la plus grande échelle normalisée qui tient, les cotes d'encombrement et les axes des cercles.",
+    "Croquis : le bilan des contraintes se clique. « N mouvements encore libres » choisit les formes qui bougent encore, en orange sur le dessin et dans l'arbre ; les contraintes redondantes se montrent de même. Dans le thème Clair, un trait libre est violet et plus épais : il ne se confond plus avec un trait tenu.",
+    "Croquis : l'arc tracé par son centre accroche aussi sa fin sur un bout de trait ou un point — il ne reste plus un « mouvement libre » caché au bout d'un arc.",
+    "L'écran dit « brut » au lieu de « planche » : VerdierCAM n'usine pas que du bois. L'onglet Brut, « Brut · Aluminium » pour une plaque d'alu, « Taille du brut », « Centrer sur le brut ».",
+    "Une première installation part d'une machine neutre, « Ma machine », à régler — et non plus de la machine de l'atelier.",
+    "Exemples : un joint de carburateur entièrement contraint, pour apprendre le croquis — retapez une cote, tout le joint suit.",
+    "Post-processeur simCNC (cartes CSMIO/IP), expérimental : écrit d'après la documentation du fabricant, en attendant un essai sur une vraie machine."
    ]
   },
   {
