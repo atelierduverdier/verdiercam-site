@@ -3,7 +3,7 @@
  "jours": [
   {
    "date": "2026-10-30",
-   "titre": "Usiner une partie d'une forme, trait par trait, et la photo de la pièce sans ses chutes",
+   "titre": "Usiner une partie d'une forme trait par trait, la photo sans ses chutes, et la pointe en V qui ne coupe que sur son cône",
    "points": [
     "Ébavurer prend un tour fait de morceaux — une partie du pourtour d'une forme et un trait, comme pour le Contour — et même un trait ouvert : un bout de pourtour, ou un trait seul, se chanfreine d'un côté, le dehors ou le dedans de la forme, ou à gauche ou à droite du sens du tracé. Le chanfrein s'arrête au bout du trait, sans creuser plus loin, sauf au coin saillant d'une pièce, où la pointe va jusqu'au bout.",
     "Une opération faite sur une partie des traits d'une forme garde les mêmes traits quand on retouche le dessin : un trait coupé par « Diviser aux intersections », supprimé ou renuméroté ne change plus ce qu'elle usine.",
@@ -11,7 +11,15 @@
     "Avec « Traits seuls », Ctrl+clic ajoute ou retire un trait, comme au Croquis. Une opération refusée ne laisse plus le panneau sur l'opération d'avant, dont on aurait changé les réglages sans le vouloir.",
     "Photo de la pièce, pour montrer le résultat à un client : « Cacher des morceaux » coché, un clic dans la vue cache tout un morceau — le reste de planche autour de la pièce, le milieu d'un cadre —, un autre clic au même endroit le remet, « Tout remettre » d'un coup. Le fond « Dégradé » se voit dans l'aperçu comme sur la photo écrite.",
     "Changeur d'outil sous LinuxCNC : la carte « Macro de la carte » relit le fichier de réglages du magasin (« Choisir son atc_config.ngc… ») et dit, réglage par réglage, ce qui diffère des réglages de VerdierCAM, et les cotes encore à établir — comme pour la macro d'une FluidNC.",
-    "« Tracé seul » s'appelle désormais « Sans symboles » : à l'Usinage, à côté de « Traits seuls », on prenait l'un pour l'autre. Et une gravure en V faite avec une pointe dessinée dit son angle — « Gravure en V 60° » —, et non plus « 0° »."
+    "« Tracé seul » s'appelle désormais « Sans symboles » : à l'Usinage, à côté de « Traits seuls », on prenait l'un pour l'autre. Et une gravure en V faite avec une pointe dessinée dit son angle — « Gravure en V 60° » —, et non plus « 0° ».",
+    "Un Ébavurer posé sur les formes d'un Contour en reprend aussi les traits : il chanfreine les arêtes que le Contour a faites, et plus celles qu'il n'usine pas — une bande en V qui se creusait en plein bois.",
+    "Un texte se rouvre en une seule forme, comme après « Poser le texte » : il ne se redécoupe plus en une ligne de l'arbre par contour à chaque ouverture. Une opération qui ne gravait qu'une partie d'une forme retrouve exactement ces traits après Enregistrer et Ouvrir.",
+    "Outils : une pointe en V ou un chanfrein ne coupent que sur leur cône — leur hauteur de coupe suit l'angle, le diamètre et le méplat, et l'alerte de longueur utile vient dès qu'on descend plus bas. La fiche de la bibliothèque dit l'angle de la pointe, dessinée comprise (« 60° »).",
+    "L'outil Mesurer va d'un point à un autre : il s'accroche toujours aux croisements, au millionième près, et Maj+clic prend le point sur le trait plutôt que le trait.",
+    "Pilotage : la console a ses raccourcis G28 et G30 — aller aux deux points que la carte garde en mémoire — et G28.1, G30.1 pour les mémoriser à la position actuelle ; chacun demande d'abord une confirmation qui dit où va la machine (en rapide, tous les axes à la fois).",
+    "Réglages machine › Carte : le sens des moteurs ($3) et le sens de l'origine ($23) se règlent par trois cases X, Y, Z, chacun avec une phrase qui dit ce qu'il fait. En anglais, les réglages de la carte ont leurs noms, leurs unités et leurs explications en anglais.",
+    "Réglages machine › Pupitre & palpeur : la carte « Palpeur » montre la plaque en dessin, avec ses cotes (« Épaisseur palpeur », « Épaisseur lèvre », « Ø de palpage ») et le « Coin du brut », qu'on choisit d'un clic.",
+    "Windows : la fenêtre de VerdierCAM tient toujours dans son écran — au lancement, au retour d'un agrandissement, sur un autre écran ou à une autre échelle —, et le bouton du milieu montre deux carrés quand elle est agrandie."
    ]
   },
   {
