@@ -2,6 +2,18 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+   "date": "2026-10-30",
+   "titre": "Usiner une partie d'une forme, trait par trait, et la photo de la pièce sans ses chutes",
+   "points": [
+    "Ébavurer prend un tour fait de morceaux — une partie du pourtour d'une forme et un trait, comme pour le Contour — et même un trait ouvert : un bout de pourtour, ou un trait seul, se chanfreine d'un côté, le dehors ou le dedans de la forme, ou à gauche ou à droite du sens du tracé. Le chanfrein s'arrête au bout du trait, sans creuser plus loin, sauf au coin saillant d'une pièce, où la pointe va jusqu'au bout.",
+    "Une opération faite sur une partie des traits d'une forme garde les mêmes traits quand on retouche le dessin : un trait coupé par « Diviser aux intersections », supprimé ou renuméroté ne change plus ce qu'elle usine.",
+    "Changer les traits d'une opération déjà faite : « Choisir ses traits », à droite de l'état du calcul, les met dans la sélection de la vue ; Maj+clic en retire une forme, Ctrl+Maj+clic un trait, Ctrl+clic en ajoute ; le bouton orange « Prendre les traits choisis », en haut du panneau, les lui rend. Ce bouton se montre dès que la sélection n'est plus celle de l'opération, quelle que soit la section ouverte.",
+    "Avec « Traits seuls », Ctrl+clic ajoute ou retire un trait, comme au Croquis. Une opération refusée ne laisse plus le panneau sur l'opération d'avant, dont on aurait changé les réglages sans le vouloir.",
+    "Photo de la pièce, pour montrer le résultat à un client : « Cacher des morceaux » coché, un clic dans la vue cache tout un morceau — le reste de planche autour de la pièce, le milieu d'un cadre —, un autre clic au même endroit le remet, « Tout remettre » d'un coup. Le fond « Dégradé » se voit dans l'aperçu comme sur la photo écrite.",
+    "Changeur d'outil sous LinuxCNC : la carte « Macro de la carte » relit le fichier de réglages du magasin (« Choisir son atc_config.ngc… ») et dit, réglage par réglage, ce qui diffère des réglages de VerdierCAM, et les cotes encore à établir — comme pour la macro d'une FluidNC."
+   ]
+  },
+  {
    "date": "2026-10-29",
    "titre": "Courbes et textes qui se travaillent à la main, et le changement de fraise au palpeur fixe",
    "points": [
@@ -10,6 +22,9 @@
     "Décaler peut ne garder que le tour de l'ensemble — extérieur, intérieur ou les deux : les morceaux qui se touchent n'en font plus qu'un. Simplifier accepte un tracé qui porte des arcs : les arcs restent, les traits entre eux se simplifient.",
     "Textes : un texte se rouvre depuis l'arbre (son crayon, ou un double-clic). Posé sur une courbe, il la suit quand on la tire ou la déplace ; modifié, il garde son numéro et les opérations qui le gravent ; avec « Courber les lettres avec la courbe », les lettres d'une écriture attachée restent jointes sur un arrondi serré. Une police remplacée sur le disque se relit sans relancer VerdierCAM.",
     "« Tracé seul » : un bouton cache d'un coup nœuds, poignées, numéros, contraintes et cotes, au Croquis et à l'Usinage ; un second clic les remet.",
+    "Usinage, en vue 2D : le bouton « Traits seuls » ne choisit que des traits, jamais la zone entre eux, et un clic dans le vide ne défait plus la sélection ; Ctrl+Maj+clic ajoute ou retire un seul trait.",
+    "« Diviser aux intersections » coupe aussi les courbes, et le bout d'un trait posé contre un autre à un centième de millimètre près : un tour fait de courbes se coupe sans rien perdre.",
+    "Une poche faite de zones cliquées ne fige plus l'écran quand on retouche le dessin : ses zones se recalculent en arrière-plan, avec son parcours.",
     "Supprimer des formes dit quelles opérations les perdent — « Gravure en V n'a plus aucune forme : elle n'usinera rien » — et comment y revenir.",
     "Changement de fraise à la main, mesuré au palpeur fixe : Réglages machine › Table, « Changement de fraise : À la main ». La broche va à la position de changement et attend ; la fraise montée, le palpeur fixe la mesure (la fraise du zéro d'abord, qui sert de référence). Avec FluidNC ou grblHAL, c'est la macro de la carte, écrite par VerdierCAM et essayée sur une vraie carte ; sur une carte GRBL, c'est le Pilotage qui mène la mesure.",
     "Magasin d'outils : au-delà du dernier poste, une fraise se change à la main à la position de changement, au lieu d'une alarme ; et la broche peut attendre sa vitesse avant de plonger dans le siège.",
