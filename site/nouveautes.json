@@ -10,7 +10,8 @@
     "Changer les traits d'une opération déjà faite : « Choisir ses traits », à droite de l'état du calcul, les met dans la sélection de la vue ; Maj+clic en retire une forme, Ctrl+Maj+clic un trait, Ctrl+clic en ajoute ; le bouton orange « Prendre les traits choisis », en haut du panneau, les lui rend. Ce bouton se montre dès que la sélection n'est plus celle de l'opération, quelle que soit la section ouverte.",
     "Avec « Traits seuls », Ctrl+clic ajoute ou retire un trait, comme au Croquis. Une opération refusée ne laisse plus le panneau sur l'opération d'avant, dont on aurait changé les réglages sans le vouloir.",
     "Photo de la pièce, pour montrer le résultat à un client : « Cacher des morceaux » coché, un clic dans la vue cache tout un morceau — le reste de planche autour de la pièce, le milieu d'un cadre —, un autre clic au même endroit le remet, « Tout remettre » d'un coup. Le fond « Dégradé » se voit dans l'aperçu comme sur la photo écrite.",
-    "Changeur d'outil sous LinuxCNC : la carte « Macro de la carte » relit le fichier de réglages du magasin (« Choisir son atc_config.ngc… ») et dit, réglage par réglage, ce qui diffère des réglages de VerdierCAM, et les cotes encore à établir — comme pour la macro d'une FluidNC."
+    "Changeur d'outil sous LinuxCNC : la carte « Macro de la carte » relit le fichier de réglages du magasin (« Choisir son atc_config.ngc… ») et dit, réglage par réglage, ce qui diffère des réglages de VerdierCAM, et les cotes encore à établir — comme pour la macro d'une FluidNC.",
+    "« Tracé seul » s'appelle désormais « Sans symboles » : à l'Usinage, à côté de « Traits seuls », on prenait l'un pour l'autre. Et une gravure en V faite avec une pointe dessinée dit son angle — « Gravure en V 60° » —, et non plus « 0° »."
    ]
   },
   {
@@ -21,7 +22,7 @@
     "Déplacer, Tourner, Mettre à l'échelle et Miroir partent directement sur le dessin : un clic sur l'icône, puis le point de base ; la fenêtre des valeurs exactes vient au second appel.",
     "Décaler peut ne garder que le tour de l'ensemble — extérieur, intérieur ou les deux : les morceaux qui se touchent n'en font plus qu'un. Simplifier accepte un tracé qui porte des arcs : les arcs restent, les traits entre eux se simplifient.",
     "Textes : un texte se rouvre depuis l'arbre (son crayon, ou un double-clic). Posé sur une courbe, il la suit quand on la tire ou la déplace ; modifié, il garde son numéro et les opérations qui le gravent ; avec « Courber les lettres avec la courbe », les lettres d'une écriture attachée restent jointes sur un arrondi serré. Une police remplacée sur le disque se relit sans relancer VerdierCAM.",
-    "« Tracé seul » : un bouton cache d'un coup nœuds, poignées, numéros, contraintes et cotes, au Croquis et à l'Usinage ; un second clic les remet.",
+    "« Sans symboles » (d'abord nommé « Tracé seul ») : un bouton cache d'un coup nœuds, poignées, numéros, contraintes et cotes, au Croquis et à l'Usinage ; un second clic les remet.",
     "Usinage, en vue 2D : le bouton « Traits seuls » ne choisit que des traits, jamais la zone entre eux, et un clic dans le vide ne défait plus la sélection ; Ctrl+Maj+clic ajoute ou retire un seul trait.",
     "« Diviser aux intersections » coupe aussi les courbes, et le bout d'un trait posé contre un autre à un centième de millimètre près : un tour fait de courbes se coupe sans rien perdre.",
     "Une poche faite de zones cliquées ne fige plus l'écran quand on retouche le dessin : ses zones se recalculent en arrière-plan, avec son parcours.",
