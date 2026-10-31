@@ -1,0 +1,66 @@
+// SUPPORT DE RASPBERRY PI 5 — la platine qui se visse au mur ou sous un plateau : la carte posée sur quatre entretoises,
+// ses écrous prisonniers dans le bois par dessous (on visse sans tenir de clé), des lumières sous le processeur pour que
+// l'air passe, le contour de la carte gravé pour la poser du premier coup.
+// thème : Électronique et boîtiers
+//
+// LA CARTE : 85 × 56, ses quatre trous de fixation sur un rectangle de 58 × 49, à 3,5 de deux de ses bords (le côté
+// opposé aux prises USB et Ethernet) : les cotes de la fondation Raspberry Pi, les mêmes que la Pi 4. LA PLATINE : la
+// carte et une `marge` autour ; un trou de Ø3 sous chaque trou de la carte (les vis M2,5 y passent) ; par DESSOUS, un
+// hexagone de `plats_ecrou` (l'écrou M2,5 fait 5 sur plats) creusé de `prof_ecrou`. Quatre trous de Ø4,5 aux coins pour
+// la visser. Des LUMIÈRES de 6 de large sous le cœur de la carte.
+//
+// L'USINAGE : les écrous (Poche, face du dessous, fraise droite Ø3), le contour de la carte (Gravure, Pointe V 90°), les
+// lumières et les trous de fixation (Poche, Ø3), les trous de vis (Perçage, Foret Ø3), puis la platine (Contour
+// extérieur, onglets). Contreplaqué de bouleau de 6 ; quatre entretoises M2,5 de 10, quatre vis M2,5 × 16, quatre écrous.
+
+marge      = 18;     // de la carte au bord de la platine (mm)
+plats_ecrou = 5.6;   // l'hexagone des écrous, sur plats (mm) : 5 et le jeu
+prof_ecrou = 2.5;    // profondeur des logements d'écrou (mm)
+lumieres   = 5;      // lumières sous la carte
+epaisseur  = 6;      // épaisseur (mm)
+rognure    = 5;      // du bord du brut à la platine (mm)
+
+W = 85 + 2 * marge;  H = 56 + 2 * marge;
+oc = [rognure + marge, rognure + marge];       // le coin de la carte (côté des trous de fixation)
+trous = [[3.5, 3.5], [61.5, 3.5], [3.5, 52.5], [61.5, 52.5]];
+si (plats_ecrou < 5.4)
+    echo("Moins de 5,4 sur plats : les coins de l'écrou buteront dans l'arrondi de la fraise Ø3.");
+si (prof_ecrou > epaisseur - 2)
+    echo("Le logement d'écrou laisse moins de 2 mm de bois : moins profond.");
+planche([W + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+p = rect(o, [W, H], 6);
+nommer(#p, "platine");
+c = rect(oc, [85, 56], 3);
+nommer(#c, "contour de la carte");
+pour (t = trous) {
+    v = cercle(oc + t, 1.5);
+    nommer(#v, "trou de vis");
+}
+pour (x = [8, W - 8])
+    pour (y = [8, H - 8]) {
+        f = cercle(o + [x, y], 2.25);
+        nommer(#f, "fixation");
+    }
+// Les lumières : entre les trous de fixation, en travers, à 8 au moins des trous de vis.
+pour (k = [0 : lumieres - 1]) {
+    x = 14 + k * (61.5 - 3.5 - 20) / max(1, lumieres - 1);
+    l = oblong(oc + [x, 28], 30, 6, 90);
+    nommer(#l, "lumière");
+}
+// ── Les écrous, par dessous (vus de dessus à travers le bois) ──
+face("dessous");
+pour (t = trous) {
+    e = polygone(oc + t, plats_ecrou, 6, plats = vrai);
+    nommer(#e, "écrou");
+}
+face("dessus");
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "écrou", outil = "Fraise droite Ø3", profondeur = prof_ecrou, passe = 1.25, nom = "Écrous prisonniers");
+usinage("gravure", "contour de la carte", outil = "Pointe V 90", profondeur = 0.4, nom = "Contour de la carte");
+usinage("poche", "lumière", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1.5, nom = "Lumières");
+usinage("poche", "fixation", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1.5, nom = "Trous de fixation");
+usinage("percage", "trou de vis", outil = "Foret Ø3", profondeur = epaisseur, nom = "Trous de vis");
+usinage("contour", "platine", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 1.5, nom = "Platine");

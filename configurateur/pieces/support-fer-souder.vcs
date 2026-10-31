@@ -1,0 +1,67 @@
+// SUPPORT DE FER À SOUDER — le poste de l'établi d'électronique : deux montants en V où le fer se pose penché, par son
+// manche et son col, la panne dans le vide ; une cuvette pour la laine de laiton qui nettoie la panne ; un trou pour la
+// cheville qui porte la bobine d'étain.
+// thème : Électronique et boîtiers
+//
+// LE SOCLE : `longueur` × `largeur` ; une CUVETTE de Ø`d_cuvette` creusée de `profondeur_cuvette` ; un trou de Ø8 pour la
+// cheville de la bobine ; deux MORTAISES. LES MONTANTS, debout en travers du socle, entrent par un tenon : le HAUT (sous le
+// manche) de `hauteur_haute`, le BAS (sous le col) de `hauteur_basse`, chacun une encoche en V au sommet. Le fer penche du
+// manche vers la panne, qui dépasse du montant bas de plus de 4 cm : elle ne touche jamais le bois.
+//
+// L'USINAGE : le trou de la cheville (Perçage, Foret Ø8), la cuvette (Poche), les mortaises (Contour intérieur, coins
+// dégagés), puis les pièces (Contour extérieur, coins dégagés aux tenons, onglets). Contreplaqué de bouleau de 12 ; une
+// coupelle de laiton dans la cuvette, si l'on veut. Ne jamais laisser le fer chaud sans surveillance.
+
+longueur   = 200;    // longueur du socle (mm)
+largeur    = 120;    // largeur du socle (mm)
+hauteur_haute = 80;  // hauteur du montant haut, au fond du V (mm)
+hauteur_basse = 45;  // hauteur du montant bas, au fond du V (mm)
+d_cuvette  = 60;     // Ø de la cuvette de laine de laiton (mm)
+profondeur_cuvette = 7;  // profondeur de la cuvette (mm)
+jeu        = 0.1;    // jeu des tenons, par côté (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  L = longueur;  W = largeur;
+lm = 60;  lt = 36;                             // un montant : sa largeur, celle de son tenon
+vl = 26;  vh = 16;                             // l'encoche en V : ouverture et profondeur
+xm = [20, 95];                                 // les montants le long du socle (haut, bas)
+si (profondeur_cuvette > ep - 3)
+    echo("La cuvette perce presque le socle : moins profonde.");
+si (hauteur_haute <= hauteur_basse + 15)
+    echo("Le fer ne penchera presque pas : un montant haut plus haut, ou le bas plus bas.");
+planche([L + espace + 2 * (lm + espace) + 2 * rognure, max(W, hauteur_haute + vh + ep) + 2 * rognure, epaisseur]);
+
+// ── Le socle ──
+o = [rognure, rognure];
+s = rect(o, [L, W], 10);
+nommer(#s, "socle");
+pour (x = xm) {
+    m = rect(o + [x - jeu, W / 2 - lt / 2 - jeu], [ep + 2 * jeu, lt + 2 * jeu]);
+    nommer(#m, "mortaise");
+}
+cu = cercle(o + [L - d_cuvette / 2 - 15, W / 2 - 12], d_cuvette / 2);
+nommer(#cu, "cuvette");
+ch = cercle(o + [L - 22, W - 20], 4);
+nommer(#ch, "cheville");
+
+// ── Les montants, debout : le tenon dessous, le V au sommet ──
+module montant(q, h) {
+    a = polyligne([q + [(lm - lt) / 2, -ep], q + [(lm + lt) / 2, -ep], q + [(lm + lt) / 2, 0], q + [lm, 0], q + [lm, h + vh],
+                   q + [lm / 2 + vl / 2, h + vh], q + [lm / 2, h], q + [lm / 2 - vl / 2, h + vh], q + [0, h + vh], q + [0, 0],
+                   q + [(lm - lt) / 2, 0]], fermee = vrai);
+    nommer(#a, "montant");
+}
+montant([rognure + L + espace, rognure + ep], hauteur_haute);
+montant([rognure + L + espace + lm + espace, rognure + ep], hauteur_basse);
+
+// ── L'USINAGE, déclaré ──
+usinage("percage", "cheville", outil = "Foret Ø8", profondeur = epaisseur, nom = "Trou de la cheville");
+usinage("poche", "cuvette", outil = "Fraise droite Ø6", profondeur = profondeur_cuvette, passe = 3.5, nom = "Cuvette");
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaises");
+usinage("contour", "montant", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Montants");
+usinage("contour", "socle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Socle");

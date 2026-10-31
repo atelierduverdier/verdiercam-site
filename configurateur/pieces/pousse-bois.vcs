@@ -1,0 +1,43 @@
+// POUSSE-BOIS — la semelle qui pousse la planche contre la lame de la scie circulaire ou la fraise de la toupie : la main
+// reste haut et loin, la planche ne se soulève pas. Un talon accroche le bout de la planche, une poignée fermée tient la
+// main.
+// thème : Atelier et gabarits
+//
+// LE CORPS : `longueur` de semelle droite, haut de `hauteur_nez` à l'avant et de `hauteur_arriere` à l'arrière, le dos en
+// pente de l'un à l'autre. LE TALON, sous l'arrière : une dent de `talon` de long qui descend de `crochet` sous la semelle
+// et pousse le bout de la planche. LA POIGNÉE : une lumière de `longueur_poignee` × `largeur_poignee`, parallèle au dos,
+// avec 14 de bois au-dessus et autant au moins tout autour.
+//
+// L'USINAGE : la poignée (Contour intérieur), puis le corps (Contour extérieur, onglets). Contreplaqué de bouleau de 12 ;
+// arrondir les arêtes de la poignée. Un pousse-bois s'use : en faire deux, le jeter quand le talon est entamé.
+
+longueur   = 300;    // longueur de la semelle (mm)
+hauteur_nez = 25;    // hauteur à l'avant (mm)
+hauteur_arriere = 140;  // hauteur à l'arrière (mm)
+talon      = 15;     // longueur du talon (mm)
+crochet    = 6;      // le talon descend de tant sous la semelle (mm) : moins que l'épaisseur de la planche poussée
+longueur_poignee = 110;  // longueur de la poignée (mm)
+largeur_poignee = 32;    // largeur de la poignée (mm)
+epaisseur  = 12;     // épaisseur (mm)
+rognure    = 5;      // du bord du brut au pousse-bois (mm)
+
+L = longueur;  Hb = hauteur_arriere;
+A = [40, hauteur_nez];  B = [L - 60, Hb];      // le dos, de l'avant à l'arrière
+u = (B - A) / norm(B - A);  n = [u[1], -u[0]]; // le long du dos, et vers l'intérieur du corps
+cp = A + 0.65 * (B - A) + (14 + largeur_poignee / 2) * n;
+an = atan2(u[1], u[0]);
+si (crochet > 10)
+    echo("Un talon de plus de 10 accroche mal les planches minces : moins.");
+planche([L + 2 * rognure, Hb + crochet + 2 * rognure, epaisseur]);
+o = [rognure, rognure + crochet];
+c = polyligne([for (q = [[0, 0], [L - talon, 0], [L - talon, -crochet], [L, -crochet], [L, Hb], B, A, [0, hauteur_nez]]) o + q],
+              fermee = vrai);
+nommer(#c, "corps");
+g = oblong(o + cp, longueur_poignee, largeur_poignee, an);
+nommer(#g, "poignée");
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "poignée", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3,
+        nom = "Poignée");
+usinage("contour", "corps", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 1.5, nom = "Corps");

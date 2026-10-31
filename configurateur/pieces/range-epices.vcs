@@ -1,0 +1,61 @@
+// RANGE-ÉPICES À GRADINS — l'étagère en escalier du fond du plan de travail ou du placard : chaque rangée de pots est plus
+// haute que celle de devant, toutes les étiquettes se lisent. Deux joues en escalier, des tablettes à tenons traversants.
+// thème : Cuisine
+//
+// LES GRADINS : `gradins` tablettes, chacune de la profondeur d'un pot (`d_pot` + 12), montant de `marche` à chaque rang.
+// LES JOUES, de profil, suivent l'escalier et dépassent chaque tablette de 12 : un rebord de chaque côté. Elles reçoivent
+// les tablettes par des MORTAISES ; chaque TABLETTE, de la `longueur` intérieure, porte à chaque bout un tenon (épaulé de 10
+// devant et derrière) qui traverse la joue. Mortaises du `jeu` de chaque côté, coins dégagés.
+//
+// L'USINAGE : les mortaises (Contour intérieur, coins dégagés), puis les joues et les tablettes (Contour extérieur, coins
+// dégagés aux tenons, onglets). Hêtre ou contreplaqué de 12, huilé.
+
+gradins    = 3;      // nombre de tablettes
+d_pot      = 48;     // Ø d'un pot (mm)
+marche     = 45;     // de la tablette d'un rang à celle du suivant, en hauteur (mm)
+longueur   = 300;    // longueur intérieure, d'une joue à l'autre (mm)
+jeu        = 0.1;    // jeu des tenons dans les mortaises, par côté (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  n = max(1, round(gradins));  L = longueur;
+dm = d_pot + 12;                               // la profondeur d'une tablette
+D = n * dm;                                    // la profondeur d'une joue
+y0 = 10;                                       // le dessous de la tablette du bas
+function yk(k) = y0 + k * marche;              // le dessous de la tablette k (0 : devant, en bas)
+Hj = yk(n - 1) + ep + 12;                      // la hauteur d'une joue
+Lt = L + 2 * ep;                               // une tablette, tenons compris
+si (marche < ep + 25)
+    echo("Les marches sont trop basses : les pots du rang de derrière seraient cachés.");
+planche([max(2 * D + espace, Lt) + 2 * rognure, Hj + espace + n * (dm + espace) - espace + 2 * rognure, epaisseur]);
+
+// ── Les joues : l'escalier, de l'arrière (en haut) vers l'avant (en bas) ; une mortaise sous chaque marche ──
+module joue(o) {
+    marches = [for (j = [0 : 2 * n - 1]) o + [(n - floor(j / 2) - (j % 2)) * dm, yk(n - 1 - floor(j / 2)) + ep + 12]];
+    j0 = polyligne(concat([o, o + [D, 0]], marches, [o + [0, 0]]));
+    nommer(#j0, "joue");
+    pour (k = [0 : n - 1]) {
+        m = rect(o + [k * dm + 10 - jeu, yk(k) - jeu], [dm - 20 + 2 * jeu, ep + 2 * jeu]);
+        nommer(#m, "mortaise");
+    }
+}
+joue([rognure, rognure]);
+joue([rognure + D + espace, rognure]);
+
+// ── Les tablettes, à plat : à chaque bout un tenon de `ep`, épaulé de 10 ──
+pour (k = [0 : n - 1]) {
+    o = [rognure, rognure + Hj + espace + k * (dm + espace)];
+    t = polyligne([o + [ep, 0], o + [Lt - ep, 0], o + [Lt - ep, 10], o + [Lt, 10], o + [Lt, dm - 10], o + [Lt - ep, dm - 10], o + [Lt - ep, dm],
+                   o + [ep, dm], o + [ep, dm - 10], o + [0, dm - 10], o + [0, 10], o + [ep, 10]], fermee = vrai);
+    nommer(#t, "tablette");
+}
+echo(str(n, " rangs de ", floor(L / (d_pot + 4)), " pots de Ø", d_pot, "."));
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaises");
+usinage("contour", "joue", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 2, nom = "Joues");
+usinage("contour", "tablette", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 2, nom = "Tablettes");

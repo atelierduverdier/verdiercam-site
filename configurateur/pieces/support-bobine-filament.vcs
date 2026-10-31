@@ -1,0 +1,65 @@
+// SUPPORT DE BOBINE DE FILAMENT — à côté de l'imprimante 3D : deux flasques sur un socle, une tige dans leurs encoches en U,
+// la bobine enfilée sur la tige. Elle tourne librement, le filament se dévide sans tirer sur l'extrudeur.
+// thème : Électronique et boîtiers
+//
+// LA BOBINE : Ø`d_bobine` (200 pour un kilo), `largeur_bobine` de large, un moyeu de Ø`d_moyeu`. LA TIGE (Ø`d_tige` : un
+// tube, un manche, un tourillon) pose au fond d'une ENCOCHE en U de 1 de plus au sommet de chaque FLASQUE. La bobine pend
+// sur la tige par le haut de son moyeu : la hauteur des encoches la laisse à `garde` au-dessus du socle. Les flasques,
+// espacés de la bobine plus 6 de chaque côté, traversent le SOCLE par deux tenons chacun.
+//
+// L'USINAGE : les mortaises (Contour intérieur, coins dégagés), puis les pièces (Contour extérieur, coins dégagés aux
+// tenons, onglets). Contreplaqué de bouleau de 12 ; quatre patins sous le socle.
+
+d_bobine   = 200;    // Ø de la bobine (mm)
+largeur_bobine = 70; // largeur de la bobine (mm)
+d_moyeu    = 55;     // Ø du trou du moyeu (mm)
+d_tige     = 20;     // Ø de la tige (mm)
+garde      = 10;     // entre le bas de la bobine et le socle (mm)
+jeu        = 0.1;    // jeu des tenons, par côté (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  Rb = d_bobine / 2;  ru = (d_tige + 1) / 2;
+ha = Rb + garde + (d_moyeu - d_tige) / 2 + (ru - d_tige / 2);   // le centre du fond du U au-dessus du socle
+Bf = 0.6 * d_bobine;  Tf = 2 * ru + 30;        // un flasque : sa largeur au pied, au sommet
+Hf = ha + ru + 15;                             // sa hauteur au-dessus du socle
+lt = 25;                                       // un tenon
+xt = [Bf / 4 - lt / 2, 3 * Bf / 4 - lt / 2];   // les tenons le long du pied
+ei = largeur_bobine + 12;                      // entre les faces intérieures des flasques
+Ls = ei + 2 * ep + 40;  Ws = Bf + 20;           // le socle
+si (d_tige > d_moyeu - 4)
+    echo("La tige ne passe pas dans le moyeu : plus fine.");
+planche([Ls + espace + 2 * (Bf + espace) + 2 * rognure, max(Ws, Hf + ep) + 2 * rognure, epaisseur]);
+
+// ── Le socle et ses quatre mortaises : les flasques en travers, à 20 des bouts ──
+os = [rognure, rognure];
+s = rect(os, [Ls, Ws], 8);
+nommer(#s, "socle");
+pour (x = [20, 20 + ep + ei])
+    pour (y = xt) {
+        m = rect(os + [x - jeu, 10 + y - jeu], [ep + 2 * jeu, lt + 2 * jeu]);
+        nommer(#m, "mortaise");
+    }
+
+// ── Un flasque, debout : les tenons dessous, le U au sommet (le fond en demi-cercle de rayon ru, parcouru de droite à
+// gauche par le bas) ──
+module flasque(q) {
+    yU = ha;
+    f = polyligne(concat([q, q + [xt[0], 0], q + [xt[0], -ep], q + [xt[0] + lt, -ep], q + [xt[0] + lt, 0], q + [xt[1], 0],
+                          q + [xt[1], -ep], q + [xt[1] + lt, -ep], q + [xt[1] + lt, 0], q + [Bf, 0], q + [Bf / 2 + Tf / 2, Hf],
+                          q + [Bf / 2 + ru, Hf]],
+                         [for (i = [0 : 16]) q + [Bf / 2 + ru * cos(-180 * i / 16), yU + ru * sin(-180 * i / 16)]],
+                         [q + [Bf / 2 - ru, Hf], q + [Bf / 2 - Tf / 2, Hf]]), fermee = vrai);
+    nommer(#f, "flasque");
+}
+flasque([rognure + Ls + espace, rognure + ep]);
+flasque([rognure + Ls + espace + Bf + espace, rognure + ep]);
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaises");
+usinage("contour", "flasque", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Flasques");
+usinage("contour", "socle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Socle");

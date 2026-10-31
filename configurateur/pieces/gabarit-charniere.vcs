@@ -1,0 +1,80 @@
+// GABARIT DE MORTAISE DE CHARNIÈRE — une plaque à copier pour la défonceuse : son encoche donne la mortaise d'une
+// charnière de porte, au bon décalage de la bague de copie ; une butée vissée dessous la cale contre le chant.
+// thème : Atelier et gabarits
+//
+// LA MORTAISE est celle de la charnière : `longueur_charniere` le long du chant, `largeur_aile` du parement jusqu'à l'axe
+// (ce qui entre dans le bois), les coins de rayon `rayon_charniere` (0 : charnière à coins vifs). Le gabarit l'agrandit
+// du DÉCALAGE de copie : (`d_bague` − `d_fraise_copie`) / 2 avec une bague de copie, 0 avec une fraise à roulement
+// (`d_bague` = `d_fraise_copie`). Les coins de l'encoche gardent au moins le rayon de la fraise Ø6 qui la taille : une
+// charnière à coins vifs se finit au ciseau (la console le dit).
+//
+// LA BUTÉE : deux taquets de `largeur_butee` vissés sous la plaque, au ras du bord de l'encoche, un de chaque côté — ils
+// s'appuient contre le parement de la porte, l'encoche tombe alors juste ; rien sous l'encoche, où la fraise débouche au
+// parement. Un trou de vis Ø5 par taquet ; deux traits gravés marquent le milieu de l'encoche, à aligner sur le repère
+// tracé sur la porte.
+//
+// L'USINAGE : les repères (Gravure, Pointe V 90°, 0,5 mm), les trous de vis (Perçage, Foret Ø5), puis la plaque et la
+// butée en Contour extérieur, fraise droite Ø6, onglets. MDF ou contreplaqué de 12 : plus haut que le collet de la bague.
+
+longueur_charniere = 75;   // longueur de la charnière, le long du chant (mm)
+largeur_aile = 25;   // largeur de l'aile, du parement à l'axe (mm)
+rayon_charniere = 0; // rayon des coins de la charnière (mm, 0 : coins vifs)
+d_bague    = 17;     // Ø extérieur de la bague de copie (mm)
+d_fraise_copie = 12; // Ø de la fraise de la défonceuse (mm)
+epaisseur  = 12;     // épaisseur de la plaque (mm)
+marge      = 70;     // de l'encoche aux bouts de la plaque (mm)
+fond       = 60;     // de l'encoche au bord opposé de la plaque (mm)
+largeur_butee = 30;  // largeur des taquets de butée vissés dessous (mm)
+espace     = 10;     // entre la plaque et la butée sur la planche (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+dec = max(0, (d_bague - d_fraise_copie) / 2);   // le décalage de copie
+ow = longueur_charniere + 2 * dec;              // l'encoche
+od = largeur_aile + dec;
+r = max(rayon_charniere + dec, 3.2);            // ses coins : au moins le rayon de la fraise Ø6, un peu plus
+W = ow + 2 * marge;                             // la plaque
+D = od + fond;
+si (rayon_charniere + dec < 3.2)
+    echo(str("Les coins de l'encoche gardent un rayon de ", r, " mm (la fraise Ø6) : la mortaise aura des coins de ",
+             round((r - dec) * 10) / 10, " mm — les équerrer au ciseau pour une charnière à coins vifs."));
+
+planche([W + 2 * rognure, D + largeur_butee + espace + 2 * rognure, epaisseur]);
+o = [rognure, rognure + largeur_butee + espace];   // la plaque en haut, la butée dessous
+function P(x, y) = o + [x, y];
+x1 = marge;  x2 = marge + ow;
+
+// ── La plaque : un seul contour, l'encoche ouverte sur le bord du bas (celui de la butée) ──
+a = polyligne([P(W, 0), P(W, D), P(0, D), P(0, 0), P(x1, 0), P(x1, od - r)]);
+c1 = arc(P(x1 + r, od - r), P(x1 + r, od), P(x1, od - r));
+joindre(#a, #c1);
+m = ligne(P(x1 + r, od), P(x2 - r, od));
+joindre(#a, #m);
+c2 = arc(P(x2 - r, od - r), P(x2, od - r), P(x2 - r, od));
+joindre(#a, #c2);
+b = polyligne([P(x2, od - r), P(x2, 0), P(W, 0)]);
+joindre(#a, #b);
+nommer(#a, "gabarit");
+
+// ── Les repères : le milieu de l'encoche, deux traits sur le dessus ──
+r1 = ligne(P(W / 2, od + 6), P(W / 2, D - 6));
+nommer(#r1, "repère");
+r2 = ligne(P(W / 2 - 15, D - 12), P(W / 2 + 15, D - 12));
+nommer(#r2, "repère");
+
+// ── Les taquets de butée : de chaque bout de la plaque à 10 mm de l'encoche ; un trou de vis au milieu de chacun, dans la
+// plaque, à mi-épaisseur du taquet (la vis entre dans son chant) ──
+lt = marge - 10;
+pour (x = [0, W - lt]) {
+    t = cercle(P(x + lt / 2, epaisseur / 2), 2.5);
+    nommer(#t, "trou");
+    u = rect([rognure + x, rognure], [lt, largeur_butee]);
+    nommer(#u, "butée");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "repère", outil = "Pointe V 90", profondeur = 0.5, nom = "Repères");
+usinage("percage", "trou", outil = "Foret Ø5", profondeur = epaisseur, nom = "Trous de vis");
+usinage("contour", "gabarit", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Plaque du gabarit");
+usinage("contour", "butée", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 8, onglet_haut = 2, nom = "Butée");

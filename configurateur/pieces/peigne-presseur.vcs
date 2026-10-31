@@ -1,0 +1,49 @@
+// PEIGNE PRESSEUR — la planche à doigts souples qui plaque la pièce contre le guide de la scie ou de la toupie : les
+// doigts, coupés en biais, plient dans le sens d'avance et s'arc-boutent si la pièce veut revenir en arrière.
+// thème : Atelier et gabarits
+//
+// LES DOIGTS : `doigts` doigts de `largeur_doigt`, séparés de traits de scie de `trait` (3,5 : la fraise Ø3 y passe), de
+// `longueur_doigts` de long ; leurs bouts sur une ligne en biais de `biais` sur la travée. LE CORPS : `longueur` en tout ;
+// deux LUMIÈRES de `d_boulon` + 0,5 pour le brider sur la table (boulons dans la rainure en T, ou serre-joints).
+//
+// L'USINAGE : les lumières (Poche, fraise droite Ø6), puis le peigne (Contour extérieur, fraise droite Ø3, onglets).
+// Contreplaqué de bouleau ou hêtre de 12 ; le fil du bois le long des doigts, sinon ils cassent.
+
+doigts     = 12;     // nombre de doigts
+largeur_doigt = 4;   // largeur d'un doigt (mm)
+trait      = 3.5;    // largeur d'un trait entre deux doigts (mm)
+longueur_doigts = 70;  // longueur des doigts (mm)
+biais      = 30;     // biais des bouts, depuis la travée (°)
+longueur   = 300;    // longueur du peigne, au plus long (mm)
+d_boulon   = 6;      // Ø des boulons de bridage (mm)
+epaisseur  = 9;      // épaisseur (mm) : 9 au plus (la fraise Ø3)
+rognure    = 5;      // du bord du brut au peigne (mm)
+
+nd = max(3, round(doigts));  wd = largeur_doigt;  t = trait;  ld = longueur_doigts;
+W = nd * wd + (nd - 1) * t;  L = longueur;
+function xb(y) = L - (W - y) * tan(biais);     // le bout, à la hauteur y
+function y0(j) = j * (wd + t);                 // le bas du doigt j
+si (t < 3.2)
+    echo("Un trait de moins de 3,2 : la fraise Ø3 n'y passe pas.");
+si (xb(0) - ld < 60)
+    echo("Le corps est trop court derrière les doigts : plus long.");
+planche([L + 2 * rognure, W + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+// Le pourtour : le bas, puis chaque doigt (son bout en biais) et le trait qui le suit (jusqu'au fond, parallèle au biais),
+// le haut, l'arrière.
+pts = concat([[0, 0]],
+             [for (j = [0 : nd - 1]) for (q = concat([[xb(y0(j)), y0(j)], [xb(y0(j) + wd), y0(j) + wd]],
+                                                   j < nd - 1 ? [[xb(y0(j) + wd) - ld, y0(j) + wd], [xb(y0(j) + wd + t) - ld, y0(j) + wd + t]] : []))
+                  q],
+             [[0, W]]);
+p = polyligne([for (q = pts) o + q], fermee = vrai);
+nommer(#p, "peigne");
+pour (y = [W / 3, 2 * W / 3]) {
+    l = oblong(o + [20 + (xb(0) - ld - 40) / 2, y], xb(0) - ld - 40, d_boulon + 0.5, 0);
+    nommer(#l, "lumière");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "lumière", outil = "Fraise droite Ø6", profondeur = epaisseur, passe = 3, nom = "Lumières");
+usinage("contour", "peigne", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1.5,
+        onglets = 3, onglet_long = 5, onglet_haut = 1.5, nom = "Peigne");

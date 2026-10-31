@@ -1,0 +1,70 @@
+// CARTE EN COURBES DE NIVEAU — une île en relief, taillée en marches comme une carte topographique : chaque courbe de
+// niveau est une marche de `pas_niveau`, la mer tout autour est la plus creuse, le sommet reste à fleur de planche. Un
+// cadre garde la hauteur de la planche, le nom de l'île y est gravé, et le nord.
+// thème : Décoration et cadeaux
+//
+// L'ÎLE : `niveaux` courbes fermées autour d'un sommet ; la côte a un rayon moyen de `rayon`, festonnée par trois
+// ondulations (2, 3 et 5 lobes) dont `graine` change le dessin — une autre graine, une autre île. Le sommet se décale de
+// `derive` par niveau, pour un versant raide et un versant doux. LES MARCHES : chaque anneau entre deux courbes est une
+// poche, d'autant plus profonde qu'il est bas ; la mer descend de `niveaux` × `pas_niveau`. La console dit l'anneau le
+// plus étroit : sous 6,5 mm, la fraise Ø6 n'y passe plus.
+//
+// L'USINAGE : le nom et le nord (Gravure, Pointe V 90°), les marches de la mer au sommet (Poche, fraise droite Ø6), puis
+// la carte (Contour extérieur, onglets). Une teinte bleue dans la mer, l'île huilée.
+
+nom        = "Île du Verdier";
+niveaux    = 5;      // nombre de courbes de niveau
+pas_niveau = 2.5;    // hauteur d'une marche (mm)
+rayon      = 80;     // rayon moyen de la côte (mm)
+graine     = 1;      // change le dessin de l'île
+derive     = 3;      // décalage du sommet d'un niveau au suivant (mm)
+largeur    = 300;    // largeur de la carte (mm)
+hauteur    = 240;    // hauteur de la carte (mm)
+cadre      = 15;     // largeur du cadre (mm)
+epaisseur  = 18;     // épaisseur (mm)
+rognure    = 5;      // du bord du brut à la carte (mm)
+
+n = max(2, round(niveaux));  W = largeur;  H = hauteur;  b = cadre;  R = rayon;
+ph = [1.3, 2.7, 4.1] * graine;                 // les phases des trois ondulations
+function lobe(t) = 1 + 0.14 * sin(2 * t + 57 * ph[0]) + 0.08 * sin(3 * t + 57 * ph[1]) + 0.04 * sin(5 * t + 57 * ph[2]);
+o = [rognure, rognure];
+c0 = o + [W / 2, H / 2];
+dv = derive * [cos(57 * graine), sin(57 * graine)];      // la direction de la dérive du sommet
+function centre(k) = c0 + k * dv;
+function rk(k, t) = R * (1 - k / n) * lobe(t);
+function courbe(k) = [for (i = [0 : 119]) centre(k) + rk(k, i * 3) * [cos(i * 3), sin(i * 3)]];
+si (n * pas_niveau > epaisseur - 4)
+    echo("La mer descend trop près du dessous : moins de niveaux, ou des marches plus basses.");
+lmax = max([for (i = [0 : 119]) lobe(i * 3)]);  lmin = min([for (i = [0 : 119]) lobe(i * 3)]);
+si (R * lmax > min(W, H) / 2 - b - 7)
+    echo("L'île déborde du cadre : un rayon plus petit, ou une carte plus grande.");
+echo(str("Anneau le plus étroit : ", R / n * lmin - norm(dv), " mm environ (6,5 au moins pour la fraise Ø6)."));
+planche([W + 2 * rognure, H + 2 * rognure, epaisseur]);
+
+c = rect(o, [W, H], 6);
+nommer(#c, "carte");
+// Chaque anneau : sa courbe extérieure et sa courbe intérieure, sous le même nom (la poche creuse entre les deux). La mer
+// va du cadre à la côte.
+m = rect(o + [b, b], [W - 2 * b, H - 2 * b]);
+nommer(#m, "niveau 0");
+pour (k = [0 : n - 1]) {
+    e = polyligne(courbe(k), fermee = vrai);
+    nommer(#e, str("niveau ", k));
+    si (k < n - 1) {
+        f = polyligne(courbe(k), fermee = vrai);
+        nommer(#f, str("niveau ", k + 1));
+    }
+}
+// Le nom sur le cadre du bas, le nord dans le coin en haut à droite.
+M = mesure_texte(nom, 10, "Hershey Sans1") / 10;
+t = texte(o + [W / 2 - 8 * (M[2] + M[3]) / 2, b / 2 - 4], 8, nom, police = "Hershey Sans1");
+nommer(#t, "gravure");
+nn = texte(o + [W - b / 2 - 3, H - b / 2 - 4], 8, "N", police = "Hershey Sans1");
+nommer(#nn, "gravure");
+
+// ── L'USINAGE, déclaré : la mer d'abord (la plus creuse), puis chaque marche ──
+usinage("gravure", "gravure", outil = "Pointe V 90", profondeur = 1, nom = "Nom et nord");
+pour (k = [0 : n - 1])
+    usinage("poche", str("niveau ", k), outil = "Fraise droite Ø6", profondeur = (n - k) * pas_niveau, passe = 3, nom = str("Niveau ", k));
+usinage("contour", "carte", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Carte");

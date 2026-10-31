@@ -1,0 +1,87 @@
+// ENSEIGNE — une plaque gravée à votre texte, une ou deux lignes centrées, un filet qui l'encadre et deux trous pour
+// l'accrocher : le nom de la maison, de l'atelier, un numéro de rue, un cadeau.
+// thème : Décoration et cadeaux
+//
+// LE TEXTE se tape dans `ligne1` et `ligne2` (vide : une seule ligne). Il se grave dans une police MONOTRAIT (un trait
+// que suit la pointe en V : `police`, voir la liste du panneau Texte) et se CALE tout seul : la plus grande hauteur de
+// capitales qui tient entre les marges, sans dépasser `hauteur_texte` (0 : pas de limite). La seconde ligne est plus
+// petite (`proportion` de la première) ; le bloc se centre dans la plaque.
+//
+// L'USINAGE (déclaré en bas) :
+//   · le texte : Gravure, Pointe V 90°, `profondeur_texte` (2 mm : un trait de 4 mm de large) ;
+//   · le filet : Gravure, même pointe, 1 mm, à `retrait_filet` du bord ;
+//   · les trous : Perçage au Foret Ø5, toute l'épaisseur ;
+//   · la plaque : Contour extérieur, fraise droite Ø6, quatre onglets, en dernier.
+// Une teinte foncée passée dans les traits avant le ponçage les fait ressortir.
+
+ligne1     = "ATELIER DU VERDIER";   // le texte de la première ligne
+ligne2     = "depuis 2026";           // la seconde ligne (vide : aucune)
+police     = "Hershey Sans1";         // la police monotrait
+largeur    = 400;    // largeur de la plaque (mm)
+hauteur    = 150;    // hauteur de la plaque (mm)
+epaisseur  = 18;     // épaisseur du bois (mm)
+R_coin     = 12;     // rayon des coins (mm)
+hauteur_texte = 40;  // hauteur des capitales de la première ligne, au plus (mm, 0 : la plus grande qui tient)
+proportion = 0.45;   // la seconde ligne, en part de la première
+marge_texte = 40;    // du bord de la plaque au texte, au moins (mm)
+retrait_filet = 10;  // du bord de la plaque au filet (mm, 0 : pas de filet)
+profondeur_texte = 2;  // profondeur de la gravure du texte (mm)
+trous      = 1;      // deux trous d'accrochage (1 : oui, 0 : non)
+rognure    = 5;      // la plaque détourée à cette distance du bord du brut (mm)
+
+// ── Le brut et la plaque ──
+planche([largeur + 2 * rognure, hauteur + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+c = o + [largeur / 2, hauteur / 2];          // le centre de la plaque
+R = min(R_coin, min(largeur, hauteur) / 2 - 1);
+p = rect(o, [largeur, hauteur], R);
+nommer(#p, "plaque");
+si (retrait_filet > 0) {
+    f = rect(o + [retrait_filet, retrait_filet], [largeur - 2 * retrait_filet, hauteur - 2 * retrait_filet], max(R - retrait_filet / 2, 1));
+    nommer(#f, "filet");
+}
+
+// ── Les trous : à mi-hauteur, entre le filet et le texte ──
+x_trou = max(retrait_filet, 6) + 10;
+si (trous == 1) {
+    t1 = cercle(o + [x_trou, hauteur / 2], 2.5);
+    nommer(#t1, "trou");
+    t2 = cercle(o + [largeur - x_trou, hauteur / 2], 2.5);
+    nommer(#t2, "trou");
+}
+
+// ── Le texte : la hauteur qui tient, puis le bloc centré ──
+deux = len(ligne2) > 0;
+L_dispo = largeur - 2 * max(marge_texte, trous == 1 ? x_trou + 8 : 0);
+H_dispo = hauteur - 2 * marge_texte;
+k2 = deux ? proportion : 0;
+ecart = 0.6;                                  // entre les lignes, en hauteurs de la première
+// Mesurées à 10 mm de capitales, puis mises à l'échelle : tout suit la hauteur. L'ENCRE se centre (pas la largeur
+// d'avance : un « T » final laisserait un vide à droite), de gauche (g) à droite (d), pour 1 mm de capitales.
+M1 = mesure_texte(ligne1, 10, police) / 10;
+M2 = deux ? mesure_texte(ligne2, 10, police) / 10 : [0, 0, 0, 0, 0, 0];
+l1 = M1[3] - M1[2];
+l2 = M2[3] - M2[2];
+h_large = L_dispo / max(l1, k2 * l2, 1e-6);
+h_haut = H_dispo / (1 + (deux ? ecart + k2 : 0));
+h1 = hauteur_texte > 0 ? min(hauteur_texte, h_large, h_haut) : min(h_large, h_haut);
+h2 = k2 * h1;
+bloc = h1 + (deux ? ecart * h1 + h2 : 0);
+base1 = c[1] + bloc / 2 - h1;                 // la ligne de base de la première ligne
+si (h1 < 5)
+    echo(str("Le texte ne tient qu'à ", round(h1 * 10) / 10, " mm de haut : moins de mots, ou une plaque plus grande."));
+m1 = texte([c[0] - h1 * (M1[2] + M1[3]) / 2, base1], h1, ligne1, police = police);
+nommer(#m1, "texte");
+si (deux) {
+    m2 = texte([c[0] - h2 * (M2[2] + M2[3]) / 2, base1 - ecart * h1 - h2], h2, ligne2, police = police);
+    nommer(#m2, "texte");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "texte", outil = "Pointe V 90", profondeur = profondeur_texte, nom = "Texte");
+si (retrait_filet > 0)
+    usinage("gravure", "filet", outil = "Pointe V 90", profondeur = 1, nom = "Filet");
+si (trous == 1)
+    usinage("percage", "trou", outil = "Foret Ø5", profondeur = epaisseur, nom = "Trous d'accrochage");
+usinage("contour", "plaque", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Détourage de la plaque");

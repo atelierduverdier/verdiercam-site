@@ -1,0 +1,61 @@
+// JOINT DE OLDHAM — l'accouplement qui relie deux arbres parallèles mais pas tout à fait alignés : deux moyeux rainurés,
+// et entre eux un disque à deux languettes croisées qui glisse dans les deux rainures à la fois. Tourner l'un fait tourner
+// l'autre, même décalé de quelques millimètres. Un démonstrateur, ou l'accouplement d'un petit moteur à une vis.
+// thème : Technique et mécanique
+//
+// LES MOYEUX : deux disques de Ø`diametre`, une RAINURE en travers de la face (largeur de la languette plus le `jeu` de
+// chaque côté, creusée de `hauteur_languette` + 0,5), un trou d'arbre au centre (Foret Ø8). LE DISQUE DU MILIEU : une
+// LANGUETTE de `largeur_languette` sur le dessus, une sur le dessous, à 90° — chacune de `hauteur_languette`, laissée en
+// creusant le reste de la face (par le dessus, puis par le dessous) ; il reste une âme de bois entre les deux.
+//
+// L'USINAGE, en deux faces : dessus, les trous d'arbre (Perçage, Foret Ø8), les rainures et le dessus du disque (Poche),
+// puis les trois disques (Contour extérieur, onglets) ; dessous, le dessous du disque du milieu (Poche). Hêtre ou
+// contreplaqué de bouleau de 12, ciré.
+
+diametre   = 60;     // Ø des disques (mm)
+largeur_languette = 12;  // largeur des languettes (mm)
+hauteur_languette = 4;   // hauteur des languettes (mm)
+jeu        = 0.15;   // jeu des languettes dans les rainures, par côté (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 16;     // entre deux disques (mm) : les poches débordent de 4
+rognure    = 8;      // du bord du brut aux disques (mm)
+
+R = diametre / 2;  t = largeur_languette;  h = hauteur_languette;  ep = epaisseur;
+si (ep - 2 * h < 4)
+    echo("L'âme du disque du milieu fait moins de 4 mm : des languettes plus basses, ou un disque plus épais.");
+planche([3 * diametre + 2 * espace + 2 * rognure, diametre + 2 * rognure, epaisseur]);
+
+// ── Les deux moyeux : la rainure en travers (le long de x), le trou d'arbre ──
+pour (k = [0 : 1]) {
+    c = [rognure + R + k * (diametre + espace), rognure + R];
+    d = cercle(c, R);
+    nommer(#d, "disque");
+    a = cercle(c, 4);
+    nommer(#a, "arbre");
+    r = rect(c - [R + 4, t / 2 + jeu], [2 * R + 8, t + 2 * jeu]);
+    nommer(#r, "rainure");
+}
+
+// ── Le disque du milieu : dessus, la languette le long de x (on creuse au-dessus et au-dessous d'elle) ; dessous, la
+// languette le long de y (on creuse à sa gauche et à sa droite) ──
+cm = [rognure + R + 2 * (diametre + espace), rognure + R];
+dm = cercle(cm, R);
+nommer(#dm, "disque");
+pour (s = [-1, 1]) {
+    q = rect(cm + [-R - 4, s > 0 ? t / 2 : -R - 4], [2 * R + 8, R + 4 - t / 2]);
+    nommer(#q, "creux dessus");
+}
+face("dessous");
+pour (s = [-1, 1]) {
+    q = rect(cm + [s > 0 ? t / 2 : -R - 4, -R - 4], [R + 4 - t / 2, 2 * R + 8]);
+    nommer(#q, "creux dessous");
+}
+face("dessus");
+
+// ── L'USINAGE, déclaré ──
+usinage("percage", "arbre", outil = "Foret Ø8", profondeur = epaisseur, nom = "Trous d'arbre");
+usinage("poche", "rainure", outil = "Fraise droite Ø6", profondeur = h + 0.5, passe = 2.5, nom = "Rainures des moyeux");
+usinage("poche", "creux dessus", outil = "Fraise droite Ø6", profondeur = h, passe = 2, nom = "Languette du dessus");
+usinage("contour", "disque", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 5, onglet_haut = 1.5, nom = "Disques");
+usinage("poche", "creux dessous", outil = "Fraise droite Ø6", profondeur = h, passe = 2, nom = "Languette du dessous");

@@ -1,0 +1,68 @@
+// AWALÉ — le jeu de semailles d'Afrique de l'Ouest : deux rangées de six cuvettes, un grenier rond à chaque bout, 48
+// graines. Les cuvettes sont de vraies calottes, creusées à la fraise boule par une Révolution, pas des poches à fond plat.
+// thème : Jeux et jouets
+//
+// LE PLATEAU : `cuvettes` par rangée, de `d_cuvette`, creusées de `p_cuvette`, au `pas` ; les deux rangées à un `pas`
+// l'une de l'autre ; un GRENIER de `d_grenier` et `p_grenier` à chaque bout. Le contour aux coins arrondis de `arrondi`.
+// LES COUPES : deux demi-profils (une calotte de sphère, de l'axe au bord), posés À CÔTÉ du plateau — des traits que la
+// Révolution lit, pas des pièces à découper.
+//
+// L'USINAGE : les cuvettes et les greniers (Révolution, Boule Ø6 ; quelques minutes chacun), puis le plateau (Contour
+// extérieur, fraise droite Ø8, onglets). Bois dur, huile alimentaire : les graines y roulent des années.
+
+cuvettes   = 6;      // cuvettes par rangée
+d_cuvette  = 46;     // Ø d'une cuvette (mm)
+p_cuvette  = 13;     // profondeur d'une cuvette (mm)
+pas        = 54;     // d'une cuvette à la suivante (mm)
+d_grenier  = 64;     // Ø d'un grenier (mm)
+p_grenier  = 16;     // profondeur d'un grenier (mm)
+marge      = 14;     // des cuvettes au bord (mm)
+arrondi    = 20;     // rayon des coins du plateau (mm)
+epaisseur  = 22;     // épaisseur (mm) : 24 au plus pour la fraise Ø8
+rognure    = 5;      // du bord du brut au plateau (mm)
+
+n = max(1, round(cuvettes));
+rc = d_cuvette / 2;  rg = d_grenier / 2;
+L = 2 * (marge + d_grenier + 8) + (n - 1) * pas + d_cuvette;
+H = 2 * marge + pas + d_cuvette;
+xg = marge + rg;                               // le centre du grenier de gauche
+x0 = marge + d_grenier + 8 + rc;               // la première cuvette
+si (max(p_cuvette, p_grenier) > epaisseur - 5)
+    echo("Les cuvettes percent presque le plateau : moins profondes, ou un plateau plus épais.");
+si (pas - d_cuvette < 6)
+    echo("Les cuvettes se touchent presque : un pas plus grand, ou des cuvettes plus petites.");
+si (d_grenier > H - 2 * 8)
+    echo("Le grenier déborde du plateau : plus petit.");
+planche([L + 10 + rg + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+
+p = rect(o, [L, H], arrondi);
+nommer(#p, "plateau");
+pour (r = [0 : 1])
+    pour (i = [0 : n - 1]) {
+        c = cercle(o + [x0 + i * pas, marge + rc + r * pas], rc);
+        nommer(#c, str("cuvette ", r * n + i + 1));
+    }
+pour (k = [0 : 1]) {
+    g = cercle(o + [k == 0 ? xg : L - xg, H / 2], rg);
+    nommer(#g, str("grenier ", k + 1));
+}
+
+// Les deux coupes, à droite du plateau : une calotte de sphère, de l'axe (en bas, au fond) au bord (en haut, au ras du bois).
+module calotte(q, r, d, nom) {
+    Rs = (r * r + d * d) / (2 * d);
+    a = arc(q + [0, Rs - d], q + [0, -d], q + [r, 0]);
+    nommer(#a, nom);
+}
+calotte(o + [L + 10, H - 10], rc, p_cuvette, "coupe cuvette");
+calotte(o + [L + 10, H / 2 - 10], rg, p_grenier, "coupe grenier");
+
+// ── L'USINAGE, déclaré : une Révolution par cuvette et par grenier ──
+pour (k = [1 : 2 * n])
+    usinage("revolution", str("cuvette ", k), outil = "Boule Ø6", coupe = "coupe cuvette", profondeur = p_cuvette, passe = 3,
+            nom = str("Cuvette ", k));
+pour (k = [1 : 2])
+    usinage("revolution", str("grenier ", k), outil = "Boule Ø6", coupe = "coupe grenier", profondeur = p_grenier, passe = 3,
+            nom = str("Grenier ", k));
+usinage("contour", "plateau", outil = "Fraise droite Ø8", cote = "exterieur", profondeur = epaisseur, passe = 4,
+        onglets = 4, onglet_long = 10, onglet_haut = 2, nom = "Plateau");

@@ -1,0 +1,103 @@
+// PLATEAU DE CRIBBAGE — une piste continue en serpentin, une voie par joueur, 120 trous par voie en groupes de cinq,
+// deux trous de départ et le trou d'arrivée : le jeu de cartes et de fiches que les forums de CNC montrent sans cesse.
+// thème : Jeux et jouets
+//
+// LA PISTE fait `rangs` allers-retours (120 trous par voie : 120 / `rangs` sur chaque rang, un multiple de 5). Les voies
+// des `joueurs` courent côte à côte, à `ecart_pistes` l'une de l'autre, et tournent au bout de chaque rang en
+// demi-cercles CONCENTRIQUES — comme les canaux du labyrinthe : elles ne se croisent jamais. Dans un groupe, les trous sont
+// au pas `pas_trou` ; un groupe est séparé du suivant d'un pas plus `ecart_groupe` (pour compter de cinq en cinq).
+// Fiches de 1/8" (3,2 mm) : `d_trou` = 3,2, percées au Foret Ø3 et ajustées si besoin.
+//
+// L'USINAGE (déclaré en bas) :
+//   · la trace de chaque voie (`trace` = 1) : Gravure, Pointe V 90°, 0,6 mm — le fil qui relie les trous ;
+//   · les trous : Perçage, Foret Ø3, `prof_trou` ;
+//   · le plateau : Contour extérieur, fraise droite Ø6, quatre onglets, en dernier.
+
+joueurs    = 3;      // nombre de voies (2 ou 3 joueurs ; 3 : une voie de plus pour jouer à trois)
+rangs      = 4;      // nombre de rangs de la piste (120 trous par voie : 2, 3, 4, 6 ou 8 rangs)
+pas_trou   = 6.5;    // pas des trous dans un groupe de cinq (mm)
+ecart_groupe = 6;    // espace en plus entre deux groupes de cinq (mm)
+ecart_pistes = 9;    // d'une voie à la voisine (mm)
+espace_rangs = 14;   // entre deux rangs (mm)
+d_trou     = 3.2;    // Ø des trous (mm) : celui des fiches
+prof_trou  = 12;     // profondeur des trous (mm)
+trace      = 1;      // graver la trace de chaque voie (1 : oui, 0 : non)
+epaisseur  = 18;     // épaisseur du bois (mm)
+R_coin     = 12;     // rayon des coins du plateau (mm)
+marge      = 15;     // du bout de la piste au bord du plateau (mm)
+rognure    = 5;      // le plateau détouré à cette distance du bord du brut (mm)
+
+// ── La piste ──
+J = min(max(round(joueurs), 1), 4);
+nr0 = round(rangs);
+nr = 120 % (5 * nr0) == 0 && nr0 >= 2 ? nr0 : 4;
+si (nr != nr0)
+    echo(str(rangs, " rangs ne partagent pas 120 trous en groupes de cinq : 4 rangs."));
+par_rang = 120 / nr;
+g = par_rang / 5;                                   // groupes par rang
+L_rang = (par_rang - 1) * pas_trou + (g - 1) * ecart_groupe;
+pas_rang = J * ecart_pistes + espace_rangs;         // d'un rang au suivant (pour la voie du milieu)
+r_max = (pas_rang + (J - 1) * ecart_pistes) / 2;    // le plus grand demi-tour
+zone_depart = 2 * pas_trou + ecart_groupe;          // les deux trous de départ, avant le premier rang
+gauche = max(r_max, zone_depart) + marge;
+L = gauche + L_rang + r_max + marge;
+H = 2 * marge + (nr - 1) * pas_rang + (J - 1) * ecart_pistes + 2 * marge;
+planche([L + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+x_a = o[0] + gauche;                                // le premier trou d'un rang
+y0 = o[1] + 2 * marge;
+// La voie j sur le rang i : les rangs pairs vont à droite, les impairs à gauche ; d'un demi-tour à l'autre, l'ordre des
+// voies se retourne (la voie du dedans passe dehors), ce qui garde les demi-tours concentriques.
+function y(i, j) = y0 + i * pas_rang + (i % 2 == 0 ? j : J - 1 - j) * ecart_pistes;
+function xk(k) = x_a + k * pas_trou + floor(k / 5) * ecart_groupe;     // le k-ième trou d'un rang, depuis la gauche
+
+// ── Le plateau ──
+p = rect(o, [L, H], R_coin);
+nommer(#p, "plateau");
+
+// ── Les trous : les rangs, puis les départs et les arrivées ──
+module trou(c) {
+    t = cercle(c, d_trou / 2);
+    nommer(#t, "trou");
+}
+pour (j = [0 : J - 1]) {
+    pour (i = [0 : nr - 1])
+        pour (k = [0 : par_rang - 1])
+            trou([xk(k), y(i, j)]);
+    trou([x_a - pas_trou - ecart_groupe, y(0, j)]);                      // départ
+    trou([x_a - 2 * pas_trou - ecart_groupe, y(0, j)]);
+    // l'arrivée : un groupe plus loin que le dernier trou du dernier rang
+    trou(nr % 2 == 0 ? [x_a - pas_trou - ecart_groupe, y(nr - 1, j)] : [xk(par_rang - 1) + pas_trou + ecart_groupe, y(nr - 1, j)]);
+}
+
+// ── La trace de chaque voie : du départ à l'arrivée, les rangs droits et les demi-tours en arcs ──
+// Un seul trait par voie : chaque morceau joint au premier.
+module voie(j) {
+    xd = x_a - 2 * pas_trou - ecart_groupe;
+    xg = x_a - pas_trou - ecart_groupe;              // l'arrivée d'un nombre pair de rangs, à gauche
+    xr = xk(par_rang - 1);
+    premier = ligne([xd, y(0, j)], [xr, y(0, j)]);
+    pour (i = [1 : nr - 1]) {
+        // le demi-tour du rang i − 1 au rang i : à droite après un rang pair, à gauche après un impair
+        xc = i % 2 == 1 ? xr : x_a;
+        c = [xc, (y(i - 1, j) + y(i, j)) / 2];
+        a = i % 2 == 1 ? arc(c, [xc, y(i - 1, j)], [xc, y(i, j)]) : arc(c, [xc, y(i, j)], [xc, y(i - 1, j)]);
+        joindre(#premier, #a);
+        fin = i == nr - 1 ? (i % 2 == 1 ? xg : xr + pas_trou + ecart_groupe) : (i % 2 == 1 ? x_a : xr);
+        r = ligne([xc, y(i, j)], [fin, y(i, j)]);
+        joindre(#premier, #r);
+    }
+    nommer(#premier, "trace");
+}
+si (trace == 1)
+    pour (j = [0 : J - 1])
+        voie(j);
+
+echo(str("Cribbage ", round(L), " × ", round(H), " mm : ", J, " voie(s) de 120 trous, ", nr, " rangs de ", par_rang, "."));
+
+// ── L'USINAGE, déclaré ──
+si (trace == 1)
+    usinage("gravure", "trace", outil = "Pointe V 90", profondeur = 0.6, nom = "Traces des voies");
+usinage("percage", "trou", outil = "Foret Ø3", profondeur = prof_trou, nom = "Trous des fiches");
+usinage("contour", "plateau", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Détourage du plateau");

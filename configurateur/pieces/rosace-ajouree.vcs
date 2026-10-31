@@ -1,0 +1,71 @@
+// ROSACE AJOURÉE — un disque découpé à jour d'anneaux de navettes et de perles, comme un vitrail de bois : suspension de
+// fenêtre, dessous-de-plat, fond de lampe, ou pour la regarder.
+// thème : Décoration et cadeaux
+//
+// LES ANNEAUX, du centre vers le bord : un anneau de `petales` navettes longues (deux arcs, pointes vers le centre et vers
+// le bord), un second de navettes plus courtes décalées d'une demi-division, une couronne de perles (trous ronds) dans
+// les intervalles. Les pointes s'arrondissent au rayon de la fraise ; entre deux jours il reste au moins `pont` de bois.
+// La console dit si les navettes, trop serrées, se toucheraient.
+//
+// L'USINAGE : les jours en Contour intérieur, fraise droite Ø3, sans onglets, puis le disque en Contour extérieur,
+// onglets. Contreplaqué de bouleau de 4 à 6 mm ; un fil dans le trou du haut.
+
+diametre   = 200;    // Ø de la rosace (mm)
+petales    = 12;     // navettes par anneau
+largeur_petale = 0.32; // largeur d'une navette, en part de sa longueur
+pont       = 4;      // bois minimal entre deux jours (mm)
+bord       = 10;     // couronne pleine au bord (mm)
+trou_fil   = 1;      // un trou pour le fil, en haut (1 : oui, 0 : non)
+epaisseur  = 5;      // épaisseur (mm)
+rognure    = 5;      // du bord du brut à la rosace (mm)
+
+R = diametre / 2;
+n = max(4, round(petales));
+c = [rognure + R, rognure + R];
+planche([diametre + 2 * rognure, diametre + 2 * rognure, epaisseur]);
+d = cercle(c, R);
+nommer(#d, "rosace");
+
+// UNE NAVETTE de r1 à r2 sur l'axe d'angle a : deux arcs de même rayon, de part et d'autre de l'axe, qui se coupent
+// aux deux pointes. Pour une flèche h (la demi-largeur) sur une corde l : rayon (l²/4 + h²) / (2h).
+module navette(r1, r2, a, nom) {
+    l = r2 - r1;  h = largeur_petale * l / 2;
+    rho = (l * l / 4 + h * h) / (2 * h);
+    u = [cos(a), sin(a)];  v = [-sin(a), cos(a)];
+    A = c + r1 * u;  B = c + r2 * u;  M = c + (r1 + r2) / 2 * u;
+    a1 = arc(M - (rho - h) * v, B, A);       // le flanc gauche (centre à droite de l'axe)
+    a2 = arc(M + (rho - h) * v, A, B);       // le flanc droit (centre à gauche)
+    joindre(#a1, #a2);
+    nommer(#a1, nom);
+}
+r0 = max(0.14 * R, n * (pont + 2) / PI);     // le cœur plein : les pointes des navettes s'y resserrent — assez grand
+                                             // pour qu'il reste un pont entre deux voisines (mesuré : 3,1 mm à 0,14 R)
+r1 = 0.55 * R;                               // fin du premier anneau
+r2 = R - bord;                               // fin du second
+pour (k = [0 : n - 1])
+    navette(r0, r1 - pont / 2, 360 * k / n + 90, "jour");
+pour (k = [0 : n - 1])
+    navette(r1 + pont / 2, r2 - 0.12 * (r2 - r1), 360 * (k + 0.5) / n + 90, "jour");
+// Les perles : entre deux navettes du second anneau, près du bord.
+rp = min(0.035 * R, (2 * PI * (r2 - 6) / n) / 2 * 0.3);
+pour (k = [0 : n - 1]) {
+    q = cercle(c + (r2 - rp - 2) * [cos(360 * k / n + 90), sin(360 * k / n + 90)], rp);
+    nommer(#q, "jour");
+}
+si (trou_fil == 1) {
+    t = cercle(c + [0, R - bord / 2], 1.5);
+    nommer(#t, "fil");
+}
+// Le premier anneau : deux navettes voisines se touchent si leur demi-largeur dépasse l'espace sur leur ligne médiane.
+l1 = r1 - pont / 2 - r0;
+espace1 = 2 * PI * (r0 + l1 / 2) / n - largeur_petale * l1;
+si (espace1 < pont)
+    echo(str("Les navettes du premier anneau ne laissent que ", round(espace1 * 10) / 10, " mm entre elles : moins de pétales, ou plus étroits."));
+echo(str("Rosace Ø", diametre, " : ", 3 * n, " jours."));
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "jour", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1.5, nom = "Jours");
+si (trou_fil == 1)
+    usinage("percage", "fil", outil = "Foret Ø3", profondeur = epaisseur, nom = "Trou du fil");
+usinage("contour", "rosace", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1.5,
+        onglets = 4, onglet_long = 4, onglet_haut = 1, nom = "Rosace");

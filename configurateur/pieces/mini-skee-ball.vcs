@@ -1,0 +1,86 @@
+// MINI SKEE-BALL — le jeu de fête foraine sur la table : on fait rouler une balle de ping-pong sur une piste qui monte,
+// elle saute sur la cible penchée, y remonte, ralentit et retombe dans un trou. Plus le trou est haut et petit, plus il
+// rapporte (10, 20, 50, et 100 aux deux coins). Quatre pièces à tenons traversants.
+// thème : Jeux et jouets
+//
+// LES JOUES, de profil : la piste monte de `angle_piste` sur `longueur_piste`, la cible monte à 45° sur `longueur_cible`
+// au-dessus de son bout ; leurs MORTAISES (penchées comme elles) les tiennent par-dessous, à l'épaisseur de la planche. LA
+// PISTE et LA CIBLE ont la `largeur` intérieure, et sur leurs deux grands côtés un TENON (épaulé de 20 à chaque bout) qui
+// traverse les joues. La cible est percée de ses trous, les points gravés à côté.
+//
+// L'USINAGE : les points (Gravure, Pointe V 90°), les trous (Contour intérieur, sans onglets), les mortaises (Contour
+// intérieur, coins dégagés), puis les pièces (Contour extérieur, coins dégagés aux tenons, onglets). Contreplaqué de 12.
+
+largeur    = 200;    // largeur intérieure (mm)
+longueur_piste = 380;  // longueur de la piste, à plat (mm)
+angle_piste = 8;     // pente de la piste (°)
+longueur_cible = 280;  // longueur de la cible, le long de sa pente (mm)
+d_balle    = 40;     // Ø de la balle (mm) : ping-pong
+jeu        = 0.1;    // jeu des tenons dans les mortaises, par côté (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  W = largeur;  Lp = longueur_piste;  Lc = longueur_cible;  ap = angle_piste;
+up = [cos(ap), sin(ap)];  uc = [cos(45), sin(45)];       // les directions de la piste et de la cible
+p0 = [0, 30];                                  // le départ de la piste, sur la joue (son dessus)
+lp = Lp / cos(ap);                             // la longueur de la piste, le long de sa pente
+c0 = [Lp + 20, p0[1] + Lp * tan(ap) - 4];      // le bas de la cible (son dessus), un peu plus bas que le bout de la piste
+Lj = c0[0] + Lc * cos(45) + 25;                // la longueur d'une joue
+Hj = c0[1] + Lc * sin(45) + 30;                // sa hauteur
+// Le dessus de la joue : 35 au-dessus de la piste, puis 40 au-dessus de la cible (comptés d'aplomb).
+hb = 35;  hh = 40;
+xi = ((c0[1] + hh - c0[0]) - (p0[1] + hb)) / (tan(ap) - 1);   // où les deux bords se croisent
+// Un rectangle penché : le long de la direction u, de s0 à s1 depuis le point a, épais de e SOUS la ligne.
+function penche(a, u, s0, s1, e) = [a + s0 * u, a + s1 * u, a + s1 * u + e * [u[1], -u[0]], a + s0 * u + e * [u[1], -u[0]]];
+planche([Lj + espace + 2 * (W + 2 * ep) + espace + 2 * rognure, max(2 * Hj + espace, lp) + 2 * rognure, epaisseur]);
+
+// ── Les joues : profil, mortaises de la piste et de la cible ──
+module joue(o) {
+    j = polyligne([o, o + [Lj, 0], o + [Lj, Hj], o + [Hj - c0[1] - hh + c0[0], Hj], o + [xi, p0[1] + hb + xi * tan(ap)],
+                   o + [0, p0[1] + hb]], fermee = vrai);
+    nommer(#j, "joue");
+    mp = polyligne([for (q = penche(p0, up, 20 - jeu, lp - 20 + jeu, ep + 2 * jeu)) o + q + [0, jeu]], fermee = vrai);
+    nommer(#mp, "mortaise");
+    mc = polyligne([for (q = penche(c0, uc, 20 - jeu, Lc - 20 + jeu, ep + 2 * jeu)) o + q + jeu * [-uc[1], uc[0]]], fermee = vrai);
+    nommer(#mc, "mortaise");
+}
+joue([rognure, rognure]);
+joue([rognure, rognure + Hj + espace]);
+
+// ── La piste et la cible, à plat : la largeur en travers, la pente en hauteur ; un tenon de chaque côté ──
+module plaque(o, l, nom) {
+    q = polyligne([o + [ep, 0], o + [W + ep, 0], o + [W + ep, 20], o + [W + 2 * ep, 20], o + [W + 2 * ep, l - 20], o + [W + ep, l - 20],
+                   o + [W + ep, l], o + [ep, l], o + [ep, l - 20], o + [0, l - 20], o + [0, 20], o + [ep, 20]], fermee = vrai);
+    nommer(#q, nom);
+}
+xp = rognure + Lj + espace;
+plaque([xp, rognure], lp, "piste");
+oc = [xp + W + 2 * ep + espace, rognure];
+plaque(oc, Lc, "cible");
+// Les trous : de bas en haut, de plus en plus petits et rapportant de plus en plus ; deux « 100 » aux coins du haut.
+trous = [[W / 2, 70, d_balle + 30, "10"], [W / 2, 148, d_balle + 20, "20"], [W / 2, 220, d_balle + 10, "50"],
+         [36, 245, d_balle + 8, "100"], [W - 36, 245, d_balle + 8, "100"]];
+pour (t = trous) {
+    h = cercle(oc + [ep + t[0], t[1]], t[2] / 2);
+    nommer(#h, "trou");
+    // les points : à droite des trous du milieu, sous ceux des coins (centrés)
+    M = mesure_texte(t[3], 10, "Hershey Sans1") / 10;
+    pt = t[0] == W / 2 ? [t[0] + t[2] / 2 + 6, t[1] - 4] : [t[0] - 8 * (M[2] + M[3]) / 2, t[1] - t[2] / 2 - 12];
+    g = texte(oc + [ep, 0] + pt, 8, t[3], police = "Hershey Sans1");
+    nommer(#g, "points");
+}
+si (Lc < 280)
+    echo("La cible est trop courte pour ses trous : 280 mm au moins.");
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "points", outil = "Pointe V 90", profondeur = 1, nom = "Points");
+usinage("contour", "trou", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Trous");
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaises");
+usinage("contour", "piste", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Piste");
+usinage("contour", "cible", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Cible");
+usinage("contour", "joue", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Joues");

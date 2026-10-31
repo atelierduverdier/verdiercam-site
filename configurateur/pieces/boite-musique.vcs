@@ -1,0 +1,72 @@
+// BOÎTIER DE BOÎTE À MUSIQUE — la boîte en strates qui loge un mouvement à manivelle ou à clef (18 lames, le plus courant) :
+// la clef traverse le fond, le couvercle pivote sur un tourillon et porte une rosace d'ouïes pour que le son sorte.
+// thème : Décoration et cadeaux
+//
+// LE MOUVEMENT : `longueur_mecanisme` × `largeur_mecanisme` × `hauteur_mecanisme`, sa clef à `x_clef`, `y_clef` de son coin.
+// Ces cotes dépendent du mouvement acheté : LES RELEVER AU PIED À COULISSE avant d'usiner, les valeurs d'ici ne sont
+// qu'un ordre de grandeur. LA BOÎTE : un FOND percé pour la clef, assez de CADRES pour la hauteur du mouvement plus 3, un
+// COUVERCLE qui pivote sur un tourillon de Ø6 dans un coin (un quart de tour, et la boîte est ouverte) ; le couvercle est
+// percé d'une ROSACE : un trou au centre et deux couronnes d'ouïes.
+//
+// L'USINAGE : le trou de la clef, les pivots et la rosace (Poche, fraise droite Ø3), les ouvertures (Contour intérieur),
+// puis les pièces (Contour extérieur, onglets). Contreplaqué de bouleau de 6 ; le mouvement collé au fond à l'adhésif
+// double face épais (il résonne mieux qu'à la vis).
+
+longueur_mecanisme = 70;  // longueur du mouvement (mm) — à relever
+largeur_mecanisme = 52;   // largeur du mouvement (mm) — à relever
+hauteur_mecanisme = 25;   // hauteur du mouvement, clef non comprise (mm) — à relever
+x_clef     = 20;     // la clef, depuis le coin du mouvement, le long de sa longueur (mm) — à relever
+y_clef     = 26;     // la clef, depuis le coin du mouvement, en travers (mm) — à relever
+d_clef     = 8;      // Ø du trou de la clef (mm)
+jeu        = 2;      // autour du mouvement (mm)
+paroi      = 12;     // largeur des parois (mm)
+epaisseur  = 6;      // épaisseur (mm)
+espace     = 8;      // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  p = paroi;
+Li = longueur_mecanisme + 2 * jeu;  Wi = largeur_mecanisme + 2 * jeu;
+L = Li + 2 * p;  W = Wi + 2 * p;
+nc = ceil((hauteur_mecanisme + 3) / ep);
+si (x_clef < d_clef / 2 || x_clef > longueur_mecanisme - d_clef / 2 || y_clef < d_clef / 2 || y_clef > largeur_mecanisme - d_clef / 2)
+    echo("La clef tombe hors du mouvement : vérifier x_clef et y_clef.");
+planche([(nc + 2) * (L + espace) - espace + 2 * rognure, W + 2 * rognure, epaisseur]);
+pour (k = [0 : nc + 1]) {
+    o = [rognure + k * (L + espace), rognure];
+    nom = k == 0 ? "fond" : (k == nc + 1 ? "couvercle" : "cadre");
+    a = rect(o, [L, W], 5);
+    nommer(#a, nom);
+    v = cercle(o + [p / 2, p / 2], k == nc + 1 ? 3.15 : 3);
+    nommer(#v, "pivot");
+    si (k == 0) {
+        c = cercle(o + [p + jeu + x_clef, p + jeu + y_clef], d_clef / 2);
+        nommer(#c, "clef");
+    }
+    si (k > 0 && k <= nc) {
+        b = rect(o + [p, p], [Li, Wi], 3);
+        nommer(#b, "ouverture");
+    }
+    si (k == nc + 1) {
+        cc = o + [L / 2, W / 2];
+        r = cercle(cc, 5);
+        nommer(#r, "ouïe");
+        pour (j = [0 : 1])
+            pour (i = [0 : 7 + 4 * j]) {
+                t = cercle(cc + (12 + 9 * j) * [cos(360 * i / (8 + 4 * j) + 15 * j), sin(360 * i / (8 + 4 * j) + 15 * j)], 2.5);
+                nommer(#t, "ouïe");
+            }
+    }
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "clef", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1.5, nom = "Trou de la clef");
+usinage("poche", "pivot", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1.5, nom = "Pivots");
+usinage("poche", "ouïe", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1.5, nom = "Rosace");
+usinage("contour", "ouverture", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 2,
+        nom = "Ouvertures");
+usinage("contour", "fond", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Fond");
+usinage("contour", "cadre", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Cadres");
+usinage("contour", "couvercle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Couvercle");

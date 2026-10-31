@@ -1,0 +1,80 @@
+// CIRCUIT À BILLE — le zigzag mural des billes : une planche accrochée au mur, des rampes qui s'y emboîtent en pente
+// alternée. La bille roule dans la gorge d'une rampe, tombe sur la suivante, repart dans l'autre sens, jusqu'en bas.
+// thème : Jeux et jouets
+//
+// LA PLANCHE DE FOND : `largeur` de large, `rampes` MORTAISES penchées de ± `pente` au pas vertical `pas`, par paires (un
+// tenon par paire) ; deux trous d'accrochage en haut. LES RAMPES : toutes pareilles (elles servent dans les deux sens),
+// `longueur_rampe` × `profondeur_rampe`, deux TENONS de 50 sur le chant arrière qui traversent la planche ; une GORGE de
+// `largeur_gorge` creusée de `profondeur_gorge` sur toute leur longueur, ouverte aux deux bouts : la bille y roule et
+// tombe par le bout bas sur le haut de la rampe d'en dessous.
+//
+// L'USINAGE : les gorges (Poche), les mortaises (Contour intérieur, coins dégagés), les trous d'accrochage (Perçage, Foret
+// Ø5), puis la planche et les rampes (Contour extérieur, coins dégagés aux tenons, onglets). Billes de Ø16.
+
+rampes     = 5;      // nombre de rampes
+largeur    = 300;    // largeur de la planche de fond (mm)
+pas        = 70;     // d'une rampe à la suivante, en hauteur (mm)
+pente      = 6;      // pente des rampes (°)
+longueur_rampe = 220;  // longueur d'une rampe (mm)
+profondeur_rampe = 35;  // profondeur d'une rampe, du mur vers l'avant (mm)
+largeur_gorge = 12;  // largeur de la gorge (mm) : moins que le Ø de la bille
+profondeur_gorge = 4;  // profondeur de la gorge (mm)
+jeu        = 0.1;    // jeu des tenons dans les mortaises, par côté (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  n = max(1, round(rampes));  W = largeur;  lr = longueur_rampe;  pr = profondeur_rampe;
+H = 50 + (n - 1) * pas + lr * sin(pente) + 50;  // la planche : 50 au-dessus de la première, 50 sous le bas de la dernière
+st = [30, lr - 80];                            // les tenons d'une rampe : leur début, le long de la rampe (50 chacun)
+si (lr * cos(pente) > W - 70)
+    echo("Les rampes sont trop longues pour la planche : plus courtes, ou une planche plus large.");
+si (pas - lr * sin(pente) < 25)
+    echo("Les rampes sont trop serrées : la bille n'a plus la place de tomber. Un pas plus grand, ou une pente plus douce.");
+si (largeur_gorge > 14)
+    echo("La gorge est presque aussi large que la bille : elle s'y coincera.");
+// Un rectangle penché : le long de u, de s0 à s1 depuis a, épais de e SOUS la ligne (vers le bas, quel que soit le sens de u).
+function dessous(u) = u[0] >= 0 ? [u[1], -u[0]] : [-u[1], u[0]];
+function penche(a, u, s0, s1, e) = [a + s0 * u, a + s1 * u, a + s1 * u + e * dessous(u), a + s0 * u + e * dessous(u)];
+planche([W + espace + lr + 2 * rognure, max(H, n * (pr + ep + espace) - espace) + 2 * rognure, epaisseur]);
+
+// ── La planche de fond : chaque rampe, du haut ; la première descend vers la droite ──
+o = [rognure, rognure];
+f = rect(o, [W, H], 6);
+nommer(#f, "fond");
+// Le haut d'une rampe à 25 du bord : le bout bas de chacune tombe alors à 25 + (W - 50 - longueur à plat) du haut de la
+// suivante — la bille, qui part en avant, y atterrit au lieu de sauter par-dessus.
+x0 = 25;
+pour (k = [0 : n - 1]) {
+    y = H - 50 - k * pas;
+    a = k % 2 == 0 ? o + [x0, y] : o + [W - x0, y];
+    u = k % 2 == 0 ? [cos(pente), -sin(pente)] : [-cos(pente), -sin(pente)];
+    pour (s = st) {
+        m = polyligne([for (q = penche(a, u, s - jeu, s + 50 + jeu, ep + 2 * jeu)) q - jeu * dessous(u)], fermee = vrai);
+        nommer(#m, "mortaise");
+    }
+}
+pour (x = [40, W - 40]) {
+    h = cercle(o + [x, H - 15], 2.5);
+    nommer(#h, "accroche");
+}
+
+// ── Les rampes, à plat : le chant arrière en bas, ses deux tenons ; la gorge le long, ouverte aux deux bouts ──
+pour (k = [0 : n - 1]) {
+    q = [rognure + W + espace, rognure + ep + k * (pr + ep + espace)];
+    r = polyligne([q, q + [st[0], 0], q + [st[0], -ep], q + [st[0] + 50, -ep], q + [st[0] + 50, 0], q + [st[1], 0], q + [st[1], -ep],
+                   q + [st[1] + 50, -ep], q + [st[1] + 50, 0], q + [lr, 0], q + [lr, pr], q + [0, pr]], fermee = vrai);
+    nommer(#r, "rampe");
+    g = rect(q + [-4, pr / 2 - largeur_gorge / 2], [lr + 8, largeur_gorge]);
+    nommer(#g, "gorge");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "gorge", outil = "Fraise droite Ø6", profondeur = profondeur_gorge, passe = 2, nom = "Gorges");
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaises");
+usinage("percage", "accroche", outil = "Foret Ø5", profondeur = epaisseur, nom = "Accroches");
+usinage("contour", "rampe", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Rampes");
+usinage("contour", "fond", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Planche de fond");

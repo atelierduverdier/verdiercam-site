@@ -1,0 +1,75 @@
+// GABARIT DE TOURILLONS — pour percer d'aplomb et au milieu du chant les trous d'un assemblage à tourillons : la plaque se
+// pose sur le chant, sa butée contre la face de la planche ; les trous guident la mèche. Le même gabarit, retourné, perce
+// la pièce d'en face aux mêmes cotes.
+// thème : Atelier et gabarits
+//
+// LA PLAQUE : `trous` trous de Ø`d_tourillon` au `pas`, sur une ligne à la moitié de `epaisseur_planche` (la planche à
+// percer) de la face de la BUTÉE ; des repères gravés aux deux bouts de la ligne (à aligner sur les traits de crayon) et les
+// réglages. LA BUTÉE : une latte sous la plaque, qui y entre par deux tenons.
+//
+// L'USINAGE : les repères et les réglages (Gravure), les trous (Perçage au Foret Ø8 pour du Ø8, sinon Contour intérieur à
+// la fraise Ø6), la mortaise (Contour intérieur, coins dégagés), puis les pièces (Contour extérieur, onglets). Hêtre ou
+// contreplaqué de bouleau de 12 ; pour un usage suivi, des canons de perçage collés dans des trous de leur Ø extérieur.
+
+trous      = 4;      // nombre de trous
+d_tourillon = 8;     // Ø des tourillons (mm)
+pas        = 32;     // d'un trou au suivant (mm)
+epaisseur_planche = 18;  // épaisseur des planches à assembler (mm)
+hauteur_butee = 25;  // hauteur de la butée sous la plaque (mm)
+jeu        = 0.1;    // jeu des tenons, par côté (mm)
+epaisseur  = 12;     // épaisseur du gabarit (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  n = max(1, round(trous));  d = d_tourillon;  ept = epaisseur_planche;
+L = (n - 1) * pas + 2 * 40;                    // la plaque
+yf = 22;                                       // la face de la butée, depuis le bord de la plaque (10 de bois devant sa mortaise)
+ya = yf + ept / 2;                             // la ligne des trous
+W = ya + max(d, 10) + 25;
+lt = 30;  xt = [15, L - 15 - lt];              // les tenons de la butée
+si (d != 8 && d < 6.5)
+    echo("Ce Ø ne se perce qu'au Foret Ø8 ou se détoure à la fraise Ø6 : 6,5 mm au moins, ou 8 tout juste.");
+planche([L + 2 * rognure, W + espace + hauteur_butee + ep + 2 * rognure, epaisseur]);
+
+// ── La plaque : les trous, la mortaise de la butée, les repères et les réglages ──
+o = [rognure, rognure + hauteur_butee + ep + espace];
+p = rect(o, [L, W], 4);
+nommer(#p, "plaque");
+pour (k = [0 : n - 1]) {
+    t = cercle(o + [40 + k * pas, ya], d / 2);
+    nommer(#t, "trou");
+}
+pour (x = xt) {
+    m = rect(o + [x - jeu, yf - ep - jeu], [lt + 2 * jeu, ep + 2 * jeu]);
+    nommer(#m, "mortaise");
+}
+pour (x = [[3, 15], [L - 15, L - 3]]) {
+    r = ligne(o + [x[0], ya], o + [x[1], ya]);
+    nommer(#r, "repère");
+}
+pour (k = [0 : n - 1]) {
+    r = ligne(o + [40 + k * pas, W - 4], o + [40 + k * pas, W - 12]);
+    nommer(#r, "repère");
+}
+g = texte(o + [40, W - 22], 6, str("Ø", d, "  pas ", pas, "  planche ", ept), police = "Hershey Sans1");
+nommer(#g, "repère");
+
+// ── La butée : une latte, ses deux tenons en haut ──
+ob = [rognure, rognure];
+b = polyligne(concat([ob, ob + [L, 0], ob + [L, hauteur_butee]],
+                     [for (x = [xt[1], xt[0]]) for (j = [0 : 3]) ob + [x + [lt, lt, 0, 0][j], hauteur_butee + [0, ep, ep, 0][j]]],
+                     [ob + [0, hauteur_butee]]), fermee = vrai);
+nommer(#b, "butée");
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "repère", outil = "Pointe V 90", profondeur = 0.5, nom = "Repères et réglages");
+si (d == 8)
+    usinage("percage", "trou", outil = "Foret Ø8", profondeur = epaisseur, nom = "Trous");
+sinon
+    usinage("contour", "trou", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Trous");
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaises");
+usinage("contour", "butée", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 2, nom = "Butée");
+usinage("contour", "plaque", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 2, nom = "Plaque");

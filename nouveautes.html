@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#fdfcfa">
+<title>VerdierCAM — les nouveautés, version par version</title>
+<meta name="description" content="Ce qui change dans VerdierCAM, jour après jour : les fonctions ajoutées, les défauts corrigés, avec les numéros de version.">
+<link rel="canonical" href="https://verdiercam.fr/nouveautes.html">
+<link rel="icon" type="image/svg+xml" href="/oiseau.f8508e8c.svg">
+<link rel="preload" href="/polices/Inter-Regular.8af6cbde.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/style/verdiercam.777cf50a.css">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VerdierCAM">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="VerdierCAM — les nouveautés, version par version">
+<meta property="og:description" content="Ce qui change dans VerdierCAM, jour après jour : les fonctions ajoutées, les défauts corrigés, avec les numéros de version.">
+<meta property="og:url" content="https://verdiercam.fr/nouveautes.html">
+<meta property="og:image" content="https://verdiercam.fr/partage/carte.8ff9876f.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="VerdierCAM">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="saut" href="#contenu">Aller au contenu</a>
+
+<header class="barre">
+  <div class="cadre large barre-dedans">
+    <a class="marque" href="/" aria-label="VerdierCAM, accueil">
+      <img src="/oiseau.f8508e8c.svg" alt="" width="30" height="30">
+      <span>Verdier<b>CAM</b></span>
+    </a>
+    <nav class="menu" id="menu-sections" aria-label="Sections">
+      <a href="/#parcours">Le parcours</a>
+      <a href="/#usinage">Opérations</a>
+      <a href="/#modes">Modes</a>
+      <a href="/premiers-pas.html">Premiers pas</a>
+      <a href="/mode-emploi/">Mode d’emploi</a>
+      <a href="/installer.html">Installer</a>
+      <a href="/pieces.html">Pièces</a>
+      <a href="/configurateur/">Configurateur</a>
+      <a href="/nouveautes.html">Nouveautés</a>
+      <a href="/#sortie">Sortie</a>
+      <a href="/#questions">Questions</a>
+    </nav>
+    <button class="menu-bouton" type="button" aria-expanded="false" aria-controls="menu-sections">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14"/></svg><span>Menu</span>
+    </button>
+    <a class="bouton bouton-plein petit" href="/#sortie">Être prévenu</a>
+    
+  </div>
+</header>
+
+<main id="contenu">
+<!-- VerdierCAM — « Nouveautés ». Le texte de chaque jour vient de site/nouveautes.json (écrit pour qui
+     usine, d'après l'historique du logiciel) ; les numéros de version se lisent dans cet historique à la
+     génération, jamais à la main. Voir nouveautes_en_html() dans site/generer.py. -->
+
+<div class="heros papier pp-heros">
+  <div class="cadre">
+    <div class="pp-intro apparait">
+      <span class="surtitre">Nouveautés</span>
+      <h1>Ce qui change, jour après jour</h1>
+      <p class="accroche">
+        VerdierCAM avance par petites versions : chaque correction, chaque fonction ajoutée
+        monte le numéro d'un cran. Voici, en clair, ce que chaque journée de travail a apporté.
+        Version en cours : <b>0.99.411</b>.
+      </p>
+    </div>
+  </div>
+</div>
+
+<section class="nouveautes">
+  <div class="cadre">
+<article class="journee apparait" id="j2026-10-31">
+  <div class="journee-quand">
+    <time datetime="2026-10-31">samedi 31 octobre</time>
+    <span class="journee-version">0.99.398 à 0.99.411</span>
+  </div>
+  <div class="journee-texte">
+    <h2>La profondeur d'une gravure en V, les petites machines, et des vitesses justes pour chaque fraise</h2>
+    <ul>
+      <li>Gravure en V : sous le champ Profondeur, « Le plus profond » dit jusqu'où elle descend vraiment et ce qu'il reste de bois dessous — entre les traits, c'est la largeur des formes qui décide, pas le champ. Pour tout le document, une ligne « V le plus profond » dans l'arbre Projet, sous le Brut (en rouge à moins de 0,5 mm du dessous ; un clic choisit l'opération qui descend le plus bas), et la même chose dans l'onglet Brut, sous « Épaisseur Z » : de quoi choisir l'épaisseur de la planche sans ouvrir chaque gravure.</li>
+      <li>Les petites machines : quand le calcul demande plus que l'« Avance maxi » de la machine, « Calculer depuis la matière… » baisse la broche avec l'avance, pour garder le même copeau, et c'est ce qu'« Appliquer » écrit. Avant, il écrivait une avance que la machine ne tient pas avec la broche haute : la carte ralentissait d'elle-même, le copeau s'amincissait, la fraise frottait et brûlait. Si même la broche au plus bas ne suffit pas, il le dit et conseille une fraise à moins de dents.</li>
+      <li>Une machine dont l'« Avance maxi » n'est pas réglée n'hérite plus des 6 500 mm/min de la machine de l'atelier : rien ne plafonne, et le calcul le dit. « Prendre les réglages de la carte » reprend aussi l'avance maxi de la carte GRBL, grblHAL ou FluidNC.</li>
+      <li>Nouveau réglage « Rigidité » (Réglages machine › Course &amp; broche) : légère, moyenne ou costaude. Une machine souple ne demande pas un copeau plus fin — la fraise frotterait — mais moins de matière à la fois : légère, ¼ du diamètre par passe (1,5 mm au plus) et 40 % de pas latéral ; moyenne, la moitié du diamètre (3 mm au plus) et 50 %. Le calcul les montre, « Appliquer » y ramène la passe et le pas, et l'avant-vol signale une passe trop profonde.</li>
+      <li>Les forets ont leur vitesse : un foret coupe au fond du trou, où le copeau sort mal — sa vitesse de coupe est prise au tiers de celle d'une fraise, son copeau à moitié, et sa plongée, qui est tout le perçage, égale son avance. Un foret Ø6 dans le MDF passe de 22 500 tr/min et 5 940 mm/min à 6 500 tr/min et 858 mm/min.</li>
+      <li>Le calcul des vitesses lit le diamètre qui coupe sur la forme de chaque fraise : pointe en V, chanfrein, boule, et aussi profil dessiné, bout arrondi et pointe-bille — une pointe de Ø24 ne coupe que sur son bout. Les régimes proposés sur la fiche d'un outil de la bibliothèque passent par ce même calcul, avec la machine en service, et la vitesse de coupe affichée lit partout ce diamètre-là.</li>
+      <li>L'avance en rampe ne ralentit plus que les entrées en rampe — contour, poche, rainure, surfaçage, finition, ébavurage ; elle ralentissait aussi chaque descente d'une gravure en V ou d'un relief, et l'hélice d'un perçage hélicoïdal ou d'un filetage. La fraise de dégagement entre en rampe et plonge comme l'opération, et la durée annoncée compte ce que le programme écrit.</li>
+      <li>Bibliothèque : une fraise retouchée se reporte sur les opérations qui l'utilisent, « Reporter sur N opération(s) », leurs avances et vitesses restant les leurs. Prendre une fraise par la console ou l'assistant Relief reprend aussi sa plongée ; « Utiliser pour la finition » d'une Gravure 2.5D en cascade ne donne plus à l'ébauche le pas latéral de la boule. Et le document garde les vitesses par matière que la fraise porte : rouvert, le calcul les retrouve.</li>
+      <li>« Hors pince » se dit là où il compte : quand la simulation voit le porte-outil heurter le bois, l'alerte dit où est l'écrou et quel réglage corriger, et la fiche de la fraise prévient quand « Hors pince » est plus court que sa hauteur de coupe.</li>
+      <li>Avant d'envoyer : l'avant-vol signale aussi une plongée ou une avance en rampe plus rapides que la machine, et une fraise de dégagement réglée à 0 tr/min.</li>
+      <li>Un nombre tapé garde ses décimales : 3,175 reste 3,175 dans une case à deux décimales, et cliquer dans une case puis en sortir sans rien taper ne l'arrondit plus.</li>
+      <li>Croquis : la tangence se pose entre une ligne et une courbe de Bézier, le point de contact glissant le long de la courbe ; un arc dont le rayon tapé est trop petit dit le rayon qu'il faut au moins ; un trait se prend au clic d'aussi loin que la croix s'y accroche ; deux barres flottantes du ruban ne se recouvrent plus.</li>
+      <li>Simulation : le curseur « Opacité » règle ce qu'on voit — la matière simulée quand elle est montrée, sinon le brut.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-30">
+  <div class="journee-quand">
+    <time datetime="2026-10-30">vendredi 30 octobre</time>
+    <span class="journee-version">0.99.374 à 0.99.397</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Usiner une partie d'une forme trait par trait, la photo sans ses chutes, et la pointe en V qui ne coupe que sur son cône</h2>
+    <ul>
+      <li>Ébavurer prend un tour fait de morceaux — une partie du pourtour d'une forme et un trait, comme pour le Contour — et même un trait ouvert : un bout de pourtour, ou un trait seul, se chanfreine d'un côté, le dehors ou le dedans de la forme, ou à gauche ou à droite du sens du tracé. Le chanfrein s'arrête au bout du trait, sans creuser plus loin, sauf au coin saillant d'une pièce, où la pointe va jusqu'au bout.</li>
+      <li>Une opération faite sur une partie des traits d'une forme garde les mêmes traits quand on retouche le dessin : un trait coupé par « Diviser aux intersections », supprimé ou renuméroté ne change plus ce qu'elle usine.</li>
+      <li>Changer les traits d'une opération déjà faite : « Choisir ses traits », à droite de l'état du calcul, les met dans la sélection de la vue ; Maj+clic en retire une forme, Ctrl+Maj+clic un trait, Ctrl+clic en ajoute ; le bouton orange « Prendre les traits choisis », en haut du panneau, les lui rend. Ce bouton se montre dès que la sélection n'est plus celle de l'opération, quelle que soit la section ouverte.</li>
+      <li>Avec « Traits seuls », Ctrl+clic ajoute ou retire un trait, comme au Croquis. Une opération refusée ne laisse plus le panneau sur l'opération d'avant, dont on aurait changé les réglages sans le vouloir.</li>
+      <li>Photo de la pièce, pour montrer le résultat à un client : « Cacher des morceaux » coché, un clic dans la vue cache tout un morceau — le reste de planche autour de la pièce, le milieu d'un cadre —, un autre clic au même endroit le remet, « Tout remettre » d'un coup. Le fond « Dégradé » se voit dans l'aperçu comme sur la photo écrite.</li>
+      <li>Changeur d'outil sous LinuxCNC : la carte « Macro de la carte » relit le fichier de réglages du magasin (« Choisir son atc_config.ngc… ») et dit, réglage par réglage, ce qui diffère des réglages de VerdierCAM, et les cotes encore à établir — comme pour la macro d'une FluidNC.</li>
+      <li>« Tracé seul » s'appelle désormais « Sans symboles » : à l'Usinage, à côté de « Traits seuls », on prenait l'un pour l'autre. Et une gravure en V faite avec une pointe dessinée dit son angle — « Gravure en V 60° » —, et non plus « 0° ».</li>
+      <li>Un Ébavurer posé sur les formes d'un Contour en reprend aussi les traits : il chanfreine les arêtes que le Contour a faites, et plus celles qu'il n'usine pas — une bande en V qui se creusait en plein bois.</li>
+      <li>Un texte se rouvre en une seule forme, comme après « Poser le texte » : il ne se redécoupe plus en une ligne de l'arbre par contour à chaque ouverture. Une opération qui ne gravait qu'une partie d'une forme retrouve exactement ces traits après Enregistrer et Ouvrir.</li>
+      <li>Outils : une pointe en V ou un chanfrein ne coupent que sur leur cône — leur hauteur de coupe suit l'angle, le diamètre et le méplat, et l'alerte de longueur utile vient dès qu'on descend plus bas. La fiche de la bibliothèque dit l'angle de la pointe, dessinée comprise (« 60° »).</li>
+      <li>L'outil Mesurer va d'un point à un autre : il s'accroche toujours aux croisements, au millionième près, et Maj+clic prend le point sur le trait plutôt que le trait.</li>
+      <li>Pilotage : la console a ses raccourcis G28 et G30 — aller aux deux points que la carte garde en mémoire — et G28.1, G30.1 pour les mémoriser à la position actuelle ; chacun demande d'abord une confirmation qui dit où va la machine (en rapide, tous les axes à la fois).</li>
+      <li>Réglages machine › Carte : le sens des moteurs ($3) et le sens de l'origine ($23) se règlent par trois cases X, Y, Z, chacun avec une phrase qui dit ce qu'il fait. En anglais, les réglages de la carte ont leurs noms, leurs unités et leurs explications en anglais.</li>
+      <li>Réglages machine › Pupitre &amp; palpeur : la carte « Palpeur » montre la plaque en dessin, avec ses cotes (« Épaisseur palpeur », « Épaisseur lèvre », « Ø de palpage ») et le « Coin du brut », qu'on choisit d'un clic.</li>
+      <li>Windows : la fenêtre de VerdierCAM tient toujours dans son écran — au lancement, au retour d'un agrandissement, sur un autre écran ou à une autre échelle —, et le bouton du milieu montre deux carrés quand elle est agrandie.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-29">
+  <div class="journee-quand">
+    <time datetime="2026-10-29">jeudi 29 octobre</time>
+    <span class="journee-version">0.99.342 à 0.99.373</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Courbes et textes qui se travaillent à la main, et le changement de fraise au palpeur fixe</h2>
+    <ul>
+      <li>Courbes de Bézier : les poignées se voient sur la forme choisie ; Suppr sur un nœud garde la courbe au lieu d'y faire un trou ; « Ajouter un point sur le trait » (Ctrl+K le trouve aussi par « couper » ou « nœud ») ; plusieurs points choisis se tirent ensemble, et un nœud tiré ne tremble plus.</li>
+      <li>Déplacer, Tourner, Mettre à l'échelle et Miroir partent directement sur le dessin : un clic sur l'icône, puis le point de base ; la fenêtre des valeurs exactes vient au second appel.</li>
+      <li>Décaler peut ne garder que le tour de l'ensemble — extérieur, intérieur ou les deux : les morceaux qui se touchent n'en font plus qu'un. Simplifier accepte un tracé qui porte des arcs : les arcs restent, les traits entre eux se simplifient.</li>
+      <li>Textes : un texte se rouvre depuis l'arbre (son crayon, ou un double-clic). Posé sur une courbe, il la suit quand on la tire ou la déplace ; modifié, il garde son numéro et les opérations qui le gravent ; avec « Courber les lettres avec la courbe », les lettres d'une écriture attachée restent jointes sur un arrondi serré. Une police remplacée sur le disque se relit sans relancer VerdierCAM.</li>
+      <li>« Sans symboles » (d'abord nommé « Tracé seul ») : un bouton cache d'un coup nœuds, poignées, numéros, contraintes et cotes, au Croquis et à l'Usinage ; un second clic les remet.</li>
+      <li>Usinage, en vue 2D : le bouton « Traits seuls » ne choisit que des traits, jamais la zone entre eux, et un clic dans le vide ne défait plus la sélection ; Ctrl+Maj+clic ajoute ou retire un seul trait.</li>
+      <li>« Diviser aux intersections » coupe aussi les courbes, et le bout d'un trait posé contre un autre à un centième de millimètre près : un tour fait de courbes se coupe sans rien perdre.</li>
+      <li>Une poche faite de zones cliquées ne fige plus l'écran quand on retouche le dessin : ses zones se recalculent en arrière-plan, avec son parcours.</li>
+      <li>Supprimer des formes dit quelles opérations les perdent — « Gravure en V n'a plus aucune forme : elle n'usinera rien » — et comment y revenir.</li>
+      <li>Changement de fraise à la main, mesuré au palpeur fixe : Réglages machine › Table, « Changement de fraise : À la main ». La broche va à la position de changement et attend ; la fraise montée, le palpeur fixe la mesure (la fraise du zéro d'abord, qui sert de référence). Avec FluidNC ou grblHAL, c'est la macro de la carte, écrite par VerdierCAM et essayée sur une vraie carte ; sur une carte GRBL, c'est le Pilotage qui mène la mesure.</li>
+      <li>Magasin d'outils : au-delà du dernier poste, une fraise se change à la main à la position de changement, au lieu d'une alarme ; et la broche peut attendre sa vitesse avant de plonger dans le siège.</li>
+      <li>Imports SVG, DXF et esquisses FreeCAD : 950 fichiers réels passés au crible — plus de traits fantômes ni de cotes fausses à l'arrivée.</li>
+      <li>Documents : un document enregistré se rouvre à l'identique — dix-neuf petites pertes silencieuses corrigées, chacune gardée par un contrôle.</li>
+      <li>Pilotage face aux pannes : une carte qui redémarre seule, une fin de course, un Wi-Fi qui se tait ou des octets abîmés ne font plus croire à une position sûre.</li>
+      <li>Windows : la suite entière des contrôles passe sur un vrai Windows 11. Quand le « Contrôle intelligent des applications » de Windows bloque VerdierCAM, le LISEZMOI explique quoi faire, et VerdierCAM-Diagnostic dit s'il est actif.</li>
+      <li>Usinage et Simulation : la broche passe de pleine à translucide en fondu, au lieu de sauter d'une image à l'autre.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-28">
+  <div class="journee-quand">
+    <time datetime="2026-10-28">mercredi 28 octobre</time>
+    <span class="journee-version">0.99.315 à 0.99.341</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Une pièce neuve qui garde vos réglages, un magasin à votre image, et une grande revue de l'usinage</h2>
+    <ul>
+      <li>Une nouvelle pièce prend le post-processeur de la machine en service, et « Garder pour les nouvelles pièces » (onglet Brut) retient pour chaque machine la matière, l'origine et les hauteurs — un premier réglage, une fois pour toutes.</li>
+      <li>Une machine neuve n'a plus de post-processeur d'office : l'écran dit « Vous n'avez pas choisi votre post-processeur », et rien ne s'exporte avant.</li>
+      <li>Contour extérieur : une fente plus étroite que la fraise ne supprime plus tout le parcours, et les recoins fermés derrière elle sont creusés d'abord, tant que la pièce tient au brut.</li>
+      <li>Usiner un seul côté d'une forme : en Usinage, un second clic sur un trait déjà choisi ne garde que lui, et le Contour ne suit que ce côté.</li>
+      <li>Numéros d'outil : deux fraises n'ont plus le même numéro T, et une fraise prise dans la bibliothèque apporte le sien.</li>
+      <li>Magasin d'outils : votre propre modèle 3D (STL) posé à chaque poste, en plusieurs pièces si besoin, suivi en direct pendant qu'on le règle.</li>
+      <li>Changeur d'outil : VerdierCAM lit la macro de la carte et la compare à ses réglages ; « Lancer » attend la bonne, un bouton l'envoie. Et la broche ne peut plus plonger dans la table : un programme dont le magasin tomberait sous le dessus du martyr est refusé (une carte qui n'a pas fait sa prise d'origine).</li>
+      <li>Usinage et Simulation : la broche devient translucide pendant que la fraise travaille, pour voir la coupe, et reste pleine pendant un changement d'outil.</li>
+      <li>Gravure « entre les traits » : un avertissement quand les traits du dessin sont trop fins pour la pointe.</li>
+      <li>Pilotage : la légende cache ses tracés d'un clic, comme en Usinage ; les avertissements de vitesse de « Lancer » disent ce qui se passera et quoi faire.</li>
+      <li>Poche dans un anneau étroit : la rampe descend en hélice au lieu de centaines de demi-tours — l'avant-trou d'un M4 passe de 634 à 222 Ko de G-code.</li>
+      <li>Copier-coller : la copie d'un polygone coté reste un polygone, avec son nom et sa famille.</li>
+      <li>Revue de l'usinage : dix cartes et logiciels de pilotage confrontés à leur documentation ; ce que la Simulation montre est ce qui part à la machine, vérifié pour tous les documents et tous les post-processeurs. Les nombres du G-code gardent le point quelle que soit la langue de l'ordinateur. Et jamais de travail perdu : un document abîmé ne fait plus fermer VerdierCAM, documents et réglages s'écrivent sur le disque pour de bon.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-27">
+  <div class="journee-quand">
+    <time datetime="2026-10-27">mardi 27 octobre</time>
+    <span class="journee-version">0.99.289 à 0.99.314</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Le changeur d'outil automatique : le magasin dessiné, simulé, et sa macro écrite par VerdierCAM</h2>
+    <ul>
+      <li>Changeur d'outil automatique (cartes FluidNC et grblHAL) : la case « Changeur d'outil automatique (ATC) » des réglages machine, et le magasin d'outils réglé dans Réglages machine › Table — ses postes, leur position, le Z machine des sièges — puis dessiné sur la table et dans la vue 3D. La carte change seule de fraise ; « Lancer » lui dit d'abord laquelle tient la broche.</li>
+      <li>Simulation : le cycle complet d'un magasin à vis — dévissage en tournant à l'envers, vissage à l'endroit, mesure au palpeur d'outil, couvercle — joué avec ses vrais temps et compté dans la durée du programme. Les mêmes réglages écrivent la macro de la carte : « Écrire la macro de la carte… ».</li>
+      <li>Pilotage : le trajet de la carte jusqu'au magasin se trace en tirets ambre, et la broche ne repasse jamais sous le magasin.</li>
+      <li>Une bibliothèque pour débuter : vingt-cinq fraises d'office au lieu de dix — droites de Ø1 à Ø4, une dent, coupe basse, compression, fraise à surfacer Ø22, boules, pointes en V à 30° et 60°, forets — chacune avec son régime de départ et une note qui dit à quoi elle sert. Les fraises à fileter M4, M6 et M8 de la bibliothèque sont réparées.</li>
+      <li>À l'ouverture, l'onglet Brut passe devant : la pièce brute d'abord. Le ruban ne répète plus Nouveau et Ouvrir (ils sont dans le menu Fichier) ; Enregistrer reste.</li>
+      <li>Contour d'un tour fait de traits et d'arcs reliés : le panneau propose Intérieur / Extérieur, comme le calcul le voit — il proposait à gauche / à droite, sans effet.</li>
+      <li>Pilotage : « Brut neuf » remet la vue au brut entier ; la matière en direct suit la fraise dès la première passe, et ne saute plus en avant quand on relance un programme.</li>
+      <li>Pilotage : la liste à cocher avant chaque programme devient une option — Réglages machine › Pupitre &amp; palpeur, « Liste à cocher avant de lancer ».</li>
+      <li>Pilotage : un seul VerdierCAM à la fois sur une carte ; un second ne s'y branche plus (rapports mêlés, position qui saute). Le jog tenu marche pendant un changement d'outil, et la fraise montée est nommée juste en haut de la vue.</li>
+      <li>Réglages machine › Carte : le dossier des sauvegardes des réglages de la carte s'écrit en clair, et une sauvegarde se restaure d'un clic.</li>
+      <li>Ctrl+K trouve aussi les réglages du Pilotage : « anti » ou « onduler » mènent à « Onduler la broche (anti-broutement) ».</li>
+      <li>Post-processeur RichAuto DSP (boîtiers A11, A18 et leurs copies), expérimental : le G-code à copier sur la clé USB du boîtier.</li>
+      <li>Schémas des réglages : les petits dessins des tuiles se lisent, et leurs titres ne passent plus dessous.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-26">
+  <div class="journee-quand">
+    <time datetime="2026-10-26">lundi 26 octobre</time>
+    <span class="journee-version">0.99.248 à 0.99.288</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Le banc d'essai de l'atelier, le zéro à la feuille et le plan coté en PDF</h2>
+    <ul>
+      <li>Banc d'essai : les mêmes documents et les mêmes gestes sur les trois machines de l'atelier — le PC de bureau, le vieux PC Windows (un Core i7 de 2016) et un Raspberry Pi 5 qui garde deux cœurs pour piloter la machine. Ouvrir VerdierCAM : 0,2 à 0,5 s ; un grand panneau gravé en V de près de 350 000 lignes : 3 à 10 s. Tous les chiffres sur la page Installer, « Quelle machine ? ».</li>
+      <li>Plusieurs opérations se calculent en même temps, jusqu'à quatre : quatre poches en spirale, 3,7 s → 3,0 s sur le PC de bureau. Sur le Raspberry Pi de la machine, les cœurs gardés pour le pilotage restent libres.</li>
+      <li>Vue 3D allégée : une suite de coupes droites se simplifie avant d'aller à la carte graphique. Sur le Raspberry Pi 5, une image des trajets de quatre poches en spirale passe de 175 à 50 ms.</li>
+      <li>Gravure en V : sans fond plat, la pointe ne descend plus sous son cône — plus bas, c'est la queue qui couperait. Là où la forme est plus large qu'elle, elle longe les parois à la profondeur de son cône, et un avertissement dit la surface laissée en relief, avec « Fond plat » ou les zones cliquées pour la vider. Les grands panneaux gravés en V se calculent aussi plus vite.</li>
+      <li>Relief : « À la taille du fichier (300 ppp) » met une image à la taille que son fichier déclare — un dessin préparé à 205 × 319 mm reste à 205 × 319 mm sur la planche.</li>
+      <li>Fiabilité : chaque lecteur de fichiers a été nourri de 17 400 fichiers abîmés (documents, dessins, G-code, bibliothèques d'outils). Un fichier d'outils tronqué n'empêche plus VerdierCAM de démarrer, et un défaut rare dans l'écriture des hélices du G-code est corrigé.</li>
+      <li>Disposition : un panneau resté caché derrière la vue revient seul dans son coin à l'ouverture, et la console dit lequel — le reste de vos panneaux ne bouge plus.</li>
+      <li>Usinage : un réglage changé dans le panneau Opération se voit tout de suite dans la vue.</li>
+      <li>Pilotage : le zéro Z à la feuille de papier. Onglet Palpeur, « Z à la feuille » : la fraise au-dessus de la pièce, une feuille glissée dessous, on descend pas à pas (de 0,01 à 0,5 mm) et l'on pose Z0 dès qu'elle accroche — l'épaisseur de la feuille est comptée.</li>
+      <li>Pilotage : au changement d'outil fait à la main, la fraise se déplace (pavé de Déplacer ou flèches du clavier) jusqu'à un endroit plat pour refaire le zéro, et la fenêtre rappelle où est le Z0 du programme : sur le dessus de la pièce ou sur le martyr.</li>
+      <li>Pilotage : à la connexion d'une machine, l'onglet Déplacer s'ouvre de lui-même ; la tête va aussi à une cote tapée, refusée si elle dépasse la course de l'axe.</li>
+      <li>Plan coté en PDF, depuis le croquis : Fichier › Exporter le dessin › Plan coté (PDF)… — un titre et une note au cartouche, A4 ou A3, la plus grande échelle normalisée qui tient, les cotes d'encombrement et les axes des cercles.</li>
+      <li>Croquis : le bilan des contraintes se clique. « N mouvements encore libres » choisit les formes qui bougent encore, en orange sur le dessin et dans l'arbre ; les contraintes redondantes se montrent de même. Dans le thème Clair, un trait libre est violet et plus épais : il ne se confond plus avec un trait tenu.</li>
+      <li>Croquis : l'arc tracé par son centre accroche aussi sa fin sur un bout de trait ou un point — il ne reste plus un « mouvement libre » caché au bout d'un arc.</li>
+      <li>L'écran dit « brut » au lieu de « planche » : VerdierCAM n'usine pas que du bois. L'onglet Brut, « Brut · Aluminium » pour une plaque d'alu, « Taille du brut », « Centrer sur le brut ».</li>
+      <li>Une première installation part d'une machine neutre, « Ma machine », à régler — et non plus de la machine de l'atelier.</li>
+      <li>Exemples : un joint de carburateur entièrement contraint, pour apprendre le croquis — retapez une cote, tout le joint suit.</li>
+      <li>Post-processeur simCNC (cartes CSMIO/IP), expérimental : écrit d'après la documentation du fabricant, en attendant un essai sur une vraie machine.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-25">
+  <div class="journee-quand">
+    <time datetime="2026-10-25">dimanche 25 octobre</time>
+    <span class="journee-version">0.99.213 à 0.99.247</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Une boîte vissée de bout en bout : une simulation nette, des trajets discrets, un filetage qui guide</h2>
+    <ul>
+      <li>Simulation : la gorge d'un filet se dessine ronde et nette — plus d'escalier de cases ni de rayures claires sur le tour. Au bout du programme, la planche creusée prend la finesse choisie et des parois lisses : elle est la pièce finie.</li>
+      <li>Simulation plus rapide : la pièce se maille trois à quatre fois plus vite, l'image ne se fige plus quand la pièce finie arrive, et les surfaces plates (le dessus, les fonds de poche) demandent quatre à six fois moins de travail à la carte graphique.</li>
+      <li>Simulation : les mêmes gestes qu'à l'Usinage — un clic dans une zone, un trait qui prend tout son contour, les onglets posés à la main.</li>
+      <li>Usinage : les trajets se tracent en fil fin et translucide, en 2D comme en 3D ; l'opération choisie reste un peu plus marquée, les autres s'effacent. La pièce se lit à travers. La touche T montre tour à tour la pièce seule, les trajets seuls, puis les deux.</li>
+      <li>Usinage : un détourage qui traverse la planche passe en dernier, après les filets — pendant le filetage, la pièce est encore tenue par toute la planche, pas par trois onglets.</li>
+      <li>Poche concentrique ou spirale : plus de fine paroi oubliée au milieu d'un anneau, comme autour du tenon d'un couvercle. Et dans une poche étroite, la rampe ne fait plus des dizaines de petits allers-retours sur place : elle descend le long de la plus longue droite libre.</li>
+      <li>Filetage : le panneau dit quand un filet extérieur n'a pas de tenon, et pourquoi — la poche autour du tenon s'arrête plus haut que le filet, le cercle choisi est le tenon lui-même, ou il est au fond d'un trou — avec le bouton qui le règle (« Fileter sur 10.00 mm, la hauteur du tenon », « Prendre le cercle Ø39.00 », « Filet intérieur »).</li>
+      <li>Filetage : un filetage neuf devine son côté d'après le dessin — extérieur autour d'un tenon, intérieur dans un trou. Un pas tapé à la main (6 mm pour une boîte en bois) se garde au filetage suivant : deux filets qui se vissent ont le même pas. Et la bulle de « Pas » le dit : n'importe quel pas de 0,2 à 10 mm, pas seulement ceux de la table.</li>
+      <li>Cercle : la première case est le diamètre, le rayon est à un Tab — une cote d'atelier se tape telle qu'elle est sur le plan.</li>
+      <li>Usinage : un clic dans une zone ne prend plus le disque d'à côté quand les cercles de l'opération précédente sont encore choisis.</li>
+      <li>Post-it, G-code et console : le texte glisse à la molette, trois lignes par cran, au lieu de sauter.</li>
+      <li>Plus fluide : poser un chemin ne fait plus souffler l'ordinateur, une grande poche et son programme se calculent sans gêner le reste, Annuler ne recalcule que ce qui a changé, et un croquis de plusieurs centaines de formes ne ralentit plus la souris.</li>
+      <li>Licence : le renouvellement des mises à jour se pose dans Aide › Licence, et une licence plus ancienne recollée par mégarde ne remplace plus l'active sans demander.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-24">
+  <div class="journee-quand">
+    <time datetime="2026-10-24">samedi 24 octobre</time>
+    <span class="journee-version">0.99.184 à 0.99.212</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Le relief qui se lit et se règle, le pilotage qui dit où va la fraise, et le chanfrein avant le filet</h2>
+    <ul>
+      <li>Simulation : la lumière vient maintenant du haut à gauche de l'image, quelle que soit la vue, plus rasante, et le bois prend un léger reflet satiné. Un relief fini à la boule se lit enfin : chaque pente s'éclaire ou s'assombrit, les yeux, le nez, les plis d'une capuche sortent du bois — de dessus comme en biais. Le même crâne ci-dessous, même fraise, même finesse : seule la lumière change.</li>
+      <li>Poche : deux traits d'un bord à l'autre de la planche bordent une bande qu'un clic choisit — le bord de la planche ferme la zone, plus besoin d'y tracer deux traits de plus. « Ouvrir les bords sur le tour de la pièce » ouvre les deux côtés de la bande, ou, d'un clic, l'un d'eux seulement.</li>
+      <li>Les dessins des réglages : la fraise ressemble à une fraise — deux goujures en hélice, une silhouette entaillée, un bout adouci — et, dans « Profondeurs », elle prend la place libre au-dessus du cadre au lieu de s'écraser.</li>
+      <li>Répartir : choisissez une ligne avec les formes, elle devient le cadre — trois trous se rangent le long d'une ligne de 120 mm, avec le même écart entre eux qu'aux deux bouts.</li>
+      <li>Finitions : le fond reste en bas d'un côté des îlots à l'autre, sans remonter entre eux.</li>
+      <li>Pilotage : sous X Y Z, « Cible et reste du mouvement » dit où va la fraise et ce qu'il lui reste par axe — jusqu'à la fin de la ligne, du prochain changement de direction ou de la passe, au choix. Le petit chiffre à droite de la position n'apparaît plus que s'il dit autre chose (la position machine ou pièce), et lisiblement. Après un arrêt, « Du début », à côté de « Reprendre », relance le programme depuis sa première ligne.</li>
+      <li>Brancher la carte : quand aucune carte n'est trouvée, VerdierCAM dit pourquoi — une puce CH340 sans son pilote sous Windows (avec le lien pour le prendre), une puce désactivée, un port pris par un autre service sous Linux, un câble qui ne fait que charger. Sous Windows, une carte ESP32 ne redémarre plus quand on ouvre son port, et les ports Bluetooth ne passent plus pour des cartes USB.</li>
+      <li>Réglages machine › Carte : les paramètres de la carte (courses, pas par millimètre, fins de course, vitesses) quittent le Pilotage — on les règle une fois, à l'installation de la machine.</li>
+      <li>Simulation : la ligne du bas dit l'avance de la fraise pendant le déplacement en cours, en mm/min.</li>
+      <li>Filetage : « Chanfreiner l'entrée » pose un chanfrein entre le trou et le filet — perçage, chanfrein, puis filet : le filet commence sous le chanfrein, sans première spire en lame de couteau, et la vis s'engage seule. À la pointe en V de la bibliothèque ; sans elle, à la fraise droite, qui part du bas du chanfrein et remonte en hélice. Ébavurer sait aussi chanfreiner à la fraise droite.</li>
+      <li>Poche : une poche neuve va au trait — la surépaisseur réglée sur une opération ne passe plus à la suivante.</li>
+      <li>Relief, étape Usiner : « Où usiner » se lit avec la planche — trois vignettes vues de dessus et en coupe, le bois creusé en clair. L'ébauche à la fraise droite et la finition à la boule deviennent deux opérations, à régler chacune ; ce qui descend sous le plan zéro (un motif posé dans un creux) s'usine aussi.</li>
+      <li>Relief : la vue 3D montre la vraie hauteur, et grossir les hauteurs reste à un bouton. Un modèle 3D posé sur un plat (« Socle du modèle ») se garde ou se retire. Et la matière « Bois clair uni » laisse lire un relief à la seule lumière, sans cernes qui se confondent avec les passes.</li>
+      <li>Croquis : le relief se voit sous le dessin, à sa place sur la planche, pour tracer la découpe autour (Affichage › Montrer sur le dessin). Le relief s'ouvre par son onglet, en haut : son icône a quitté le ruban d'Usinage.</li>
+      <li>Et les corrections de la revue du soir : l'aperçu « Dans la pièce » du Relief ne montre plus tout creusé quand la pièce est à côté du relief, un modèle dont on a retiré le socle n'est plus relu de travers par une version plus ancienne, et « Reprendre » tient dans la barre étroite du Pilotage.</li>
+    </ul>
+    <figure class="capture journee-capture"><div class="fenetre"><img src="/captures/eclairage.89a2d96f.webp" width="1920" height="1080" loading="lazy" alt="Le même crâne fini à la boule Ø6 : à gauche l&#x27;éclairage d&#x27;avant, à droite le nouveau."></div><figcaption>Le même crâne fini à la boule Ø6 : à gauche l'éclairage d'avant, à droite le nouveau.</figcaption></figure>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-23">
+  <div class="journee-quand">
+    <time datetime="2026-10-23">vendredi 23 octobre</time>
+    <span class="journee-version">0.99.145 à 0.99.183</span>
+  </div>
+  <div class="journee-texte">
+    <h2>L'ordre des opérations libre, la pièce du relief, et les cartes trouvées sur le réseau</h2>
+    <ul>
+      <li>Usinage : les opérations se rangent dans l'ordre qu'on veut, d'une fraise à l'autre. On glisse une opération au-dessus ou au-dessous d'une autre, ou en tête d'une fraise ; Monter et Descendre passent d'une fraise à l'autre. L'arbre montre un bandeau par suite d'opérations d'une même fraise (T1, T2, puis T1 de nouveau) : un filetage peut passer entre deux poches. Une opération neuve rejoint toujours les siennes, sans changement d'outil de plus.</li>
+      <li>Poche : un second clic sur une zone choisie la retire ; des formes déjà choisies, le clic cherche la zone entre elles — l'anneau entre deux cercles, sans perdre la sélection. Perçage : « Pause au fond ». Filetage : « Repasser la dernière passe », la fraise refait la dernière hélice au même rayon, sans prendre plus de bois. Le schéma des onglets de maintien est à la bonne proportion.</li>
+      <li>Relief : un contour dessiné (une médaille, un couvercle) devient la forme de la pièce et découpe toute la pile, image comprise ; « Bomber la pièce » y pose un dôme d'un clic. À l'étape Usiner, on choisit où passe la fraise : dans la pièce, sur le relief seul ou sur toute la carte, avec une marge. Une image a son « Seuil du noir » : le fond presque noir d'une photo tombe au fond, sans plaque grenue.</li>
+      <li>Relief : l'ébauche ne remonte plus à chaque bout de rangée — les rangées de chaque couche se relient au fond (sur un crâne : 5 min 28 → 4 min 08 en couches, 20 min 53 → 17 min 39 en trame). « Dégrossir : En couches | En trame » : en trame, la boule de la finition dégrossit, en rangées à 90°.</li>
+      <li>Relief par IA : deux consignes à copier pour une IA d'images — « Plaque blanche », à la lumière égale et sans coin assombri, et « Fond noir », où l'IA d'images remplit les vides du sujet (entre une voile et une coque) que la plaque blanche laisse voir et que le calcul prenait pour du lointain. Une image déjà en niveaux de gris est reconnue : un avis la dit sans doute carte de hauteurs, et la prend telle quelle d'un clic.</li>
+      <li>Filetage : le champ Pas garde un calcul — « pas » suit une variable, et les deux filetages d'une vis et de son écrou changent ensemble. La console pose un filetage : « usinage filetage #3 exterieur pas=pas passes=2 » ; profondeur, départ, passe et pas y acceptent un calcul (« profondeur=T-fond »), et une pièce paramétrique exportée écrit ses filetages. Pour s'approcher de la cote par retouches, sans passer hors tolérance : « Laisser au Ø » arrête le filet avant la cote, mesuré sur le diamètre — 0,20, on usine et on mesure, puis 0,10, 0,05, 0,02 pour un pas fin, et 0 pour finir ; « Seulement la passe à la cote » ne refait que la dernière passe, pas toutes dans le vide. La vue de côté montre ce qu'on laisse.</li>
+      <li>Réglages machine : « Se connecter et lire la carte » en tête de la page Général, puis « Chercher les cartes » — un tableau de chaque port USB et de chaque carte du réseau, avec « Choisir ». Une FluidNC se trouve par son nom (fluidnc.local). Une carte liée dit laquelle, et « Changer de carte » la quitte sur place pour en chercher une autre. Une carte éteinte à son adresse ne fige plus le logiciel : 4 secondes au plus.</li>
+      <li>Croquis : l'outil Note, une étiquette de texte posée sur la planche, jamais usinée. L'étoile et le polygone se retouchent : leur cercle en pointillés les agrandit autour du centre, et ils se rouvrent par leurs cotes (icônes Polygone et Étoile). Une cote tapée accepte un calcul (« 50/2 », « =D/2 ») et suit la variable ; « Contraindre » et « Coter » au clic droit sur la sélection.</li>
+      <li>Variables : l'onglet est aussi à droite de l'Usinage et de la Simulation ; une variable changée refait les parcours qui la citent. « Exporter en texte… » écrit la planche, les variables, et les cotes et champs d'usinage qui les citent. Post-its : une loupe sur l'image agrandie (Ctrl + molette), et une image glissée depuis le gestionnaire de fichiers y entre. Le dessin d'une fraise à fileter montre en orange la partie qui coupe.</li>
+      <li>Windows : le mode d'emploi du paquet dit quoi faire si un antivirus retient le programme quelques heures, et de ne pas l'extraire dans un dossier synchronisé par OneDrive. Et la relecture du soir : une cote tapée « 30 » ne suit plus une variable par hasard, un Pas de filet à 0 tapé à la console est borné.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-22">
+  <div class="journee-quand">
+    <time datetime="2026-10-22">jeudi 22 octobre</time>
+    <span class="journee-version">0.99.117 à 0.99.144</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Le G-code se retouche à la main, la photo de la pièce, le filet extérieur à la boule, des variables qui suivent la planche, et des fenêtres de réglages plus claires</h2>
+    <ul>
+      <li>G-code : le panneau se modifie à la main, et c'est cette retouche qui s'exporte et part à la machine. Après un recalcul, le logiciel demande s'il faut garder vos retouches ou prendre le programme recalculé ; tant que vous n'avez pas choisi, ni l'export ni le bouton Lancer du pupitre ne partent. Les boutons du G-code sont groupés au bord droit, Exporter en orange.</li>
+      <li>Photo de la pièce : Fichier › Exporter une photo… (ou le bouton « Photo » de la vue) fait une belle image de la pièce finie — la vue seule ou toute la fenêtre, en carré 1 080, 1 920 × 1 080, 4K ou à la taille voulue, la pièce lissée, sur un fond uni ou dégradé, sans les trajets ni les cotes d'un clic (« Tout propre »).</li>
+      <li>Filetage : les filets en pouces (UNC, UNF) et le gaz à 55° rejoignent le métrique dans la table. Dans un trou, les passes se partagent le bois que le trou creusé laisse vraiment, et l'hélice coupe à la bonne avance au tranchant. Autour d'un tenon, le creux se lit sur le tenon que la poche (ou un contour, ou un hélicoïdal) a laissé : le cercle dessiné est le fond du filet — un filet rond à la boule sur tige fine se taille sans fausse alerte.</li>
+      <li>Variables : une ligne par variable et une fiche qui s'ouvre d'un clic, qui dit ce qui la suit. Une variable peut citer la planche (« W/2 » pour le milieu) : agrandissez la planche, la pièce reste centrée. L'onglet Contraintes range les cotes par forme, avec la variable de chaque cote en puce.</li>
+      <li>Finitions : la fraise droite d'office, une sortie en arc qui ne marque plus la paroi, un fond qui reste en bas et s'arrête avant la paroi, et « Tout » pour le fond puis les parois. La Gravure 2.5D garde sa fraise boule pour la finition.</li>
+      <li>Réglages machine : chaque réglage sur une ligne, le libellé à gauche avec sa note dessous, des interrupteurs à la place des cases ; la carte de configuration LinuxCNC ne paraît plus pour une machine GRBL, FluidNC ou grblHAL.</li>
+      <li>Simulation : les options se déplient dans un encadré au lieu d'un menu volant ; la case « Couleurs » montre le bois creusé seul, sans la couleur des opérations, et se retient ; les parois de la pièce finie ne sont plus striées de fins filets clairs ; une paroi creusée sous une autre opération garde une seule couleur, et la légende de la vue passe à la ligne au lieu de cacher « Croquis » sous le cube.</li>
+      <li>Affichage : le thème Clair est celui d'une première installation ; le texte dessiné à la main est net (plus de lettres floues coupées en bas) ; les onglets du bas sont à la taille du texte.</li>
+      <li>Révolution et moulure : un profil tracé trait par trait se prend en entier, et la profondeur suit le profil changé ; la moulure dit d'où viennent ses profils.</li>
+      <li>Exemple : une boîte ronde à couvercle vissé (Ø50 × 50), deux pots dans une planche de 30 mm, toutes les cotes en variables, le filet rond à la fraise boule sur tige.</li>
+      <li>Corrigé après la relecture du soir : le bouton Lancer du pupitre n'envoie plus un G-code retouché qu'un recalcul a rendu périmé ; un hélicoïdal « autour » d'un tenon donne lui aussi son creux au filet.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-21">
+  <div class="journee-quand">
+    <time datetime="2026-10-21">mercredi 21 octobre</time>
+    <span class="journee-version">0.99.79 à 0.99.116</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Le filetage mûrit, la vue en coupe sur l'axe qu'on trace, les groupes d'opérations sous la main, et l'import FreeCAD en vraies courbes</h2>
+    <ul>
+      <li>Filetage : un cercle trop petit pour le filet se dit, et un bouton le met à la bonne taille ; le trou ajouté d'office prend une fraise qui y entre, et les deux fraises sont nommées ; un filetage neuf suit son cercle au lieu de reprendre le M du précédent ; un trou trop court pour la surcourse se dit et se descend d'un clic ; une fraise à fileter qui a son pas l'impose au filet, et une dent trop courte se règle d'un bouton. Le trou ajouté d'office se creuse en hélice — environ trois fois plus vite qu'une poche — ou se perce au foret quand la bibliothèque en a un au bon Ø, sa pointe comprise ; un foret trop petit pour le filet se dit. La vue de côté montre chaque filet dans sa couleur, et la lecture d'un filetage en Simulation reste fluide jusqu'à la plus grande finesse.</li>
+      <li>Vue en coupe : selon l'axe que vous tracez vous-même, de deux clics sur la planche — pour voir un trou ou une rainure qui n'est pas au centre. Elle tranche aussi la pièce finie à l'Usinage, sans passer en Simulation.</li>
+      <li>Usinage en 3D : une zone se clique en 3D comme en 2D (Ctrl+clic en ajoute ou en retire), et « La pièce finie » s'y montre sous les parcours : on voit ce qui reste à creuser et l'on clique la zone suivante.</li>
+      <li>Groupes d'opérations : le clic droit sur une opération donne son nom, sa couleur et son groupe, dont le nom se tape en entier et se range à Entrée ; un œil par groupe cache ses parcours, et la vue dit ce qui est caché.</li>
+      <li>Poche, bords ouverts : un bord en courbe s'ouvre d'un clic, de nœud à nœud, et un bord droit jusqu'au bout de sa droite ; « Ouvrir les bords sur le tour » dit quand rien ne s'ouvre ; un tour de pièce ouvert en courbe s'étend en 0,2 s au lieu de 30, sans bord en dents de scie.</li>
+      <li>Import FreeCAD : les B-splines entrent en vraies courbes (la caisse d'une guitare n'est plus une suite de points), et plusieurs esquisses s'importent d'un coup, au Ctrl+clic ou au Maj+clic dans la liste.</li>
+      <li>Fenêtre de fichiers : elle se rouvre dans le dernier dossier, pour chaque genre de fichier ; « + Ce dossier » le garde dans les favoris le temps du travail ; de vrais fichiers récents, et le tri par type ou à l'envers.</li>
+      <li>Sous la main : les dimensions largeur × hauteur s'affichent pendant qu'on tire ou étire une sélection ; Édition › Choisir les formes sans opération (Ctrl+Maj+A) montre ce qui reste à usiner ; à l'Usinage, P mène à la Profondeur de l'opération et D à son Départ ; l'en-tête du G-code dit la profondeur la plus basse où travaille la fraise.</li>
+      <li>Matières : le calcul des vitesses range les essences de bois et les autres matières par famille, et les messages nomment la matière de la planche — « laissez moins d'aluminium aux parois », « la queue frotte le laiton ».</li>
+      <li>Essai : une fois l'essai fini, les exports 3D demandent la licence, comme le G-code — pièce finie, relief et solides en STL, 3MF en couleurs.</li>
+      <li>Corrigé : un contour intérieur déclaré par une pièce paramétrique ne reçoit plus les onglets d'une découpe extérieure (les évidements et l'alésage de l'engrenage restaient tenus), et la fraise descend toujours au fond entre deux onglets, même sur un petit trou ; les onglets se posent même si le choix des bords d'une autre poche est resté armé ; Décaler ne laisse plus de cercle entier en trop au raccord de deux arcs tangents ; une ellipse ouverte de partout ne garde plus d'encoche où la fraise tournait en boucle ; les poignées d'une courbe suivent le nœud qu'on tire, et l'ellipse ne devient plus pointue ; une B-spline importée et bloquée ne perd plus ses poignées à l'enregistrement ; plusieurs esquisses FreeCAD importées d'un coup se posent chacune à sa place (celle d'une autre face est laissée, et le journal le dit) ; une coupe en train d'être tracée ne prend plus les clics du Pilotage ; les listes abrégées de la fenêtre de fichiers ne coupent plus une lettre accentuée en deux, et une clé USB mise en favori a son nom.</li>
+    </ul>
+    <div class="video-yt journee-video" data-youtube="G9VYDOW-JG0"><a class="video-yt-lien" href="https://youtu.be/G9VYDOW-JG0"><img src="/captures/filetage.23d249c5.webp" width="1920" height="1080" loading="lazy" alt="Image d'attente de la vidéo « Le filetage », capture de VerdierCAM"><span class="video-yt-lecture" aria-hidden="true"></span><span class="video-yt-titre">Le filetage <small>— lire la vidéo</small></span></a></div>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-20">
+  <div class="journee-quand">
+    <time datetime="2026-10-20">mardi 20 octobre</time>
+    <span class="journee-version">0.99.31 à 0.99.78</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Le bois à la couleur de son opération, deux niveaux seulement, la Révolution repensée, et les formes plus faciles à prendre</h2>
+    <ul>
+      <li>Simulation : le bois creusé prend la couleur de l'opération qui l'a creusé — celle de son trait à l'Usinage, la couleur choisie dans l'opération, sinon ébauche orange et finition bleue ; une case « Couleurs des opérations » rend la couleur du bois.</li>
+      <li>Simulation : « Vue en coupe » est dans la barre de la vue 3D, à côté de Dessus | Dessous, pour voir un trou, son filet ou une rainure de l'intérieur ; la face tranchée est plus claire que le bois creusé, le profil s'y lit. Vue de dessus, la fraise se voit à travers sa queue et son écrou.</li>
+      <li>Niveaux : Débutant et Pro seulement. Le Pro montre tous les dessins qui expliquent un réglage ; tous les réglages restent en vue, les plus rares (dernière passe, rampe, dépouille, reprise…) compris.</li>
+      <li>Révolution repensée : « Ce qui tourne » dit quelle forme est le profil et laquelle l'axe, la vue les montre, deux clics suffisent pour les désigner ; le cercle est toujours l'axe, quel que soit l'ordre du choix, et deux traits ouverts ne peuvent plus prendre sa place.</li>
+      <li>Filetage : le M choisi à la table ISO reste le filet, et un cercle déjà au diamètre du trou à percer est reconnu comme tel (trop petit, le panneau le dit) ; un bouton creuse le trou au bon diamètre, par une Poche comme par un Hélicoïdal, en laissant aux parois le bois du filet ; un double filet se règle (« Nombre de filets ») ; dans un trou à peine plus large que la fraise, « Passer en Hélicoïdal » fait une hélice continue.</li>
+      <li>Bibliothèque d'outils : les fraises à fileter ont leur famille, et vous créez, renommez ou retirez les vôtres ; un outil se range en le glissant sur une famille.</li>
+      <li>Usinage plus lisible : une puce de section ne montre que sa section, la carte de l'outil n'a plus qu'un bouton « Changer d'outil… », les onglets des panneaux sont plus gros ; une opération créée au ruban s'ouvre sur le choix de son outil ; « mord à pleine fraise » s'explique par un dessin ; en Poche, « Tout sauf les îlots ».</li>
+      <li>Prendre les formes : un clic dans un trou suffit à l'Hélicoïdal, au Filetage et au Perçage ; le Contour, la Rainure, les Finitions, l'Ébavurage et la Gravure prennent les formes qui bordent une zone cliquée ; « + Ajouter les N choisies » complète une opération déjà faite. Un clic prend tout le contour relié et le dit dans une bulle ; Maj+clic en retire une forme.</li>
+      <li>Contour : l'entrée et la sortie ne mordent plus le mur d'à côté, en hélice continue comme en dernière passe à l'envers.</li>
+      <li>Croquis : les Ciseaux coupent aussi les courbes de Bézier ; une Symétrie de deux points ou de deux cercles, sans pivot choisi, se fait autour du centre de la planche.</li>
+      <li>Relief : « Pas de photo ? » copie une consigne à donner à une IA d'images — le sujet sculpté en bas-relief dans du marbre blanc mat : une image toute blanche ne montre que les formes, le relief suit le modelé sans être trompé par les couleurs.</li>
+      <li>Windows : le dossier décompressé ne montre plus que VerdierCAM.exe et son mode d'emploi ; tout le reste est rangé dans le dossier « programme ».</li>
+      <li>Assistant IA branché : l'outil « aide » lui explique le logiciel, le panneau d'une opération relevé tel qu'il s'affiche, infobulles et alertes comprises.</li>
+      <li>Corrigé : un cercle tapé « R 2 » puis posé d'un clic prend bien 2 mm de rayon ; l'ARRÊT attend que la machine soit immobile avant de remettre la carte à zéro ; un arc creux ouvert ne casse plus le parcours d'une poche ; un grand contour qui se recoupe ne fige plus VerdierCAM pendant une réunion ou une différence ; le même document donne toujours le même parcours, quelle que soit la charge du poste ; la grille d'essai laser ne grave plus deux colonnes identiques au plafond du laser.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-19">
+  <div class="journee-quand">
+    <time datetime="2026-10-19">lundi 19 octobre</time>
+    <span class="journee-version">0.99.8 à 0.99.30</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Le filetage à la fraise de bout en bout, et huit projets guidés pas à pas</h2>
+    <ul>
+      <li>Projets guidés : huit projets pas à pas dans l'appli — une plaque gravée, une poche, une pièce du catalogue, une plaque percée, une enseigne en V, un surfaçage, un dessin importé, le relief d'une image.</li>
+      <li>Filetage : la table ISO (pas normal de M1,6 à M52, pas fin de M3 à M24) pose le cercle et le pas, et donne l'écrou et le foret ; un cercle Ø4 naît au pas du M4.</li>
+      <li>Filetage : une vue de côté à l'échelle, coupée par le centre, avec la vraie fraise ; la surcourse sous le filet ; le bois laissé aux parois se règle ; la fraise reste dans le trou entre deux passes et ne remonte qu'à la fin ; une fraise trop haute pour le pas est signalée.</li>
+      <li>Bibliothèque d'outils : le type « Fraise à fileter » — sa dent, son cou, sa queue — et des fraises à fileter d'une dent, de M3 à M8, toutes réglées, en un clic.</li>
+      <li>Poche : quand la fraise « mord à pleine fraise » à cause du pas latéral, le panneau le dit et propose de le ramener à 45 % ; la section « Zone et bords ouverts » est refaite, avec un aperçu de la vraie zone.</li>
+      <li>Croquis : « Centrer sur la planche » d'un bloc (F9), et les alignements en icônes dans la section Sélection. Relief : un modèle 3D remplit la planche et s'aplatit à son épaisseur, au lieu de rapetisser.</li>
+      <li>Pilotage avec gSender (GRBL) : « M6 pour gSender » lance son changement d'outil guidé, avec palpage ; hors LinuxCNC, les commentaires du G-code s'écrivent en ASCII (« D=3.7 » au lieu de « Ø3.7 », que gSender affichait de travers).</li>
+      <li>Corrigé : le filet d'une fraise qui ne coupe pas au centre n'est plus alésé par une rampe en zigzag ; « Reprendre à cette ligne » refuse le milieu d'un cycle de perçage et dit où reprendre ; la poche d'un trou à peine plus large que la fraise n'est plus vide.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-18">
+  <div class="journee-quand">
+    <time datetime="2026-10-18">dimanche 18 octobre</time>
+    <span class="journee-version">0.99.2 à 0.99.7</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Les premiers essais de la pré-version : fraises à fileter, reliefs plus francs, croquis retouché</h2>
+    <ul>
+      <li>Filetage : une fraise à fileter, plus large que sa tige, n'est plus refusée — elle file d'une hélice dans le trou creusé, la tige dedans ; seul son col borne la longueur filetée.</li>
+      <li>Fraise dessinée : la pointe se pose sur l'axe, et la queue garde son diamètre ; la longueur totale tapée dans la bibliothèque compte même sans sortie de pince.</li>
+      <li>Relief : quand un modèle sort de la planche, il dit par où et de combien ; « Ajuster à la planche » explique pourquoi un modèle reste petit ; « La planche à la taille du modèle » ne garde plus 230 mm de marge ; une forme dont le tracé a été effacé se retire de la pile d'un clic.</li>
+      <li>Croquis : couper une courbe de Bézier en un point, décaler sans boucle dans les creux, combiner des traits ouverts qui se referment ensemble ; une forme seule s'aligne sur la planche ; un cercle ou un arc se pose tangent à un bord ou à un axe.</li>
+      <li>Usinage : Suppr efface les formes choisies quand la souris est sur la vue 2D ; la console se vide d'un clic (le journal joint aux rapports garde tout) ; « Nouvel outil › Autre fraise : la dessiner… » ouvre le dessin de fraise à part ; les fichiers récents se replient en une ligne.</li>
+      <li>Corrigé : « Signaler un problème », rouvert après un rapport envoyé, repart à blanc.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-17">
+  <div class="journee-quand">
+    <time datetime="2026-10-17">samedi 17 octobre</time>
+    <span class="journee-version">0.9.649 à 0.99.1</span>
+  </div>
+  <div class="journee-texte">
+    <h2>VerdierCAM 0.99, la pré-version de la 1.0</h2>
+    <ul>
+      <li>VerdierCAM 0.99 : la pré-version de la 1.0, à essayer à l'atelier. Les grandes fonctions sont posées ; viennent maintenant les retouches demandées aux essais.</li>
+      <li>Relief par IA : l'aperçu se tourne en 3D dans la vue de l'atelier ; « Garder le plat de la planche » adoucit la forme sans bomber le fond.</li>
+      <li>Relief : un modèle 3D se tourne librement avant d'être gravé — la vue de dessus est ce qui sera usiné — et son bord se garde en falaise ou s'adoucit en fondu.</li>
+      <li>Windows : VerdierCAM a tourné sur le PC de l'atelier, liaison comprise, par le port COM et en Wi-Fi avec une carte FluidNC.</li>
+      <li>Surfaçage : le dessin du panneau tourne avec l'angle de balayage, comme le parcours ; le petit trièdre du coin de la vue n'apparaît plus qu'au Pilotage.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-16">
+  <div class="journee-quand">
+    <time datetime="2026-10-16">vendredi 16 octobre</time>
+    <span class="journee-version">0.9.552 à 0.9.648</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Des variables dans le croquis, un solveur cent fois plus rapide, et 33 pièces de plus</h2>
+    <ul>
+      <li>Croquis : les cotes acceptent des variables — une cote suit « A », et taper « A = 32 » la crée ; elles ont leur onglet « Variables », à droite à côté de Contraintes, et celles d'un script joué y apparaissent ; un script collé dans la console se joue d'un bloc.</li>
+      <li>Croquis plus rapide : le solveur découpe le dessin en blocs indépendants — l'échiquier se calcule en 0,07 s au lieu de 25, le différentiel en 0,6 s au lieu de 19,5.</li>
+      <li>Pièces paramétriques : 33 pièces de plus, 134 en tout — échappement à ancre, différentiel plat, gabarit de queues d'aronde, butée d'onglet, jeu de go, boîte à musique, lampe en dentelle, porte-épices aimanté, support de Raspberry Pi 5… ; leur usinage suit l'épaisseur et les variables (profondeur, départ, passe, fraise), et s'exporte avec ses calculs ; la fenêtre grandit avec l'écran.</li>
+      <li>Reliefs et gravure 2.5D : l'ébauche et la finition se règlent dans le même panneau, sous deux onglets Ébauche | Finition, et « Mettre à jour l'usinage » met à jour les deux ; la fraise d'ébauche se choisit dans la bibliothèque d'outils ; l'ébauche adaptative peut « rester au fond entre les fronts ».</li>
+      <li>Pilotage : la recherche nomme les cartes branchées en USB ou en réseau — GRBL, Grbl_ESP32, FluidNC, grblHAL, même sans son nom ; « Lancer » prévient des lignes que la carte refusera et d'une vitesse de broche hors de ses limites ($30/$31) ; les erreurs 9 et 14 sont expliquées en clair.</li>
+      <li>Configurateur en ligne : la pièce s'y voit usinée en 3D, chaque opération à sa profondeur ; elle se tourne au doigt, se pince, se regarde par-dessous ; le lien partagé garde les valeurs réglées.</li>
+      <li>Diagnostic : si VerdierCAM ne démarre pas, il dit ce qui manque à la carte graphique (Vulkan) ; un utilitaire de diagnostic fait le tour du poste, livré dans l'AppImage (« --diagnostic »), et son rapport se copie, sous Windows aussi.</li>
+      <li>Corrigé : avec « rester en bas », une rainure ouverte d'une seule passe repartait en coupe, en ligne droite, vers le début du trait — sur un arc, jusqu'à 11,7 mm hors de la saignée ; l'ARRÊT pendant un déplacement manuel ne fait plus perdre la position (ALARM:3) ; le labyrinthe du catalogue passe de nouveau en Simulation.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-15">
+  <div class="journee-quand">
+    <time datetime="2026-10-15">jeudi 15 octobre</time>
+    <span class="journee-version">0.9.464 à 0.9.551</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Un catalogue de 86 pièces, des parcours plus courts, et le croquis tiré d'un G-code</h2>
+    <ul>
+      <li>Dessin › Pièces paramétriques… : 86 pièces prêtes à régler et à usiner, rangées par thème (jeux et jouets, rangement, atelier et gabarits, cuisine, décoration, boîtiers…) : planche à découper, boîte à doigts, échiquier, horloge, nichoir, casier à bouteilles, gabarit système 32, poulie, pantographe… ; un texte gravé s'y règle aussi, un prénom par exemple.</li>
+      <li>Pièces paramétriques : le script d'une pièce s'ouvre dans l'éditeur de votre choix (Préférences › Général › Éditeur de texte), ou dans celui de VerdierCAM, avec ses numéros de ligne.</li>
+      <li>Simuler un G-code : « Faire le croquis des coupes » relit un programme reçu sans dessin et en refait le croquis, à usiner avec vos propres outils ; l'outil se lit dans le nom du fichier (« 1_5mm », « 15deg ») ; « Ajouter un G-code à la suite… » enchaîne les fichiers d'une même pièce, et un bilan dit le temps passé au-dessus du bois.</li>
+      <li>Poche : l'angle de balayage se choisit seul, celui qui donne le parcours le plus court ; le zigzag tourne avec l'angle et ses demi-tours s'arrondissent ; une trochoïde en D ; la rampe à 3° se fait en un seul aller-retour.</li>
+      <li>Haut rendement : aussi en ébauche 3D adaptative, en couches de la longueur utile de la fraise, l'avance compensée ; et une finition 3D en anneaux qui suit le contour.</li>
+      <li>Parcours plus courts : les traits d'un texte gravé se soudent et s'enchaînent, les tronçons se rangent mieux, les hélices partent en vrais arcs, les passes 3D sont allégées sans perdre de précision.</li>
+      <li>Corrigé : la reprise au crayon et un tronçon retourné pouvaient plonger en rapide dans le bois ; la moulure sautait parfois un coin ; « rester en bas » changeait la matière enlevée au surfaçage ; un palpage refusé n'est plus annoncé « zéro refait » ; aucun outil n'est plus envoyé plus profond que sa longueur utile.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-14">
+  <div class="journee-quand">
+    <time datetime="2026-10-14">mercredi 14 octobre</time>
+    <span class="journee-version">0.9.425 à 0.9.463</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Assemblages à dents, calques, une simulation des deux faces, VerdierCAM sur Raspberry Pi 5</h2>
+    <ul>
+      <li>Raspberry Pi 5 : VerdierCAM tourne sur un Pi 5 en 64 bits, même sous l'image LinuxCNC, pour retoucher un dessin, simuler et piloter à côté de la machine. Pour moi, c'est le vrai gain : j'utilise le logiciel directement sur le lieu d'usinage, sans repasser par le bureau, qui est loin.</li>
+      <li>Dessin › Créer › Assemblage à dents… : un trait devient denté (queues droites ou queues d'aronde vues de dessus, mâle ou femelle, avec le jeu par flanc), un panneau de boîte à doigts, une clé papillon et son logement, aux pointes arrondies au rayon de la fraise.</li>
+      <li>Affichage › Calques… : ranger le dessin par usage, cacher ou verrouiller un calque, le choisir d'un clic ; les calques d'un DXF importé sont gardés, et repartent dans le DXF exporté.</li>
+      <li>Venu de QCAD : l'aire nette d'une pièce percée et son centre de gravité, choisir les contours intérieurs ou extérieurs, éclater une forme, allonger une ligne, des trous posés depuis un fichier de points (CSV) ; et un texte en police pleine qui suit une courbe.</li>
+      <li>Simulation : « Les deux » joue le dessus, puis retourne la planche à l'écran et joue le dessous ; « Aller à » une opération, et la liste du G-code suit la fraise ; elle prévient quand la queue ou le porte-outil frotte le bois.</li>
+      <li>Machine › Course &amp; broche › Pince : ER11 à ER32, avec le Ø de l'écrou ; un outil sans écrou à lui prend celui de la machine en service. La fiche d'une fraise dessinée cote le Ø de la tête sous la pointe, celui de la queue sur la queue.</li>
+      <li>Gravure en V : la fraise droite de dégagement se choisit dans la section même, la pointe ne change plus. Recalculer propose de prendre les formes nouvellement choisies — un rectangle ajouté autour du motif, par exemple.</li>
+      <li>Croquis : « Compléter les cotes » passe de 4 min 34 à 7 s sur un DXF de 25 formes, et propose de verrouiller plutôt que de semer mille cotes ; Suppr efface quel que soit l'outil en main ; le clic droit termine une polyligne au lieu de la perdre ; une barre d'icônes pour montrer ou cacher grille, cotes, contraintes, numéros, axes.</li>
+      <li>Fichier › Importer › Dessins récents : les dix derniers SVG, DXF ou esquisses FreeCAD, relus d'un clic. Usinage et Simulation : les traits du croquis se cachent d'un clic dans la légende.</li>
+      <li>Fichiers : VerdierCAM a sa propre fenêtre Ouvrir et Enregistrer, avec vignettes des SVG et DXF, favoris et dossiers récents, quand celle du système ne s'ouvre pas (sur le Pi, par exemple) ; un clic ouvre un dossier.</li>
+      <li>Corrigé : sous Windows, le téléchargement des modèles d'IA échouait (certificats HTTPS) ; la zone cliquée d'une poche filait ailleurs quand on changeait les cotes de son contour.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-13">
+  <div class="journee-quand">
+    <time datetime="2026-10-13">mardi 13 octobre</time>
+    <span class="journee-version">0.9.362 à 0.9.424</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Graver une image, imprimer en couleurs, usiner un relief par paliers</h2>
+    <ul>
+      <li>Fichier › Graver une image… : une image en aplats de couleur, en trois écrans. Chaque couleur hors de la pièce, creusée, en relief à sa hauteur ou fondue dans sa voisine ; un clic sur un morceau le met à part, à sa propre hauteur.</li>
+      <li>À la fraise : vos fraises droites, chacune avec la part de matière qu'elle enlève et sa durée ; ce qu'elle ne peut pas atteindre se voit en rouge, avant de graver.</li>
+      <li>À l'imprimante 3D : un solide STL fermé, ou un 3MF en couleurs que Bambu Studio et Orca lisent pièce par pièce, au bon filament ; le nombre de filaments se règle (4 pour une AMS lite).</li>
+      <li>Relief à imprimer : chaque forme fermée monte de son bas à son haut ; « Usiner le relief » en fait une poche par palier à la fraise droite, puis le détourage — murs droits, fonds plats.</li>
+      <li>Fichier › Exporter la pièce finie (STL) : la pièce que laissent les parcours, en un solide fermé.</li>
+      <li>Usinage : la fraise se choisit dans l'onglet Outil, rangée par famille, avec recherche et silhouette.</li>
+      <li>Croquis : le rayon d'un cercle ne change plus quand son centre bouge ; deux contraintes qui se contredisent sont nommées ; point sur une courbe de Bézier.</li>
+      <li>Corrigé : changer la planche gelait le logiciel sur un grand dessin importé ; le clic qui valide une valeur traçait parfois une forme en plus.</li>
+    </ul>
+    <figure class="capture journee-capture"><div class="fenetre"><img src="/captures/graver-fraise.67a226b9.webp" width="1920" height="1080" loading="lazy" alt="Graver une image : la fraise choisie, ce qu&#x27;elle laisse en rouge."></div><figcaption>Graver une image : la fraise choisie, ce qu'elle laisse en rouge.</figcaption></figure>
+    <figure class="capture journee-capture"><div class="fenetre"><img src="/captures/relief-paliers.76dca61b.webp" width="1920" height="1080" loading="lazy" alt="Le même insigne usiné par paliers, simulé dans le bois."></div><figcaption>Le même insigne usiné par paliers, simulé dans le bois.</figcaption></figure>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-12">
+  <div class="journee-quand">
+    <time datetime="2026-10-12">lundi 12 octobre</time>
+    <span class="journee-version">0.9.297 à 0.9.361</span>
+  </div>
+  <div class="journee-texte">
+    <h2>L'onglet Relief, des menus rangés, un Annuler qui couvre tout</h2>
+    <ul>
+      <li>Onglet Relief, en quatre étapes — Formes, Façonner, Vérifier, Usiner : des contours du croquis bombés ou creusés, des images en gris (PNG, JPEG, PGM) et des modèles 3D (STL, OBJ) posés à l'échelle, un profil de moulure promené le long d'un trait. La pile devient une carte de hauteurs, usinée en Gravure 2.5D : l'ébauche, puis la finition à la boule, les fraises prises dans votre bibliothèque.</li>
+      <li>Le bombé peut suivre la largeur de chaque endroit (un manche qui s'affine), monter jusqu'à des arêtes tracées dans la forme, s'incliner ; les formes de la pile s'ajoutent, se retirent, gardent le plus haut ou le plus bas, ou se multiplient.</li>
+      <li>Croquis : diviser aux intersections, diviser un trait en N points, inverser le sens d'un contour ; cercle par deux ou par trois points ; arc tangent, qui prolonge une ligne sans cassure ; Dessin › Marquer comme › Verrouiller / déverrouiller fige une forme.</li>
+      <li>Dessin › Raccorder › Congé entre deux cercles : l'arc qui les touche tous deux par l'extérieur, de son rayon coté — les grands arcs rentrants entre des bossages ronds, d'un geste ; les ciseaux coupent ensuite les cercles à leurs points de contact.</li>
+      <li>Fichier › Exporter le dessin › Gabarit PDF à l'échelle 1 : le dessin en vraie grandeur sur des feuilles A4 à assembler, avec un carré de 50 mm à mesurer après impression.</li>
+      <li>Imbriquer : les copies peuvent rester liées à l'original — une cote changée les suit — et entrer dans les mêmes opérations.</li>
+      <li>Les menus rangés : Dessin en trois sections, Ctrl+K cherche une commande par quelques lettres (Outils › Rechercher une commande…), un clic droit sur la sélection propose ce qu'on peut en faire. Affichage › Panneaux ramène un panneau perdu dans son coin ; Affichage › Zoom sur une fenêtre (Ctrl+B).</li>
+      <li>Annuler couvre tout : une commande de la console ou un script entier s'annule d'un coup, comme les réglages du brut, les post-its et l'image de fond.</li>
+      <li>Corrigé, après une relecture de toute la journée : un plantage en ramenant tous les panneaux ; le sens inversé d'un trou perdu à l'enregistrement ; un relief trop haut avec « suivre la largeur » ; une forme verrouillée qui bougeait encore aux flèches ; Ctrl+K qui marquait le document modifié ; un cercle qui grandissait quand on changeait la cote qui le place.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-11">
+  <div class="journee-quand">
+    <time datetime="2026-10-11">dimanche 11 octobre</time>
+    <span class="journee-version">0.9.270 à 0.9.296</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Une IA aux commandes, n'importe quel G-code simulé, le creux d'une cuillère</h2>
+    <ul>
+      <li>Outils › Intelligence artificielle : un assistant (Claude Desktop, Claude Code ou tout client MCP) se branche d'un clic. Il dessine, pose les usinages, regarde le résultat et écrit le G-code de votre machine — dans son dossier seulement, jamais la machine, et seulement si vous l'avez autorisé.</li>
+      <li>Fichier › Simuler un G-code : un programme écrit par un autre logiciel se rejoue dans la simulation — la matière qui se creuse, la pièce finie, la vue en coupe. Rien ne part à la machine.</li>
+      <li>Dessin › Creux ou bombé depuis le contour : un contour fermé devient un creux arrondi (une cuillère, un vide-poche) ou un bombé, usiné en Gravure 2.5D — l'ébauche, puis la finition à la boule.</li>
+      <li>Le DXF exporté s'ouvre partout (calques déclarés, un contour d'un seul tenant, arcs gardés) ; à l'import, les textes se gravent et les points deviennent des points ou des trous.</li>
+      <li>Croquis : un miroir par un axe quelconque — deux points cliqués —, l'original gardé ; pendant le tracé, l'accroche finit un trait tangent à un cercle ou d'équerre, la contrainte posée.</li>
+      <li>Chaque opération peut avoir sa propre couleur de parcours.</li>
+      <li>Une poche par zone usine la zone telle qu'on l'a cliquée, et un bout de trait posé sur un contour ne fait plus fuir la zone. Des bords ouverts qui se suivent s'élargissent en une seule bande, et les zones se calculent une fois, pas à chaque image.</li>
+      <li>Croquis : un cercle déplacé par une contrainte garde son rayon ; Coïncidence et Point sur objet posent le centre d'un cercle sur une ligne ou un axe, et deux cercles deviennent concentriques ; la symétrie de trois points prend celui du milieu pour pivot, dans n'importe quel ordre.</li>
+      <li>Sous « Par passe », les passes qui seront faites s'affichent (4 + 4 + 2) ; après un ARRÊT, le message de la carte dit comment reprendre.</li>
+      <li>Corrigé : le plantage du panneau Brut après « Créer une fraise » ou « Nouveau ».</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-10">
+  <div class="journee-quand">
+    <time datetime="2026-10-10">samedi 10 octobre</time>
+    <span class="journee-version">0.9.245 à 0.9.269</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Pièces paramétriques et croquis plus complet</h2>
+    <ul>
+      <li>Le croquis s'exporte en pièce paramétrique : chaque cote devient une variable nommée. Dessin › Pièces paramétriques… les règle et les insère.</li>
+      <li>Un configurateur de pièces sur ce site : le cœur du logiciel tourne dans le navigateur.</li>
+      <li>Exemples en script : un labyrinthe à bille, un engrenage droit à développante de cercle.</li>
+      <li>Croquis : mesurer sans contraindre, couper un trait en un point, tourner ou mettre à l'échelle autour d'un point cliqué, polygone sur plats.</li>
+      <li>Coter l'écart entre deux cercles ; congé et chanfrein entre une ligne et un arc ; « Compléter les cotes » pose celles qui manquent, sans rien faire bouger.</li>
+      <li>Poche concentrique ou en spirale : le centre est usiné, et les raccords ne traversent plus les îlots.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-09">
+  <div class="journee-quand">
+    <time datetime="2026-10-09">vendredi 9 octobre</time>
+    <span class="journee-version">0.9.224 à 0.9.244</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Imbrication et réseaux liés</h2>
+    <ul>
+      <li>Imbriquer sur la plaque : des pièces quelconques posées au plus serré, jusque dans les trous, en évitant les brides.</li>
+      <li>Réseaux liés à l'original : une cote changée sur la première pièce change toute la série.</li>
+      <li>Mettre à l'échelle pour remplir le brut, sans déformer le dessin.</li>
+      <li>Gravure en V entre les traits : ce qui sera creusé se peint sur le dessin avant le calcul.</li>
+      <li>La bibliothèque d'outils importe celles de Fusion 360, et accepte vos propres familles de fraises.</li>
+      <li>Sécurité du G-code : la fraise remonte après chaque outil, un programme périmé n'est plus exporté, une ligne refusée par la carte met en pause.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-08">
+  <div class="journee-quand">
+    <time datetime="2026-10-08">jeudi 8 octobre</time>
+    <span class="journee-version">0.9.178 à 0.9.221</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Fraises spéciales, post-its et vue en coupe</h2>
+    <ul>
+      <li>Rainure en T, queue d'aronde et trou de serrure, avec la vérification que la gorge est creusée d'abord et que la tige ne frotte pas.</li>
+      <li>La simulation garde les creux sous la surface, et une vue en coupe glissante montre le profil exact.</li>
+      <li>Des post-its sur la vue, pour vos notes et la photo de vos croquis papier, enregistrés avec le document.</li>
+      <li>Dessin › Contour extérieur : le seul tour d'un dessin compliqué, en une forme fermée.</li>
+      <li>Dessin › Spirale, textures « Martelé » et « Vagues », et l'ellipse tracée à la souris.</li>
+      <li>Import DXF et SVG plus fidèles : arrondis des polylignes justes, contours presque fermés refermés.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-07">
+  <div class="journee-quand">
+    <time datetime="2026-10-07">mercredi 7 octobre</time>
+    <span class="journee-version">0.9.150 à 0.9.177</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Choisir ses zones d'un clic</h2>
+    <ul>
+      <li>Usinage : cliquer dans une surface choisit la zone, Ctrl+clic en ajoute ou en retire, puis Poche.</li>
+      <li>Ouvrir les bords d'une poche posés sur le tour de la pièce : la fraise sort dans le brut.</li>
+      <li>Import FreeCAD : toute une pièce d'un coup, chaque esquisse à sa place.</li>
+      <li>Vue 3D orthographique ou en perspective, aux mêmes touches que FreeCAD.</li>
+      <li>Pilotage : grands curseurs d'avance et de broche, et l'ondulation de broche contre le broutement.</li>
+      <li>Surépaisseur négative, pour une fraise usée ou un ajustement serré.</li>
+      <li>Aide › Signaler un problème et Aide › Suggérer une idée, captures d'écran comprises.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-06">
+  <div class="journee-quand">
+    <time datetime="2026-10-06">mardi 6 octobre</time>
+    <span class="journee-version">0.9.122 à 0.9.149</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Le croquis en script</h2>
+    <ul>
+      <li>La console construit un croquis entier, et un script façon OpenSCAD (variables, boucles, modules) pilote le dessin.</li>
+      <li>Gravure 2.5D : l'ébauche et la finition ont chacune leur fraise, leur motif et leur angle, et l'ébauche s'arrête à ce que la finition reprendra.</li>
+      <li>Relief par IA : le sommet du relief n'est plus aplati.</li>
+      <li>Thème clair, et des infobulles compactes.</li>
+      <li>La rampe ne coupe plus la pièce en revenant ; le dépassement suit tout le contour.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-05">
+  <div class="journee-quand">
+    <time datetime="2026-10-05">lundi 5 octobre</time>
+    <span class="journee-version">0.9.81 à 0.9.121</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Le mode Débutant en dessins</h2>
+    <ul>
+      <li>Chaque réglage du mode Débutant se pose sur un dessin agrandi : contour, onglets, perçage, deux faces, profondeurs.</li>
+      <li>Gravure en V à fond plat sans relevages de la pointe ; rainure trochoïdale qui fait sa largeur et sort à bouts plats.</li>
+      <li>Convertir une polyligne en courbe de Bézier.</li>
+      <li>Créer une fraise en la dessinant dans un croquis à part.</li>
+      <li>La queue et le porte-outil sont contrôlés sur la matière simulée : une collision arrête l'export.</li>
+      <li>Une profondeur plus grande que le brut est bornée, et le logiciel le dit.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-04">
+  <div class="journee-quand">
+    <time datetime="2026-10-04">dimanche 4 octobre</time>
+    <span class="journee-version">0.9.68 à 0.9.80</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Trois modes de travail</h2>
+    <ul>
+      <li>Trois modes, Débutant, Intermédiaire et Pro, expliqués à l'accueil.</li>
+      <li>Gravure 2.5D : un modèle 3D ébauché et fini en une opération.</li>
+      <li>Lire et écrire les réglages de la carte ($$ de GRBL et grblHAL, arbre de FluidNC) depuis le Pilotage.</li>
+      <li>Les cotes se tapent pendant le tracé ; quatre traits bout à bout font un contour fermé.</li>
+      <li>La version Linux se livre aussi en archive .tar.gz, qui garde le droit d'exécution.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-03">
+  <div class="journee-quand">
+    <time datetime="2026-10-03">samedi 3 octobre</time>
+    <span class="journee-version">0.9.53 à 0.9.67</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Cotes et moulures</h2>
+    <ul>
+      <li>Cotes horizontale et verticale au ruban ; cote d'un point à une ligne ; l'angle posé est celui qu'on voit.</li>
+      <li>Le profil de la moulure se voit dans la vue, au départ du rail.</li>
+      <li>FluidNC reconnu à son identité : un tampon de 1 024 octets au lieu de 128.</li>
+      <li>Réseaux en direct pendant qu'on les règle.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-02">
+  <div class="journee-quand">
+    <time datetime="2026-10-02">vendredi 2 octobre</time>
+    <span class="journee-version">0.9.35 à 0.9.52</span>
+  </div>
+  <div class="journee-texte">
+    <h2>Le pupitre de pilotage refait</h2>
+    <ul>
+      <li>Un pupitre neuf : vitesses Précis et Rapide, pavé avec obliques, palpeur illustré à cinq modes.</li>
+      <li>Atelier Pilotage en plein écran : G-code et console, reprise à une ligne.</li>
+      <li>La version Windows et l'AppImage Linux, essayée sur trois distributions.</li>
+      <li>Les ciseaux gardent les contraintes ; Fichier › Exemples.</li>
+    </ul>
+  </div>
+</article>
+<article class="journee apparait" id="j2026-10-01">
+  <div class="journee-quand">
+    <time datetime="2026-10-01">jeudi 1 octobre</time>
+    <span class="journee-version">0.9.1 à 0.9.34</span>
+  </div>
+  <div class="journee-texte">
+    <h2>La 0.9 : deux faces et plusieurs repères</h2>
+    <ul>
+      <li>Usiner les deux faces : pièce recentrée, goupilles symétriques, perçages du dessous au bon endroit.</li>
+      <li>La même pièce sur plusieurs repères, de G54 à G59.3.</li>
+      <li>La table de la machine et ses brides en 3D ; onglets montrés en surbrillance.</li>
+      <li>Lire le fichier .ini d'une machine LinuxCNC dans les réglages.</li>
+      <li>Le G-code passe par un post-processeur par famille de machines : MASSO, Mach3, Mach4 et UCCNC reviennent (expérimental).</li>
+      <li>Durées justes sur les arcs et les plongées ; import DXF, SVG et photos fidèles.</li>
+    </ul>
+  </div>
+</article>
+  </div>
+</section>
+
+</main>
+
+<footer class="pied">
+  <div class="cadre pied-dedans">
+    <div class="pied-marque">
+      <a class="marque" href="/">
+        <img src="/oiseau.f8508e8c.svg" alt="" width="26" height="26">
+        <span>Verdier<b>CAM</b></span>
+      </a>
+      <p>CAO/FAO pour défonceuse CNC, écrite à
+        l'<a href="https://atelierduverdier.fr">Atelier du Verdier</a>.<br>
+        © 2026 Atelier du Verdier.</p>
+    </div>
+    <nav class="pied-liens" aria-label="Liens">
+      <a href="mailto:contact@verdiercam.fr">contact@verdiercam.fr</a>
+      <a href="https://www.youtube.com/@VerdierCAM">YouTube</a>
+      <a href="/nouveautes.html">Nouveautés</a>
+      <a href="https://atelierduverdier.fr">Atelier du Verdier</a>
+      <a href="/mentions-legales.html">Mentions légales</a>
+      <a href="/confidentialite.html">Confidentialité</a>
+      <a href="/conditions-utilisation.html">Conditions d’utilisation</a>
+    </nav>
+  </div>
+</footer>
+
+<div class="visionneuse" hidden role="dialog" aria-modal="true" aria-label="Capture agrandie">
+  <img alt="">
+  <button type="button" aria-label="Fermer">×</button>
+</div>
+
+<script src="/style/verdiercam.3cd03b88.js" defer></script>
+<script>
+  window.goatcounter = { path: function (p) { return '/verdiercam' + p } };
+</script>
+<script data-goatcounter="https://atelierduverdier.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+// BUTÉE DE SCIE À ONGLET — la règle graduée qui se visse sur le guide de la scie, et son curseur qu'on bloque d'un tour de
+// bouton : vingt pièces de la même longueur, sans retracer. Le curseur glisse sur une lumière, un trait gravé sur lui
+// montre la longueur sur la règle.
+// thème : Atelier et gabarits
+//
+// LA RÈGLE : `longueur` × `largeur`, une LUMIÈRE de Ø`d_boulon` + 0,5 de large au milieu, sur presque toute la longueur ;
+// une graduation tous les 10 (plus longue tous les 50, le nombre de centimètres gravé à côté), le zéro au bout gauche — à
+// régler, au montage, sur le trait de scie. Trois trous de Ø5 pour la visser sur le guide. LE CURSEUR : un bloc de
+// `largeur` de côté, un trou pour le boulon, un trait gravé à sa face de BUTÉE (son bord gauche, celui que touche la
+// pièce) : la longueur se lit sous le trait.
+//
+// L'USINAGE : les graduations, les nombres et le trait (Gravure, Pointe V 90°), la lumière et le trou du curseur (Poche,
+// fraise droite Ø6), les trous de vis (Perçage, Foret Ø5), puis les pièces (Contour extérieur, onglets). Hêtre de 12 ;
+// un boulon M6 à tête carrée, une rondelle, un bouton.
+
+longueur   = 500;    // longueur de la règle (mm)
+largeur    = 60;     // largeur de la règle et du curseur (mm)
+d_boulon   = 6;      // Ø du boulon de blocage (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 10;     // entre les deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+L = longueur;  W = largeur;  dl = d_boulon + 0.5;
+xa = 40;  xb = L - 40;                         // la lumière, le long de la règle
+off = W / 2;                                   // du boulon à la face de butée du curseur
+si (d_boulon < 6)
+    echo("Un boulon de moins de 6 : la lumière serait plus fine que la fraise Ø6.");
+planche([L + 2 * rognure, W + espace + W + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+r = rect(o, [L, W], 4);
+nommer(#r, "règle");
+lu = oblong(o + [(xa + xb) / 2, W / 2], xb - xa + dl, dl, 0);
+nommer(#lu, "lumière");
+pour (x = [15, L / 2, L - 15]) {
+    v = cercle(o + [x, 10], 2.5);                 // sous la lumière
+    nommer(#v, "vis");
+}
+// Les graduations le long du bord du haut, du zéro jusqu'au bout.
+pour (k = [1 : floor((L - 2) / 10)]) {
+    x = 10 * k;
+    g = ligne(o + [x, W], o + [x, W - (k % 5 == 0 ? 10 : 5)]);
+    nommer(#g, "graduation");
+    si (k % 5 == 0) {
+        M = mesure_texte(str(k), 10, "Hershey Sans1") / 10;
+        t = texte(o + [x - 4 * (M[2] + M[3]) / 2, W - 17], 4, str(k), police = "Hershey Sans1");
+        nommer(#t, "nombre");
+    }
+}
+// ── Le curseur : sa face de butée à gauche, le trait au ras d'elle, le trou à `off` ──
+oc = [rognure, rognure + W + espace];
+c = rect(oc, [W, W], 3);
+nommer(#c, "curseur");
+h = cercle(oc + [off, W / 2], dl / 2);
+nommer(#h, "trou du boulon");
+i = ligne(oc + [0.5, W], oc + [0.5, W - 12]);
+nommer(#i, "trait");
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "graduation", outil = "Pointe V 90", profondeur = 0.4, nom = "Graduations");
+usinage("gravure", "nombre", outil = "Pointe V 90", profondeur = 0.4, nom = "Nombres");
+usinage("gravure", "trait", outil = "Pointe V 90", profondeur = 0.6, nom = "Trait du curseur");
+usinage("poche", "lumière", outil = "Fraise droite Ø6", profondeur = epaisseur, passe = 3, nom = "Lumière");
+usinage("poche", "trou du boulon", outil = "Fraise droite Ø6", profondeur = epaisseur, passe = 3, nom = "Trou du boulon");
+usinage("percage", "vis", outil = "Foret Ø5", profondeur = epaisseur, nom = "Trous de vis");
+usinage("contour", "règle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Règle");
+usinage("contour", "curseur", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Curseur");

@@ -1,0 +1,88 @@
+// EXCENTRIQUE ET SA BIELLE — le mouvement des machines à vapeur et des pompes : un disque monté hors de son centre tourne
+// dans le collier d'une bielle, et le bout de la bielle va et vient, guidé dans une lumière. Une manivelle sans coude.
+// thème : Technique et mécanique
+//
+// L'EXCENTRIQUE : un NOYAU de Ø`d_noyau` percé à `excentration` de son centre pour l'arbre, entre deux JOUES plus grandes
+// (collées au noyau) qui gardent le collier en place ; la joue du dessus porte la poignée. LA BIELLE : un COLLIER autour du
+// noyau (0,2 de jeu sur le rayon), une tige, un œil au bout, à `longueur_bielle` du centre du collier ; un tourillon collé
+// dans l'œil glisse dans la LUMIÈRE du SOCLE, sur la ligne de l'arbre : la course vaut deux fois l'excentration.
+//
+// L'USINAGE : l'arbre, l'œil et la poignée (Poche, fraise droite Ø3), la lumière et le collier (Contour intérieur), puis les
+// pièces (Contour extérieur, onglets). Contreplaqué de bouleau de 9 ; deux tourillons de Ø8 (l'arbre, collé dans le
+// socle, et le coulisseau) et un pour la poignée.
+
+d_noyau    = 60;     // Ø du noyau (mm)
+excentration = 12;   // de l'arbre au centre du noyau (mm) : la demi-course
+longueur_bielle = 140;  // du centre du collier à l'œil (mm)
+paroi      = 8;      // largeur du collier (mm)
+d_axe      = 8;      // Ø de l'arbre et du coulisseau (mm)
+epaisseur  = 9;      // épaisseur (mm)
+espace     = 8;      // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+Rn = d_noyau / 2;  e = excentration;  Lb = longueur_bielle;  rc = Rn + 0.2;  Rj = Rn + paroi / 2 + 1;
+ra = d_axe / 2;
+// le socle : l'arbre à 30 du bout gauche, la lumière centrée sur la ligne, de Lb − e − 10 à Lb + e + 10 de l'arbre
+Ls = 30 + Lb + e + 10 + ra + 20;  Ws = 2 * Rj + 20;
+si (e > Rn - ra - 6)
+    echo("L'arbre sort presque du noyau : moins d'excentration.");
+planche([max(max(Ls, Lb + rc + paroi + 10), 6 * Rj + 2 * espace) + 2 * rognure, Ws + espace + 2 * (rc + paroi) + espace + 2 * Rj + 2 * rognure, epaisseur]);
+
+// ── Le socle : l'arbre, la lumière du coulisseau ──
+os = [rognure, rognure];
+s = rect(os, [Ls, Ws], 6);
+nommer(#s, "socle");
+t = cercle(os + [30, Ws / 2], ra);
+nommer(#t, "arbre");
+l = oblong(os + [30 + Lb, Ws / 2], 2 * e + 20 + 2 * ra + 0.4, 2 * ra + 0.4, 0);
+nommer(#l, "lumière");
+
+// ── La bielle : le collier, la tige (16 de large), l'œil ──
+ob = [rognure + rc + paroi, rognure + Ws + espace + rc + paroi];
+R2 = rc + paroi;  bt = asin(8 / R2);
+bielle = concat([for (k = [0 : 32]) ob + R2 * [cos(bt + (360 - 2 * bt) * k / 32), sin(bt + (360 - 2 * bt) * k / 32)]],
+                [ob + [Lb - 10, -8]],
+                [for (k = [0 : 16]) ob + [Lb, 0] + 10 * [cos(-90 + 180 * k / 16), sin(-90 + 180 * k / 16)]],
+                [ob + [Lb - 10, 8]]);
+b = polyligne(bielle, fermee = vrai);
+nommer(#b, "bielle");
+cl = cercle(ob, rc);
+nommer(#cl, "collier");
+oe = cercle(ob + [Lb, 0], ra);
+nommer(#oe, "œil");
+
+// ── Le noyau (l'arbre à e du centre), deux joues (la poignée sur l'une) ──
+y3 = rognure + Ws + espace + 2 * R2 + espace + Rj;
+cn = [rognure + Rj, y3];
+n = cercle(cn, Rn);
+nommer(#n, "noyau");
+a = cercle(cn + [e, 0], ra);
+nommer(#a, "arbre");
+pour (k = [0 : 1]) {
+    cj = [rognure + 2 * Rj + espace + Rj + k * (2 * Rj + espace), y3];
+    j = cercle(cj, Rj);
+    nommer(#j, "joue");
+    a2 = cercle(cj + [e, 0], ra);
+    nommer(#a2, "arbre");
+    si (k == 1) {
+        p = cercle(cj + [-Rj + 10, 0], ra);
+        nommer(#p, "poignée");
+    }
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "arbre", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1.5, nom = "Arbre");
+usinage("poche", "œil", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1.5, nom = "Œil");
+usinage("poche", "poignée", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1.5, nom = "Poignée");
+usinage("contour", "lumière", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3,
+        nom = "Lumière");
+usinage("contour", "collier", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3,
+        nom = "Collier");
+usinage("contour", "bielle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Bielle");
+usinage("contour", "noyau", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Noyau");
+usinage("contour", "joue", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Joues");
+usinage("contour", "socle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 1.5, nom = "Socle");
