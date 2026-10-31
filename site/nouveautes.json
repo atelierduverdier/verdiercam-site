@@ -2,6 +2,25 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+   "date": "2026-10-31",
+   "titre": "La profondeur d'une gravure en V, les petites machines, et des vitesses justes pour chaque fraise",
+   "points": [
+    "Gravure en V : sous le champ Profondeur, « Le plus profond » dit jusqu'où elle descend vraiment et ce qu'il reste de bois dessous — entre les traits, c'est la largeur des formes qui décide, pas le champ. Pour tout le document, une ligne « V le plus profond » dans l'arbre Projet, sous le Brut (en rouge à moins de 0,5 mm du dessous ; un clic choisit l'opération qui descend le plus bas), et la même chose dans l'onglet Brut, sous « Épaisseur Z » : de quoi choisir l'épaisseur de la planche sans ouvrir chaque gravure.",
+    "Les petites machines : quand le calcul demande plus que l'« Avance maxi » de la machine, « Calculer depuis la matière… » baisse la broche avec l'avance, pour garder le même copeau, et c'est ce qu'« Appliquer » écrit. Avant, il écrivait une avance que la machine ne tient pas avec la broche haute : la carte ralentissait d'elle-même, le copeau s'amincissait, la fraise frottait et brûlait. Si même la broche au plus bas ne suffit pas, il le dit et conseille une fraise à moins de dents.",
+    "Une machine dont l'« Avance maxi » n'est pas réglée n'hérite plus des 6 500 mm/min de la machine de l'atelier : rien ne plafonne, et le calcul le dit. « Prendre les réglages de la carte » reprend aussi l'avance maxi de la carte GRBL, grblHAL ou FluidNC.",
+    "Nouveau réglage « Rigidité » (Réglages machine › Course & broche) : légère, moyenne ou costaude. Une machine souple ne demande pas un copeau plus fin — la fraise frotterait — mais moins de matière à la fois : légère, ¼ du diamètre par passe (1,5 mm au plus) et 40 % de pas latéral ; moyenne, la moitié du diamètre (3 mm au plus) et 50 %. Le calcul les montre, « Appliquer » y ramène la passe et le pas, et l'avant-vol signale une passe trop profonde.",
+    "Les forets ont leur vitesse : un foret coupe au fond du trou, où le copeau sort mal — sa vitesse de coupe est prise au tiers de celle d'une fraise, son copeau à moitié, et sa plongée, qui est tout le perçage, égale son avance. Un foret Ø6 dans le MDF passe de 22 500 tr/min et 5 940 mm/min à 6 500 tr/min et 858 mm/min.",
+    "Le calcul des vitesses lit le diamètre qui coupe sur la forme de chaque fraise : pointe en V, chanfrein, boule, et aussi profil dessiné, bout arrondi et pointe-bille — une pointe de Ø24 ne coupe que sur son bout. Les régimes proposés sur la fiche d'un outil de la bibliothèque passent par ce même calcul, avec la machine en service, et la vitesse de coupe affichée lit partout ce diamètre-là.",
+    "L'avance en rampe ne ralentit plus que les entrées en rampe — contour, poche, rainure, surfaçage, finition, ébavurage ; elle ralentissait aussi chaque descente d'une gravure en V ou d'un relief, et l'hélice d'un perçage hélicoïdal ou d'un filetage. La fraise de dégagement entre en rampe et plonge comme l'opération, et la durée annoncée compte ce que le programme écrit.",
+    "Bibliothèque : une fraise retouchée se reporte sur les opérations qui l'utilisent, « Reporter sur N opération(s) », leurs avances et vitesses restant les leurs. Prendre une fraise par la console ou l'assistant Relief reprend aussi sa plongée ; « Utiliser pour la finition » d'une Gravure 2.5D en cascade ne donne plus à l'ébauche le pas latéral de la boule. Et le document garde les vitesses par matière que la fraise porte : rouvert, le calcul les retrouve.",
+    "« Hors pince » se dit là où il compte : quand la simulation voit le porte-outil heurter le bois, l'alerte dit où est l'écrou et quel réglage corriger, et la fiche de la fraise prévient quand « Hors pince » est plus court que sa hauteur de coupe.",
+    "Avant d'envoyer : l'avant-vol signale aussi une plongée ou une avance en rampe plus rapides que la machine, et une fraise de dégagement réglée à 0 tr/min.",
+    "Un nombre tapé garde ses décimales : 3,175 reste 3,175 dans une case à deux décimales, et cliquer dans une case puis en sortir sans rien taper ne l'arrondit plus.",
+    "Croquis : la tangence se pose entre une ligne et une courbe de Bézier, le point de contact glissant le long de la courbe ; un arc dont le rayon tapé est trop petit dit le rayon qu'il faut au moins ; un trait se prend au clic d'aussi loin que la croix s'y accroche ; deux barres flottantes du ruban ne se recouvrent plus.",
+    "Simulation : le curseur « Opacité » règle ce qu'on voit — la matière simulée quand elle est montrée, sinon le brut."
+   ]
+  },
+  {
    "date": "2026-10-30",
    "titre": "Usiner une partie d'une forme trait par trait, la photo sans ses chutes, et la pointe en V qui ne coupe que sur son cône",
    "points": [
