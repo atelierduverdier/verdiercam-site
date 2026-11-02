@@ -20,6 +20,13 @@
     "Ctrl+K : taper « décalage » trouve Décaler (rien ne venait, le mot n'étant pas dans le nom de la commande).",
     "Décaler marche sur un carré seul : « Les tours intérieurs » le resserre de la distance, et « Les deux » pose le contour dehors et dedans d'un coup — un carré de 20 décalé de 2 donne 24 dehors, aux coins arrondis, et 16 dedans. Avant, une forme sans trou ne donnait rien à l'intérieur.",
     "F1 a une fiche pour chaque commande des menus et des rubans : la Note, le Plan coté (PDF), le Polygone et l'Étoile, les Miroirs, Horizontale / verticale (expliquée avec un exemple : deux traits tirés à l'œil, une touche A, l'un se couche, l'autre se redresse), les cases d'Affichage… Et F1 sur un article de menu posé au-dessus du ruban garde sa fiche, au lieu de passer à celle de l'icône cachée dessous quand le menu se referme.",
+    "Ctrl+K dit pourquoi une commande est grisée : « Décaler… — choisir d'abord une ou des formes », « Parallèle — au Croquis seulement », au lieu d'un simple « pas possible maintenant ».",
+    "F1 marche aussi au niveau Débutant : ses grandes cases du ruban, la liste d'un groupe replié et la carte de chaque section du panneau ouvrent leur fiche (au Pro aussi, l'en-tête d'une section).",
+    "Le mode d'emploi est complété d'exemples, avec des images prises dans le logiciel : la section Avancées d'une opération (l'ordre de coupe et « Pièce par pièce » vus en simulation, à mi-chemin), les onglets de maintien vus de dessus, l'outil de dégagement (une poche plus de trois fois plus rapide avec une grosse fraise d'abord), le premier zéro Z au palpeur pas à pas, les pièges de chaque contrainte, le Congé, le Chanfrein et Diviser.",
+    "VerdierCAM-Diagnostic montre son rapport dans le navigateur : une coche verte quand c'est bon, une croix rouge quand c'est à régler, et sous Windows les protections qui bloquent VerdierCAM dans un cadre qui se voit.",
+    "Le diagnostic du poste se lance sans chercher : Aide › Diagnostic du poste… dans VerdierCAM, et sous Linux un lanceur VerdierCAM-Diagnostic à côté de l'AppImage.",
+    "Un vrai plein écran : F11, Affichage › Plein écran, ou le bouton aux quatre coins de la barre de titre.",
+    "La fenêtre Variables ne fait plus tomber VerdierCAM quand une valeur est refusée.",
     "Le mode d'emploi en ligne est à jour de tout cela."
    ]
   },
