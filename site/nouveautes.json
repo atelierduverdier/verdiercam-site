@@ -27,6 +27,12 @@
     "Le diagnostic du poste se lance sans chercher : Aide › Diagnostic du poste… dans VerdierCAM, et sous Linux un lanceur VerdierCAM-Diagnostic à côté de l'AppImage.",
     "Un vrai plein écran : F11, Affichage › Plein écran, ou le bouton aux quatre coins de la barre de titre.",
     "La fenêtre Variables ne fait plus tomber VerdierCAM quand une valeur est refusée.",
+    "Ctrl+K cherche plus large : les familles d'usinage (« poche » crée la Poche avec les formes choisies, depuis le Croquis comme depuis l'Usinage), les outils du ruban du Croquis depuis tous les onglets, et les fiches du mode d'emploi. Un mot tapé au pluriel trouve le singulier, et la commande trouvée reste en tête.",
+    "Le diagnostic du poste ouvre sa page dans le navigateur sans demander avec quoi, met « Copier le rapport » en tête, et ne coche plus en vert un réglage qu'il n'a pas pu lire.",
+    "Une relecture de tout le programme avant la 1.0, au Pilotage d'abord : un G-code en pouces, une carte qui rapporte la position de la pièce ($10) ou ses positions en pouces ($13), un G-code d'ailleurs qui dégage en relatif ne trompent plus la hauteur sûre, le Cadre, la reprise ni l'afficheur « Machine ».",
+    "À l'export : une finition de relief placée avant son ébauche, ou deux fraises sous un même numéro, arrêtent l'export par une question, comme quand le mandrin toucherait la matière. Avec les arcs, les cotes gardent au moins 3 décimales (à 1, la carte refusait des arcs en plein programme), un numéro d'outil au-delà de 255 est signalé pour GRBL, et l'alerte de longueur utile des Goupilles et de la Butée compte toute leur profondeur, martyr compris.",
+    "Plus de fermeture brutale sur un fichier STEP abîmé, une gravure d'image dont la recette est abîmée, ou un G-code ajouté à la suite dont un numéro d'outil est trop long. Si la carte graphique lâche en cours de séance, la copie de secours est gardée et proposée au lancement suivant.",
+    "Le panneau d'une opération montre la valeur que la fraise suivra (une rampe de 0,2° devenait 0,5° sans le dire), les pièces paramétriques s'en tiennent aux bornes de leurs réglages, et Ctrl+Z défait une commande tapée à la console sans cliquer ailleurs. Et quelques retouches : l'Oblong en arc après un Retour arrière, les points CSV ambigus signalés plutôt que devinés, une image dont le chemin porte des espaces importée en aplats.",
     "Le mode d'emploi en ligne est à jour de tout cela."
    ]
   },
