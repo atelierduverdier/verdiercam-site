@@ -10,7 +10,7 @@ personne de qualifié ne les a encore lues.
 |---|---|
 | `mentions-legales.html` | éditeur (EI), hébergeur GitHub, médiateur, propriété intellectuelle — loi LCEN art. 1-1 |
 | `cgv.html` | conditions de vente : licence perpétuelle, un an de mises à jour puis renouvellement facultatif, rétractation et son exception (art. L221-28 13°), formulaire type, garantie de conformité des contenus numériques, responsabilité, médiation |
-| `licence.html` | licence d'utilisation : nominative, `installations` ordinateurs pour une personne, ce qui est interdit, ce qui reste à l'utilisateur |
+| `licence.html` | licence d'utilisation : nominative, une personne sur autant d'ordinateurs qu'elle veut, ce qui est interdit, ce qui reste à l'utilisateur |
 | `confidentialite.html` | RGPD : pas de cookie, GoatCounter, courriel, paiement, durées, droits |
 | `acheter.html` | deux cases à cocher (conditions + renoncement exprès), bouton de paiement verrouillé tant qu'elles ne sont pas cochées |
 
@@ -27,8 +27,9 @@ reste un.
    dizaines d'euros par an) et remplir `mediateur_nom`, `mediateur_adresse`, `mediateur_site`. La
    plateforme européenne RLL a fermé le 20 juillet 2025 : n'y renvoyer nulle part.
 3. **Remplir `site/editeur.json`** : nom tel qu'au répertoire SIRENE, adresse, téléphone, SIRET.
-4. **Décider** le nombre d'ordinateurs par licence (`installations`, 3 par défaut) et les prix
-   (lancement, normal, renouvellement, fin du prix de lancement) — les écrire sur la page d'accueil.
+4. **Décider** les prix (lancement, normal, renouvellement, fin du prix de lancement) — les écrire sur la
+   page d'accueil. Le nombre d'ordinateurs est décidé : aucune limite pour une même personne (Christophe,
+   03/11/2026 : « il n'y a pas de limite »).
 5. ~~**Régler la page de paiement**~~ — fait le 15/10/2026 (ci-dessous) ; son adresse de production va
    dans `lien_paiement`.
 6. **Héberger les paquets** : les **Releases** de ce dépôt (public), `releases/latest`, où pointent le
