@@ -156,7 +156,7 @@ b, strong { font-weight: 600; }
 .surtitre { display: inline-flex; align-items: center; gap: 10px; font: 500 .78rem var(--mono);
   letter-spacing: .06em; text-transform: uppercase; color: var(--orange-encre); margin-bottom: 16px; }
 .surtitre::before { content: ""; width: 22px; height: 2px; background: var(--orange); border-radius: 2px; }
-.etiquette { display: inline-flex; align-items: center; gap: 8px; font: 500 .78rem var(--mono);
+.etiquette { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; font: 500 .78rem var(--mono);
   color: var(--orange-encre); background: var(--orange-clair); border: 1px solid var(--orange-pale);
   padding: 6px 12px; border-radius: 999px; margin: 0 0 22px; }
 .etiquette i { width: 7px; height: 7px; border-radius: 50%; background: var(--orange);
@@ -582,7 +582,7 @@ section.legal { padding-top: 24px; }
 .plus-familles > .familles { margin-top: 16px; }
 
 /* --- Ça avance : les trois derniers jours de nouveautés (11/10/2026) --- */
-.etiquette a { color: inherit; text-decoration: none; border-bottom: 1px dotted currentColor; }
+.etiquette a { color: inherit; text-decoration: none; border-bottom: 1px dotted currentColor; white-space: nowrap; }
 .recents { list-style: none; margin: 24px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .recents a { display: grid; gap: 6px; height: 100%; padding: 18px 20px; border: 1px solid var(--trait-2); border-radius: 14px;
   background: var(--carte); color: var(--encre); text-decoration: none; transition: border-color .2s; }

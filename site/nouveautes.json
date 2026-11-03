@@ -2,6 +2,19 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+   "date": "2026-11-03",
+   "titre": "Les fichiers abîmés qui ne ferment plus rien, et le Pilotage revu en profondeur — essayé sur deux vraies cartes",
+   "points": [
+    "Un fichier STEP, DXF ou un document abîmé ne ferme plus et ne fige plus VerdierCAM : chaque lecteur de fichier (STEP, STL, OBJ, SVG, DXF, FreeCAD, documents, G-code, réponses de la carte, réglages, scripts, images) a été nourri pendant des heures de fichiers fabriqués exprès pour le prendre en défaut. Sept défauts trouvés ainsi sont corrigés — dont un cercle de 3 000 km, né d'un point mal écrit, qui se redécoupait en 900 000 points à chaque image.",
+    "Une variable au calcul démesurément imbriqué (des milliers de parenthèses, une longue chaîne de variables qui se citent) est refusée avec un message, au lieu de fermer le logiciel.",
+    "Au Pilotage, « Cadre » et « Aller ici » restent dans le repère du zéro : après un ARRÊT, une fin de programme ou une nouvelle connexion, la carte repasse en G54 sans le dire, et le tour d'un document posé en G55 se faisait ailleurs. Le repère est renvoyé à la carte dès qu'elle est au repos.",
+    "« Au zéro » et « Z sécu » montent à la hauteur sûre du programme (avec le Z0 sur le martyr, ils restaient dans le brut) ; le zéro à la feuille se pose en millimètres même après un programme en pouces ; sur une machine sans prise d'origine, la fraise remonte vraiment après un ARRÊT.",
+    "Reprendre à une ligne un G-code venu d'ailleurs rend à la carte ce que l'arrêt avait effacé — le repère, la correction de longueur — et repart au-dessus de la pièce après un cycle de perçage ; un programme qui pose son zéro par G92, ou qui commande un axe rotatif, se reprend du début, et le logiciel dit pourquoi. La longueur mesurée au palpeur fixe est gardée pour chaque fraise et rendue à la carte après un arrêt.",
+    "Après un changement d'outil, la fraise monte avant de traverser ; « Lancer » prévient si les brides sont plus hautes que la hauteur de changement, si une fraise n'a pas de poste au magasin ou de place dans la table de la carte, si la carte n'a pas d'axe A. Le perçage simulé part du même plan que le cycle que la carte exécute.",
+    "Les cartes elles-mêmes : une FluidNC en Wi-Fi dit si un autre programme y est déjà connecté ; une alarme de limite logicielle ne bloque plus « Lancer » derrière un faux « position perdue » ; restaurer une sauvegarde de réglages passe en entier ; grblHAL n'enchaîne plus les refus après une erreur ; la Grbl_ESP32 montre tous ses réglages. Tout cela essayé sur une Grbl_ESP32 et une FluidNC, en plus des simulateurs."
+   ]
+  },
+  {
    "date": "2026-11-02",
    "titre": "Le mode d'emploi sous F1, le Pilotage qui montre et chronomètre le G-code qu'on ouvre, et les derniers réglages avant la 1.0",
    "points": [

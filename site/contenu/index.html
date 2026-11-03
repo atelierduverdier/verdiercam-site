@@ -18,7 +18,7 @@
   <div class="cadre heros-haut">
     <div class="heros-texte">
       {{OISEAU}}
-      <p class="etiquette"><i></i> <!--hors-vente--><a href="{{RACINE}}nouveautes.html">Version {{verdiercam.version}}</a> · sortie prochaine<!--/hors-vente--><!--vente--><a href="{{RACINE}}nouveautes.html">Version {{verdiercam.publiee}}</a> · disponible<!--/vente--></p>
+      <p class="etiquette"><i></i> <!--hors-vente--><a href="{{RACINE}}nouveautes.html">Version {{verdiercam.version}}</a> · sortie le {{editeur.date_sortie}}<!--/hors-vente--><!--vente--><a href="{{RACINE}}nouveautes.html">Version {{verdiercam.publiee}}</a> · disponible<!--/vente--></p>
       <h1>Du croquis <em>au copeau</em>, dans une seule fenêtre.</h1>
       <p class="accroche">
         VerdierCAM dessine la pièce, calcule les parcours, simule la matière enlevée
@@ -540,9 +540,9 @@ pour (i = [0 : 3]) {
       <div class="sortie-texte">
         <!--hors-vente-->
         <span class="surtitre">La sortie</span>
-        <h2>Bientôt disponible</h2>
-        <p>La version {{verdiercam.version}} tourne tous les jours à l'atelier. La 1.0 sortira quand
-          elle aura été validée sur le bois — pas à une date choisie d'avance.</p>
+        <h2>Sortie le {{editeur.date_sortie}}</h2>
+        <p>La version {{verdiercam.version}} tourne tous les jours à l'atelier. La 1.0 sortira le
+          {{editeur.date_sortie}}, après ses derniers essais sur le bois.</p>
         <div class="actions">
           <a class="bouton bouton-plein"
              href="mailto:contact@verdiercam.fr?subject=Pr%C3%A9venez-moi%20de%20la%20sortie%20de%20VerdierCAM&amp;body=Bonjour%2C%0A%0AJe%20souhaite%20%C3%AAtre%20pr%C3%A9venu%20de%20la%20sortie%20de%20VerdierCAM.%0A">

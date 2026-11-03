@@ -1,5 +1,5 @@
 {
-  "_lisezmoi": "Les informations de l'éditeur, injectées dans les pages légales ({{editeur.xxx}}). Un champ vide s'affiche « À REMPLIR » dans l'aperçu, et publier.py REFUSE d'envoyer le site tant qu'il en reste un. À remplir par Christophe : nom tel qu'il figure au répertoire SIRENE, adresse de l'entreprise, SIRET, médiateur de la consommation choisi, lien de paiement (Stripe ou autre). « vente_ouverte » : false tant qu'on ne vend pas — les pages Acheter, Conditions de vente et Licence ne sont alors pas publiées, ni le médiateur (obligatoire seulement pour vendre).",
+  "_lisezmoi": "Les informations de l'éditeur, injectées dans les pages légales ({{editeur.xxx}}). Un champ vide s'affiche « À REMPLIR » dans l'aperçu, et publier.py REFUSE d'envoyer le site tant qu'il en reste un. À remplir par Christophe : nom tel qu'il figure au répertoire SIRENE, adresse de l'entreprise, SIRET, médiateur de la consommation choisi, lien de paiement (Stripe ou autre). « date_sortie » : la date annoncée de la sortie de la 1.0, à l'accueil (03/11/2026, Christophe : « mets la date du 1 décembre »). « vente_ouverte » : false tant qu'on ne vend pas — les pages Acheter, Conditions de vente et Licence ne sont alors pas publiées, ni le médiateur (obligatoire seulement pour vendre).",
   "vente_ouverte": false,
   "nom": "VERDIER Christophe",
   "adresse": "107 rue du mont Flambé 14400 Crouay",
@@ -10,5 +10,6 @@
   "mediateur_site": "https://www.cm2c.net/declarer-un-litige.php",
   "lien_paiement": "https://buy.stripe.com/cNi3cx3Ai4aq0TQ3p467S00",
   "installations": "3",
-  "date_conditions": "6 octobre 2026"
+  "date_conditions": "6 octobre 2026",
+  "date_sortie": "1er décembre 2026"
 }
