@@ -12,6 +12,15 @@ ETAT="${XDG_STATE_HOME:-$HOME/.local/state}/verdiercam-site"
 mkdir -p "$ETAT"
 prevenir() { command -v notify-send >/dev/null && notify-send -a "Site VerdierCAM" "$@"; }
 
+# LE RÉSEAU D'ABORD (04/11/2026) : le passage de 21 h manqué pendant une veille se rattrape au réveil (Persistent=true),
+# avant que le réseau revienne — « Could not resolve hostname github.com », et une fausse alerte. On attend GitHub
+# jusqu'à 5 minutes ; toujours injoignable, on se tait : le passage du soir suivant republiera.
+for _ in $(seq 1 60); do
+    getent hosts github.com >/dev/null 2>&1 && break
+    sleep 5
+done
+getent hosts github.com >/dev/null 2>&1 || exit 0
+
 # LE CLONE DU MINUTEUR (15/10/2026) : le dossier de travail du logiciel porte presque toujours le travail en cours d'une
 # session (des fichiers modifiés que GitHub a aussi changés) — « git pull --ff-only » y échouait et rien ne partait. Le
 # minuteur a donc son clone à lui, qu'il remet chaque fois sur la branche main de GitHub (rien n'y est jamais modifié à la
