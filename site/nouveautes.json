@@ -2,6 +2,33 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+    "date": "2026-11-05",
+    "titre": "La poche en cascade montre ses deux fraises, et la durée compte le temps de les changer",
+    "points": [
+      "Une cascade dont les fraises sont à l'envers (la grosse à l'opération, la petite au dégagement) ne travaillait qu'avec une seule fraise, sans le dire. Un message l'explique sous la case, et un bouton « Échanger les deux fraises » la remet à l'endroit.",
+      "L'arbre des opérations donne à chaque fraise sa ligne et sa durée (« Ø6 ébauche », « Ø2 finition ») ; l'en-tête de l'outil montre les deux numéros.",
+      "La simulation peut s'arrêter à chaque changement d'outil, le temps de monter la fraise ; Espace reprend.",
+      "La durée estimée compte les changements d'outil : un temps à régler dans Réglages machine › Général.",
+      "Un document enregistré ailleurs emporte bien son image ou son maillage de relief, même quand le dossier d'arrivée ne les contient pas.",
+      "Dans un panneau étroit, la vue en coupe de la simulation passe avant les réglages de finesse et d'opacité, et reste à portée de clic."
+    ]
+  },
+  {
+    "date": "2026-11-04",
+    "titre": "Le document qui emporte ses fichiers, des médaillons mieux finis et neuf retouches venues d'une démonstration",
+    "points": [
+      "Le fichier .vcam emporte l'image ou le maillage du relief, jusqu'à 25 Mo par fichier : un document s'échange et se réutilise sans perdre son modèle.",
+      "Finition 3D : un motif « Rectangles du milieu au bord », qui suit la forme du cadre, du tout petit au très grand.",
+      "Relief : en finesse Automatique, la carte garde la finesse d'une image de la pile, jusqu'à 0,05 mm.",
+      "Poche concentrique et spirale : le rattrapage juge le fond réellement laissé, ce qui évite des trajets inutiles sans laisser de matière.",
+      "Onglets répartis : ils se posent sur les côtés droits, plus dans les coins arrondis.",
+      "Réglages de la carte : « Appliquer » prend la valeur en cours de saisie. Dans le calcul des régimes, une broche baissée au plafond d'avance mène à la « Broche mini ».",
+      "Plus clair : un libellé trop long passe sur deux lignes, « Position saisie » devient « Zéro à un point du dessin », l'aperçu du cercle dit d'abord le Ø, et une barre d'outils se prend aussi au bouton du milieu.",
+      "La table de la machine se montre aussi en Croquis, et l'opacité du brut agit partout dans la vue 3D.",
+      "Le facteur de chronométrage se calcule de la durée annoncée et de la durée chronométrée."
+    ]
+  },
+  {
    "date": "2026-11-03",
    "titre": "Les fichiers abîmés qui ne ferment plus rien, le Pilotage revu en profondeur — essayé sur deux vraies cartes — et le calcul des parcours passé au crible",
    "points": [
