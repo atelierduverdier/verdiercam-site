@@ -27,8 +27,9 @@ reste un.
    dizaines d'euros par an) et remplir `mediateur_nom`, `mediateur_adresse`, `mediateur_site`. La
    plateforme européenne RLL a fermé le 20 juillet 2025 : n'y renvoyer nulle part.
 3. **Remplir `site/editeur.json`** : nom tel qu'au répertoire SIRENE, adresse, téléphone, SIRET.
-4. **Décider** les prix (lancement, normal, renouvellement, fin du prix de lancement) — les écrire sur la
-   page d'accueil. Le nombre d'ordinateurs est décidé : aucune limite pour une même personne (Christophe,
+4. Les prix sont décidés (Christophe, 05/11/2026) : **59 € du 1er au 31 décembre 2026, 79 € à partir de
+   janvier 2027**, renouvellement 29 € par an. Le 1er janvier, changer le prix à la main : le site
+   (`site/contenu/index.html`, `acheter.html`) et le produit Stripe. Le nombre d'ordinateurs est décidé : aucune limite pour une même personne (Christophe,
    03/11/2026 : « il n'y a pas de limite »).
 5. ~~**Régler la page de paiement**~~ — fait le 15/10/2026 (ci-dessous) ; son adresse de production va
    dans `lien_paiement`.
