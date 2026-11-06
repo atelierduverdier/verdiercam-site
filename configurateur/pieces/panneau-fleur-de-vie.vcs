@@ -1,0 +1,60 @@
+// PANNEAU FLEUR DE VIE — les cercles entrelacés de la fleur de vie, gravés à la fraise en V juste assez profond pour
+// que chaque maille soit creusée jusqu'à sa pointe : un pavage d'étoiles à six branches et de pétales en facettes
+// vives.
+// thème : Décoration et cadeaux
+//
+// LE MOTIF : des cercles de même rayon, centrés sur un réseau de triangles dont le côté est ce rayon. Dans ce réseau,
+// le point le plus éloigné de tout cercle en est à 0,134 × rayon : la profondeur, 0,134 × rayon / tan(angle / 2) (et
+// 5 % de plus), fait se rejoindre tous les sillons en crêtes. Les cercles coupés par un bord deviennent des arcs. Motif
+// imaginé par Fable (Claude) le 01/11/2026.
+//
+// L'USINAGE : une seule fraise en V, une gravure à profondeur constante. Fraise conseillée : une V à 90° (le plus
+// vif) ; à 120°, plus doux. La V 90° Ø6 de la bibliothèque d'office creuse 2,75 mm au plus : rayon de 19 au plus. Avec
+// une grande V de carving (Ø32), donner son « angle » et son nom dans « fraise ».
+
+largeur   = 150;   // largeur du panneau (mm)
+hauteur   = 150;   // hauteur du panneau (mm)
+epaisseur = 18;    // épaisseur du panneau (mm)
+rayon     = 12;    // rayon des cercles, et côté du réseau (mm) [4:60]
+angle     = 90;    // l'angle de la fraise en V (°) : 90 conseillé [20:5:170]
+fraise    = "Pointe V 90";   // la fraise en V, son nom dans la bibliothèque
+
+t = tan(angle / 2);
+R = rayon;
+creux = 0.134 * R / t * 1.05;   // la maille la plus large creusée jusqu'à sa pointe
+h = R * sqrt(3) / 2;            // l'écart entre deux rangées de centres
+echo(str("Cercles de ", R, " mm, gravés à ", round(creux * 100) / 100, " mm."));
+planche([largeur, hauteur, epaisseur]);
+
+// Les morceaux d'une suite de points qui tombent dans le panneau : chacun devient un tracé nommé.
+function dedans(p) = p[0] >= 0 && p[0] <= largeur && p[1] >= 0 && p[1] <= hauteur;
+function entre(pts, i) = dedans(pts[i]) && (i == 0 ? true : !dedans(pts[i - 1]));
+function sort(pts, i) = dedans(pts[i]) && (i == len(pts) - 1 ? true : !dedans(pts[i + 1]));
+module morceaux(pts, nom) {
+    d = [for (i = [0 : len(pts) - 1]) if (entre(pts, i)) i];
+    f = [for (i = [0 : len(pts) - 1]) if (sort(pts, i)) i];
+    si (len(d) > 0)
+        pour (r = [0 : len(d) - 1])
+            si (f[r] > d[r]) {
+                c = polyligne([for (i = [d[r] : f[r]]) pts[i]]);
+                nommer(#c, nom);
+            }
+}
+
+pour (j = [-1 : ceil(hauteur / h) + 1]) {
+    pour (i = [-1 : ceil(largeur / R) + 1]) {
+        c = [i * R + (j % 2 == 0 ? 0 : R / 2), j * h];
+        si (c[0] - R >= 0 && c[0] + R <= largeur && c[1] - R >= 0 && c[1] + R <= hauteur) {
+            k = cercle(c, R);
+            nommer(#k, "cercle");
+        } sinon {
+            si (c[0] + R > 0 && c[0] - R < largeur && c[1] + R > 0 && c[1] - R < hauteur) {
+                n = max(48, ceil(2 * PI * R / 0.5));
+                morceaux([for (m = [0 : n]) c + R * [cos(360 * m / n), sin(360 * m / n)]], "cercle");
+            }
+        }
+    }
+}
+
+// ── L'usinage ──
+usinage("gravure", "cercle", outil = fraise, profondeur = creux, nom = "Fleur de vie");

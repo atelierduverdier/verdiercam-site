@@ -1,0 +1,200 @@
+// DIFFÉRENTIEL PLAT — le différentiel d'une voiture, en engrenages droits et en bois, pour le voir marcher : on tourne le
+// porte-satellites, les deux volants tournent ensemble ; on retient un volant, l'autre tourne deux fois plus vite.
+// thème : Technique et mécanique
+//
+// TROIS ÉTAGES de l'épaisseur de la planche, entre deux FLASQUES (le porte-satellites). En bas, le SOLEIL de gauche et un
+// satellite de chaque paire ; en haut, le soleil de droite et l'autre satellite ; au milieu, les deux satellites d'une
+// paire engrènent ENTRE EUX, et une ENTRETOISE plus petite que les soleils sépare ceux-ci. Chaque satellite est fait de
+// deux roues collées (deux étages) sur un tourillon de Ø6 collé dans les flasques. Deux paires, en face l'une de l'autre.
+// Chaque soleil est collé sur son axe de Ø8, qui sort par sa flasque et porte un VOLANT. Denture à développante (celle de
+// l'engrenage du catalogue) : `dents_soleil` et `dents_satellite` au `module`.
+//
+// L'USINAGE : les trous (Poche, fraise droite Ø3), puis les roues, les flasques, l'entretoise et les volants (Contour
+// extérieur, fraise droite Ø3 pour les roues, onglets). Contreplaqué de bouleau de 6 ; deux tourillons de Ø8 et quatre
+// de Ø6, de la colle.
+
+module      = 2.6;   // module (mm) : 2,6 au moins pour que la fraise Ø3 descende au pied des dents
+dents_soleil = 24;   // dents d'un soleil
+dents_satellite = 18;  // dents d'un satellite (17 au moins : moins, le pied des dents se creuse)
+angle_pression = 20; // angle de pression (°)
+deport      = 0;     // déport de denture (× module)
+jeu         = 0.1;   // jeu d'engrènement (mm)
+epaisseur   = 6;     // épaisseur (mm) : 9 au plus (la fraise Ø3)
+espace      = 6;     // entre deux pièces (mm)
+rognure     = 5;     // du bord du brut aux pièces (mm)
+
+// ── Les grandeurs, en degrés comme tout le script (les fonctions trigonométriques le sont) ──
+a_p = angle_pression;
+function rad(d) = d * PI / 180;
+function deg(t) = t * 180 / PI;
+function invo(a) = tan(a) - rad(a);                 // la fonction développante, d'un angle en degrés (radians rendus)
+function r_p(z) = module * z / 2;                   // rayon primitif
+function r_b(z) = r_p(z) * cos(a_p);                // rayon de base : la développante en part
+function r_a(z, x) = r_p(z) + module * (1 + x);     // rayon de tête
+function r_f(z, x) = r_p(z) - module * (1.25 - x);  // rayon de pied
+J = jeu / 2;                                        // l'amincissement de chaque dent, sur le primitif
+// L'ARRONDI DE TÊTE de la crémaillère : 0,38 × module (ISO 53, pensé pour 20°). Au-delà de 23° environ, il ne tient plus
+// dans la tête de la dent de crémaillère : ses deux arrondis se chevauchaient, le pied d'une dent passait celui de la
+// suivante, et le contour se recoupait — un arc de pied d'ouverture négative fait presque un tour (mesuré le 15/10/2026 :
+// 4,069° de demi-angle au pied pour 4° de demi-pas, 45 dents à 25° ; le contournage ne finissait plus). Plafonné à ce
+// qui tient : le centre de l'arrondi au plus au milieu de la dent de crémaillère, un rien en dessous.
+rho_max = (PI * module / 4 + J / 2 - 1.25 * module * tan(a_p)) * cos(a_p) / (1 - sin(a_p));
+rho = max(0, min(0.38 * module, 0.97 * rho_max));
+nf = 10;                                            // points de la trochoïde (le pied)
+ni = 30;                                            // points de la développante (le flanc)
+
+// ── La crémaillère qui taille une roue de z dents, déport x. Repère « monde » : la roue au centre, la crémaillère au-
+// dessus, sa ligne de roulement à y = r_p tangente au primitif, sa ligne de référence décalée du déport. La dent de la
+// roue (axe vertical) occupe le creux de la crémaillère ; on suit la dent de crémaillère de droite, son flanc gauche. ──
+function y_d(z, x) = r_p(z) + x * module;                                   // ligne de référence
+function y_c(z, x) = y_d(z, x) - 1.25 * module + rho;                       // centre de l'arrondi de tête
+function u_c(z, x) = (PI * module / 2 - J) / 2 + (y_d(z, x) - y_c(z, x) + rho * sin(a_p)) * tan(a_p) + rho * cos(a_p);
+function y_F(z, x) = y_c(z, x) - rho * sin(a_p);                            // où le flanc droit rejoint l'arrondi
+
+// LE POINT TAILLÉ : le point Q de la crémaillère, de normale n, touche la roue quand sa normale passe par le point
+// primitif (0, r_p) ; la crémaillère a alors glissé de d, la roue tourné de φ = −d / r_p. Rendu en [rayon, angle depuis
+// l'axe de la dent (°)], côté horaire.
+function engendre(z, Q, n) = rpsi(z, Q, n, (r_p(z) - Q[1]) / n[1]);
+function rpsi(z, Q, n, s) = [sqrt(s * n[0] * s * n[0] + Q[1] * Q[1]), atan2(-s * n[0], Q[1]) + deg((Q[0] + s * n[0]) / r_p(z))];
+
+// Le pied : la trochoïde, l'arrondi parcouru de sa normale verticale (fond du creux) à celle du flanc.
+function theta(k) = -90 - (90 - a_p) * k / nf;
+function troch(z, x) = [for (k = [0 : nf]) engendre(z, [u_c(z, x) + rho * cos(theta(k)), y_c(z, x) + rho * sin(theta(k))],
+                                                      [cos(theta(k)), sin(theta(k))])];
+
+// Le flanc : la développante. Son demi-angle au rayon R, et si le flanc DROIT de la crémaillère l'a taillé à ce rayon
+// (au-dessus de l'arrondi, sur la vraie branche).
+function s_dent(x) = PI * module / 2 + 2 * x * module * tan(a_p) - J;      // épaisseur de la dent sur le primitif
+function psi_dev(z, x, R) = deg(s_dent(x) / (2 * r_p(z)) + invo(a_p) - invo(acos(r_b(z) / R)));
+function y_de(z, R) = r_p(z) + sin(a_p) * (sqrt(R * R - r_b(z) * r_b(z)) - r_p(z) * sin(a_p));
+function dev_ok(z, x, R) = R >= r_b(z) && (R < r_b(z) ? faux : y_de(z, R) >= y_F(z, x) - 1e-9);
+
+// LE SOUS-TAILLAGE : la trochoïde passe-t-elle à l'intérieur de la développante ? Le premier point qui le fait marque
+// la coupure ; le profil est la trochoïde jusque-là, puis la développante.
+function viole(z, x, T, k) = dev_ok(z, x, T[k][0]) ? psi_dev(z, x, T[k][0]) < T[k][1] : faux;
+function coupure(z, x, T, k) = k > nf ? nf + 1 : (viole(z, x, T, k) ? k : coupure(z, x, T, k + 1));
+function ecart_t(z, x, T, k) = T[k][1] - psi_dev(z, x, T[k][0]);
+function r_coupe(z, x, T, kc) = kc > nf ? T[nf][0]
+    : (kc > 0 && (kc > 0 ? dev_ok(z, x, T[kc - 1][0]) : faux))
+        ? T[kc - 1][0] + (T[kc][0] - T[kc - 1][0]) * ecart_t(z, x, T, kc - 1) / (ecart_t(z, x, T, kc - 1) - ecart_t(z, x, T, kc))
+        : T[kc][0];
+
+// La tête : le rayon de tête, rabattu si la dent y devient pointue (moins de 0,2 × module de large).
+function largeur(z, x, R) = 2 * R * rad(psi_dev(z, x, R));
+function bissec(z, x, a, b, n) = n == 0 ? a
+    : (largeur(z, x, (a + b) / 2) > 0.2 * module ? bissec(z, x, (a + b) / 2, b, n - 1) : bissec(z, x, a, (a + b) / 2, n - 1));
+function r_tete(z, x) = largeur(z, x, r_a(z, x)) >= 0.2 * module ? r_a(z, x) : bissec(z, x, max(r_b(z), r_f(z, x)), r_a(z, x), 40);
+
+// LE PROFIL d'un côté de la dent, du pied à la tête : [rayon, demi-angle (°)].
+function profil(z, x) = profil2(z, x, troch(z, x));
+function profil2(z, x, T) = profil3(z, x, T, coupure(z, x, T, 0));
+function profil3(z, x, T, kc) = profil4(z, x, T, kc, r_coupe(z, x, T, kc), r_tete(z, x));
+function profil4(z, x, T, kc, rc, rt) = concat([for (k = [0 : min(kc, nf + 1) - 1]) T[k]],
+                                               [for (j = [kc > nf ? 1 : 0 : ni]) [rc + (rt - rc) * j / ni, psi_dev(z, x, rc + (rt - rc) * j / ni)]]);
+// Le demi-angle de la dent au rayon R (le profil interpolé) : pour mesurer le creux.
+function psi_a(P, R, k) = k >= len(P) - 1 ? P[len(P) - 1][1]
+    : (P[k + 1][0] >= R ? P[k][1] + (P[k + 1][1] - P[k][1]) * (R - P[k][0]) / (P[k + 1][0] - P[k][0]) : psi_a(P, R, k + 1));
+
+function pt(c, R, a) = c + R * [cos(a), sin(a)];
+
+// ── LA ROUE : un seul contour fermé — pour chaque dent, son flanc droit (polyligne), sa tête (arc), son flanc gauche
+// (polyligne), puis le pied jusqu'à la dent suivante (arc) ; chaque morceau joint au premier. La dent 0 a son axe à
+// l'angle `phase`. ──
+module roue(c, z, P, phase, nom, aide) {
+    n = len(P);
+    premier = arc(c, pt(c, P[0][0], phase + 360 * (z - 1) / z + P[0][1]), pt(c, P[0][0], phase - P[0][1]));   // le pied avant la dent 0
+    pour (i = [0 : z - 1]) {
+        ax = phase + 360 * i / z;
+        d = polyligne([for (p = P) pt(c, p[0], ax - p[1])]);
+        joindre(#premier, #d);
+        t = arc(c, pt(c, P[n - 1][0], ax - P[n - 1][1]), pt(c, P[n - 1][0], ax + P[n - 1][1]));
+        joindre(#premier, #t);
+        g = polyligne([for (k = [n - 1 : -1 : 0]) pt(c, P[k][0], ax + P[k][1])]);
+        joindre(#premier, #g);
+        si (i < z - 1) {
+            f = arc(c, pt(c, P[0][0], ax + P[0][1]), pt(c, P[0][0], phase + 360 * (i + 1) / z - P[0][1]));
+            joindre(#premier, #f);
+        }
+    }
+    nommer(#premier, nom);
+    si (aide == 1)
+        construction(#premier);
+}
+
+zs = dents_soleil;  zp = dents_satellite;
+Rc = (zs + zp) * module / 2;                   // l'orbite des satellites (soleil + satellite)
+dp = zp * module;                              // deux satellites d'une paire, centre à centre
+bp = 2 * asin(dp / 2 / Rc);                    // l'angle entre eux, vu du centre
+Ps = profil(zs, deport);  Pp = profil(zp, deport);
+ras = Ps[len(Ps) - 1][0];  rap = Pp[len(Pp) - 1][0];
+re = Rc - rap - 1.5;                           // l'entretoise : 1,5 sous la tête des satellites
+rf = Rc + rap + 6;                             // les flasques
+rv = 30;                                       // les volants
+si (re < 6)
+    echo("Plus de place pour l'entretoise : des soleils plus grands, ou des satellites plus petits.");
+si (dp < 2 * rap - 2 * module + 0.5)
+    echo("Les satellites d'une paire n'engrènent pas : vérifier les dents.");
+// La planche : deux flasques, deux soleils, huit satellites, l'entretoise, deux volants.
+hl = max(2 * rf, 2 * ras + espace + max(2 * re, 2 * rv));   // la hauteur des flasques, soleils, entretoise et volants
+planche([max(2 * (2 * rf + espace) + max(2 * (2 * ras + espace), 2 * re + espace + 2 * (2 * rv + espace)), 8 * (2 * rap + espace))
+         + 2 * rognure, hl + espace + 2 * rap + 2 * rognure, epaisseur]);
+
+// ── Les flasques : l'axe au centre, les quatre tourillons des satellites sur l'orbite ──
+pour (k = [0 : 1]) {
+    c = [rognure + rf + k * (2 * rf + espace), rognure + rf];
+    f = cercle(c, rf);
+    nommer(#f, "flasque");
+    a = cercle(c, 4.2);
+    nommer(#a, "palier");
+    pour (j = [0 : 1])
+        pour (s = [-1, 1]) {
+            t = cercle(c + Rc * [cos(180 * j + s * bp / 2), sin(180 * j + s * bp / 2)], 3);
+            nommer(#t, "tourillon");
+        }
+}
+// ── Les soleils : collés sur leur axe ──
+pour (k = [0 : 1]) {
+    c = [rognure + 2 * (2 * rf + espace) + ras + k * (2 * ras + espace), rognure + ras];
+    roue(c, zs, Ps, 0, "soleil", 0);
+    a = cercle(c, 4);
+    nommer(#a, "moyeu");
+}
+// ── Les huit satellites : ils tournent sur leur tourillon ──
+pour (k = [0 : 7]) {
+    c = [rognure + rap + k * (2 * rap + espace), rognure + hl + espace + rap];
+    roue(c, zp, Pp, 0, "satellite", 0);
+    a = cercle(c, 3.15);
+    nommer(#a, "moyeu satellite");
+}
+// ── L'entretoise et les volants (le trou de la poignée près du bord) ──
+ce = [rognure + 2 * (2 * rf + espace) + re, rognure + 2 * ras + espace + re];
+e = cercle(ce, re);
+nommer(#e, "entretoise");
+a = cercle(ce, 4.2);
+nommer(#a, "palier");
+pour (k = [0 : 1]) {
+    c = [rognure + 2 * (2 * rf + espace) + 2 * re + espace + rv + k * (2 * rv + espace), rognure + 2 * ras + espace + rv];
+    v = cercle(c, rv);
+    nommer(#v, "volant");
+    a = cercle(c, 4);
+    nommer(#a, "moyeu");
+    p = cercle(c + [rv - 9, 0], 3);
+    nommer(#p, "poignée");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "palier", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1.5, nom = "Paliers");
+usinage("poche", "moyeu", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1.5, nom = "Moyeux");
+usinage("poche", "moyeu satellite", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1.5, nom = "Moyeux des satellites");
+usinage("poche", "tourillon", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1.5, nom = "Tourillons");
+usinage("poche", "poignée", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1.5, nom = "Poignées");
+usinage("contour", "soleil", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1.5,
+        onglets = 3, onglet_long = 4, onglet_haut = 1, nom = "Soleils");
+usinage("contour", "satellite", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1.5,
+        onglets = 2, onglet_long = 3, onglet_haut = 1, nom = "Satellites");
+usinage("contour", "flasque", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 1.5, nom = "Flasques");
+usinage("contour", "entretoise", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 4, onglet_haut = 1.5, nom = "Entretoise");
+usinage("contour", "volant", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Volants");

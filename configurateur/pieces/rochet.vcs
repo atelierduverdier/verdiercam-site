@@ -1,0 +1,91 @@
+// ROUE À ROCHET ET CLIQUET — le mécanisme qui ne tourne que dans un sens : celui des treuils, des clés à cliquet, des
+// remontoirs. La roue tourne librement d'un côté (ses dents en pente soulèvent le cliquet) ; de l'autre, le flanc droit
+// d'une dent bute contre la pointe du cliquet, et tout s'arrête. Un démonstrateur pour comprendre, ou un frein de treuil.
+// thème : Technique et mécanique
+//
+// LA ROUE : `dents` dents en dents de scie, de `hauteur_dent`, sur un rayon de `rayon` ; chaque dent a un flanc RADIAL (qui
+// bloque) et un flanc en pente (qui soulève). LE CLIQUET pivote au-dessus, à gauche ; sa pointe se loge dans le creux
+// contre le flanc radial, à 0,5 mm de lui. Un élastique, du trou du cliquet à la cheville du socle, le tient appuyé. LE
+// SOCLE porte les deux axes (chevilles Ø8 collées) et la cheville de l'élastique ; une cheville dans la roue fait poignée.
+//
+// L'USINAGE : les trous des chevilles collées (Perçage, Foret Ø8), les alésages qui tournent et le trou de l'élastique
+// (Contour intérieur), puis les pièces (Contour extérieur, onglets). Contreplaqué de bouleau de 12.
+
+dents      = 24;     // nombre de dents
+rayon      = 60;     // rayon de la roue, à la pointe des dents (mm)
+hauteur_dent = 6;    // hauteur d'une dent (mm)
+jeu_axe    = 0.3;    // jeu des pièces qui tournent sur leur axe, par côté (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+n = max(8, round(dents));  R = rayon;  h = hauteur_dent;  ep = epaisseur;
+da = 360 / n;
+ra = 4 + jeu_axe;                              // l'alésage d'une pièce qui tourne (axe Ø8)
+// Les points de la roue, dans le repère de son centre : la pointe de la dent k à l'angle 90 + k·da, son flanc radial y
+// descend jusqu'au creux (au même angle) ; le flanc en pente remonte du creux k à la pointe k + 1.
+function pointe(k) = R * [cos(90 + k * da), sin(90 + k * da)];
+function creux(k) = (R - h) * [cos(90 + k * da), sin(90 + k * da)];
+// Le cliquet, dans le repère du centre de la roue : sa pointe contre le flanc radial de la dent du haut (x = 0), du côté
+// du creux (x < 0) ; son dessous passe au-dessus de la dent suivante.
+t1 = pointe(1);
+xA = -0.5;  yA = R - h + 1.5;                  // le bas de la pointe : 1,5 au-dessus du creux
+xK = 0.8 * t1[0];                              // le coude du dessous, avant la pointe de la dent suivante
+yK = (R - h) + h * (xK / t1[0]) * ((t1[1] - (R - h)) / h) + 1.8;
+Q = [-0.95 * R, R + 14];                       // le pivot du cliquet
+rq = 10;                                       // le moyeu du cliquet
+si (h < 4)
+    echo("Des dents de moins de 4 mm : le cliquet n'y tiendrait pas.");
+si (2 * PI * R / n < 2 * h)
+    echo("Les dents sont serrées pour leur hauteur : moins de dents, ou plus basses.");
+Ls = 2 * R + 40;  Hs = 2 * R + 40;             // le socle
+planche([Ls + espace + 2 * R + 2 * rognure, Hs + 2 * rognure, epaisseur]);
+
+// ── Le socle : l'axe de la roue au milieu, celui du cliquet, la cheville de l'élastique ──
+os = [rognure, rognure];
+c0 = os + [Ls / 2, Hs / 2 - 10];               // l'axe de la roue
+s = rect(os, [Ls, Hs], 8);
+nommer(#s, "socle");
+pour (p = [c0, c0 + Q, c0 + [-0.45 * R, R + 4]]) {
+    q = cercle(p, 4);
+    nommer(#q, "cheville");
+}
+si (Q[1] + rq > Hs / 2 + 10 - 4 || Q[0] - rq < -Ls / 2 + 4)
+    echo("Le cliquet déborde du socle : un socle plus grand.");
+
+// ── La roue ──
+cr = [rognure + Ls + espace + R, rognure + R];
+w = polyligne([for (j = [0 : 2 * n - 1]) cr + (j % 2 == 0 ? pointe(floor(j / 2)) : creux(floor(j / 2)))], fermee = vrai);
+nommer(#w, "roue");
+a = cercle(cr, ra);
+nommer(#a, "alésage");
+pg = cercle(cr + [0, -0.6 * R], 4);
+nommer(#pg, "cheville");
+
+// ── Le cliquet, posé au-dessus de la roue sur la planche ──
+oq = [rognure + Ls + espace + R + 8, rognure + Hs - Q[1] - rq];   // son haut au haut de la planche, au-dessus de la roue
+k = polyligne([oq + [xA, yA], oq + [xA, R + 1], oq + Q + [0, rq]]);
+k2 = arc(oq + Q, oq + Q + [0, rq], oq + Q + [0, -rq]);
+joindre(#k, #k2);
+k3 = polyligne([oq + Q + [0, -rq], oq + [xK, yK], oq + [xA, yA]]);
+joindre(#k, #k3);
+nommer(#k, "cliquet");
+aq = cercle(oq + Q, ra);
+nommer(#aq, "alésage");
+// le trou de l'élastique : à mi-chemin du coude et du pivot, au milieu de la hauteur du bras à cet endroit
+xm = (xK + Q[0]) / 2;
+yb = yK + (xm - xK) / (Q[0] - xK) * (Q[1] - rq - yK);
+yh = (R + 1) + (xm - xA) / (Q[0] - xA) * (Q[1] + rq - (R + 1));
+el = cercle(oq + [xm, (yb + yh) / 2], 3.5);
+nommer(#el, "élastique");
+
+// ── L'USINAGE, déclaré ──
+usinage("percage", "cheville", outil = "Foret Ø8", profondeur = epaisseur, nom = "Trous des chevilles");
+usinage("contour", "alésage", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Alésages");
+usinage("contour", "élastique", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Trou de l'élastique");
+usinage("contour", "roue", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 5, onglet_haut = 1.5, nom = "Roue");
+usinage("contour", "cliquet", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Cliquet");
+usinage("contour", "socle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Socle");

@@ -1,0 +1,75 @@
+// ROTULE À BILLE — l'articulation qu'on oriente dans tous les sens et qui reste où on la laisse : une bille de bois
+// serrée entre un socle (une calotte creusée à la boule) et un chapeau percé, par quatre boulons. Pour une lampe, une
+// caméra, un support de téléphone. Plus on serre, plus elle tient.
+// thème : Technique et mécanique
+//
+// LA BILLE : Ø`d_bille` (une bille de bois percée, la tige de Ø`d_tige` collée dedans). LE SOCLE : une CALOTTE de
+// `creux` de profondeur, au rayon de la bille plus 0,2, creusée par une Révolution à la fraise boule. L'ENTRETOISE, de
+// l'épaisseur de la planche, entoure la bille. LE CHAPEAU : un trou dont le bord touche la bille au-dessus de son
+// équateur ; il est plus étroit de `serrage` qu'il ne le faudrait : les boulons serrés, la bille est pincée. La tige
+// s'incline jusqu'à toucher le bord du chapeau. Quatre boulons de Ø`d_boulon` aux coins tiennent les trois plaques.
+//
+// L'USINAGE : la calotte (Révolution, Boule Ø6), les trous des boulons (Perçage, Foret Ø5), l'entretoise et le chapeau
+// (Contour intérieur), puis les plaques (Contour extérieur, onglets). Hêtre de 12 ; quatre boulons M5 et écrous papillon.
+
+d_bille    = 30;     // Ø de la bille (mm)
+d_tige     = 8;      // Ø de la tige (mm)
+creux      = 8;      // profondeur de la calotte dans le socle (mm)
+serrage    = 0.15;   // le chapeau pince la bille de tant sur le rayon (mm)
+cote       = 70;     // côté des plaques (mm)
+d_boulon   = 5;      // Ø des boulons (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 8;      // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+R = d_bille / 2;  Rs = R + 0.2;  ep = epaisseur;
+z = ep + creux - R;                            // le bord du chapeau, au-dessus du centre de la bille
+rh = sqrt(R * R - z * z) - serrage;            // le rayon du trou du chapeau
+si (z <= 0 || z >= R - 2)
+    echo("Le chapeau ne tient pas la bille : une calotte plus profonde, une bille plus petite, ou une autre épaisseur.");
+si (creux > ep - 3)
+    echo("La calotte laisse moins de 3 mm sous la bille : moins creuse.");
+planche([3 * cote + 2 * espace + 2 * Rs + espace + 2 * rognure, cote + 2 * rognure, epaisseur]);
+// ── Les trois plaques côte à côte : socle, entretoise, chapeau ──
+pour (k = [0 : 2]) {
+    o = [rognure + k * (cote + espace), rognure];
+    c = o + [cote / 2, cote / 2];
+    p = rect(o, [cote, cote], 6);
+    nommer(#p, k == 0 ? "socle" : (k == 1 ? "entretoise" : "chapeau"));
+    pour (x = [10, cote - 10])
+        pour (y = [10, cote - 10]) {
+            b = cercle(o + [x, y], d_boulon / 2);
+            nommer(#b, "boulon");
+        }
+    si (k == 0) {
+        q = cercle(c, sqrt(Rs * Rs - (Rs - creux) * (Rs - creux)));
+        nommer(#q, "calotte");
+    }
+    si (k == 1) {
+        q = cercle(c, R + 0.5);
+        nommer(#q, "logement");
+    }
+    si (k == 2) {
+        q = cercle(c, rh);
+        nommer(#q, "trou");
+    }
+}
+// La coupe de la calotte, à droite : de l'axe (au fond) au bord (au ras du socle).
+qc = [rognure + 3 * cote + 2 * espace + espace, rognure + cote - 10];
+rc = sqrt(Rs * Rs - (Rs - creux) * (Rs - creux));
+a = arc(qc + [0, Rs - creux], qc + [0, -creux], qc + [rc, 0]);
+nommer(#a, "coupe calotte");
+
+// ── L'USINAGE, déclaré ──
+usinage("revolution", "calotte", outil = "Boule Ø6", coupe = "coupe calotte", profondeur = creux, passe = 2, nom = "Calotte");
+usinage("percage", "boulon", outil = "Foret Ø5", profondeur = epaisseur, nom = "Trous des boulons");
+usinage("contour", "logement", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3,
+        nom = "Logement de la bille");
+usinage("contour", "trou", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3,
+        nom = "Trou du chapeau");
+usinage("contour", "socle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Socle");
+usinage("contour", "entretoise", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Entretoise");
+usinage("contour", "chapeau", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Chapeau");

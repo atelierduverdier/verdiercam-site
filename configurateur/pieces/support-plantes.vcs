@@ -1,0 +1,81 @@
+// SUPPORT DE PLANTES — une sellette : deux pieds croisés à mi-bois, en X vu de dessus, et un plateau rond qui les coiffe
+// par quatre tenons. Trois pièces, sans vis ; un pot de 20 à 30 cm dessus.
+// thème : Rangement
+//
+// LES PIEDS : de `hauteur`, larges de `largeur_bas` au sol et `largeur_haut` en haut, évidés d'une arche (`arche` de haut)
+// entre deux pieds de `pied`. Ils se croisent à angle droit : le premier est fendu par le HAUT jusqu'à mi-hauteur, le
+// second par le BAS — à travers son arche — jusqu'à mi-hauteur ; chaque fente de l'épaisseur de l'autre pied plus le `jeu`
+// de chaque côté. En haut, chaque pied porte deux TENONS de `largeur_tenon` qui traversent le PLATEAU (Ø `diametre_plateau`,
+// ses quatre mortaises aux coins dégagés).
+//
+// L'USINAGE : les mortaises (Contour intérieur, coins dégagés), puis les pieds (Contour extérieur, coins dégagés aux fonds
+// des fentes et aux pieds des tenons) et le plateau (Contour extérieur), onglets.
+
+hauteur    = 450;    // hauteur des pieds, sans les tenons (mm)
+largeur_bas = 300;   // largeur d'un pied au sol (mm)
+largeur_haut = 170;  // largeur d'un pied en haut (mm)
+arche      = 120;    // hauteur de l'arche (mm)
+pied       = 45;     // largeur d'un pied au sol (mm)
+largeur_tenon = 30;  // largeur d'un tenon (mm)
+diametre_plateau = 240;  // Ø du plateau (mm)
+jeu        = 0.1;    // jeu des fentes et des tenons, par côté (mm)
+epaisseur  = 18;     // épaisseur (mm)
+espace     = 12;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  H = hauteur;  w = ep + 2 * jeu;
+Wb = largeur_bas / 2;  Wt = largeur_haut / 2;  t = largeur_tenon;
+tx = Wt - 15 - t / 2;                          // l'axe d'un tenon, depuis le milieu du pied
+a = Wb - pied;                                 // la demi-ouverture de l'arche au sol
+rA = (a * a + arche * arche) / (2 * arche);    // son rayon (un arc du sol à `arche`)
+yA = arche - rA;                               // son centre
+yfente = yA + sqrt(rA * rA - w * w / 4);       // où la fente du second pied sort de l'arche
+si (H / 2 < arche + 20)
+    echo("L'arche monte presque à mi-hauteur : la fente du second pied n'aurait plus de bois — une arche plus basse.");
+si (diametre_plateau / 2 < sqrt(tx * tx + (t / 2) * (t / 2)) + 15)
+    echo("Le plateau est trop petit pour ses mortaises : un plateau plus grand.");
+D = diametre_plateau;
+planche([2 * largeur_bas + espace + D + espace + 2 * rognure, max(H + ep, D) + 2 * rognure, epaisseur]);
+
+// Un pied, debout, son milieu en x = 0 : `haut` = 1 fendu par le haut, 0 par le bas.
+module pied(o, haut) {
+    // Le haut, de droite à gauche : le coin, le tenon de droite, (la fente), le tenon de gauche, le coin.
+    tete = concat([o + [Wt, H], o + [tx + t / 2, H], o + [tx + t / 2, H + ep], o + [tx - t / 2, H + ep], o + [tx - t / 2, H]],
+                  haut == 1 ? [o + [w / 2, H], o + [w / 2, H / 2], o + [-w / 2, H / 2], o + [-w / 2, H]] : [],
+                  [o + [-tx + t / 2, H], o + [-tx + t / 2, H + ep], o + [-tx - t / 2, H + ep], o + [-tx - t / 2, H], o + [-Wt, H]]);
+    q = polyligne(concat([o + [a, 0], o + [Wb, 0]], tete, [o + [-Wb, 0], o + [-a, 0]]));
+    si (haut == 1) {
+        r = arc(o + [0, yA], o + [a, 0], o + [-a, 0]);             // l'arche entière
+        joindre(#q, #r);
+    } sinon {
+        // l'arche coupée par la fente qui monte jusqu'à mi-hauteur
+        r1 = arc(o + [0, yA], o + [-w / 2, yfente], o + [-a, 0]);    // la moitié gauche de l'arche
+        joindre(#q, #r1);
+        f = polyligne([o + [-w / 2, yfente], o + [-w / 2, H / 2], o + [w / 2, H / 2], o + [w / 2, yfente]]);
+        joindre(#q, #f);
+        r2 = arc(o + [0, yA], o + [a, 0], o + [w / 2, yfente]);      // la moitié droite
+        joindre(#q, #r2);
+    }
+    nommer(#q, "pied");
+}
+pied([rognure + Wb, rognure], 1);
+pied([rognure + 3 * Wb + espace, rognure], 0);
+
+// Le plateau et ses mortaises : les tenons du premier pied sur l'axe x, ceux du second sur l'axe y.
+c = [rognure + 2 * largeur_bas + espace + espace + D / 2, rognure + D / 2];
+k = cercle(c, D / 2);
+nommer(#k, "plateau");
+pour (s = [-1, 1]) {
+    m1 = rect(c + [s * tx - t / 2 - jeu, -w / 2], [t + 2 * jeu, w]);
+    nommer(#m1, "mortaise");
+    m2 = rect(c + [-w / 2, s * tx - t / 2 - jeu], [w, t + 2 * jeu]);
+    nommer(#m2, "mortaise");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaises");
+usinage("contour", "pied", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Pieds");
+usinage("contour", "plateau", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Plateau");

@@ -1,0 +1,56 @@
+// PANNEAU EN VAGUES D'ÉCAILLES — les écailles de la vague japonaise : des rangées d'éventails de demi-cercles
+// concentriques, en quinconce, chaque rangée cachant le pied de celle d'au-dessus. Gravé à la fraise en V : chaque
+// anneau est une crête vive.
+// thème : Décoration et cadeaux
+//
+// LE MOTIF : autour de chaque centre, des demi-cercles de rayon R, R − écart, R − 2 × écart… ; les centres en
+// quinconce, une rangée tous les R / 2. Chaque demi-cercle s'arrête là où il entre dans un éventail de la rangée de
+// dessous. La profondeur fait se rejoindre deux anneaux voisins en crête vive : écart / (2 × tan(angle / 2)). Motif
+// imaginé par Fable (Claude) le 01/11/2026.
+//
+// L'USINAGE : une seule fraise en V, une gravure à profondeur constante. Fraise conseillée : une V à 90° (à 120° trop
+// mou, à 60° trop sombre). La V 90° Ø6 de la bibliothèque d'office creuse 2,75 mm au plus : écart de 5,5 au plus. Avec
+// une grande V de carving (Ø32), donner son « angle » et son nom dans « fraise ».
+
+largeur   = 150;   // largeur du panneau (mm)
+hauteur   = 150;   // hauteur du panneau (mm)
+epaisseur = 18;    // épaisseur du panneau (mm)
+rayon     = 18;    // rayon d'un éventail (mm) [6:100]
+ecart     = 4.5;   // écart entre deux anneaux d'un éventail (mm) [1:0.5:30]
+angle     = 90;    // l'angle de la fraise en V (°) : 90 conseillé [20:5:170]
+fraise    = "Pointe V 90";   // la fraise en V, son nom dans la bibliothèque
+
+t = tan(angle / 2);
+R = rayon;  h = R / 2;
+creux = ecart / (2 * t);
+echo(str("Anneaux tous les ", ecart, " mm, gravés à ", round(creux * 100) / 100, " mm."));
+planche([largeur, hauteur, epaisseur]);
+
+// Un point se voit s'il est dans le panneau et hors des deux éventails de la rangée de dessous.
+function vu(p, c) = p[0] >= 0 && p[0] <= largeur && p[1] >= 0 && p[1] <= hauteur
+                    && norm(p - (c + [-R, -h])) > R && norm(p - (c + [R, -h])) > R;
+function entre(pts, i, c) = vu(pts[i], c) && (i == 0 ? true : !vu(pts[i - 1], c));
+function sort(pts, i, c) = vu(pts[i], c) && (i == len(pts) - 1 ? true : !vu(pts[i + 1], c));
+module morceaux(pts, c, nom) {
+    d = [for (i = [0 : len(pts) - 1]) if (entre(pts, i, c)) i];
+    f = [for (i = [0 : len(pts) - 1]) if (sort(pts, i, c)) i];
+    si (len(d) > 0)
+        pour (r = [0 : len(d) - 1])
+            si (f[r] > d[r]) {
+                a = polyligne([for (i = [d[r] : f[r]]) pts[i]]);
+                nommer(#a, nom);
+            }
+}
+
+pour (j = [-1 : ceil(hauteur / h) + 2]) {
+    pour (i = [-1 : ceil(largeur / (2 * R)) + 1]) {
+        c = [i * 2 * R + (j % 2 == 0 ? 0 : R), j * h];
+        pour (rho = [R : -ecart : ecart / 2 + 0.001]) {
+            n = max(24, ceil(PI * rho / 0.6));
+            morceaux([for (m = [0 : n]) c + rho * [cos(180 * m / n), sin(180 * m / n)]], c, "anneau");
+        }
+    }
+}
+
+// ── L'usinage ──
+usinage("gravure", "anneau", outil = fraise, profondeur = creux, nom = "Écailles");

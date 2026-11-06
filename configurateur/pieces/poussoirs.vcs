@@ -1,0 +1,49 @@
+// POUSSOIRS DE SCIE SUR TABLE — les deux qui gardent les doigts loin de la lame : le POUSSOIR long (sa pointe s'appuie sur
+// la pièce, son cran pousse le bout) et le SABOT (sa semelle plaque la pièce, son talon la pousse), chacun avec sa
+// poignée découpée. À refaire sans regret quand la lame les a entamés : c'est leur rôle.
+// thème : Atelier et gabarits
+//
+// LE POUSSOIR : `longueur_poussoir` de long, une barre de `hauteur_barre` ; à la pointe, un CRAN de `cran` de haut sur 25
+// de long ; à l'arrière, la poignée qui monte à 45°, percée d'un trou pour la main. LE SABOT : une semelle de
+// `longueur_sabot`, un TALON de `cran` sous l'arrière, une poignée fermée au-dessus.
+//
+// L'USINAGE : les trous de la main (Contour intérieur, sans onglets), puis les deux pièces (Contour extérieur, onglets).
+// Contreplaqué de 18 ; jamais de métal (une vis rencontrée par la lame).
+
+longueur_poussoir = 400;  // longueur du poussoir (mm)
+hauteur_barre = 40;  // hauteur de la barre du poussoir (mm)
+longueur_sabot = 260;  // longueur de la semelle du sabot (mm)
+cran       = 10;     // hauteur du cran et du talon (mm) : moins que l'épaisseur des pièces sciées
+epaisseur  = 18;     // épaisseur (mm)
+espace     = 10;     // entre les deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+L = longueur_poussoir;  hb = hauteur_barre;  c = cran;  Ls = longueur_sabot;
+// la poignée du poussoir : de x = L − 155 (le bas) à L (le haut), montée à 45° derrière la barre
+xp = L - 155;  hp = 120;
+planche([max(L, Ls + c + 10) + 2 * rognure, hp + espace + 110 + c + 2 * rognure, epaisseur]);
+
+// ── Le poussoir ──
+o = [rognure, rognure];
+p = polyligne([o + [0, c], o + [25, c], o + [25, 0], o + [xp + 45, 0], o + [L, hp - 50], o + [L, hp], o + [L - 55, hp],
+               o + [xp, hb], o + [0, hb]], fermee = vrai);
+nommer(#p, "poussoir");
+m1 = oblong(o + [L - 70, 72], 64, 26, 39);
+nommer(#m1, "main");
+
+// ── Le sabot : semelle, talon à l'arrière, poignée ──
+os = [rognure, rognure + hp + espace + c];
+s = polyligne([os, os + [Ls - 20, 0], os + [Ls - 20, -c], os + [Ls, -c], os + [Ls, 110], os + [Ls - 105, 110], os + [Ls - 145, 60],
+               os + [0, 60]], fermee = vrai);
+nommer(#s, "sabot");
+m2 = oblong(os + [Ls - 50, 85], 70, 28);
+nommer(#m2, "main");
+si (c >= 15)
+    echo("Le cran est haut : il ne pousserait pas les pièces minces. 10 mm convient jusqu'à 12 mm d'épaisseur sciée.");
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "main", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Trous de la main");
+usinage("contour", "poussoir", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Poussoir");
+usinage("contour", "sabot", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Sabot");

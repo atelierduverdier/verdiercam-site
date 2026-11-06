@@ -1,0 +1,66 @@
+// PANTOGRAPHE — l'instrument à recopier en agrandissant : la pointe suit un dessin, le crayon le refait deux fois plus
+// grand. Quatre bras articulés en parallélogramme et un pied à brider sur la table.
+// thème : Technique et mécanique
+//
+// LA GÉOMÉTRIE (×2) : deux BRAS LONGS de `longueur` d'axe en axe, articulés en A ; le premier pivote sur le pied en O, le
+// second porte le crayon en P. Deux BRAS COURTS de `longueur` / 2 vont du milieu de chaque bras long (B et D) à leur
+// articulation commune C, la pointe. ABCD est un parallélogramme : O, C et P restent alignés, et OP vaut toujours deux fois
+// OC — le crayon trace le dessin suivi par la pointe, agrandi deux fois (en traçant avec le crayon en C et la pointe en P, on
+// le réduit de moitié).
+//
+// LE MONTAGE : boulons M6 et écrous freins aux articulations (trous de `d_axe`), une vis à tête ronde en C fait la pointe ;
+// le crayon (Ø`d_crayon`) serré dans P ; le pied bridé au bord de la table par deux vis (Ø5). Des patins de feutre sous les
+// bras pour qu'ils glissent.
+//
+// L'USINAGE : les trous du pied (Perçage, Foret Ø5), les articulations et le crayon (Contour intérieur, sans onglets), puis
+// les bras et le pied (Contour extérieur, onglets). Hêtre ou contreplaqué de bouleau de 9.
+
+longueur   = 360;    // longueur d'un bras long, d'axe en axe (mm)
+largeur_bras = 22;   // largeur des bras (mm)
+d_axe      = 6.5;    // Ø des trous des articulations (mm) : boulons M6
+d_crayon   = 8.2;    // Ø du trou du crayon (mm)
+epaisseur  = 9;      // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+L = longueur;  w = largeur_bras;  ra = d_axe / 2;
+si (d_axe < 6.5 || d_crayon < 6.5)
+    echo("Un trou de moins de 6,5 : la fraise Ø6 n'y passe plus.");
+si (w - max(d_axe, d_crayon) < 10)
+    echo("Les bras sont trop étroits autour de leurs trous : plus larges.");
+planche([max(L + w, L + 2 * w + espace) + 2 * rognure, 4 * (w + espace) + 70 + 2 * rognure, epaisseur]);
+
+// Un bras d'axe en axe `l`, ses trous aux distances `trous` (depuis le premier axe) ; `crayon` : le dernier est celui du crayon.
+module bras(o, l, trous, crayon, nom) {
+    b = oblong(o + [w / 2 + l / 2, w / 2], l + w, w);
+    nommer(#b, nom);
+    pour (k = [0 : len(trous) - 1]) {
+        c = cercle(o + [w / 2 + trous[k], w / 2], (crayon == 1 && k == len(trous) - 1 ? d_crayon : d_axe) / 2);
+        nommer(#c, "trou");
+    }
+}
+bras([rognure, rognure], L, [0, L / 2, L], 0, "bras long");             // O, B, A
+bras([rognure, rognure + w + espace], L, [0, L / 2, L], 1, "bras long");  // A, D, P (le crayon)
+bras([rognure, rognure + 2 * (w + espace)], L / 2, [0, L / 2], 0, "bras court");   // B, C
+bras([rognure + L / 2 + w + espace, rognure + 2 * (w + espace)], L / 2, [0, L / 2], 0, "bras court");   // D, C
+
+// ── Le pied : son pivot (O), deux trous pour le brider sur la table ──
+op = [rognure, rognure + 3 * (w + espace)];
+p = rect(op, [110, 60], 8);
+nommer(#p, "pied");
+o0 = cercle(op + [85, 30], ra);
+nommer(#o0, "trou");
+pour (y = [15, 45]) {
+    v = cercle(op + [25, y], 2.5);
+    nommer(#v, "vis");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("percage", "vis", outil = "Foret Ø5", profondeur = epaisseur, nom = "Trous du pied");
+usinage("contour", "trou", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Articulations et crayon");
+usinage("contour", "bras long", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Bras longs");
+usinage("contour", "bras court", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Bras courts");
+usinage("contour", "pied", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Pied");

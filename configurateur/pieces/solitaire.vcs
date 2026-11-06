@@ -1,0 +1,49 @@
+// SOLITAIRE — le casse-tête des 33 billes : une croix de trous, on saute par-dessus une bille pour la prendre, il faut finir
+// avec une seule, au centre. Un plateau rond, une rigole tout autour pour les billes prises.
+// thème : Jeux et jouets
+//
+// LA CROIX : 33 trous (7 × 7 sans les coins de 2 × 2), au `pas`, de `d_trou` creusés de `p_trou` : la bille (Ø`d_bille`)
+// s'y pose sans rouler. LA RIGOLE : un anneau de `largeur_rigole` creusé de `p_rigole`, entre la croix et le bord. LE
+// PLATEAU : rond, son Ø tiré de la croix et de la rigole.
+//
+// L'USINAGE : les trous et la rigole (Poche, fraise droite Ø6), puis le plateau (Contour extérieur, onglets). Hêtre,
+// noyer ; billes de verre de Ø16.
+
+pas        = 24;     // d'un trou au suivant (mm)
+d_bille    = 16;     // Ø des billes (mm)
+d_trou     = 12;     // Ø des trous (mm) : moins que la bille, elle s'y pose
+p_trou     = 5;      // profondeur des trous (mm)
+largeur_rigole = 22; // largeur de la rigole (mm)
+p_rigole   = 7;      // profondeur de la rigole (mm)
+epaisseur  = 18;     // épaisseur du plateau (mm)
+rognure    = 5;      // du bord du brut au plateau (mm)
+
+Rc = sqrt(3 * 3 + 1 * 1) * pas + d_trou / 2;  // le trou le plus loin du centre (3, 1) et son bord
+r1 = Rc + 10;  r2 = r1 + largeur_rigole;       // la rigole
+R = r2 + 12;                                   // le plateau
+si (d_trou >= d_bille - 2)
+    echo("Les trous sont presque aussi larges que les billes : elles y tomberaient au fond.");
+si (pas - d_trou < 6)
+    echo("Trop peu de bois entre les trous : un pas plus grand.");
+si (largeur_rigole < d_bille + 4)
+    echo("La rigole est plus étroite qu'une bille.");
+planche([2 * R + 2 * rognure, 2 * R + 2 * rognure, epaisseur]);
+c = [rognure + R, rognure + R];
+p = cercle(c, R);
+nommer(#p, "plateau");
+pour (i = [-3 : 3])
+    pour (j = [-3 : 3])
+        si (abs(i) <= 1 || abs(j) <= 1) {
+            t = cercle(c + pas * [i, j], d_trou / 2);
+            nommer(#t, "trou");
+        }
+a1 = cercle(c, r2);
+nommer(#a1, "rigole");
+a2 = cercle(c, r1);
+nommer(#a2, "rigole");
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "trou", outil = "Fraise droite Ø6", profondeur = p_trou, passe = 2.5, nom = "Trous");
+usinage("poche", "rigole", outil = "Fraise droite Ø6", profondeur = p_rigole, passe = 3.5, nom = "Rigole");
+usinage("contour", "plateau", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Plateau");

@@ -1,0 +1,56 @@
+// JEU DE DAMES — le damier international de 10 × 10 et ses 40 pions : les cases foncées creusées d'un fond où la teinte
+// tient, les pions d'un camp marqués d'un anneau gravé (et de deux pour une dame, en empilant deux pions).
+// thème : Jeux et jouets
+//
+// LE DAMIER : `cases` × `cases` cases de `cote_case`, un cadre de `cadre` autour ; la case en bas à gauche du joueur est
+// foncée (la règle). Les cases foncées sont creusées de `creux` (une teinte, puis un vernis, et le damier se lit de loin).
+// LES PIONS : `2 × pions` disques de `d_pion` (moins que la case) ; ceux d'un camp portent un anneau gravé.
+//
+// L'USINAGE : les anneaux (Gravure, Pointe V 90°), les cases foncées (Poche), puis le damier et les pions (Contour
+// extérieur, onglets). Hêtre ou érable de 12 ; une teinte noyer dans les creux.
+
+cases      = 10;     // cases par côté (10 : dames internationales ; 8 : dames anglaises)
+cote_case  = 36;     // côté d'une case (mm)
+cadre      = 18;     // largeur du cadre (mm)
+creux      = 1;      // profondeur des cases foncées (mm)
+pions      = 20;     // pions par camp (20 en 10 × 10, 12 en 8 × 8)
+d_pion     = 30;     // Ø d'un pion (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 8;      // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+n = max(4, round(cases));  c = cote_case;  m = cadre;
+D = n * c + 2 * m;                             // le damier
+np = 2 * max(1, round(pions));
+colonnes = ceil(np / floor(D / (d_pion + espace)));
+si (d_pion > c - 4)
+    echo("Les pions débordent de leur case : plus petits.");
+planche([D + espace + colonnes * (d_pion + espace) + 2 * rognure, D + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+p = rect(o, [D, D], 8);
+nommer(#p, "damier");
+pour (i = [0 : n - 1])
+    pour (j = [0 : n - 1])
+        si ((i + j) % 2 == 0) {                // (0, 0) foncée : en bas à gauche
+            q = rect(o + [m + i * c, m + j * c], [c, c]);
+            nommer(#q, "case foncée");
+        }
+// ── Les pions, en colonnes à droite du damier ; la première moitié marquée d'un anneau ──
+par = floor(D / (d_pion + espace));
+pour (k = [0 : np - 1]) {
+    cp = [rognure + D + espace + d_pion / 2 + floor(k / par) * (d_pion + espace), rognure + d_pion / 2 + (k % par) * (d_pion + espace)];
+    d = cercle(cp, d_pion / 2);
+    nommer(#d, "pion");
+    si (k < np / 2) {
+        a = cercle(cp, d_pion / 2 - 5);
+        nommer(#a, "anneau");
+    }
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "anneau", outil = "Pointe V 90", profondeur = 0.8, nom = "Anneaux");
+usinage("poche", "case foncée", outil = "Fraise droite Ø6", profondeur = creux, passe = 1, nom = "Cases foncées");
+usinage("contour", "pion", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 4, onglet_haut = 1.5, nom = "Pions");
+usinage("contour", "damier", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 10, onglet_haut = 2, nom = "Damier");

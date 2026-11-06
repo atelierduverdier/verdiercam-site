@@ -1,0 +1,67 @@
+// BOÎTE À CARTES À JOUER — la boîte en strates d'un jeu de 52 cartes : un fond, des cadres empilés, un couvercle qui
+// PIVOTE sur un tourillon planté dans un coin. Un quart de tour, et tout le jeu est découvert.
+// thème : Rangement
+//
+// LES CARTES : `largeur_carte` × `longueur_carte` (63,5 × 88,9 : le format poker ; 57 × 89 : le bridge), coins arrondis
+// de `rayon_coin`, un paquet de `paquet` d'épaisseur. LES CADRES : leur ouverture laisse le `jeu` autour des cartes, et
+// autant de cadres qu'il faut pour que le paquet ne dépasse pas ; deux ENCOCHES rondes au milieu des grands côtés, pour
+// prendre le paquet entre le pouce et l'index. LE PIVOT : un tourillon de Ø6 au centre du coin, à une demi-paroi de chaque
+// bord ; collé dans le fond et les cadres, il tourne dans le couvercle (son trou a 0,3 de plus). Tourné d'un quart de tour,
+// le couvercle s'arrête juste au bord de l'ouverture.
+//
+// L'USINAGE : les trous du pivot (Poche, fraise droite Ø3), les ouvertures (Contour intérieur), puis les pièces (Contour
+// extérieur, onglets). Contreplaqué de bouleau de 6 ; coller les cadres sur le fond, tourillon en place.
+
+largeur_carte  = 63.5;  // largeur d'une carte (mm)
+longueur_carte = 88.9;  // longueur d'une carte (mm)
+rayon_coin = 3.2;    // rayon des coins des cartes (mm)
+paquet     = 17;     // épaisseur du paquet (mm)
+jeu        = 1;      // autour des cartes, de chaque côté (mm)
+paroi      = 12;     // largeur des parois (mm)
+d_encoche  = 20;     // Ø des encoches pour les doigts (mm)
+epaisseur  = 6;      // épaisseur (mm)
+espace     = 8;      // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  p = paroi;
+Wi = largeur_carte + 2 * jeu;  Li = longueur_carte + 2 * jeu;   // l'ouverture
+W = Wi + 2 * p;  L = Li + 2 * p;                               // le dehors
+nc = ceil((paquet + 0.5) / ep);                                // les cadres
+re = d_encoche / 2;  pe = min(p - 4, re - 0.5);                // l'encoche entre de `pe` dans la paroi : 4 de bois derrière
+si (paroi < 10)
+    echo("Des parois de moins de 10 : le pivot de Ø6 n'y laisse presque plus de bois.");
+planche([(nc + 2) * (W + espace) - espace + 2 * rognure, L + 2 * rognure, epaisseur]);
+
+// ── Une pièce : le dehors, le trou du pivot ; `ouverte` : l'ouverture et ses deux encoches ──
+module piece(o, nom, ouverte, pivot) {
+    a = rect(o, [W, L], 5);
+    nommer(#a, nom);
+    c = cercle(o + [p / 2, p / 2], pivot / 2);
+    nommer(#c, "pivot");
+    si (ouverte == 1) {
+        // l'ouverture, en sens trigonométrique depuis le coin bas gauche, l'encoche de droite puis celle de gauche (des
+        // arcs de cercle tracés en points : le contour reste une seule forme)
+        be = acos((re - pe) / re);              // l'arc de l'encoche, de part et d'autre de son milieu
+        q = concat([o + [p, p], o + [p + Wi, p]],
+                   [for (i = [0 : 16]) o + [p + Wi + pe - re, p + Li / 2] + re * [cos(-be + 2 * be * i / 16), sin(-be + 2 * be * i / 16)]],
+                   [o + [p + Wi, p + Li], o + [p, p + Li]],
+                   [for (i = [0 : 16]) o + [p - pe + re, p + Li / 2] + re * [cos(180 - be + 2 * be * i / 16), sin(180 - be + 2 * be * i / 16)]]);
+        b = polyligne(q, fermee = vrai);
+        nommer(#b, "ouverture");
+    }
+}
+pour (k = [0 : nc + 1]) {
+    o = [rognure + k * (W + espace), rognure];
+    piece(o, k == 0 ? "fond" : (k == nc + 1 ? "couvercle" : "cadre"), k == 0 || k == nc + 1 ? 0 : 1, k == nc + 1 ? 6.3 : 6);
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "pivot", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1.5, nom = "Pivot");
+usinage("contour", "ouverture", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 2,
+        nom = "Ouvertures");
+usinage("contour", "fond", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Fond");
+usinage("contour", "cadre", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Cadres");
+usinage("contour", "couvercle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Couvercle");

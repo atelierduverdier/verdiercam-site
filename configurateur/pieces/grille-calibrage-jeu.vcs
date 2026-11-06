@@ -1,0 +1,63 @@
+// GRILLE DE CALIBRAGE DU JEU — un peigne d'entailles de plus en plus larges, chacune gravée de son jeu, et la clé qui
+// les essaie : on garde le jeu de l'entaille où la clé entre juste. Le « burn test » de boxes.py, à la fraise.
+// thème : Atelier et gabarits
+//
+// À FAIRE AVANT TOUT ASSEMBLAGE (boîte à queues droites, caissette, échiquier) : une fraise ne coupe jamais tout à fait
+// son diamètre, le bois bouge, la machine a son jeu. La CLÉ est un tenon de `largeur` exacte ; le PEIGNE a `nombre`
+// entailles de `largeur` + 2 × jeu, le jeu croissant de `jeu_min` par pas de `pas_jeu` — le même « jeu par flanc » que
+// les pièces du catalogue. Essayer la clé dans chaque entaille : la première où elle entre sans forcer donne le jeu à
+// reporter. Couper les deux pièces dans la planche des assemblages, à la même fraise et au même réglage.
+//
+// L'USINAGE : les jeux gravés (Pointe V 90°, 0,6 mm), puis le peigne et la clé en Contour extérieur, fraise droite Ø6,
+// coins « dogbone » — la clé a des angles vifs, l'entaille doit les recevoir jusqu'au fond.
+
+nombre     = 7;      // nombre d'entailles
+jeu_min    = 0;      // jeu de la première entaille, par flanc (mm)
+pas_jeu    = 0.05;   // d'une entaille à la suivante (mm)
+largeur    = 18;     // largeur de la clé = largeur nominale d'une entaille (mm)
+profondeur = 15;     // profondeur des entailles (mm)
+ecart      = 14;     // matière entre deux entailles (mm)
+hauteur_peigne = 45; // hauteur du peigne, entailles comprises (mm)
+longueur_cle = 60;   // longueur de la clé (mm)
+police     = "Hershey Sans1";  // la police des jeux gravés
+epaisseur  = 18;     // épaisseur du bois (mm)
+espace     = 10;     // entre le peigne et la clé (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+n = max(1, round(nombre));
+function j(k) = jeu_min + k * pas_jeu;
+function e(k) = largeur + 2 * j(k);                       // la largeur de l'entaille k
+function x0(k) = ecart + k * (largeur + ecart) - j(k);     // son bord gauche : l'axe au pas régulier
+L = ecart + n * (largeur + ecart);
+H = hauteur_peigne;
+planche([L + 2 * rognure, H + espace + largeur + 2 * rognure, epaisseur]);
+o = [rognure, rognure + largeur + espace];                 // le peigne en haut, la clé dessous
+function P(x, y) = o + [x, y];
+
+// ── Le peigne : un contour, les entailles ouvertes sur le bord du haut (parcouru de droite à gauche) ──
+pts = concat([P(0, 0), P(L, 0), P(L, H)],
+             [for (i = [0 : 4 * n - 1]) P(x0(n - 1 - floor(i / 4)) + (i % 4 < 2 ? e(n - 1 - floor(i / 4)) : 0),
+                                           i % 4 == 0 || i % 4 == 3 ? H : H - profondeur)],
+             [P(0, H)]);
+p = polyligne(pts, fermee = vrai);
+nommer(#p, "peigne");
+
+// ── Les jeux, gravés sous chaque entaille : « 0.05 » ──
+h = min(4.5, (largeur + ecart) / 7);       // la hauteur des chiffres : tenir sous une entaille
+pour (k = [0 : n - 1]) {
+    s = str(round(j(k) * 1000) / 1000);
+    M = mesure_texte(s, 10, police) / 10;
+    t = texte(P(x0(k) + e(k) / 2 - h * (M[2] + M[3]) / 2, H - profondeur - 4 - h), h, s, police = police);
+    nommer(#t, "jeu");
+}
+
+// ── La clé : un tenon de la largeur exacte ──
+c = rect([rognure, rognure], [longueur_cle, largeur]);
+nommer(#c, "clé");
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "jeu", outil = "Pointe V 90", profondeur = 0.6, nom = "Jeux gravés");
+usinage("contour", "peigne", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3, coins = "dogbone",
+        onglets = 2, onglet_long = 6, onglet_haut = 2, nom = "Peigne");
+usinage("contour", "clé", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 2, nom = "Clé");

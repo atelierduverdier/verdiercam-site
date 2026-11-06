@@ -1,0 +1,74 @@
+// FAÇADE DE PÉDALE D'EFFET — le dessus d'un boîtier d'aluminium percé pour une pédale de guitare : potentiomètres, LED,
+// footswitch, et le nom gravé. Le perçage qu'on fait d'habitude au foret étagé, gabarit scotché, ici d'équerre et au
+// dixième.
+// thème : Électronique et boîtiers
+//
+// LE BOÎTIER : `boitier` = 1, un Hammond 1590B (dessus 112 × 60) ; 2, un 125B (122 × 66) ; 3, un 1590BB (119 × 94). Le
+// brut est ce dessus, posé à plat, le zéro dans son coin bas-gauche (le bas : le côté du footswitch, près du pied). Les
+// cotes sont celles du dessus extérieur ; les coins arrondis du boîtier n'y changent rien.
+// LES TROUS : `pots` potentiomètres en rangée en haut (Ø `d_pot` : 7,5 pour un pot de 16 mm à canon 7 mm), la LED dessous
+// (`d_led`), le footswitch 3PDT en bas (`d_switch`, 12,2), le nom gravé entre les deux. Les jacks sont sur les côtés,
+// à percer à part.
+//
+// L'USINAGE, dans l'aluminium : le nom (Gravure, Pointe V 60°, 0,3 mm), les trous (Contour intérieur, fraise droite Ø3,
+// passes de 0,3 — les régimes de l'aluminium dans l'atelier). `detourer` = 1 découpe une façade à part (bois, plaque
+// d'alu) au lieu de percer le boîtier lui-même.
+
+boitier    = 1;      // 1 : Hammond 1590B ; 2 : 125B ; 3 : 1590BB
+pots       = 3;      // nombre de potentiomètres (0 à 4)
+d_pot      = 7.5;    // Ø d'un trou de potentiomètre (mm)
+led        = 1;      // une LED (1 : oui, 0 : non)
+d_led      = 5.2;    // Ø du trou de la LED (mm)
+d_switch   = 12.2;   // Ø du trou du footswitch (mm)
+nom        = "SATURATION";       // le nom gravé (vide : aucun)
+police     = "Hershey Sans1";    // la police du nom
+epaisseur  = 2.5;    // épaisseur de la paroi (mm)
+detourer   = 0;      // découper une façade à part (1) plutôt que percer le boîtier (0)
+
+W = [112, 122, 119][min(max(round(boitier), 1), 3) - 1];
+H = [60, 66, 94][min(max(round(boitier), 1), 3) - 1];
+// Le dessus se lit en hauteur : sa longueur verticale (le footswitch en bas).
+L = max(W, H);  l = min(W, H);
+planche([l, L, epaisseur]);
+np = min(max(round(pots), 0), 4);
+
+// ── Les trous ──
+y_pot = L - 18;
+pour (k = [0 : np - 1]) {
+    x = np == 1 ? l / 2 : 12 + k * (l - 24) / (np - 1);
+    p = cercle([x, y_pot], d_pot / 2);
+    nommer(#p, "trou");
+}
+si (np > 1 && (l - 24) / (np - 1) < 16)
+    echo("Les potentiomètres sont à moins de 16 mm l'un de l'autre : les boutons se toucheront.");
+y_led = y_pot - 20;
+si (led == 1) {
+    d = cercle([l / 2, y_led], d_led / 2);
+    nommer(#d, "trou");
+}
+y_sw = 22;
+s = cercle([l / 2, y_sw], d_switch / 2);
+nommer(#s, "trou");
+
+// ── Le nom : calé entre la LED et le footswitch ──
+si (len(nom) > 0) {
+    M = mesure_texte(nom, 10, police) / 10;
+    bas = y_sw + d_switch / 2 + 6;
+    haut = (led == 1 ? y_led - d_led / 2 : y_pot - d_pot / 2) - 6;
+    h = min(8, (l - 12) / max(M[3] - M[2], 1e-6), (haut - bas) / max(M[5] - M[4], 1e-6));
+    t = texte([l / 2 - h * (M[2] + M[3]) / 2, (bas + haut) / 2 - h * (M[4] + M[5]) / 2], h, nom, police = police);
+    nommer(#t, "nom");
+}
+si (detourer == 1) {
+    f = rect([0, 0], [l, L], 4);
+    nommer(#f, "façade");
+}
+echo(str("Dessus ", l, " × ", L, " mm : ", np, " potentiomètre(s), ", led == 1 ? "une LED, " : "", "le footswitch."));
+
+// ── L'USINAGE, déclaré ──
+si (len(nom) > 0)
+    usinage("gravure", "nom", outil = "Pointe V 60", profondeur = 0.3, nom = "Nom");
+usinage("contour", "trou", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 0.3, nom = "Trous");
+si (detourer == 1)
+    usinage("contour", "façade", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 0.3,
+            onglets = 4, onglet_long = 4, onglet_haut = 0.5, nom = "Façade");

@@ -1,0 +1,83 @@
+// RANGE-PINCEAUX — l'étagère murale où les pinceaux pendent poils en bas pour sécher : le manche glisse dans une encoche de
+// sa largeur, la virole bute dessus. Une encoche par taille, de la plus fine à la plus large, la largeur gravée devant.
+// thème : Rangement
+//
+// LA TABLETTE : `longueur` × `profondeur`, des ENCOCHES ouvertes sur l'avant, de `largeurs` (le manche plus 0,5), creusées
+// de leur largeur plus 8, `ecart` de bois entre deux ; deux TENONS derrière, dans le DOS. Deux CONSOLES (des équerres) sous
+// la tablette, chacune tenue par un tenon dans le dos et un dans la tablette.
+//
+// L'USINAGE : les largeurs (Gravure, Pointe V 90°), les mortaises (Contour intérieur, coins dégagés), puis les pièces
+// (Contour extérieur, fraise droite Ø3 : les encoches de 4 ; coins dégagés aux tenons, onglets). Contreplaqué de bouleau
+// de 9 ; deux vis pour le mur.
+
+longueur   = 300;    // longueur de la tablette (mm)
+profondeur = 70;     // profondeur de la tablette (mm)
+hauteur_dos = 110;   // hauteur du dos (mm)
+ecart      = 8;      // du bois entre deux encoches (mm)
+jeu        = 0.1;    // jeu des tenons, par côté (mm)
+epaisseur  = 9;      // épaisseur (mm) : 9 au plus (la fraise Ø3)
+espace     = 8;      // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+largeurs = [4, 5, 6, 7, 8, 10, 12, 14];        // les encoches (mm)
+n = len(largeurs);  ep = epaisseur;  L = longueur;  P = profondeur;
+function xe(k) = k == 0 ? 0 : xe(k - 1) + largeurs[k - 1] + ecart;          // le bord gauche de l'encoche k, depuis la première
+we = xe(n - 1) + largeurs[n - 1];              // la rangée d'encoches
+x0 = (L - we) / 2;
+xt = [40, L - 40];                             // les consoles et les tenons de la tablette (x de leur milieu)
+lt = 30;                                       // largeur d'un tenon
+ac = 60;  bc = 50;                             // une console : sa hauteur contre le dos, sa longueur sous la tablette
+si (x0 < xt[0] + lt / 2 + 10)
+    echo("Les encoches touchent les consoles : une tablette plus longue, ou moins d'encoches.");
+planche([L + 2 * rognure, P + ep + espace + hauteur_dos + espace + ac + ep + 2 * rognure, epaisseur]);
+
+// ── La tablette, vue de dessus : l'avant en bas (les encoches), l'arrière en haut (les tenons) ──
+ot = [rognure, rognure];
+enc = [for (k = [0 : n - 1]) for (q = [[x0 + xe(k), 0], [x0 + xe(k), largeurs[k] + 8], [x0 + xe(k) + largeurs[k], largeurs[k] + 8],
+                                       [x0 + xe(k) + largeurs[k], 0]]) q];
+ten = [for (x = [xt[1], xt[0]]) for (q = [[x + lt / 2, P], [x + lt / 2, P + ep], [x - lt / 2, P + ep], [x - lt / 2, P]]) q];
+t = polyligne([for (q = concat([[0, 0]], enc, [[L, 0], [L, P]], ten, [[0, P]])) ot + q], fermee = vrai);
+nommer(#t, "tablette");
+pour (k = [0 : n - 1]) {
+    s = str(largeurs[k]);
+    M = mesure_texte(s, 10, "Hershey Sans1") / 10;
+    g = texte(ot + [x0 + xe(k) + largeurs[k] / 2 - 4 * (M[2] + M[3]) / 2, largeurs[k] + 8 + 5], 4, s, police = "Hershey Sans1");
+    nommer(#g, "largeur");
+}
+pour (x = xt) {
+    m = rect(ot + [x - ep / 2 - jeu, P - 25 - jeu], [ep + 2 * jeu, 20 + 2 * jeu]);   // le tenon du haut d'une console
+    nommer(#m, "mortaise");
+}
+// ── Le dos : les mortaises de la tablette (à 20 du haut), celles des consoles dessous ──
+od = [rognure, rognure + P + ep + espace];
+d = rect(od, [L, hauteur_dos], 6);
+nommer(#d, "dos");
+yt = hauteur_dos - 20;                         // le dessous de la tablette sur le dos
+pour (x = xt) {
+    m = rect(od + [x - lt / 2 - jeu, yt - jeu], [lt + 2 * jeu, ep + 2 * jeu]);
+    nommer(#m, "mortaise");
+    c = rect(od + [x - ep / 2 - jeu, yt - ac + 15 - jeu], [ep + 2 * jeu, 25 + 2 * jeu]);
+    nommer(#c, "mortaise");
+    v = cercle(od + [x, yt - ac - 10 + 4], 2.5);
+    nommer(#v, "vis");
+}
+// ── Les deux consoles : un triangle, son côté vertical contre le dos (tenon), son côté du haut sous la tablette (tenon) ──
+pour (k = [0 : 1]) {
+    oc = [rognure + 10 + ep + k * (bc + ep + espace + 10), rognure + P + ep + espace + hauteur_dos + espace];
+    // le coin du dos et de la tablette en haut à gauche : (0, ac)
+    q = polyligne([for (s = [[0, 0], [0, 15], [-ep, 15], [-ep, 40], [0, 40], [0, ac], [5, ac], [5, ac + ep], [25, ac + ep], [25, ac],
+                             [bc, ac]]) oc + s], fermee = vrai);
+    nommer(#q, "console");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "largeur", outil = "Pointe V 90", profondeur = 0.4, nom = "Largeurs");
+usinage("contour", "mortaise", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, coins = "dogbone", profondeur = epaisseur,
+        passe = 1.5, nom = "Mortaises");
+usinage("percage", "vis", outil = "Foret Ø5", profondeur = epaisseur, nom = "Trous de vis");
+usinage("contour", "tablette", outil = "Fraise droite Ø3", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 1.5,
+        onglets = 3, onglet_long = 5, onglet_haut = 1.5, nom = "Tablette");
+usinage("contour", "dos", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1.5,
+        onglets = 3, onglet_long = 5, onglet_haut = 1.5, nom = "Dos");
+usinage("contour", "console", outil = "Fraise droite Ø3", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 1.5,
+        onglets = 2, onglet_long = 4, onglet_haut = 1.5, nom = "Consoles");

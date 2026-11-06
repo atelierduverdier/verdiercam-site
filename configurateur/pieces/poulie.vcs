@@ -1,0 +1,64 @@
+// POULIE À JOUES — une poulie de corde ou de câble, faite de trois disques collés : deux joues, et entre elles le noyau
+// plus petit dont le bord est le fond de la gorge. Pour un palan d'atelier, une corde à linge, une tyrolienne de jardin.
+// thème : Technique et mécanique
+//
+// LA GORGE : le noyau a le Ø `d_gorge` et l'épaisseur de la planche — la largeur de la gorge (prendre une planche un peu
+// plus épaisse que la corde). Les JOUES dépassent du noyau de `hauteur_joue` (au moins la moitié du Ø de la corde, pour
+// qu'elle ne saute pas). Tous les disques sont percés pour l'axe (`d_axe`, ou le Ø extérieur d'un roulement à y
+// emmancher) et de deux trous de GOUPILLE qui les alignent au collage — une cheville de Ø`d_goupille` les traverse.
+// `allegements` jours dans les joues, pour la légèreté.
+//
+// L'USINAGE : les trous de goupille (Perçage), l'alésage et les jours (Contour intérieur, sans onglets), puis les trois
+// disques (Contour extérieur, onglets). Contreplaqué de bouleau ou bois dur, fil croisé entre noyau et joues.
+
+d_gorge    = 80;     // Ø du fond de la gorge = Ø du noyau (mm)
+hauteur_joue = 8;    // les joues dépassent du noyau de (mm)
+d_axe      = 12;     // Ø de l'alésage (mm) : l'axe, ou le roulement
+d_goupille = 5;      // Ø des trous de goupille (mm)
+allegements = 4;     // jours dans les joues (0 : aucun)
+epaisseur  = 10;     // épaisseur de la planche = largeur de la gorge (mm)
+espace     = 10;     // entre deux disques (mm)
+rognure    = 5;      // du bord du brut aux disques (mm)
+
+Rn = d_gorge / 2;  Rj = Rn + hauteur_joue;
+r_g = (d_axe / 2 + Rn) / 2;                   // les goupilles, à mi-chemin de l'axe et du fond de gorge
+planche([2 * (2 * Rj) + 2 * Rn + 2 * espace + 2 * rognure, 2 * Rj + 2 * rognure, epaisseur]);
+module disque(c, R, nom, jours) {
+    d = cercle(c, R);
+    nommer(#d, nom);
+    a = cercle(c, d_axe / 2);
+    nommer(#a, "alésage");
+    pour (s = [-1, 1]) {
+        g = cercle(c + [s * r_g, 0], d_goupille / 2);
+        nommer(#g, "goupille");
+    }
+    // Les jours, sur le cercle des goupilles, décalés d'une demi-division depuis leur axe (0° et 180°) : leur rayon laisse
+    // 3 mm de bois jusqu'à l'alésage, au fond de gorge, à la goupille voisine (la corde entre les deux centres) et au
+    // jour voisin. Un jour qui tomberait sur une goupille (un nombre impair) est omis.
+    function vers_goupille(an) = 2 * r_g * min(abs(sin(an / 2)), abs(cos(an / 2)));   // à la goupille la plus proche
+    rj = min(r_g - d_axe / 2 - 3, Rn - r_g - 3, vers_goupille(180 / max(jours, 1)) - d_goupille / 2 - 3,
+             r_g * sin(180 / max(jours, 1)) - 1.5);
+    si (jours > 0 && rj >= 4)
+        pour (k = [0 : jours - 1]) {
+            an = 180 / jours + 360 * k / jours;
+            si (vers_goupille(an) - d_goupille / 2 - rj >= 3 - 1e-9) {
+                j = cercle(c + r_g * [cos(an), sin(an)], rj);
+                nommer(#j, "jour");
+            }
+        }
+}
+y = rognure + Rj;
+disque([rognure + Rj, y], Rj, "joue", allegements);
+disque([rognure + 3 * Rj + espace, y], Rj, "joue", allegements);
+disque([rognure + 4 * Rj + 2 * espace + Rn, y], Rn, "noyau", 0);
+echo(str("Poulie : gorge Ø", d_gorge, " × ", epaisseur, " mm, joues Ø", 2 * Rj, " ; une corde de Ø", epaisseur - 1, " au plus."));
+
+// ── L'USINAGE, déclaré ──
+usinage("percage", "goupille", outil = "Foret Ø5", profondeur = epaisseur, nom = "Trous de goupille");
+usinage("contour", "alésage", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 2.5, nom = "Alésages");
+si (allegements > 0)
+    usinage("contour", "jour", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 2.5, nom = "Jours");
+usinage("contour", "noyau", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2.5,
+        onglets = 3, onglet_long = 5, onglet_haut = 1.5, nom = "Noyau");
+usinage("contour", "joue", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2.5,
+        onglets = 3, onglet_long = 5, onglet_haut = 1.5, nom = "Joues");

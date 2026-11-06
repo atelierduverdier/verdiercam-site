@@ -1,0 +1,57 @@
+// PORTE-FRAISES — le bloc posé à côté de la machine, où chaque fraise attend debout, rangée par queue : les pinces ER20,
+// puis les queues de 12, 8, 6 et 1/8" (3,175). Chaque rangée a son étiquette gravée ; plus de fraise couchée qui s'ébrèche
+// contre sa voisine.
+// thème : Atelier et gabarits
+//
+// LES RANGÉES : `nb_er20` logements de pince ER20 (Ø21,5 : la pince entre seule, sans son écrou), puis `nb_12`, `nb_8`,
+// `nb_6` et `nb_3` trous pour les queues, chacun 0,4 au-dessus de la queue (0,3 pour le 1/8"), au pas de sa rangée, creusés
+// de 18 (9 pour le 1/8", la longueur utile de la fraise Ø3). Une rangée à 0 disparaît. L'étiquette est gravée à gauche.
+//
+// L'USINAGE : les étiquettes (Gravure, Pointe V 90°), les logements (Poche : fraise droite Ø6, Ø3 pour le 1/8"), puis le
+// bloc (Contour extérieur, fraise droite Ø8, onglets). Hêtre ou MDF de 22 ; quatre patins de feutre dessous.
+
+nb_er20    = 6;      // pinces ER20
+nb_12      = 3;      // fraises à queue de 12
+nb_8       = 5;      // fraises à queue de 8
+nb_6       = 8;      // fraises à queue de 6
+nb_3       = 8;      // fraises à queue de 1/8" (3,175)
+marge      = 10;     // des logements au bord (mm)
+epaisseur  = 22;     // épaisseur du bloc (mm) : 24 au plus pour la fraise Ø8
+rognure    = 5;      // du bord du brut au bloc (mm)
+
+// Chaque rangée : [Ø du logement, pas, nombre, étiquette, profondeur]
+rangs = [[21.5, 30, nb_er20, "ER20", 18], [12.4, 22, nb_12, "12", 18], [8.4, 17, nb_8, "8", 18], [6.4, 14, nb_6, "6", 18],
+         [3.475, 11, nb_3, "1/8", 9]];
+ge = 34;                                       // la colonne des étiquettes
+function haut(k) = k <= 0 ? 0 : haut(k - 1) + (rangs[k - 1][2] > 0 ? rangs[k - 1][1] : 0);   // le haut de la rangée k, depuis le haut
+H = 2 * marge + haut(5);
+W = ge + marge + max([for (r = rangs) r[2] * r[1]]);
+si (max([for (r = rangs) r[4]]) > epaisseur - 4)
+    echo("Les logements percent presque le bloc : un bloc plus épais.");
+planche([W + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+b = rect(o, [W, H], 6);
+nommer(#b, "bloc");
+pour (k = [0 : 4]) {
+    r = rangs[k];
+    si (r[2] > 0) {
+        yc = H - marge - haut(k) - r[1] / 2;
+        pour (i = [0 : r[2] - 1]) {
+            c = cercle(o + [ge + (i + 0.5) * r[1], yc], r[0] / 2);
+            nommer(#c, str("logement ", r[3]));
+        }
+        t = texte(o + [6, yc - 3.5], 7, r[3], police = "Hershey Sans1");
+        nommer(#t, "étiquette");
+    }
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "étiquette", outil = "Pointe V 90", profondeur = 0.8, nom = "Étiquettes");
+pour (k = [0 : 3])
+    si (rangs[k][2] > 0)
+        usinage("poche", str("logement ", rangs[k][3]), outil = "Fraise droite Ø6", profondeur = rangs[k][4], passe = 3,
+                nom = str("Logements ", rangs[k][3]));
+si (nb_3 > 0)
+    usinage("poche", "logement 1/8", outil = "Fraise droite Ø3", profondeur = 9, passe = 1.5, nom = "Logements 1/8");
+usinage("contour", "bloc", outil = "Fraise droite Ø8", cote = "exterieur", profondeur = epaisseur, passe = 4,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Bloc");

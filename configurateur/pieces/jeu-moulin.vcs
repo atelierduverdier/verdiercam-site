@@ -1,0 +1,64 @@
+// JEU DU MOULIN — la marelle des Romains : trois carrés emboîtés reliés par leurs milieux, 24 cases, 9 pions chacun ;
+// aligner trois pions, c'est faire un moulin et prendre un pion adverse. Le plateau gravé, les cases creusées pour tenir
+// les pions, les 18 pions — ceux d'un joueur marqués d'un anneau.
+// thème : Jeux et jouets
+//
+// LE PLATEAU : `cote` de côté ; les trois carrés (le grand à `marge` du bord, les autres en dedans d'un tiers chacun) et les
+// quatre traits des milieux, gravés ; une CUVETTE de Ø`d_pion` + 1 à chaque case, creusée de `profondeur_case`. LES PIONS :
+// `d_pion` de Ø ; neuf portent un anneau gravé (les « noirs »), neuf sont nus.
+//
+// L'USINAGE : les traits et les anneaux (Gravure, Pointe V 90°), les cuvettes (Poche), puis le plateau et les pions (Contour
+// extérieur, onglets). Hêtre de 12 ; une teinte sombre dans les anneaux.
+
+cote       = 300;    // côté du plateau (mm)
+marge      = 30;     // du bord au grand carré (mm)
+d_pion     = 26;     // Ø d'un pion (mm)
+profondeur_case = 3; // profondeur des cuvettes (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 8;      // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+C = cote;  dp = d_pion;
+e = (C / 2 - marge) / 3;                       // l'écart entre deux carrés
+si (e < dp + 8)
+    echo("Les cases se touchent presque : des pions plus petits, ou un plateau plus grand.");
+planche([C + espace + 3 * (dp + espace) + 2 * rognure, max(C, 6 * (dp + espace)) + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+c = o + [C / 2, C / 2];
+p = rect(o, [C, C], 10);
+nommer(#p, "plateau");
+pour (k = [1 : 3]) {
+    h = C / 2 - marge - (k - 1) * e;           // le demi-côté du carré k
+    q = rect(c - [h, h], [2 * h, 2 * h]);
+    nommer(#q, "trait");
+    pour (i = [-1 : 1])
+        pour (j = [-1 : 1])
+            si (i != 0 || j != 0) {
+                cv = cercle(c + h * [i, j], dp / 2 + 0.5);
+                nommer(#cv, "case");
+            }
+}
+pour (d = [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+    t = ligne(c + (C / 2 - marge) * d, c + (C / 2 - marge - 2 * e) * d);
+    nommer(#t, "trait");
+}
+
+// ── Les 18 pions, en trois colonnes à droite du plateau ; ceux des deux premières colonnes pour un joueur, marqués ──
+pour (k = [0 : 17]) {
+    cp = [rognure + C + espace + dp / 2 + floor(k / 6) * (dp + espace), rognure + dp / 2 + (k % 6) * (dp + espace)];
+    n = cercle(cp, dp / 2);
+    nommer(#n, "pion");
+    si (k < 9) {
+        a = cercle(cp, dp / 2 - 4);
+        nommer(#a, "anneau");
+    }
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "trait", outil = "Pointe V 90", profondeur = 1, nom = "Traits");
+usinage("gravure", "anneau", outil = "Pointe V 90", profondeur = 0.8, nom = "Anneaux des pions noirs");
+usinage("poche", "case", outil = "Fraise droite Ø6", profondeur = profondeur_case, passe = 1.5, nom = "Cases");
+usinage("contour", "pion", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 4, onglet_haut = 1.5, nom = "Pions");
+usinage("contour", "plateau", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Plateau");

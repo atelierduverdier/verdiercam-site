@@ -1,0 +1,61 @@
+// DOMINOS — le jeu double-six, ses 28 pièces découpées dans une même planche, les points creusés et la barre gravée :
+// un jeu de famille qui se fait en un après-midi, et s'offre dans une boîte de ce catalogue.
+// thème : Jeux et jouets
+//
+// LE JEU : chaque paire de valeurs de 0 à `maximum` une fois (28 pièces pour le double-six, 55 pour le double-neuf). Une
+// pièce fait `longueur` × `longueur` / 2, coins arrondis ; chaque moitié porte ses points aux places habituelles (jusqu'à
+// 6 sur une grille de 3 × 3 ; 7 à 9 pour un double-neuf), des coupelles de `d_point` creusées de `prof_point`. Une barre
+// gravée sépare les deux moitiés. Rangées de 7 sur la planche.
+//
+// L'USINAGE : les points (Poche, fraise droite Ø3), la barre (Gravure, Pointe V 90°, 0,8 mm), puis chaque pièce en Contour
+// extérieur, fraise droite Ø6, deux onglets. Une chute de 8 à 10 mm de bois dur ; les points se remplissent de peinture,
+// puis on ponce.
+
+maximum    = 6;      // la plus grande valeur : 6 pour le double-six (28 pièces), 9 pour le double-neuf (55)
+longueur   = 48;     // longueur d'une pièce (mm) ; sa largeur en est la moitié
+epaisseur  = 9;      // épaisseur du bois (mm)
+d_point    = 4.5;    // Ø d'un point (mm)
+prof_point = 1.5;    // profondeur d'un point (mm)
+R_coin     = 3;      // rayon des coins d'une pièce (mm)
+par_rangee = 7;      // pièces par rangée sur la planche
+espace     = 8;      // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+m = min(max(round(maximum), 1), 9);
+L = longueur;  H = longueur / 2;
+// Les paires de valeurs : (a, b), a ≤ b — dans l'ordre du jeu.
+paires = [for (a = [0 : m]) for (b = [a : m]) [a, b]];
+n = len(paires);
+nc = max(1, round(par_rangee));
+nl = ceil(n / nc);
+planche([nc * L + (nc - 1) * espace + 2 * rognure, nl * H + (nl - 1) * espace + 2 * rognure, epaisseur]);
+
+// Les places des points dans une moitié (un carré de côté H), en unités de `e` depuis son centre : la grille 3 × 3.
+e = H * 0.27;
+G = [[-1, 1], [1, 1], [-1, 0], [0, 0], [1, 0], [-1, -1], [1, -1], [0, 1], [0, -1]];   // HG, HD, MG, C, MD, BG, BD, HC, BC
+motifs = [[], [3], [0, 6], [0, 3, 6], [0, 1, 5, 6], [0, 1, 3, 5, 6], [0, 1, 2, 4, 5, 6], [0, 1, 2, 3, 4, 5, 6],
+          [0, 1, 2, 4, 5, 6, 7, 8], [0, 1, 2, 3, 4, 5, 6, 7, 8]];
+module moitie(c, v) {
+    pour (k = motifs[v]) {
+        q = cercle(c + e * G[k], d_point / 2);
+        nommer(#q, "point");
+    }
+}
+
+pour (i = [0 : n - 1]) {
+    o = [rognure + (i % nc) * (L + espace), rognure + floor(i / nc) * (H + espace)];
+    d = rect(o, [L, H], R_coin);
+    nommer(#d, "domino");
+    b = ligne(o + [L / 2, H * 0.15], o + [L / 2, H * 0.85]);
+    nommer(#b, "barre");
+    moitie(o + [H / 2, H / 2], paires[i][0]);
+    moitie(o + [L - H / 2, H / 2], paires[i][1]);
+}
+echo(str(n, " dominos (double-", m, "), ", len([for (p = paires) for (k = motifs[p[0]]) 1]) + len([for (p = paires) for (k = motifs[p[1]]) 1]),
+         " points."));
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "point", outil = "Fraise droite Ø3", profondeur = prof_point, passe = prof_point, nom = "Points");
+usinage("gravure", "barre", outil = "Pointe V 90", profondeur = 0.8, nom = "Barres");
+usinage("contour", "domino", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 4, onglet_haut = 1.5, nom = "Dominos");

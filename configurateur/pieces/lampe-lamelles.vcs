@@ -1,0 +1,60 @@
+// LAMPE À LAMELLES — des anneaux de bois enfilés sur trois tiges filetées, espacés par des entretoises : leur rayon suit
+// un galbe de vase, et la lumière d'une ampoule passe entre les lamelles. Un socle plein en bas, l'ampoule au milieu.
+// thème : Décoration et cadeaux
+//
+// LES LAMELLES : `lamelles` anneaux ; le rayon extérieur va de `rayon_bas` (en bas et en haut) à `rayon_ventre` (au
+// milieu), en arc de sinus ; le trou du milieu fait `rayon_interieur` pour toutes (l'ampoule y passe). Trois trous de
+// Ø`d_tige` (tige filetée M6) à `rayon_tiges`, aux mêmes places sur chaque lamelle. LE SOCLE : un disque plein, les trois
+// trous et celui du câble au centre. Entre deux lamelles, une entretoise de 10 sur chaque tige.
+//
+// L'USINAGE : les trous (Contour intérieur, sans onglets ; le trou du milieu en Contour intérieur avec onglets), puis les
+// lamelles et le socle (Contour extérieur, onglets). Contreplaqué de bouleau de 6. UNE AMPOULE À LED SEULEMENT (une ampoule
+// à filament chauffe le bois) ; une douille à collerette fixée au socle.
+
+lamelles   = 14;     // nombre de lamelles (sans le socle)
+rayon_bas  = 55;     // rayon des lamelles du bas et du haut (mm)
+rayon_ventre = 85;   // rayon de la lamelle du milieu (mm)
+rayon_interieur = 34; // rayon du trou du milieu (mm)
+rayon_tiges = 45;    // rayon où passent les trois tiges (mm)
+d_tige     = 6.5;    // Ø des trous des tiges (mm)
+epaisseur  = 6;      // épaisseur (mm)
+espace     = 8;      // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+n = max(2, round(lamelles));  Rb = rayon_bas;  Rv = rayon_ventre;  ri = rayon_interieur;  rt = rayon_tiges;
+function R(k) = Rb + (Rv - Rb) * sin(180 * k / (n - 1));   // le galbe : 0 en bas, le ventre au milieu, 0 en haut
+si (rt - d_tige / 2 - ri < 5 || Rb - rt - d_tige / 2 < 5)
+    echo("Les tiges passent trop près d'un bord d'anneau : 5 mm de bois au moins de chaque côté.");
+colonnes = 5;  pas = 2 * Rv + espace;
+total = n + 1;                                 // les lamelles et le socle
+lignes = ceil(total / colonnes);
+planche([colonnes * pas - espace + 2 * rognure, lignes * pas - espace + 2 * rognure, epaisseur]);
+function centre(k) = [rognure + Rv + (k % colonnes) * pas, rognure + Rv + floor(k / colonnes) * pas];
+pour (k = [0 : n]) {
+    c = centre(k);
+    // k = n : le socle (plein, rayon du bas) ; sinon la lamelle k
+    rayon = k == n ? Rb : R(k);
+    d = cercle(c, rayon);
+    nommer(#d, k == n ? "socle" : "lamelle");
+    si (k < n) {
+        m = cercle(c, ri);
+        nommer(#m, "milieu");
+    } sinon {
+        m = cercle(c, 5);
+        nommer(#m, "câble");
+    }
+    pour (a = [90, 210, 330]) {
+        t = cercle(c + rt * [cos(a), sin(a)], d_tige / 2);
+        nommer(#t, "tige");
+    }
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "tige", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1.5, nom = "Trous des tiges");
+usinage("contour", "câble", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1.5, nom = "Trou du câble");
+usinage("contour", "milieu", outil = "Fraise droite Ø6", cote = "interieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 4, onglet_haut = 1.5, nom = "Trous du milieu");
+usinage("contour", "lamelle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 5, onglet_haut = 1.5, nom = "Lamelles");
+usinage("contour", "socle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 5, onglet_haut = 1.5, nom = "Socle");

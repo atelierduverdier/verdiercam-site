@@ -1,0 +1,84 @@
+// PRÉSENTOIR À BIJOUX — un panneau debout, percé pour les boucles d'oreilles à crochet, fendu pour les puces, une rangée
+// de trous en haut pour les chevilles des colliers ; deux pieds le tiennent, emboîtés à mi-bois. Pour la commode, ou un
+// étal de marché.
+// thème : Décoration et cadeaux
+//
+// LE PANNEAU : `largeur` × `hauteur`, le haut arrondi. En haut, `colliers` trous de Ø`d_cheville` (des chevilles de hêtre
+// y portent les colliers) ; dessous, `rangees` rangées de trous de crochet (Ø3) par paires, au pas `pas` ; puis une rangée
+// de FENTES (Ø3 de large, `longueur_fente` de long) où se glissent les tiges des puces. LES PIEDS : deux, de `profondeur_pied`
+// × `hauteur_pied`, croisent le panneau à angle droit : le panneau est fendu par le bas, chaque pied par le haut, de la
+// moitié de `hauteur_pied` chacun, de l'épaisseur plus le `jeu` de chaque côté.
+//
+// L'USINAGE : trous de crochet (Perçage, Foret Ø3), fentes (Rainure, fraise droite Ø3), trous des chevilles (Contour
+// intérieur), puis le panneau et les pieds (Contour extérieur, coins dégagés aux fonds des fentes, onglets).
+
+largeur    = 220;    // largeur du panneau (mm)
+hauteur    = 260;    // hauteur du panneau (mm)
+colliers   = 5;      // chevilles à colliers, en haut
+d_cheville = 6.3;    // Ø des trous des chevilles (mm)
+rangees    = 3;      // rangées de crochets
+pas        = 22;     // pas des paires de crochets (mm)
+longueur_fente = 25; // longueur d'une fente à puces (mm)
+profondeur_pied = 120;  // longueur d'un pied au sol (mm)
+hauteur_pied = 50;   // hauteur d'un pied (mm)
+jeu        = 0.15;   // jeu des fentes du pied, par côté (mm)
+epaisseur  = 9;      // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+W = largeur;  H = hauteur;  ep = epaisseur;  w = ep + 2 * jeu;
+hp = hauteur_pied;
+xp = [W * 0.2, W * 0.8];                       // les pieds, sous le panneau
+R = W / 2;                                     // le haut : un arc
+planche([W + espace + profondeur_pied + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+function P(x, y) = o + [x, y];
+
+// ── Le panneau : le bas fendu deux fois (à mi-hauteur des pieds), les côtés, le haut en demi-cercle ──
+bas = [for (j = [0 : 7]) P(xp[floor(j / 4)] + [-w / 2, -w / 2, w / 2, w / 2][j % 4], [0, hp / 2, hp / 2, 0][j % 4])];
+a = polyligne(concat([P(0, H - R), P(0, 0)], bas, [P(W, 0), P(W, H - R)]));
+b = arc(P(W / 2, H - R), P(W, H - R), P(0, H - R));
+joindre(#a, #b);
+nommer(#a, "panneau");
+
+// ── Les trous et les fentes ──
+pour (k = [0 : colliers - 1]) {
+    an = 150 - 120 * k / max(colliers - 1, 1);
+    c = cercle(P(W / 2, H - R) + 0.72 * R * [cos(an), sin(an)], d_cheville / 2);
+    nommer(#c, "cheville");
+}
+nx = floor((W - 40) / pas);                    // paires par rangée
+x0 = (W - (nx - 1) * pas) / 2;
+y_haut = H - R - 15;
+pour (r = [0 : rangees - 1])
+    pour (i = [0 : nx - 1])
+        pour (s = [-1, 1]) {
+            q = cercle(P(x0 + i * pas + s * 4, y_haut - r * pas), 1.5);
+            nommer(#q, "crochet");
+        }
+y_fente = y_haut - rangees * pas;
+si (y_fente - longueur_fente < hp / 2 + 15)
+    echo("Plus de place pour les fentes à puces : un panneau plus haut, ou moins de rangées.");
+pour (i = [0 : nx - 1]) {
+    f = ligne(P(x0 + i * pas, y_fente), P(x0 + i * pas, y_fente - longueur_fente));
+    nommer(#f, "fente");
+}
+
+// ── Les pieds, de profil : fendus par le haut au milieu ──
+pour (k = [0 : 1]) {
+    q = P(W + espace, k * (hp + espace));
+    L2 = profondeur_pied / 2;
+    p = polyligne([q, q + [profondeur_pied, 0], q + [profondeur_pied, hp * 0.6], q + [L2 + w / 2 + 12, hp], q + [L2 + w / 2, hp],
+                   q + [L2 + w / 2, hp / 2], q + [L2 - w / 2, hp / 2], q + [L2 - w / 2, hp], q + [L2 - w / 2 - 12, hp], q + [0, hp * 0.6]],
+                  fermee = vrai);
+    nommer(#p, "pied");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("percage", "crochet", outil = "Foret Ø3", profondeur = epaisseur, nom = "Trous des crochets");
+usinage("rainure", "fente", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1.5, nom = "Fentes à puces");
+usinage("contour", "cheville", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1.5, nom = "Trous des chevilles");
+usinage("contour", "pied", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Pieds");
+usinage("contour", "panneau", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 6, onglet_haut = 1.5, nom = "Panneau");

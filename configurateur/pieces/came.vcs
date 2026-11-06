@@ -1,0 +1,63 @@
+// CAME — un disque de profil qui transforme la rotation d'un arbre en va-et-vient d'un poussoir : automates de bois,
+// jouets mécaniques, une machine de démonstration. Trois lois de levée, en vrai profil calculé point par point.
+// thème : Technique et mécanique
+//
+// LE PROFIL, sous un poussoir à pointe ou à plateau, en rayon depuis l'axe (r = `rayon_base` + levée) :
+//   `type` = 1, EXCENTRIQUE — un cercle décalé de `levee` / 2 : levée et descente douces (sinusoïde) ;
+//   `type` = 2, CŒUR — montée à vitesse constante sur 180°, descente pareille : le poussoir va et vient d'un mouvement
+//   uniforme (la came des métiers à bobiner) ;
+//   `type` = 3, ESCARGOT — montée uniforme sur un tour, puis la chute d'un coup : un marteau, un pic qui retombe.
+// La pente de la levée (l'angle de pression) se dit à la console : au-delà de 30°, un poussoir à pointe accroche — un
+// rayon de base plus grand l'adoucit. Pour un poussoir à galet, le galet roule sur une courbe décalée de son rayon :
+// tracer la came un rayon de galet plus petite.
+//
+// L'USINAGE : l'alésage (et sa clavette) en Contour intérieur, la came en Contour extérieur, fraise droite Ø3, trois
+// onglets. Bois dur, ou contreplaqué de bouleau ; le profil se poncera à peine.
+
+type       = 2;      // 1 : excentrique ; 2 : cœur ; 3 : escargot
+rayon_base = 25;     // rayon le plus petit, depuis l'axe (mm)
+levee      = 20;     // course du poussoir (mm)
+alesage    = 8;      // Ø de l'alésage (mm)
+clavette   = 0;      // largeur d'une rainure de clavette (mm, 0 : aucune)
+epaisseur  = 9;      // épaisseur (mm) — 9 au plus : la fraise Ø3 n'a que 9 mm utiles
+points     = 180;    // points du profil (un tous les 2°)
+rognure    = 5;      // du bord du brut à la came (mm)
+
+t = min(max(round(type), 1), 3);
+N = max(36, round(points));
+r0 = rayon_base;  h = levee;
+// La levée à l'angle a (degrés, 0 à 360) : sinusoïde, triangle (cœur), dent de scie (escargot).
+function lev(a) = t == 1 ? h * (1 - cos(a)) / 2 : t == 2 ? (a <= 180 ? h * a / 180 : h * (360 - a) / 180) : h * a / 360;
+function R(a) = r0 + lev(a);
+Rmax = r0 + h;
+c = [rognure + Rmax, rognure + Rmax];
+planche([2 * Rmax + 2 * rognure, 2 * Rmax + 2 * rognure, epaisseur]);
+// Le profil : l'angle compté depuis le haut, dans le sens des aiguilles d'une montre (la came tourne à l'inverse et
+// lève le poussoir posé sur elle) ; l'escargot finit par sa chute, droite, du haut au bas.
+pts = [for (k = [0 : N - 1]) c + R(360 * k / N) * [sin(360 * k / N), cos(360 * k / N)]];
+pr = t == 3 ? concat(pts, [c + R(360) * [0, 1]]) : pts;
+p = polyligne(pr, fermee = vrai);
+nommer(#p, "came");
+
+// L'alésage : un cercle, ou un cercle et sa rainure de clavette vers le haut (au rayon le plus petit, la levée nulle).
+si (clavette > 0 && clavette < alesage) {
+    d = asin(clavette / alesage);
+    a1 = arc(c, c + alesage / 2 * [sin(-d), cos(-d)], c + alesage / 2 * [sin(d), cos(d)]);   // le grand arc, par le bas
+    k = polyligne([c + alesage / 2 * [sin(-d), cos(-d)], c + [-clavette / 2, alesage / 2 + clavette / 2],
+                   c + [clavette / 2, alesage / 2 + clavette / 2], c + alesage / 2 * [sin(d), cos(d)]]);
+    joindre(#a1, #k);
+    nommer(#a1, "alésage");
+} sinon {
+    a1 = cercle(c, alesage / 2);
+    nommer(#a1, "alésage");
+}
+
+// L'angle de pression le plus fort d'un poussoir à pointe : atan(pente / rayon), la pente dR/dθ en mm par radian.
+pmax = max([for (k = [0 : N - 1]) atan((R(360 * (k + 1) / N) - R(360 * k / N)) / (2 * PI / N) / R(360 * k / N))]);
+echo(str("Came ", ["excentrique", "en cœur", "en escargot"][t - 1], " : de ", r0, " à ", Rmax, " mm de l'axe, angle de pression ",
+         round(pmax), "° au plus", pmax > 30 ? " — plus de 30° : un poussoir à pointe accrochera, grandir le rayon de base." : "."));
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "alésage", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1.5, nom = "Alésage");
+usinage("contour", "came", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1.5,
+        onglets = 3, onglet_long = 4, onglet_haut = 1.5, nom = "Came");

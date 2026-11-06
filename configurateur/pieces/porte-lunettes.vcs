@@ -1,0 +1,47 @@
+// PORTE-LUNETTES — le nez de bois où l'on pose ses lunettes le soir, branches repliées de part et d'autre : elles ne
+// traînent plus verres contre la table. Deux pièces : la tête en profil, debout, et le socle où elle s'emboîte.
+// thème : Rangement
+//
+// LA TÊTE : `hauteur` de haut, une ogive : un NEZ effilé au sommet, de `largeur_nez` au plus près de la pointe (le pont
+// des lunettes s'y pose), qui s'élargit jusqu'à un renflement puis revient au cou ; dessous, un TENON de la largeur du cou
+// traverse le socle. LE SOCLE : un ovale
+// de `longueur_socle` × `largeur_socle`, la MORTAISE au milieu (l'épaisseur plus le `jeu` de chaque côté).
+//
+// L'USINAGE : la mortaise (Contour intérieur, coins dégagés), puis la tête et le socle (Contour extérieur, onglets).
+// Noyer ou cerisier de 12 ; poncer le nez bien rond.
+
+hauteur    = 130;    // hauteur de la tête, au-dessus du socle (mm)
+largeur_nez = 16;    // largeur du nez, 10 sous sa pointe (mm)
+longueur_socle = 110;  // longueur du socle (mm)
+largeur_socle = 70;  // largeur du socle (mm)
+jeu        = 0.1;    // jeu du tenon, par côté (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 10;     // entre les deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+H = hauteur;  ep = epaisseur;  wn = largeur_nez;  wc = 40;   // le cou
+// la tête, son côté droit de bas en haut : le cou et son renflement, puis le nez qui s'effile jusqu'à la pointe
+function cote(t) = t < 0.5 ? wc / 2 + 6 * sin(360 * t) : wc / 2 * (1 - (t - 0.5) * 2) * 0.9 + (wn / 2) * ((t - 0.5) * 2);
+dr = [for (k = [0 : 20]) [cote(k / 40), H * k / 40 * 0.8]];
+nez = [for (k = [0 : 12]) [wn / 2 * cos(90 * k / 12) * (1 + 0.4 * (1 - k / 12)), H * 0.8 + 0.2 * H * sin(90 * k / 12)]];
+planche([max(longueur_socle, wc + 12) + espace + 2 * (wc + 12) + 2 * rognure, max(largeur_socle, H + ep) + 2 * rognure, epaisseur]);
+// ── Le socle et sa mortaise ──
+cs = [rognure + longueur_socle / 2, rognure + largeur_socle / 2];
+s = polyligne([for (k = [0 : 47]) cs + [longueur_socle / 2 * cos(7.5 * k), largeur_socle / 2 * sin(7.5 * k)]], fermee = vrai);
+nommer(#s, "socle");
+m = rect(cs - [wc / 2 + jeu, ep / 2 + jeu], [wc + 2 * jeu, ep + 2 * jeu]);
+nommer(#m, "mortaise");
+// ── La tête : le tenon dessous (du cou, de l'épaisseur du socle), puis le profil, symétrique ──
+ot = [rognure + longueur_socle + espace + wc / 2 + 12, rognure + ep];
+droite = concat(dr, nez);
+t = polyligne([for (q = concat([[-wc / 2, -ep], [wc / 2, -ep]], droite, [for (k = [len(droite) - 2 : -1 : 0]) [-droite[k][0], droite[k][1]]]))
+               ot + q], fermee = vrai);
+nommer(#t, "tête");
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaise");
+usinage("contour", "tête", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Tête");
+usinage("contour", "socle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Socle");

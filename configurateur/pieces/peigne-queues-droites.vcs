@@ -1,0 +1,71 @@
+// PEIGNE À QUEUES DROITES — le gabarit qui fait des assemblages à doigts à la défonceuse à main : posé sur le chant des
+// planches serrées dessous, la bague de copiage suit ses dents. Une fois fait, il sert à toutes les boîtes de la même
+// épaisseur.
+// thème : Atelier et gabarits
+//
+// LA RÈGLE : la bague (Ø `d_bague`) roule contre les flancs des créneaux et la fraise (Ø `d_fraise`) coupe en retrait de
+// (d_bague − d_fraise) / 2. Un créneau large de `doigt` + (d_bague − d_fraise) creuse donc une entaille de `doigt` pile ;
+// au pas de 2 × `doigt`, entailles et doigts sont égaux. Les créneaux sont profonds de `longueur_doigt` (l'épaisseur des
+// planches à assembler) plus ce même retrait, pour que la fraise descende jusqu'au trait. La seconde planche se fait en
+// décalant le gabarit d'un `doigt` (les deux trous de repère, à un `doigt` l'un de l'autre, y servent avec une pointe).
+//
+// Deux LUMIÈRES à l'arrière le fixent sur un tasseau et règlent l'avancée. Les réglages sont gravés dessus. L'USINAGE :
+// les réglages (Gravure), repères (Perçage), lumières (Contour intérieur), puis le peigne (Contour extérieur, coins dégagés au fond
+// des créneaux, onglets). MDF ou contreplaqué de 12, bien plan.
+
+creneaux   = 8;      // nombre de créneaux
+doigt      = 10;     // largeur d'un doigt (mm) : celle de l'entaille creusée
+longueur_doigt = 12; // profondeur des entailles : l'épaisseur des planches (mm)
+d_bague    = 12;     // Ø de la bague de copiage (mm)
+d_fraise   = 8;      // Ø de la fraise de la défonceuse à main (mm)
+hauteur    = 130;    // profondeur du gabarit, de l'avant au tasseau (mm)
+marge      = 25;     // de chaque bout aux créneaux (mm)
+epaisseur  = 12;     // épaisseur du gabarit (mm)
+rognure    = 5;      // du bord du brut au gabarit (mm)
+
+n = max(1, round(creneaux));
+r = (d_bague - d_fraise) / 2;                  // le retrait de la fraise sur la bague
+s = doigt + 2 * r;                             // la largeur d'un créneau
+pas = 2 * doigt;
+prof = longueur_doigt + r;                     // la profondeur d'un créneau
+W = 2 * marge + (n - 1) * pas + s;
+H = hauteur;
+si (d_bague <= d_fraise)
+    echo("La bague doit être plus grosse que la fraise.");
+si (pas - s < 3)
+    echo(str("Les dents du peigne n'ont que ", pas - s, " mm : une bague plus proche de la fraise, ou des doigts plus larges."));
+si (H < prof + 60)
+    echo("Le gabarit est trop court pour ses lumières : plus profond.");
+planche([W + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+function P(x, y) = o + [x, y];
+
+// ── Le peigne : l'avant crénelé (en bas), les coins arrière arrondis ──
+avant = [for (j = [0 : 4 * n - 1]) P(marge + floor(j / 4) * pas + [0, 0, s, s][j % 4], [0, prof, prof, 0][j % 4])];
+a = polyligne(concat([P(0, H - 10), P(0, 0)], avant, [P(W, 0), P(W, H - 10)]));
+b = arc(P(W - 10, H - 10), P(W, H - 10), P(W - 10, H));
+joindre(#a, #b);
+c = ligne(P(W - 10, H), P(10, H));
+joindre(#a, #c);
+d = arc(P(10, H - 10), P(10, H), P(0, H - 10));
+joindre(#a, #d);
+nommer(#a, "peigne");
+
+// ── Les lumières de fixation, les deux repères, les réglages gravés ──
+pour (x = [marge + 10, W - marge - 10]) {
+    l = oblong(P(x, H - 25), 30, 6.5, 90);
+    nommer(#l, "lumière");
+}
+pour (k = [0 : 1]) {
+    q = cercle(P(W / 2 - doigt / 2 + k * doigt, prof + 12), 1.5);
+    nommer(#q, "repère");
+}
+t = texte(P(marge, prof + 25), 6, str("doigt ", doigt, "  bague ", d_bague, "  fraise ", d_fraise), police = "Hershey Sans1");
+nommer(#t, "réglages");
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "réglages", outil = "Pointe V 90", profondeur = 0.5, nom = "Réglages");
+usinage("percage", "repère", outil = "Foret Ø3", profondeur = epaisseur, nom = "Repères");
+usinage("contour", "lumière", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Lumières");
+usinage("contour", "peigne", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 1.5, nom = "Peigne");

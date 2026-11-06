@@ -1,0 +1,65 @@
+// CRÉMAILLÈRE — la barre dentée qui engrène avec l'« Engrenage droit » de ce catalogue (même module, même angle de
+// pression) : une rotation devient une translation — un tiroir motorisé, un levage, une table qui coulisse.
+// thème : Technique et mécanique
+//
+// LES DENTS sont la crémaillère de référence ISO 53, celle même qui taille les roues de l'engrenage : le pas π × module,
+// la saillie 1 × module au-dessus de la ligne de référence, le creux 1,25 × module en dessous, les flancs droits penchés
+// de l'angle de pression. Le jeu d'engrènement `jeu` amincit chaque dent de moitié, comme sur la roue (l'autre moitié).
+// Le fond des creux, la fraise l'arrondit à son rayon ; la console dit si elle descend assez bas pour laisser passer la
+// tête de la roue (une saillie de 1 × module). Ligne de référence à `hauteur_dos` + 1,25 × module du bas de la barre :
+// c'est là que tombe le cercle primitif de la roue.
+//
+// LA BARRE : `dents` dents, deux lumières oblongues pour la visser et la régler (± 5 mm) le long du dos. L'USINAGE : les
+// lumières (Contour intérieur), puis la barre (Contour extérieur, fraise droite Ø3, onglets).
+
+module     = 3;      // module (mm) : le même que la roue
+dents      = 20;     // nombre de dents
+angle_pression = 20; // angle de pression (°) : le même que la roue
+jeu        = 0.1;    // jeu d'engrènement (mm, pris sur l'épaisseur des dents)
+hauteur_dos = 15;    // matière sous le fond des creux (mm)
+lumieres   = 1;      // deux lumières de fixation (1 : oui, 0 : non)
+epaisseur  = 9;      // épaisseur (mm) — 9 au plus : la fraise Ø3 n'a que 9 mm utiles
+d_fraise   = 3;      // Ø de la fraise qui taille les dents (mm) : la Fraise droite Ø3 de la bibliothèque
+rognure    = 5;      // du bord du brut à la barre (mm)
+
+m = module;  a = angle_pression;
+p = PI * m;                                   // le pas
+n = max(2, round(dents));
+yref = hauteur_dos + 1.25 * m;                // la ligne de référence, depuis le bas de la barre
+L = n * p;
+// Une dent centrée en x : sa demi-épaisseur à la ligne de référence (amincie de jeu / 2), puis au sommet et au pied.
+e2 = p / 4 - jeu / 4;
+function dent(x) = [[x - e2 - 1.25 * m * tan(a), yref - 1.25 * m], [x - e2 + m * tan(a), yref + m],
+                    [x + e2 - m * tan(a), yref + m], [x + e2 + 1.25 * m * tan(a), yref - 1.25 * m]];
+// Le contour : le bas, le bout droit, les dents de droite à gauche (les centres à p/2 + k p), le bout gauche.
+x0 = rognure;  y0 = rognure;
+pts = concat([[x0, y0], [x0 + L, y0], [x0 + L, y0 + yref - 1.25 * m]],
+             [for (j = [0 : 4 * n - 1]) [x0, y0] + dent(p / 2 + (n - 1 - floor(j / 4)) * p)[3 - j % 4]],
+             [[x0, y0 + yref - 1.25 * m]]);
+planche([L + 2 * rognure, yref + m + 2 * rognure, epaisseur]);
+b = polyligne(pts, fermee = vrai);
+nommer(#b, "crémaillère");
+
+// ── Les lumières : à un quart et trois quarts de la longueur, à mi-hauteur du dos ──
+si (lumieres == 1 && hauteur_dos >= 10)
+    pour (f = [0.25, 0.75]) {
+        o = oblong([x0 + f * L, y0 + hauteur_dos / 2], 16, min(6.5, hauteur_dos - 5));
+        nommer(#o, "lumière");
+    }
+
+// ── Ce que la fraise atteint au fond d'un creux : le cercle de son rayon, tangent aux deux flancs ──
+r = d_fraise / 2;
+s2 = p / 4 + jeu / 4;                          // la demi-largeur du creux à la ligne de référence
+yc = (s2 - r / cos(a)) / tan(a);               // la profondeur du centre de la fraise sous la ligne de référence
+atteint = min(yc + r, 1.25 * m);
+si (atteint < m + 0.1)
+    echo(str("La fraise Ø", d_fraise, " ne descend qu'à ", round(atteint * 100) / 100, " mm sous la ligne de référence : la tête de la ",
+             "roue (", m, " mm) y toucherait — une fraise plus fine, ou un module plus grand."));
+echo(str("Crémaillère module ", m, ", ", n, " dents, ", round(L * 10) / 10, " mm ; la ligne de référence à ", yref, " mm du dos. ",
+         "La fraise descend à ", round(atteint * 100) / 100, " mm sous elle (la roue : ", m, ")."));
+
+// ── L'USINAGE, déclaré ──
+si (lumieres == 1 && hauteur_dos >= 10)
+    usinage("contour", "lumière", outil = "Fraise droite Ø3", cote = "interieur", profondeur = epaisseur, passe = 1.5, nom = "Lumières");
+usinage("contour", "crémaillère", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1.5,
+        onglets = 3, onglet_long = 4, onglet_haut = 1.5, nom = "Crémaillère");

@@ -1,0 +1,91 @@
+// RÂTELIER À TOURNEVIS — l'étagère murale de l'établi : chaque tournevis pend par sa lame dans un trou à sa taille, le
+// manche posé dessus. Un dos vissé au mur, une tablette percée, deux consoles ; tout s'emboîte à tenons traversants.
+// thème : Rangement
+//
+// LA TABLETTE : de `profondeur`, percée d'une rangée de trous, du plus fin au plus gros : `nb_fins` de Ø`d_fins`,
+// `nb_moyens` de Ø`d_moyens`, `nb_gros` de Ø`d_gros`, au pas de leur Ø plus `entre` (la place d'un manche). Elle entre
+// dans le DOS par deux tenons. LES CONSOLES, deux triangles sous la tablette, entrent dans le dos et dans la tablette par
+// un tenon chacune. Le dos porte deux trous de vis (Ø5, à fraiser).
+//
+// L'USINAGE : les trous de vis (Perçage, Foret Ø5), les trous des tournevis et les mortaises (Contour intérieur, coins
+// dégagés pour les mortaises), puis les pièces (Contour extérieur, coins dégagés aux tenons, onglets). Contreplaqué de 12.
+
+nb_fins    = 4;      // tournevis fins
+d_fins     = 6.5;    // Ø de leurs trous (mm) : 6,5 au moins (la fraise Ø6)
+nb_moyens  = 4;      // tournevis moyens
+d_moyens   = 8;      // Ø de leurs trous (mm)
+nb_gros    = 3;      // gros tournevis
+d_gros     = 11;     // Ø de leurs trous (mm)
+entre      = 22;     // entre deux trous, en plus de leur Ø (mm) : la place d'un manche
+profondeur = 70;     // profondeur de la tablette (mm)
+hauteur_dos = 110;   // hauteur du dos (mm)
+jeu        = 0.1;    // jeu des tenons, par côté (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  P = profondeur;  Hd = hauteur_dos;
+trous = [for (k = [0 : nb_fins + nb_moyens + nb_gros - 1]) k < nb_fins ? d_fins : (k < nb_fins + nb_moyens ? d_moyens : d_gros)];
+n = len(trous);
+function px(k) = k == 0 ? 0 : px(k - 1) + (trous[k - 1] + trous[k]) / 2 + entre;   // l'axe du trou k, depuis le premier
+L = px(n - 1) + 2 * 55;                        // la tablette : 55 de chaque bout (les consoles y sont)
+xc = [22, L - 22 - ep];                        // les consoles, le long de la tablette
+yt = Hd - 25;                                  // le dessous de la tablette, sur le dos
+hc = 60;                                       // la hauteur d'une console sous la tablette
+lt = 40;                                       // la longueur d'un tenon
+si (min(trous) < 6.5)
+    echo("Un trou de moins de 6,5 : la fraise Ø6 n'y passe plus.");
+si (yt - hc < 10)
+    echo("Les consoles descendent sous le dos : un dos plus haut, ou des consoles plus courtes.");
+planche([L + 2 * rognure, Hd + espace + P + ep + espace + hc + ep + 2 * rognure, epaisseur]);
+
+// ── Le dos : les mortaises de la tablette (horizontales), celles des consoles (verticales), deux trous de vis ──
+od = [rognure, rognure];
+d = rect(od, [L, Hd], 4);
+nommer(#d, "dos");
+pour (x = [L / 4 - lt / 2, 3 * L / 4 - lt / 2]) {
+    m = rect(od + [x - jeu, yt - jeu], [lt + 2 * jeu, ep + 2 * jeu]);
+    nommer(#m, "mortaise");
+}
+pour (x = xc) {
+    m = rect(od + [x - jeu, yt - 10 - lt - jeu], [ep + 2 * jeu, lt + 2 * jeu]);
+    nommer(#m, "mortaise");
+}
+pour (x = [L / 2 - 30, L / 2 + 30]) {
+    v = cercle(od + [x, yt - 30], 2.5);
+    nommer(#v, "vis");
+}
+
+// ── La tablette : le chant arrière en bas, ses deux tenons ; les trous ; les mortaises des consoles ──
+ot = [rognure, rognure + Hd + espace + ep];
+tt = [for (x = [L / 4 - lt / 2, 3 * L / 4 - lt / 2]) for (j = [0 : 3]) ot + [x + [0, 0, lt, lt][j], [0, -ep, -ep, 0][j]]];
+t = polyligne(concat([ot], tt, [ot + [L, 0], ot + [L, P], ot + [0, P]]), fermee = vrai);
+nommer(#t, "tablette");
+pour (k = [0 : n - 1]) {
+    h = cercle(ot + [55 + px(k), P / 2 + 4], trous[k] / 2);
+    nommer(#h, "trou");
+}
+pour (x = xc) {
+    m = rect(ot + [x - jeu, 10 - jeu], [ep + 2 * jeu, lt + 2 * jeu]);
+    nommer(#m, "mortaise");
+}
+
+// ── Les consoles, de profil (le dos à gauche) : un tenon dans le dos, un dans la tablette ──
+pour (k = [0 : 1]) {
+    oc = [rognure + ep + k * (P + ep + espace), rognure + Hd + espace + ep + P + espace];
+    c = polyligne([oc, oc + [0, hc - 10 - lt], oc + [-ep, hc - 10 - lt], oc + [-ep, hc - 10], oc + [0, hc - 10], oc + [0, hc],
+                   oc + [10, hc], oc + [10, hc + ep], oc + [10 + lt, hc + ep], oc + [10 + lt, hc], oc + [P - 5, hc]], fermee = vrai);
+    nommer(#c, "console");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("percage", "vis", outil = "Foret Ø5", profondeur = epaisseur, nom = "Trous de vis");
+usinage("contour", "trou", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Trous des tournevis");
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaises");
+usinage("contour", "console", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 2, nom = "Consoles");
+usinage("contour", "tablette", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 2, nom = "Tablette");
+usinage("contour", "dos", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Dos");

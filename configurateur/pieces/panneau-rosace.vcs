@@ -1,0 +1,33 @@
+// PANNEAU EN ROSACE — des sillons en cercles autour du centre, à la pointe V 90°, chacun creusé en vague et décalé
+// d'une demi-onde sur son voisin : le bois laissé tourne en pétales autour du cœur.
+// thème : Décoration et cadeaux
+//
+// LE MOTIF : la Texture en Vagues sur un petit cercle guide au centre, décalé vers le dehors cercle après cercle. Sur
+// un cercle, la longueur d'onde se recale pour qu'un nombre entier de vagues en fasse le tour : pas de marche à la
+// jonction. Assez de cercles pour atteindre les coins.
+//
+// L'USINAGE : une seule pointe V 90°, une passe, sans fraise de dégagement. Une Ø6 (celle de la bibliothèque d'office)
+// creuse 2,75 mm au plus ; avec une V 90° Ø12, doubler l'écart, la longueur d'onde et les deux profondeurs : le même
+// motif, deux fois plus grand. Bois dur à grain fin (noyer, chêne) ou MDF à peindre ; les sillons courent jusqu'aux
+// bords, le panneau se prend dans un cadre.
+
+largeur   = 150;    // largeur du panneau (mm)
+hauteur   = 150;    // hauteur du panneau (mm)
+epaisseur = 18;     // épaisseur du panneau (mm)
+coeur     = 2;      // rayon du cercle du centre (mm) [0.5:50]
+ecart     = 3.25;   // écart entre deux cercles (mm) [1:0.25:30]
+onde      = 12.5;   // longueur d'onde le long d'un cercle (mm) [4:200]
+creux     = 2.5;    // profondeur au plus creux (mm) [0.5:0.25:12]
+mini      = 0.15;   // profondeur au plus haut de la vague (mm) [0:0.05:12]
+dephasage = 180;    // avance de la vague d'un cercle au suivant (°) [0:15:360]
+fraise    = "Pointe V 90";   // la pointe V 90°, son nom dans la bibliothèque
+
+c = [largeur / 2, hauteur / 2];
+sillons = ceil((sqrt(largeur * largeur + hauteur * hauteur) / 2 - coeur) / ecart) + 1;   // jusqu'aux coins
+planche([largeur, hauteur, epaisseur]);
+r = cercle(c, coeur);
+nommer(#r, "coeur");
+
+// ── L'usinage ──
+usinage("texture", "coeur", outil = fraise, profondeur = creux, motif = "vagues", sillons = sillons,
+        ecart_sillons = ecart, longueur_onde = onde, profondeur_mini = mini, dephasage = dephasage, nom = "Rosace");

@@ -1,0 +1,57 @@
+// CASSE-TÊTE DES QUATRE PIÈCES — quatre pièces, un T à refaire. Notre découpe : un triangle, un parallélogramme, un
+// trapèze, et une pièce à encoche qui pousse à remplir son creux… ce qu'il ne faut pas faire. Un cadre où le T se range,
+// et le T n'y entre que bien refait.
+// thème : Jeux et jouets
+//
+// LE T : une barre de 3 × 1 sur un pied de 1 × 3, en `unite`. Les coupes à 45° : un triangle au pied du pied, le
+// parallélogramme qui le surmonte, la pièce à encoche (la gauche de la barre et un coin de la jonction), le trapèze (la
+// droite de la barre). LE CADRE : percé d'un T plus grand du `jeu` tout autour, collé sur un FOND plein ; les coins de la
+// découpe dégagés pour que les pointes des pièces y descendent.
+//
+// L'USINAGE : le T du cadre (Contour intérieur, coins dégagés), puis les pièces, le cadre et le fond (Contour extérieur,
+// coins dégagés aux encoches, onglets). Noyer ou érable de 12 ; le fond en contreplaqué de 6 ou du même bois.
+
+unite      = 30;     // l'unité du T (mm)
+jeu        = 0.3;    // autour des pièces dans le cadre (mm)
+marge      = 20;     // du T au bord du cadre (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 8;      // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+u = unite;  j = jeu;
+// Les pièces, en unités, dans le repère du T (le pied de x = 1 à 2, la barre de y = 3 à 4).
+pieces = [[[1, 0], [2, 0], [1, 1]],                                    // le triangle
+          [[1, 1], [2, 0], [2, 3], [1, 2]],                            // le parallélogramme
+          [[0, 3], [1, 3], [1, 2], [2, 3], [1, 4], [0, 4]],            // la pièce à encoche
+          [[2, 3], [3, 3], [3, 4], [1, 4]]];                           // le trapèze
+noms = ["triangle", "parallélogramme", "encoche", "trapèze"];
+Wc = 3 * u + 2 * marge;  Hc = 4 * u + 2 * marge;
+planche([2 * Wc + 2 * espace + 4.5 * u + 2 * rognure, max(Hc, 5.5 * u) + 2 * rognure, epaisseur]);
+// ── Le cadre et son T (plus grand du jeu), le fond ──
+oc = [rognure, rognure];
+c = rect(oc, [Wc, Hc], 8);
+nommer(#c, "cadre");
+T = [[-j, 3 * u - j], [u - j, 3 * u - j], [u - j, -j], [2 * u + j, -j], [2 * u + j, 3 * u - j], [3 * u + j, 3 * u - j],
+     [3 * u + j, 4 * u + j], [-j, 4 * u + j]];
+t = polyligne([for (q = T) oc + [marge, marge] + q], fermee = vrai);
+nommer(#t, "T");
+f = rect(oc + [Wc + espace, 0], [Wc, Hc], 8);
+nommer(#f, "fond");
+// ── Les pièces, chacune à sa place dans un T éclaté à droite (chaque pièce poussée hors du T) ──
+ox = rognure + 2 * Wc + 2 * espace;
+eclat = [[0.5, 0], [1.5, 0.6], [0, 1.0], [1.4, 1.5]];          // le déplacement de chaque pièce, en unités
+pour (k = [0 : 3]) {
+    q = polyligne([for (s = pieces[k]) [ox, rognure] + u * (s + eclat[k])], fermee = vrai);
+    nommer(#q, noms[k]);
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "T", outil = "Fraise droite Ø6", cote = "interieur", coins = "dogbone", onglets = 0, profondeur = epaisseur,
+        passe = 3, nom = "Le T du cadre");
+pour (n = noms)
+    usinage("contour", n, outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+            onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = n);
+usinage("contour", "cadre", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 1.5, nom = "Cadre");
+usinage("contour", "fond", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 1.5, nom = "Fond");

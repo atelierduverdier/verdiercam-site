@@ -1,0 +1,97 @@
+// BOÎTE À QUEUES DROITES — une boîte en planches assemblées à doigts (« finger joint »), son fond pris dans les côtés et
+// son couvercle posé : les six panneaux sortent à plat d'une seule planche et s'emboîtent sans une vis.
+// thème : Rangement
+//
+// LES COTES sont celles du DEHORS de la boîte. Les deux côtés longs (façade et dos) gardent leurs doigts aux quatre coins
+// verticaux ; les côtés courts et le fond y laissent des entailles — chaque coin n'appartient qu'à une pièce. Le nombre
+// de doigts de chaque arête est impair (un doigt à chaque bout du côté mâle), choisi pour approcher `largeur_doigt`.
+// Une arête a le même nombre de doigts sur ses deux pièces : elles s'emboîtent.
+//
+// LE JEU DE COUPE : chaque entaille est plus large de `jeu` de chaque côté (sauf aux coins) — `jeu` est le vide qui reste
+// entre deux flancs, une fois montés. 0,1 mm dans du contreplaqué bien plat ; plus si la fraise vibre ou que le bois
+// gonfle. Le mesurer d'abord : la pièce « Grille de calibrage du jeu » de ce catalogue.
+//
+// L'USINAGE : chaque panneau en Contour extérieur, fraise droite Ø6, toute l'épaisseur, coins « dogbone » — la fraise
+// ronde laisse son rayon au fond d'une entaille, le dogbone le dégage pour qu'un doigt à angles vifs y entre jusqu'au
+// fond. Quatre onglets par panneau. Le couvercle : une plaque, et dessous un rebord collé qui le centre sur la boîte.
+
+longueur   = 240;    // longueur de la boîte, dehors (mm)
+profondeur = 160;    // profondeur de la boîte, dehors (mm)
+hauteur    = 100;    // hauteur de la boîte, fond compris, dehors (mm)
+epaisseur  = 18;     // épaisseur des planches (mm)
+largeur_doigt = 30;  // largeur visée d'un doigt (mm)
+jeu        = 0.1;    // jeu de coupe, par flanc (mm)
+couvercle  = 1;      // couvercle posé avec son rebord (1 : oui, 0 : non)
+jeu_couvercle = 0.5; // jeu du rebord dans la boîte, par côté (mm)
+espace     = 12;     // entre deux panneaux sur la planche (au moins 2 × Ø de la fraise)
+marge      = 10;     // des panneaux au bord de la planche (mm)
+
+ep = epaisseur;
+X = longueur;  Y = profondeur;  H = hauteur;
+
+// ── Les doigts : un nombre impair de parts par arête ──
+function impair(L) = max(3, 2 * round((L / largeur_doigt - 1) / 2) + 1);
+nX = impair(X);  nY = impair(Y);  nH = impair(H);
+
+// ── UN PANNEAU À DOIGTS : le rectangle L × H posé par son coin `c`, ses côtés dans l'ordre bas, droite, haut, gauche ;
+// pour chacun, G = 1 mâle (doigts aux bouts), −1 femelle (entailles aux bouts), 0 plat, et N parts. Le contour tourne
+// dans le sens trigonométrique : la matière est à gauche de chaque côté, l'entaille y descend de `ep`. ──
+function vn(u) = [-u[1], u[0]];                                         // vers la matière
+function enc(g, i) = g == 0 ? faux : (g > 0 ? i % 2 == 1 : i % 2 == 0);  // la part i est-elle entaillée ?
+function bout(g) = enc(g, 0) ? ep : 0;                                  // le coin rentre-t-il ? (n impair : les deux bouts pareils)
+function pt(a, u, s, t) = a + s * u + t * vn(u);
+// Les quatre points d'une entaille (sans ceux qui tombent sur un coin : le coin se pose à part).
+function s0(i, w) = i * w - (i > 0 ? jeu : 0);
+function s1(i, w, n) = (i + 1) * w + (i < n - 1 ? jeu : 0);
+function entaille(a, u, i, w, n, k) = k == 0 ? pt(a, u, s0(i, w), 0) : k == 1 ? pt(a, u, s0(i, w), ep)
+                                    : k == 2 ? pt(a, u, s1(i, w, n), ep) : pt(a, u, s1(i, w, n), 0);
+function garder(i, n, k) = i == 0 ? k >= 2 : (i == n - 1 ? k <= 1 : vrai);
+// (j parcourt les entailles quatre points par quatre : j = 4 i + k.)
+function interieur(a, u, Lk, g, n) = [for (j = [0 : 4 * n - 1]) if (enc(g, floor(j / 4)) && garder(floor(j / 4), n, j % 4))
+                                          entaille(a, u, floor(j / 4), Lk / n, n, j % 4)];
+function profil(c, L, H, G, N) = profil2([c, c + [L, 0], c + [L, H], c + [0, H]], [[1, 0], [0, 1], [-1, 0], [0, -1]], [L, H, L, H], G, N);
+function profil2(A, U, Lk, G, N) = [for (k = [0 : 3])
+    for (q = concat([A[k] + bout(G[(k + 3) % 4]) * vn(U[(k + 3) % 4]) + bout(G[k]) * vn(U[k])],
+                    interieur(A[k], U[k], Lk[k], G[k], N[k]))) q];
+module panneau(c, L, H, G, N, nom) {
+    p = polyligne(profil(c, L, H, G, N), fermee = vrai);
+    nommer(#p, nom);
+}
+
+// ── La planche : trois rangées — façade et dos, les deux côtés courts, le fond et le couvercle ──
+Xr = X - 2 * ep - 2 * jeu_couvercle;     // le rebord du couvercle entre dans la boîte
+Yr = Y - 2 * ep - 2 * jeu_couvercle;
+large = max(2 * X + espace, 2 * Y + espace, X + (couvercle == 1 ? espace + X + espace + Xr : 0));
+planche([2 * marge + large, 2 * marge + 2 * H + Y + 2 * espace, epaisseur]);
+y1 = marge + H + espace;
+y2 = y1 + H + espace;
+
+panneau([marge, marge], X, H, [1, 1, 0, 1], [nX, nH, 1, nH], "côté long");
+panneau([marge + X + espace, marge], X, H, [1, 1, 0, 1], [nX, nH, 1, nH], "côté long");
+panneau([marge, y1], Y, H, [1, -1, 0, -1], [nY, nH, 1, nH], "côté court");
+panneau([marge + Y + espace, y1], Y, H, [1, -1, 0, -1], [nY, nH, 1, nH], "côté court");
+panneau([marge, y2], X, Y, [-1, -1, -1, -1], [nX, nY, nX, nY], "fond");
+si (couvercle == 1) {
+    k = rect([marge + X + espace, y2], [X, Y], 3);
+    nommer(#k, "couvercle");
+    r = rect([marge + 2 * X + 2 * espace, y2 + (Y - Yr) / 2], [Xr, Yr], 2);
+    nommer(#r, "rebord du couvercle");
+}
+echo(str("Boîte ", X, " × ", Y, " × ", H, " mm dehors, ", X - 2 * ep, " × ", Y - 2 * ep, " × ", H - ep, " dedans ; doigts : ",
+         nX, " sur la longueur, ", nY, " sur la profondeur, ", nH, " sur la hauteur."));
+si (min(X / nX, Y / nY, H / nH) < 6 + 2 * jeu + 1)
+    echo("Doigts plus étroits que la fraise Ø6 : agrandir `largeur_doigt`.");
+
+// ── L'USINAGE, déclaré : chaque panneau détouré, ses entailles dégagées ──
+usinage("contour", "fond", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3, coins = "dogbone",
+        onglets = 4, onglet_long = 6, onglet_haut = 2, nom = "Fond");
+usinage("contour", "côté long", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3, coins = "dogbone",
+        onglets = 4, onglet_long = 6, onglet_haut = 2, nom = "Côtés longs");
+usinage("contour", "côté court", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3, coins = "dogbone",
+        onglets = 4, onglet_long = 6, onglet_haut = 2, nom = "Côtés courts");
+si (couvercle == 1) {
+    usinage("contour", "couvercle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+            onglets = 4, onglet_long = 6, onglet_haut = 2, nom = "Couvercle");
+    usinage("contour", "rebord du couvercle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+            onglets = 4, onglet_long = 6, onglet_haut = 2, nom = "Rebord du couvercle");
+}

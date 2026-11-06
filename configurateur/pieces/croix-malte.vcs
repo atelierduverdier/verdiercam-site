@@ -1,0 +1,131 @@
+// CROIX DE MALTE — le mécanisme qui fait avancer une roue par crans : à chaque tour de manivelle, le doigt entre dans une
+// fente, tourne la croix d'un cran (1/n de tour), ressort ; entre deux, le disque de verrou la tient immobile contre ses
+// arcs creux. Celui des projecteurs de cinéma et des montres. Quatre pièces, deux chevilles d'axe, une de doigt.
+// thème : Technique et mécanique
+//
+// LA GÉOMÉTRIE (tout se calcule) : `fentes` fentes, un doigt (cheville de Ø`d_doigt`) au rayon `rayon_manivelle`. Pour
+// que le doigt entre dans la fente TANGENTIELLEMENT (sans choc), l'entraxe vaut rayon_manivelle / sin(180°/n), et le rayon
+// de la croix rayon_manivelle / tan(180°/n). Les fentes vont jusqu'où descend le doigt (entraxe − rayon_manivelle), larges
+// du doigt plus le `jeu` de chaque côté. Entre deux fentes, un ARC CREUX épouse le disque de verrou (plus `jeu_verrou`) ;
+// le disque est échancré d'une LUNULE face au doigt, pour laisser passer les cornes de la croix quand elle tourne.
+//
+// LE MONTAGE : le socle porte les deux chevilles d'axe (Ø`d_axe`, collées). Au niveau 1 : la croix, et le disque de
+// verrou. Au niveau 2 : la manivelle, collée sur le disque (les repères gravés alignés : la lunule face au doigt) ; le
+// doigt, collé dans la manivelle, descend dans le niveau 1. Une cheville plus courte au bord de la manivelle fait poignée.
+//
+// L'USINAGE : les repères (Gravure), les trous des chevilles collées (Perçage, Foret Ø8), les alésages qui tournent
+// (Contour intérieur), puis les pièces (Contour extérieur, onglets). Contreplaqué de bouleau de 12, ciré aux frottements.
+
+fentes     = 4;      // nombre de fentes : 4, 5, 6… (un cran = 1/n de tour)
+rayon_manivelle = 40;  // rayon du doigt sur la manivelle (mm)
+d_doigt    = 8;      // Ø du doigt : une cheville (mm)
+d_axe      = 8;      // Ø des chevilles d'axe (mm)
+jeu        = 0.2;    // jeu du doigt dans une fente, par côté (mm)
+jeu_verrou = 0.4;    // jeu du disque de verrou dans les arcs creux (mm)
+jeu_axe    = 0.3;    // jeu des pièces qui tournent sur leur axe, par côté (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+n = max(3, round(fentes));  a = rayon_manivelle;  ph = 180 / n;
+C = a / sin(ph);                               // l'entraxe
+Rw = a / tan(ph);                              // le rayon de la croix
+h = d_doigt / 2 + jeu;                         // la demi-largeur d'une fente
+tb = C - a - 1;                                // le centre du fond d'une fente (1 mm sous le doigt)
+// Le disque de verrou : il laisse 1,5 mm de corne à l'entrée des fentes.
+pe = [sqrt(Rw * Rw - h * h), h];
+rs = norm(pe - C * [cos(ph), sin(ph)]) - 1.5;
+Ra = rs + jeu_verrou;                          // le rayon des arcs creux de la croix
+Rl = Rw + 1;                                   // la lunule
+Rm = a + d_doigt / 2 + 5;                      // la manivelle
+ra = d_axe / 2 + jeu_axe;                      // l'alésage d'une pièce qui tourne
+si (tb - h - ra < 5)
+    echo("Le fond des fentes touche presque l'alésage : une manivelle plus grande, ou moins de fentes.");
+si (C - Rm - d_axe / 2 < 2)
+    echo("La manivelle frôle l'axe de la croix : un doigt plus petit.");
+echo(str("Entraxe ", C, " mm ; croix de Ø", 2 * Rw, " ; disque de verrou de Ø", 2 * rs, "."));
+
+// Le socle, les deux axes : la manivelle à gauche, la croix à droite.
+Ls = Rm + C + Rw + 20;  Hs = 2 * max(Rw, Rm) + 20;
+xs = rognure;  oc = [xs + Rm + 10, rognure + Hs / 2];     // l'axe de la manivelle, sur le socle
+planche([max(Ls + espace + 2 * Rw, 2 * rs + espace + 2 * Rm) + 2 * rognure, Hs + espace + 2 * Rm + 2 * rognure, epaisseur]);
+s = rect([xs, rognure], [Ls, Hs], 8);
+nommer(#s, "socle");
+pour (x = [0, C]) {
+    t = cercle(oc + [x, 0], d_axe / 2);
+    nommer(#t, "cheville");
+}
+
+// ── La croix : n fentes ; entre deux, un ARC CREUX (le disque de verrou, plus le jeu) flanqué de deux petites cornes sur le
+// cercle de la croix ; la manivelle sera du côté de l'angle 180° ──
+cx = [xs + Ls + espace + Rw, rognure + Rw];
+de = asin(h / Rw);                             // le bord d'une fente sur le cercle de la croix, de part et d'autre de son axe
+xq = (C * C + Rw * Rw - Ra * Ra) / (2 * C);
+ga = acos(xq / Rw);                            // l'arc creux coupe le cercle à ± ga de la direction de son centre
+si (ga >= ph - de)
+    echo("Les arcs creux mangent les cornes de la croix : moins de jeu au verrou, ou un doigt plus fin.");
+function th(i) = 180 + ph + i * 2 * ph;        // l'axe de la fente i
+function U(i) = [cos(th(i)), sin(th(i))];
+function V(i) = [-sin(th(i)), cos(th(i))];
+function P(t) = cx + Rw * [cos(t), sin(t)];   // un point du cercle de la croix
+function fond(i, s) = cx + tb * U(i) + s * h * V(i);
+k0 = polyligne([P(th(0) + de), fond(0, 1)]);
+pour (i = [0 : n - 1]) {
+    f = arc(cx + tb * U(i), fond(i, 1), fond(i, -1));
+    joindre(#k0, #f);
+    b = polyligne([fond(i, -1), P(th(i) - de)]);
+    joindre(#k0, #b);
+    // de la fente i à la précédente : une corne, l'arc creux, une corne
+    tq = th(i) - ph;                           // la direction du centre de l'arc creux
+    c1 = arc(cx, P(tq + ga), P(th(i) - de));
+    joindre(#k0, #c1);
+    g = arc(cx + C * [cos(tq), sin(tq)], P(tq + ga), P(tq - ga));
+    joindre(#k0, #g);
+    c2 = arc(cx, P(th(i) - 2 * ph + de), P(tq - ga));
+    joindre(#k0, #c2);
+    si (i > 0) {
+        e = polyligne([P(th(i) + de), fond(i, 1)]);
+        joindre(#k0, #e);
+    }
+}
+nommer(#k0, "croix");
+ax = cercle(cx, ra);
+nommer(#ax, "alésage");
+
+// ── Le disque de verrou : le cercle, échancré de la lunule face au doigt (vers +x) ──
+ov = [xs + rs, rognure + Hs + espace + Rm];
+xi = (C * C + rs * rs - Rl * Rl) / (2 * C);  yi = sqrt(rs * rs - xi * xi);
+v1 = arc(ov, ov + [xi, yi], ov + [xi, -yi]);
+v2 = arc(ov + [C, 0], ov + [xi, yi], ov + [xi, -yi]);
+joindre(#v1, #v2);
+nommer(#v1, "verrou");
+av = cercle(ov, ra);
+nommer(#av, "alésage");
+rv = ligne(ov + [-rs + 2, 0], ov + [-rs + 8, 0]);       // le repère : à l'opposé de la lunule
+nommer(#rv, "repère");
+
+// ── La manivelle : le trou du doigt (vers +x), celui de la poignée à l'opposé, l'alésage ──
+om = ov + [rs + espace + Rm, 0];
+m = cercle(om, Rm);
+nommer(#m, "manivelle");
+am = cercle(om, ra);
+nommer(#am, "alésage");
+pour (p = [om + [a, 0], om + [-a, 0]]) {
+    dt = cercle(p, d_doigt / 2);
+    nommer(#dt, "cheville");
+}
+rm = ligne(om + [-Rm + 2, 0], om + [-Rm + 8, 0]);       // le repère, du côté de la poignée : opposé au doigt
+nommer(#rm, "repère");
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "repère", outil = "Pointe V 90", profondeur = 0.5, nom = "Repères");
+usinage("percage", "cheville", outil = "Foret Ø8", profondeur = epaisseur, nom = "Trous des chevilles");
+usinage("contour", "alésage", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Alésages");
+usinage("contour", "croix", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 5, onglet_haut = 1.5, nom = "Croix");
+usinage("contour", "verrou", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Disque de verrou");
+usinage("contour", "manivelle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Manivelle");
+usinage("contour", "socle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Socle");

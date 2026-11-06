@@ -1,0 +1,84 @@
+// DÉCORATIONS DE NOËL — des suspensions pour le sapin, étoile, sapin ou boule, percées pour le fil et gravées d'un
+// prénom : une par membre de la famille, ce qui se vend le plus en décembre.
+// thème : Décoration et cadeaux
+//
+// `forme` = 1 : une ÉTOILE à `branches` branches ; 2 : un SAPIN à trois étages et son tronc ; 3 : une BOULE et son
+// attache, un filet gravé autour. `taille` : sa hauteur (son Ø pour la boule et l'étoile). Le trou du fil (`d_trou`) est
+// en haut. Le `prenom` (vide : aucun) se grave au milieu, calé dans la largeur. `nombre` en rangée.
+//
+// L'USINAGE : le prénom et le filet (Gravure, Pointe V 90°, 0,8 mm), le trou (Perçage, Foret Ø3 — un fil passe), puis
+// chaque décoration en Contour extérieur, fraise droite Ø3 (les pointes de l'étoile), deux onglets. Contreplaqué de
+// bouleau de 4 à 6 mm ; peindre avant de détacher.
+
+forme      = 1;      // 1 : étoile ; 2 : sapin ; 3 : boule
+branches   = 5;      // branches de l'étoile
+taille     = 80;     // hauteur (Ø de l'étoile et de la boule) (mm)
+prenom     = "Léa";            // le prénom gravé (vide : aucun)
+police     = "Hershey Script1"; // la police du prénom
+d_trou     = 3;      // Ø du trou du fil (mm)
+nombre     = 3;      // nombre de décorations
+epaisseur  = 5;      // épaisseur (mm)
+espace     = 10;     // entre deux décorations (mm)
+rognure    = 5;      // du bord du brut aux décorations (mm)
+
+f = min(max(round(forme), 1), 3);
+n = max(1, round(nombre));
+T = taille;
+// La largeur et la hauteur d'une décoration (la boule a son attache au-dessus du disque).
+Wd = f == 2 ? 0.8 * T : T;
+Hd = f == 3 ? T + 10 : T;
+planche([n * Wd + (n - 1) * espace + 2 * rognure, Hd + 2 * rognure, epaisseur]);
+
+module etoile(c) {
+    R = T / 2;  r = 0.45 * R;  nb = max(round(branches), 4);
+    e = polyligne([for (k = [0 : 2 * nb - 1]) c + (k % 2 == 0 ? R : r) * [cos(90 + 180 * k / nb), sin(90 + 180 * k / nb)]], fermee = vrai);
+    nommer(#e, "décoration");
+    t = cercle(c + [0, 0.68 * R], d_trou / 2);
+    nommer(#t, "trou");
+}
+module sapin(o) {
+    // De la pointe, à droite : trois étages de plus en plus larges, le tronc, puis la gauche en miroir.
+    w = Wd / 2;  x = o[0] + w;  y = o[1];
+    droite = [[0, T], [0.42 * w, 0.72 * T], [0.22 * w, 0.72 * T], [0.72 * w, 0.44 * T], [0.42 * w, 0.44 * T], [w, 0.14 * T],
+              [0.14 * w, 0.14 * T], [0.14 * w, 0]];
+    pts = concat([for (q = droite) [x + q[0], y + q[1]]], [for (k = [len(droite) - 1 : -1 : 1]) [x - droite[k][0], y + droite[k][1]]]);
+    s = polyligne(pts, fermee = vrai);
+    nommer(#s, "décoration");
+    t = cercle([x, y + 0.86 * T], d_trou / 2);
+    nommer(#t, "trou");
+}
+module boule(o) {
+    R = T / 2;  c = o + [R, R];  a = 7;  d = asin(a / R);  hc = 12;
+    b = arc(c, c + R * [cos(90 + d), sin(90 + d)], c + R * [cos(90 - d), sin(90 - d)]);
+    k = polyligne([c + R * [cos(90 - d), sin(90 - d)], c + [a, R + hc - 2], c + [-a, R + hc - 2], c + R * [cos(90 + d), sin(90 + d)]]);
+    joindre(#b, #k);
+    nommer(#b, "décoration");
+    t = cercle(c + [0, R + hc / 2 - 1], d_trou / 2);
+    nommer(#t, "trou");
+    g = cercle(c, R - 5);
+    nommer(#g, "gravure");
+}
+
+pour (i = [0 : n - 1]) {
+    o = [rognure + i * (Wd + espace), rognure];
+    si (f == 1) etoile(o + [T / 2, T / 2]);
+    si (f == 2) sapin(o);
+    si (f == 3) boule(o);
+    si (len(prenom) > 0) {
+        M = mesure_texte(prenom, 10, police) / 10;
+        // Le prénom au milieu de ce qui est plein : le cœur de l'étoile (36 % de sa largeur), l'étage du bas du sapin (42 %,
+        // centré à 28 % de sa hauteur), le disque de la boule (62 %) ; au plus 14 mm de haut.
+        larg = (f == 1 ? 0.36 : f == 2 ? 0.42 : 0.62) * Wd;
+        h = min(14, larg / max(M[3] - M[2], 1e-6), (f == 2 ? 0.12 : 0.3) * T / max(M[5] - M[4], 1e-6));
+        ym = f == 2 ? 0.28 * T : T / 2;
+        g = texte(o + [Wd / 2 - h * (M[2] + M[3]) / 2, ym - h * (M[4] + M[5]) / 2], h, prenom, police = police);
+        nommer(#g, "gravure");
+    }
+}
+
+// ── L'USINAGE, déclaré ──
+si (len(prenom) > 0 || f == 3)
+    usinage("gravure", "gravure", outil = "Pointe V 90", profondeur = 0.8, nom = "Prénom et filet");
+usinage("percage", "trou", outil = "Foret Ø3", profondeur = epaisseur, nom = "Trous du fil");
+usinage("contour", "décoration", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1.5,
+        onglets = 2, onglet_long = 3, onglet_haut = 1, nom = "Décorations");

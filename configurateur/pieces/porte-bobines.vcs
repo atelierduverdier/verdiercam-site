@@ -1,0 +1,66 @@
+// PORTE-BOBINES DE FIL — le présentoir de la table de couture : un plateau penché planté de tourillons, une bobine sur
+// chacun ; on voit toutes les couleurs d'un coup, et le fil se dévide sans que la bobine tombe.
+// thème : Rangement
+//
+// LE PLATEAU : `colonnes` × `rangees` trous de Ø`d_tourillon`, au pas d'une bobine (son Ø`d_flasque` plus 6) ; creusés de
+// `profondeur_trous`, les tourillons y sont collés. Il penche de `angle` sur l'horizontale, tenu par deux JOUÉES : un
+// TENON de chaque côté du plateau traverse la mortaise penchée de la jouée. Le bas du plateau reste à 10 du sol.
+//
+// L'USINAGE : les trous (Poche, fraise droite Ø3), les mortaises (Contour intérieur, coins dégagés), puis le plateau et
+// les jouées (Contour extérieur, coins dégagés aux tenons, onglets). Contreplaqué de bouleau de 12 ; des tourillons de Ø6
+// de 60 de long.
+
+colonnes   = 5;      // bobines par rangée
+rangees    = 4;      // rangées
+d_flasque  = 40;     // Ø des flasques des bobines (mm)
+d_tourillon = 6;     // Ø des tourillons (mm)
+profondeur_trous = 9;  // profondeur des trous (mm) : 9 au plus (la fraise Ø3)
+angle      = 60;     // pente du plateau sur l'horizontale (°)
+jeu        = 0.1;    // jeu des tenons, par côté (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  pb = d_flasque + 6;
+Wp = colonnes * pb;  Lp = rangees * pb;        // le plateau, sans ses tenons
+u = [cos(angle), sin(angle)];  nn = [-sin(angle), cos(angle)];   // le long du plateau, et sa normale (vers le haut)
+P0 = [12 + (ep + 12) * sin(angle), 10];        // le bas du plateau, sa face de dessous, dans une jouée
+F0 = P0 + (ep + 12) * nn;  F1 = P0 + Lp * u + (ep + 12) * nn;     // le dessus de la jouée, 12 au-dessus du plateau
+xb = (P0 + Lp * u)[0] + 15;
+Lj = xb;  Hj = F1[1];                          // l'encombrement d'une jouée
+si (profondeur_trous > 9)
+    echo("Les trous se creusent à la fraise Ø3 : 9 mm au plus.");
+si (angle < 30 || angle > 80)
+    echo("Une pente de 30 à 80° : moins, les bobines glissent ; plus, le présentoir bascule.");
+planche([max(Wp + 2 * ep, 2 * Lj + espace) + 2 * rognure, Lp + espace + Hj + 2 * rognure, epaisseur]);
+
+// ── Le plateau, à plat : ses tenons sur les côtés gauche et droit, au milieu de sa longueur ──
+op = [rognure + ep, rognure];
+p = polyligne([op, op + [Wp, 0], op + [Wp, Lp / 4], op + [Wp + ep, Lp / 4], op + [Wp + ep, 3 * Lp / 4], op + [Wp, 3 * Lp / 4],
+               op + [Wp, Lp], op + [0, Lp], op + [0, 3 * Lp / 4], op + [-ep, 3 * Lp / 4], op + [-ep, Lp / 4], op + [0, Lp / 4]],
+              fermee = vrai);
+nommer(#p, "plateau");
+pour (i = [0 : colonnes - 1])
+    pour (j = [0 : rangees - 1]) {
+        t = cercle(op + [(i + 0.5) * pb, (j + 0.5) * pb], d_tourillon / 2);
+        nommer(#t, "trou");
+    }
+
+// ── Les deux jouées : le sol en bas, la mortaise penchée sous le plateau ──
+pour (k = [0 : 1]) {
+    oj = [rognure + k * (Lj + espace), rognure + Lp + espace];
+    j = polyligne([oj, oj + [xb, 0], oj + [xb, Hj], oj + F1, oj + F0, oj + [0, F0[1]]], fermee = vrai);
+    nommer(#j, "jouée");
+    m = polyligne([for (q = [[Lp / 4 - jeu, -jeu], [3 * Lp / 4 + jeu, -jeu], [3 * Lp / 4 + jeu, ep + jeu], [Lp / 4 - jeu, ep + jeu]])
+                   oj + P0 + q[0] * u + q[1] * nn], fermee = vrai);
+    nommer(#m, "mortaise");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "trou", outil = "Fraise droite Ø3", profondeur = profondeur_trous, passe = 1.5, nom = "Trous des tourillons");
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaises");
+usinage("contour", "plateau", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 1.5, nom = "Plateau");
+usinage("contour", "jouée", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Jouées");

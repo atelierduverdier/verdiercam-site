@@ -1,0 +1,49 @@
+// PORTE-COUTEAUX AIMANTÉ — la barre murale de la cuisine où les couteaux tiennent par leur lame : des aimants cachés dans
+// des logements creusés PAR DERRIÈRE, à quelques millimètres de la face ; devant, rien que le bois.
+// thème : Cuisine
+//
+// LA BARRE : `longueur` × `hauteur`, coins arrondis. LES LOGEMENTS : `aimants` aimants néodyme de Ø`d_aimant`, au pas
+// régulier, sur l'axe de la barre ; creusés par la face du DESSOUS jusqu'à laisser `voile` de bois devant (2 à 3 mm : plus
+// mince, l'aimant tient mieux ; trop mince, le bois fend). L'aimant se colle au fond, à la colle époxy. Deux trous de vis
+// aux bouts (Ø5), à fraiser devant.
+//
+// L'USINAGE, en deux faces : dessus, les trous de vis (Perçage, Foret Ø5) et la barre (Contour extérieur, onglets) ;
+// dessous, les logements (Poche, fraise droite Ø6). Bois dur (noyer, chêne, hêtre) de 18 ; huile.
+
+longueur   = 400;    // longueur (mm)
+hauteur    = 60;     // hauteur (mm)
+aimants    = 8;      // nombre d'aimants
+d_aimant   = 20;     // Ø des aimants (mm)
+jeu        = 0.3;    // jeu de l'aimant dans son logement, par côté (mm)
+voile      = 3;      // bois laissé devant l'aimant (mm)
+epaisseur  = 18;     // épaisseur (mm)
+rognure    = 5;      // du bord du brut à la barre (mm)
+
+L = longueur;  H = hauteur;  n = max(1, round(aimants));  ep = epaisseur;
+p = (L - 80) / max(n - 1, 1);                  // le pas : 40 de bois à chaque bout pour les vis
+si (voile < 2)
+    echo("Un voile de moins de 2 mm : le bois fendra au premier choc de couteau.");
+si (ep - voile > 18)
+    echo("Les logements dépassent la longueur utile de la fraise Ø6 (18) : une barre moins épaisse.");
+si (p < d_aimant + 6)
+    echo("Les aimants se touchent presque : moins d'aimants, ou une barre plus longue.");
+planche([L + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+b = rect(o, [L, H], 8);
+nommer(#b, "barre");
+pour (x = [18, L - 18]) {
+    v = cercle(o + [x, H / 2], 2.5);
+    nommer(#v, "vis");
+}
+face("dessous");
+pour (k = [0 : n - 1]) {
+    a = cercle(o + [40 + k * p, H / 2], d_aimant / 2 + jeu);
+    nommer(#a, "logement");
+}
+face("dessus");
+
+// ── L'USINAGE, déclaré ──
+usinage("percage", "vis", outil = "Foret Ø5", profondeur = epaisseur, nom = "Trous de vis");
+usinage("poche", "logement", outil = "Fraise droite Ø6", profondeur = ep - voile, passe = 3, nom = "Logements des aimants");
+usinage("contour", "barre", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Barre");

@@ -1,0 +1,103 @@
+// ENGRENAGE À LANTERNE — l'engrenage des moulins : une roue dentée mène une LANTERNE, deux disques tenus par des fuseaux
+// (des tourillons). Ici couché sur une planchette : on tourne la roue par sa poignée, la lanterne tourne `dents / fuseaux`
+// fois plus vite.
+// thème : Technique et mécanique
+//
+// LA LANTERNE : `fuseaux` fuseaux de Ø`d_fuseau` au `pas`, sur deux disques. LA ROUE : `dents` dents au même pas ; chaque
+// flanc est l'ÉPICYCLOÏDE que décrit le centre d'un fuseau quand la lanterne roule sur la roue, décalée du rayon du fuseau
+// plus le `jeu` — le profil exact pour des fuseaux ronds : le mouvement passe sans à-coup, un fuseau toujours au contact.
+// Au pied, un creux rond où le fuseau se loge ; en tête, un plat de 1,5. LA PLANCHETTE porte les deux axes à l'entraxe
+// exact ; une ENTRETOISE sous la roue la monte à la hauteur des fuseaux.
+//
+// L'USINAGE : les trous des axes et des fuseaux (Perçage, Foret Ø8), les alésages (Poche : ils tournent sur l'axe), puis
+// les pièces (Contour extérieur, onglets). Contreplaqué de bouleau de 12 ; deux tiges de Ø8, des tourillons de Ø8 de
+// 3 × l'épaisseur + 1, collés dans les disques ; une rondelle entre l'entretoise et la roue.
+
+fuseaux    = 8;      // nombre de fuseaux de la lanterne
+dents      = 24;     // nombre de dents de la roue
+pas        = 24;     // d'un fuseau au suivant, d'une dent à la suivante, sur le cercle primitif (mm)
+d_fuseau   = 8;      // Ø des fuseaux (mm) : des tourillons
+jeu        = 0.2;    // entre un fuseau et la dent qui le mène (mm)
+d_axe      = 8;      // Ø des axes (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+nl = max(5, round(fuseaux));  z = max(nl + 2, round(dents));
+r = pas * nl / (2 * PI);  R = pas * z / (2 * PI);   // les cercles primitifs : lanterne, roue
+k = (R + r) / r;  o = d_fuseau / 2 + jeu;  h = 180 / z;
+ent = R + r;                                   // l'entraxe
+si (pas < 2.5 * d_fuseau)
+    echo("Les fuseaux sont trop gros pour le pas : les dents seraient trop minces.");
+// Le flanc d'une dent posée sur l'axe X, côté des angles positifs : l'épicycloïde (t en degrés de roulement), décalée de
+// `o` vers la dent, tournée de la demi-dent.
+function ex(t) = (R + r) * cos(t) - r * cos(k * t);
+function ey(t) = -((R + r) * sin(t) - r * sin(k * t));
+function nx(t) = -((R + r) * cos(t) - r * k * cos(k * t));                            // la normale (dy, -dx)
+function ny(t) = (R + r) * sin(t) - r * k * sin(k * t);
+function fl(t) = [ex(t) + o * nx(t) / norm([nx(t), ny(t)]), ey(t) + o * ny(t) / norm([nx(t), ny(t)])];
+function tourne(q, a) = [q[0] * cos(a) - q[1] * sin(a), q[0] * sin(a) + q[1] * cos(a)];
+function demi(t) = tourne(fl(t), h)[1];        // la demi-largeur de la dent là où le flanc arrive
+// Le roulement où la dent n'a plus que 1,5 de large : par dichotomie.
+function fin(a, b, n) = n == 0 ? a : (demi((a + b) / 2) > 0.75 ? fin((a + b) / 2, b, n - 1) : fin(a, (a + b) / 2, n - 1));
+tm = fin(0.01, 60, 40);
+flanc = concat([tourne([R, -o], h)], [for (i = [1 : 20]) tourne(fl(tm * i / 20), h)]);   // du pied à la tête
+tete = norm(flanc[20]);
+D = 2 * r + d_fuseau + 16;                     // un disque de la lanterne
+Lb = ent + 2 * 50;  Wb = 100;                   // la planchette
+planche([2 * tete + espace + Wb + espace + D + 2 * rognure, max(2 * tete, Lb, 2 * D + espace + 40 + espace) + 2 * rognure, epaisseur]);
+
+// ── La roue : pour chaque dent, son flanc gauche (miroir) en montant, le droit en descendant, puis le creux rond ──
+c0 = [rognure + tete, rognure + tete];
+roue = [for (m = [0 : z - 1])
+            for (q = concat([for (i = [0 : 20]) tourne([flanc[i][0], -flanc[i][1]], 2 * h * m)],
+                            [for (i = [20 : -1 : 0]) tourne(flanc[i], 2 * h * m)],
+                            [for (i = [1 : 15]) tourne([R - o * sin(180 * i / 16), -o * cos(180 * i / 16)], 2 * h * m + h)])) c0 + q];
+w = polyligne(roue, fermee = vrai);
+nommer(#w, "roue");
+a = cercle(c0, d_axe / 2 + 0.2);
+nommer(#a, "alésage");
+g = cercle(c0 + [R - 30, 0], d_fuseau / 2);
+nommer(#g, "poignée");
+
+// ── La planchette, debout à droite de la roue : l'axe de la roue en bas, celui de la lanterne à l'entraxe ──
+ob = [rognure + 2 * tete + espace, rognure];
+b = rect(ob, [Wb, Lb], 8);
+nommer(#b, "planchette");
+pour (y = [50, 50 + ent]) {
+    t = cercle(ob + [Wb / 2, y], d_axe / 2);
+    nommer(#t, "axe");
+}
+
+// ── Les deux disques de la lanterne, l'entretoise ──
+ox = rognure + 2 * tete + espace + Wb + espace + D / 2;
+pour (j = [0 : 1]) {
+    cd = [ox, rognure + D / 2 + j * (D + espace)];
+    d = cercle(cd, D / 2);
+    nommer(#d, "disque");
+    e = cercle(cd, d_axe / 2 + 0.2);
+    nommer(#e, "alésage");
+    pour (i = [0 : nl - 1]) {
+        f = cercle(cd + r * [cos(360 * i / nl), sin(360 * i / nl)], d_fuseau / 2);
+        nommer(#f, "fuseau");
+    }
+}
+ce = [ox, rognure + 2 * D + 2 * espace + 20];
+s = cercle(ce, 20);
+nommer(#s, "entretoise");
+e2 = cercle(ce, d_axe / 2 + 0.2);
+nommer(#e2, "alésage");
+
+// ── L'USINAGE, déclaré ──
+usinage("percage", "axe", outil = "Foret Ø8", profondeur = epaisseur, nom = "Axes");
+usinage("percage", "fuseau", outil = "Foret Ø8", profondeur = epaisseur, nom = "Fuseaux");
+usinage("percage", "poignée", outil = "Foret Ø8", profondeur = epaisseur, nom = "Poignée");
+usinage("poche", "alésage", outil = "Fraise droite Ø6", profondeur = epaisseur, passe = 3, nom = "Alésages");
+usinage("contour", "roue", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 6, onglet_haut = 1.5, nom = "Roue");
+usinage("contour", "disque", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Disques");
+usinage("contour", "entretoise", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 4, onglet_haut = 1.5, nom = "Entretoise");
+usinage("contour", "planchette", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Planchette");

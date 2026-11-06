@@ -1,0 +1,38 @@
+// PANNEAU EN POINTES DE DIAMANT — des sillons droits à la pointe V 90°, à profondeur fixe, dans les deux sens : entre
+// eux restent de petites pyramides à quatre pans, comme les pointes de diamant d'un meuble ancien.
+// thème : Décoration et cadeaux
+//
+// LE MOTIF : deux Textures en Vagues, l'une sur un trait guide le long du bord gauche (les sillons montent), l'autre
+// sur un trait le long du bas (les sillons traversent). La profondeur mini égale au creux : les sillons ne font pas de
+// vague. Deux sillons voisins se rejoignent dès que le creux dépasse la moitié de l'écart : les pointes sont vives.
+//
+// L'USINAGE : une seule pointe V 90°, une passe, sans fraise de dégagement. Une Ø6 (celle de la bibliothèque d'office)
+// creuse 2,75 mm au plus ; avec une V 90° Ø12, doubler l'écart, la longueur d'onde et les deux profondeurs : le même
+// motif, deux fois plus grand. Bois dur à grain fin (noyer, chêne) ou MDF à peindre ; les sillons courent jusqu'aux
+// bords, le panneau se prend dans un cadre.
+
+largeur   = 150;   // largeur du panneau (mm)
+hauteur   = 150;   // hauteur du panneau (mm)
+epaisseur = 18;    // épaisseur du panneau (mm)
+ecart     = 4;     // écart entre deux sillons, dans les deux sens (mm) [1:0.5:30]
+onde      = 40;    // longueur d'onde (mm) [4:200]
+creux     = 2;     // profondeur au plus creux (mm) [0.5:0.25:12]
+mini      = 2;  // profondeur au plus haut de la vague (mm) : égale au creux, les sillons restent droits [0:0.25:12]
+dephasage = 0;   // avance de la vague d'un sillon au suivant (°) [0:15:360]
+fraise    = "Pointe V 90";   // la pointe V 90°, son nom dans la bibliothèque
+
+montants  = floor((largeur - ecart) / ecart) + 1;
+traverses = floor((hauteur - ecart) / ecart) + 1;
+planche([largeur, hauteur, epaisseur]);
+v = ligne([ecart / 2, hauteur], [ecart / 2, 0]);   // de haut en bas : ses sillons partent vers la droite
+nommer(#v, "guide vertical");
+h = ligne([0, ecart / 2], [largeur, ecart / 2]);   // de gauche à droite : ses sillons montent
+nommer(#h, "guide horizontal");
+
+// ── L'usinage ──
+usinage("texture", "guide vertical", outil = fraise, profondeur = creux, motif = "vagues", sillons = montants,
+        ecart_sillons = ecart, longueur_onde = onde, profondeur_mini = mini, dephasage = dephasage,
+        nom = "Sillons montants");
+usinage("texture", "guide horizontal", outil = fraise, profondeur = creux, motif = "vagues", sillons = traverses,
+        ecart_sillons = ecart, longueur_onde = onde, profondeur_mini = mini, dephasage = dephasage,
+        nom = "Sillons traversants");

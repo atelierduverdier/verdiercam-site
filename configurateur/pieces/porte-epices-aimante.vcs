@@ -1,0 +1,57 @@
+// PORTE-ÉPICES AIMANTÉ — la planche murale où les boîtes à épices en métal tiennent toutes seules, couvercle vers soi : les
+// aimants sont noyés par DERRIÈRE, à 2 mm sous la face ; on ne les voit pas, les boîtes tiennent quand même.
+// thème : Rangement
+//
+// LES BOÎTES : `colonnes` × `rangees` boîtes de Ø`d_boite`, au pas de leur Ø plus `ecart`. Sous le centre de chacune, un
+// AIMANT de Ø`d_aimant` dans un logement creusé par la face du dessous, de l'épaisseur moins `peau` (le bois qui reste
+// devant l'aimant : 2 mm, il tient encore une boîte de 50 g avec un aimant néodyme de 10 × 3). Un cercle gravé devant
+// marque la place de chaque boîte. Deux trous pour la visser au mur.
+//
+// L'USINAGE : les logements (Poche, face du dessous, fraise droite Ø6), les cercles (Gravure, Pointe V 90°), les trous
+// (Perçage, Foret Ø5), puis la planche (Contour extérieur, onglets). Chêne ou noyer de 12 ; les aimants collés à
+// l'époxy, un bouchon de liège derrière.
+
+colonnes   = 4;      // boîtes par rangée
+rangees    = 3;      // rangées
+d_boite    = 60;     // Ø des boîtes (mm)
+ecart      = 8;      // entre deux boîtes (mm)
+d_aimant   = 10;     // Ø des aimants (mm)
+peau       = 2;      // le bois laissé devant les aimants (mm)
+marge      = 15;     // des boîtes au bord (mm)
+epaisseur  = 12;     // épaisseur (mm)
+rognure    = 5;      // du bord du brut à la planche (mm)
+
+nc = max(1, round(colonnes));  nr = max(1, round(rangees));  pb = d_boite + ecart;
+L = nc * pb - ecart + 2 * marge;  H = nr * pb - ecart + 2 * marge + 20;   // 20 en haut pour les vis
+si (peau < 1.5)
+    echo("Moins de 1,5 mm de peau : le bois devant l'aimant cassera.");
+si (d_aimant + 0.2 < 6.2)
+    echo("Un aimant de moins de 6 : la fraise Ø6 ne le loge pas.");
+planche([L + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+p = rect(o, [L, H], 8);
+nommer(#p, "planche");
+pour (i = [0 : nc - 1])
+    pour (j = [0 : nr - 1]) {
+        c = o + [marge + d_boite / 2 + i * pb, marge + d_boite / 2 + j * pb];
+        g = cercle(c, d_boite / 2 + 1);
+        nommer(#g, "repère");
+    }
+pour (x = [marge + d_boite / 2, L - marge - d_boite / 2]) {
+    v = cercle(o + [x, H - 12], 2.5);
+    nommer(#v, "vis");
+}
+face("dessous");
+pour (i = [0 : nc - 1])
+    pour (j = [0 : nr - 1]) {
+        a = cercle(o + [marge + d_boite / 2 + i * pb, marge + d_boite / 2 + j * pb], d_aimant / 2 + 0.1);
+        nommer(#a, "aimant");
+    }
+face("dessus");
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "aimant", outil = "Fraise droite Ø6", profondeur = epaisseur - peau, passe = 2, nom = "Logements des aimants");
+usinage("gravure", "repère", outil = "Pointe V 90", profondeur = 0.5, nom = "Repères");
+usinage("percage", "vis", outil = "Foret Ø5", profondeur = epaisseur, nom = "Trous de vis");
+usinage("contour", "planche", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Planche");

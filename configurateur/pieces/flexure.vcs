@@ -1,0 +1,65 @@
+// FLEXURE — un guide à lames parallèles taillé dans la masse : un bloc mobile tenu au cadre par deux lames minces, qui
+// monte et descend sans jeu, sans frottement, sans pièce rapportée. Pour comprendre la mécanique compliante, ou pour un
+// petit réglage fin (une vis pousse le bloc, les lames le ramènent).
+// thème : Technique et mécanique
+//
+// LA FORME : un cadre de `largeur` × `hauteur`, de `bord` de large. Dedans, le BLOC MOBILE à droite, et deux LAMES de
+// `lame` d'épaisseur et de `longueur_lame` qui le relient au montant gauche du cadre. Une fente de `fente` le détache du
+// cadre en haut, à droite et en bas ; une fenêtre entre les deux lames. Les deux lames restant parallèles, le bloc se
+// translate sans tourner. Une vis de réglage peut monter du bas du cadre et pousser le bloc : elle se perce À LA MAIN dans
+// le chant (Ø2,5, taraudé M3), au repère gravé. Deux trous de fixation dans le montant gauche ; un trou (`d_vis`) au
+// centre du bloc pour ce qu'il porte.
+//
+// L'USINAGE : le repère (Gravure), les trous (Contour intérieur, sans onglets), la fente et la fenêtre (Contour
+// intérieur, fraise droite Ø3 — la fente doit être plus large qu'elle), puis le cadre (Contour extérieur, onglets).
+// Plexiglas ou polycarbonate de 6 : le bois casse à la première flexion d'une lame si mince.
+
+largeur    = 120;    // largeur du cadre (mm)
+hauteur    = 80;     // hauteur du cadre (mm)
+bord       = 12;     // largeur du cadre autour (mm)
+longueur_lame = 55;  // longueur des lames (mm)
+lame       = 1.5;    // épaisseur des lames (mm)
+fente      = 4;      // largeur de la fente qui détache le bloc (mm)
+d_vis      = 3.3;    // Ø du trou au centre du bloc (mm)
+d_fixation = 4.5;    // Ø des trous de fixation (mm)
+epaisseur  = 6;      // épaisseur (mm)
+rognure    = 5;      // du bord du brut au cadre (mm)
+
+W = largeur;  H = hauteur;  m = bord;  g = fente;  t = lame;  Lb = longueur_lame;
+si (g < 3.4)
+    echo("La fente est plus étroite que la fraise Ø3 : 3,4 mm au moins.");
+si (W - 2 * m - g - Lb < 15)
+    echo("Le bloc mobile n'a presque plus de place : des lames plus courtes, ou un cadre plus large.");
+si (H - 2 * m - 2 * g - 2 * t < 12)
+    echo("La fenêtre entre les lames est trop basse : un cadre plus haut.");
+planche([W + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+function P(x, y) = o + [x, y];
+
+c = rect(o, [W, H], 4);
+nommer(#c, "cadre");
+// La fente en U : le long du haut, de la droite et du bas, autour des lames et du bloc.
+u = polyligne([P(m, H - m), P(W - m, H - m), P(W - m, m), P(m, m), P(m, m + g), P(W - m - g, m + g), P(W - m - g, H - m - g),
+               P(m, H - m - g)], fermee = vrai);
+nommer(#u, "fente");
+// La fenêtre entre les deux lames, du montant gauche au bloc.
+f = rect(P(m, m + g + t), [Lb, H - 2 * m - 2 * g - 2 * t]);
+nommer(#f, "fente");
+// Le bloc : son trou au milieu ; le repère de la vis de réglage sur le bas du cadre ; deux fixations dans le montant gauche.
+xb = (m + Lb + W - m - g) / 2;
+q = cercle(P(xb, H / 2), d_vis / 2);
+nommer(#q, "trou");
+v = ligne(P(xb, 1), P(xb, m - 3));
+nommer(#v, "repère");
+pour (y = [H / 4, 3 * H / 4]) {
+    h = cercle(P(m / 2, y), d_fixation / 2);
+    nommer(#h, "trou");
+}
+echo(str("Bloc mobile de ", W - 2 * m - g - Lb, " × ", H - 2 * m - 2 * g, " mm, lames de ", Lb, " × ", t, " mm."));
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "repère", outil = "Pointe V 90", profondeur = 0.3, nom = "Repère de la vis");
+usinage("contour", "trou", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1, nom = "Trous");
+usinage("contour", "fente", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1, nom = "Fente et fenêtre");
+usinage("contour", "cadre", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1,
+        onglets = 3, onglet_long = 4, onglet_haut = 1, nom = "Cadre");

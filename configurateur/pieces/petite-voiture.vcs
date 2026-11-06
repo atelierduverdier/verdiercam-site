@@ -1,0 +1,75 @@
+// PETITE VOITURE — le jouet de bois qu'on offre à la naissance : une caisse de profil, ses quatre roues, les trous des
+// essieux ; le profil se colle en deux couches pour faire une voiture bien large.
+// thème : Jeux et jouets
+//
+// LA CAISSE se découpe DE PROFIL, couchée sur la planche : `longueur` × `hauteur`, un capot, une cabine bombée ; les
+// roues se posent dehors, de part et d'autre. Elle sort `couches` fois (2 : collées, une caisse de 2 × épaisseur de large). Les
+// ESSIEUX la traversent dans l'épaisseur, en travers de la voiture : un trou de `d_essieu` + `jeu_essieu` (la caisse
+// tourne libre autour de l'essieu collé dans les roues). LES ROUES : `roues` disques de `d_roue`, percés au Ø exact de
+// l'essieu (une cheville de hêtre de Ø6 ; la coller dans les roues). Les fenêtres se creusent sur la caisse.
+//
+// L'USINAGE : les fenêtres (Poche, 2 mm), les trous de la caisse (Contour intérieur, fraise droite Ø6, sans onglets), les
+// moyeux des roues (Perçage à la fraise droite Ø6 : le Ø exact de l'essieu), puis roues et
+// caisses (Contour extérieur, onglets). Bois dur non traité, arêtes cassées au papier : c'est un jouet de bouche.
+
+longueur   = 140;    // longueur de la caisse (mm)
+hauteur    = 55;     // hauteur de la caisse, sans les roues (mm)
+d_roue     = 34;     // Ø des roues (mm)
+garde      = 6;      // le bas de caisse au-dessus du sol (mm)
+d_essieu   = 6;      // Ø de l'essieu (mm) : une cheville de hêtre
+jeu_essieu = 0.6;    // le trou de la caisse, plus large que l'essieu (mm)
+couches    = 2;      // nombre de profils de caisse (à coller)
+roues      = 4;      // nombre de roues
+epaisseur  = 18;     // épaisseur du bois (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+L = longueur;  H = hauteur;  rr = d_roue / 2;
+e1 = 0.2 * L;  e2 = 0.8 * L;                   // les essieux, depuis l'arrière
+ye = rr - garde;                               // leur hauteur au-dessus du bas de caisse
+nc = max(1, round(couches));
+nr = max(0, round(roues));
+planche([max(L, nr * (d_roue + espace) - espace) + 2 * rognure, nc * (H + espace) + d_roue + 2 * rognure, epaisseur]);
+
+// La caisse, de profil (l'arrière à gauche) : le bas droit (les roues sont DEHORS, de part et d'autre de la caisse), le
+// capot à l'avant, la cabine bombée au milieu — un arc qui monte juste à `hauteur` —, le coffre à l'arrière.
+module caisse(o) {
+    hc = 0.55 * H;                             // la ceinture (capot, coffre)
+    ac = 0.23 * L;                             // la demi-largeur de la cabine
+    rc = (ac * ac + (H - hc) * (H - hc)) / (2 * (H - hc));   // le rayon de son arc
+    a = polyligne([o + [4, 0], o + [L - 4, 0], o + [L, 6], o + [L, hc - 6], o + [L - 8, hc], o + [0.45 * L + ac, hc]]);
+    t = arc(o + [0.45 * L, H - rc], o + [0.45 * L + ac, hc], o + [0.45 * L - ac, hc]);
+    joindre(#a, #t);
+    b = polyligne([o + [0.45 * L - ac, hc], o + [4, hc], o + [0, hc - 4], o + [0, 4], o + [4, 0]]);
+    joindre(#a, #b);
+    nommer(#a, "caisse");
+    pour (x = [e1, e2]) {
+        h = cercle(o + [x, ye], (d_essieu + jeu_essieu) / 2);
+        nommer(#h, "trou");
+    }
+    // Les fenêtres : deux, dans la cabine.
+    f1 = rect(o + [0.31 * L, hc + 3], [0.125 * L, 0.45 * (H - hc)], 3.2);
+    nommer(#f1, "fenêtre");
+    f2 = rect(o + [0.465 * L, hc + 3], [0.125 * L, 0.45 * (H - hc)], 3.2);
+    nommer(#f2, "fenêtre");
+}
+pour (k = [0 : nc - 1])
+    caisse([rognure, rognure + k * (H + espace)]);
+pour (k = [0 : nr - 1]) {
+    c = [rognure + rr + k * (d_roue + espace), rognure + nc * (H + espace) + rr];
+    w = cercle(c, rr);
+    nommer(#w, "roue");
+    h = cercle(c, d_essieu / 2);
+    nommer(#h, "moyeu");
+}
+si (ye - (d_essieu + jeu_essieu) / 2 < 3)
+    echo("L'essieu passe trop près du bas de caisse : une garde plus petite, ou des roues plus grandes.");
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "fenêtre", outil = "Fraise droite Ø6", profondeur = 2, passe = 2, nom = "Fenêtres");
+usinage("contour", "trou", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Essieux");
+usinage("percage", "moyeu", outil = "Fraise droite Ø6", profondeur = epaisseur, nom = "Moyeux");
+usinage("contour", "roue", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Roues");
+usinage("contour", "caisse", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 2, nom = "Caisses");

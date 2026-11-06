@@ -1,0 +1,69 @@
+// PLATEAU TOURNANT — le plateau qui tourne au milieu de la table (épices, fromages, « lazy susan ») : un dessus, un socle
+// plus petit, et entre les deux un roulement de plateau tournant du commerce, vissé par des trous percés au bon endroit.
+// thème : Cuisine
+//
+// LE ROULEMENT : deux plaques carrées de `cote_roulement` (150 mm pour le modèle de 6 pouces) qui tournent l'une sur
+// l'autre. Sa plaque du BAS se visse au socle par `trous_bas` trous sur un cercle de Ø `cercle_bas` ; sa plaque du HAUT
+// au dessus par des trous sur le cercle `cercle_haut`, décalés de 45° — à relever sur le roulement. Pour atteindre les vis
+// du haut une fois le socle posé, le socle a un TROU D'ACCÈS (`d_acces`) sur le cercle du haut : on tourne le dessus
+// jusqu'à voir chaque trou, et l'on visse à travers.
+//
+// LE MONTAGE : centrer le roulement sur le socle (le repère gravé au centre), visser le bas ; poser le dessus à l'envers,
+// le socle dessus, centres alignés, visser le haut par le trou d'accès. L'USINAGE : les repères et le filet (Gravure),
+// les avant-trous (Perçage, Foret Ø3) et le trou d'accès (Contour intérieur), puis les deux disques (Contour extérieur).
+
+diametre_dessus = 400;  // Ø du dessus (mm)
+diametre_socle = 260;   // Ø du socle (mm) : plus petit que le dessus, plus grand que le roulement
+cote_roulement = 150;   // côté du roulement (mm)
+cercle_bas = 180;       // Ø du cercle des trous de la plaque du bas (mm)
+cercle_haut = 130;      // Ø du cercle des trous de la plaque du haut (mm)
+trous_bas  = 4;         // trous de chaque plaque
+d_acces    = 14;        // Ø du trou d'accès dans le socle (mm) : le tournevis et la vis
+filet      = 15;        // un filet gravé à cette distance du bord du dessus (mm, 0 : aucun)
+epaisseur  = 18;        // épaisseur (mm)
+espace     = 12;        // entre les deux disques (mm)
+rognure    = 5;         // du bord du brut aux disques (mm)
+
+R1 = diametre_dessus / 2;  R2 = diametre_socle / 2;
+n = max(3, round(trous_bas));
+si (R2 * 2 < cote_roulement * sqrt(2) + 10)
+    echo("Le socle est à peine plus grand que la diagonale du roulement : ses coins dépasseront.");
+planche([2 * R1 + espace + 2 * R2 + 2 * rognure, 2 * R1 + 2 * rognure, epaisseur]);
+c1 = [rognure + R1, rognure + R1];                      // le dessus
+c2 = [rognure + 2 * R1 + espace + R2, rognure + R1];   // le socle
+
+d = cercle(c1, R1);
+nommer(#d, "dessus");
+s = cercle(c2, R2);
+nommer(#s, "socle");
+// Les avant-trous : la plaque du haut sous le dessus (à 0°, 90°…), la plaque du bas sur le socle (à 45°, 135°…).
+pour (k = [0 : n - 1]) {
+    t = cercle(c1 + cercle_haut / 2 * [cos(360 * k / n), sin(360 * k / n)], 1.5);
+    nommer(#t, "avant-trou");
+    b = cercle(c2 + cercle_bas / 2 * [cos(360 * k / n + 180 / n), sin(360 * k / n + 180 / n)], 1.5);
+    nommer(#b, "avant-trou");
+}
+a = cercle(c2 + [cercle_haut / 2, 0], d_acces / 2);
+nommer(#a, "accès");
+// Les repères : une croix au centre de chaque disque, et le carré du roulement sur le socle pour le poser d'équerre.
+pour (c = [c1, c2]) {
+    g1 = ligne(c - [8, 0], c + [8, 0]);
+    nommer(#g1, "repère");
+    g2 = ligne(c - [0, 8], c + [0, 8]);
+    nommer(#g2, "repère");
+}
+q = polyligne([for (k = [0 : 3]) c2 + cote_roulement / sqrt(2) * [cos(45 + 90 * k), sin(45 + 90 * k)]], fermee = vrai);
+nommer(#q, "repère");
+si (filet > 0) {
+    f = cercle(c1, R1 - filet);
+    nommer(#f, "repère");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "repère", outil = "Pointe V 90", profondeur = 0.5, nom = "Repères et filet");
+usinage("percage", "avant-trou", outil = "Foret Ø3", profondeur = 12, nom = "Avant-trous");
+usinage("contour", "accès", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Trou d'accès");
+usinage("contour", "socle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Socle");
+usinage("contour", "dessus", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Dessus");

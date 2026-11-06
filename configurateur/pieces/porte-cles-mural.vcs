@@ -1,0 +1,63 @@
+// PORTE-CLÉS MURAL — une plaque à accrocher près de la porte, son mot gravé et une rangée de chevilles où pendre les
+// clés : un cadeau de pendaison de crémaillère, le pendant du porte-clés au prénom.
+// thème : Rangement
+//
+// LE MOT se tape dans `mot` (« CLÉS », « LES CLÉS DE LA MAISON », un nom de famille) ; il se cale tout seul dans le haut
+// de la plaque, centré sur son encre. LES CHEVILLES : `crochets` trous de `d_cheville` (une cheville de bois de Ø10 se
+// colle dedans et dépasse de 30 mm), répartis dans le bas. Deux trous de fixation pour des vis à tête fraisée, dans les
+// coins du haut.
+//
+// L'USINAGE : le mot (Gravure, Pointe V 90°, 1,5 mm), les trous des chevilles (Contour intérieur, fraise droite Ø6,
+// `prof_cheville`), les trous de fixation (Perçage, Foret Ø5, traversant), puis la plaque (Contour extérieur, onglets).
+
+mot        = "CLÉS";             // le mot gravé
+police     = "Hershey Sans1";    // la police monotrait
+longueur   = 300;    // longueur de la plaque (mm)
+hauteur    = 110;    // hauteur de la plaque (mm)
+epaisseur  = 18;     // épaisseur du bois (mm)
+R_coin     = 10;     // rayon des coins (mm)
+crochets   = 5;      // nombre de chevilles
+d_cheville = 10;     // Ø des trous des chevilles (mm)
+prof_cheville = 12;  // profondeur des trous des chevilles (mm)
+hauteur_mot = 30;    // hauteur des capitales du mot, au plus (mm)
+marge      = 20;     // des bords au mot et aux chevilles (mm)
+rognure    = 5;      // du bord du brut à la plaque (mm)
+
+planche([longueur + 2 * rognure, hauteur + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+p = rect(o, [longueur, hauteur], R_coin);
+nommer(#p, "plaque");
+
+// ── Les chevilles : une rangée à `marge` du bas, du premier au dernier à `marge` des bouts ──
+n = max(1, round(crochets));
+y_ch = marge + d_cheville / 2;
+pour (k = [0 : n - 1]) {
+    x = n == 1 ? longueur / 2 : marge + d_cheville / 2 + k * (longueur - 2 * marge - d_cheville) / (n - 1);
+    c = cercle(o + [x, y_ch], d_cheville / 2);
+    nommer(#c, "cheville");
+}
+si (n > 1 && (longueur - 2 * marge - d_cheville) / (n - 1) < 30)
+    echo("Les chevilles sont à moins de 30 mm l'une de l'autre : les trousseaux se gêneront.");
+
+// ── Les fixations : dans les coins du haut ──
+pour (x = [marge / 2 + 4, longueur - marge / 2 - 4]) {
+    f = cercle(o + [x, hauteur - marge / 2 - 4], 2.5);
+    nommer(#f, "fixation");
+}
+
+// ── Le mot : la plus grande hauteur qui tient entre les fixations et au-dessus des chevilles ──
+M = mesure_texte(mot, 10, police) / 10;
+zone_bas = y_ch + d_cheville / 2 + 10;              // au-dessus des chevilles
+zone_haut = hauteur - marge / 2;
+L_dispo = longueur - 2 * (marge + 8);
+h = min(hauteur_mot, L_dispo / max(M[3] - M[2], 1e-6), (zone_haut - zone_bas) / max(M[5] - M[4], 1e-6));
+yc = (zone_bas + zone_haut) / 2;
+t = texte(o + [longueur / 2 - h * (M[2] + M[3]) / 2, yc - h * (M[4] + M[5]) / 2], h, mot, police = police);
+nommer(#t, "mot");
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "mot", outil = "Pointe V 90", profondeur = 1.5, nom = "Mot");
+usinage("contour", "cheville", outil = "Fraise droite Ø6", cote = "interieur", profondeur = prof_cheville, passe = 3, nom = "Trous des chevilles");
+usinage("percage", "fixation", outil = "Foret Ø5", profondeur = epaisseur, nom = "Trous de fixation");
+usinage("contour", "plaque", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Détourage de la plaque");

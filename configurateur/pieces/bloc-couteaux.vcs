@@ -1,0 +1,63 @@
+// BLOC À COUTEAUX LAMELLÉ — des couches de contreplaqué collées en paquet : une couche pleine, une couche entaillée, une
+// pleine… Chaque entaille, prise entre deux couches pleines, devient la fente d'une lame. Toutes les couches sortent à plat
+// d'une planche mince.
+// thème : Cuisine
+//
+// LES COUCHES : `couteaux` couches entaillées, chacune entre deux couches pleines (couteaux + 1) — soit 2 × couteaux + 1
+// couches de `epaisseur`, collées face contre face : le bloc fait (2 × couteaux + 1) × épaisseur de large. La fente d'une
+// lame a l'épaisseur d'une couche (4 à 6 mm : une lame de chef y entre, une lame fine aussi), la LARGEUR `largeur_lame` et
+// la PROFONDEUR `longueur_lame` (prendre la plus longue lame, plus 10 mm). Le profil du bloc : `longueur` × `hauteur`,
+// le haut arrondi ; un trou traversant d'aération au fond de chaque fente pour que l'eau s'en aille.
+//
+// L'USINAGE : les trous d'aération (Perçage, Foret Ø5), puis chaque couche en Contour extérieur, fraise droite Ø6 (les
+// entailles s'ouvrent sur le haut, leurs coins dégagés), onglets. Coller par serre-joints, les bords d'abord affleurés.
+
+couteaux   = 4;      // nombre de lames (couches entaillées)
+largeur_lame = 45;   // largeur de la fente (mm) : la lame la plus large, à son talon
+longueur_lame = 230; // profondeur de la fente (mm) : la lame la plus longue, plus 10
+longueur   = 160;    // longueur du profil du bloc (mm)
+hauteur    = 260;    // hauteur du profil du bloc (mm)
+R_haut     = 30;     // arrondi des coins du haut (mm)
+epaisseur  = 6;      // épaisseur d'une couche (mm) : celle de la fente
+espace     = 10;     // entre deux couches sur la planche (mm)
+rognure    = 5;      // du bord du brut aux couches (mm)
+
+n = max(1, round(couteaux));
+nc = 2 * n + 1;                                 // toutes les couches
+si (longueur_lame > hauteur - 15)
+    echo("La fente est plus profonde que le bloc n'est haut : un bloc plus haut, ou des lames plus courtes.");
+si (largeur_lame > longueur - 30)
+    echo("La fente laisse moins de 15 mm de bois de chaque côté : un bloc plus long.");
+par_rang = max(1, min(nc, 6));
+rangs = ceil(nc / par_rang);
+planche([par_rang * (longueur + espace) - espace + 2 * rognure, rangs * (hauteur + espace) - espace + 2 * rognure, epaisseur]);
+
+// Une couche, debout : le bas, le côté droit, l'arrondi, le haut (entaillé ou non), l'arrondi, le côté gauche.
+module couche(o, entaillee) {
+    R = min(R_haut, longueur / 4);
+    x1 = (longueur - largeur_lame) / 2;  x2 = x1 + largeur_lame;
+    haut = entaillee == 1 ? [o + [x2, hauteur], o + [x2, hauteur - longueur_lame], o + [x1, hauteur - longueur_lame], o + [x1, hauteur]] : [];
+    a = polyligne(concat([o + [0, hauteur - R], o + [0, 0], o + [longueur, 0], o + [longueur, hauteur - R]]));
+    b = arc(o + [longueur - R, hauteur - R], o + [longueur, hauteur - R], o + [longueur - R, hauteur]);
+    joindre(#a, #b);
+    m = polyligne(concat([o + [longueur - R, hauteur]], haut, [o + [R, hauteur]]));
+    joindre(#a, #m);
+    g = arc(o + [R, hauteur - R], o + [R, hauteur], o + [0, hauteur - R]);
+    joindre(#a, #g);
+    nommer(#a, entaillee == 1 ? "couche entaillée" : "couche pleine");
+    si (entaillee == 1) {
+        t = cercle(o + [longueur / 2, hauteur - longueur_lame - 8], 2.5);
+        nommer(#t, "aération");
+    }
+}
+pour (k = [0 : nc - 1])
+    couche([rognure + (k % par_rang) * (longueur + espace), rognure + floor(k / par_rang) * (hauteur + espace)], k % 2);
+echo(str(nc, " couches de ", epaisseur, " mm : un bloc de ", nc * epaisseur, " mm de large, ", n, " fentes de ", largeur_lame, " × ",
+         longueur_lame, " × ", epaisseur, "."));
+
+// ── L'USINAGE, déclaré ──
+usinage("percage", "aération", outil = "Foret Ø5", profondeur = epaisseur, nom = "Aération des fentes");
+usinage("contour", "couche entaillée", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 2,
+        onglets = 3, onglet_long = 6, onglet_haut = 1.5, nom = "Couches entaillées");
+usinage("contour", "couche pleine", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2,
+        onglets = 3, onglet_long = 6, onglet_haut = 1.5, nom = "Couches pleines");

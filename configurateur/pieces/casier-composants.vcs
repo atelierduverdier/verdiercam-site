@@ -1,0 +1,60 @@
+// CASIER À COMPOSANTS — le plateau de l'établi d'électronique : des cases creusées dans un bloc, à fond arrondi (la
+// fraise boule y laisse un congé), d'où une résistance ou une vis se tirent d'un doigt. Chaque case a sa coordonnée :
+// une lettre par rangée, un chiffre par colonne, comme un tableau de bataille navale — « les 10 kΩ en B4 ».
+// thème : Électronique et boîtiers
+//
+// LES CASES : `colonnes` × `rangees` cases de `largeur_case` × `profondeur_case`, des parois de `paroi` entre elles, creusées
+// de `creux` (3 mm de fond au moins). LES REPÈRES : les lettres gravées à gauche des rangées (A en haut), les chiffres
+// au-dessus des colonnes, dans une marge de `marge`.
+//
+// L'USINAGE : les repères (Gravure, Pointe V 90°), les cases (Poche, fraise boule Ø6 : les coins et le pied des parois
+// arrondis de 3), puis le bloc (Contour extérieur, onglets). Hêtre ou MDF de 18.
+
+colonnes   = 6;      // cases par rangée
+rangees    = 4;      // rangées (26 au plus : une lettre chacune)
+largeur_case = 32;   // largeur d'une case (mm)
+profondeur_case = 32;  // profondeur d'une case, d'avant en arrière (mm)
+paroi      = 4;      // paroi entre deux cases (mm)
+creux      = 12;     // profondeur des cases (mm)
+marge      = 12;     // la marge des repères, à gauche et en haut (mm)
+epaisseur  = 18;     // épaisseur du bloc (mm)
+rognure    = 5;      // du bord du brut au bloc (mm)
+
+nc = max(1, round(colonnes));  nr = min(26, max(1, round(rangees)));
+a = largeur_case;  b = profondeur_case;  e = paroi;
+L = marge + nc * a + (nc + 1) * e;  H = marge + nr * b + (nr + 1) * e;
+lettres = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W",
+           "X", "Y", "Z"];
+si (creux > epaisseur - 3)
+    echo("Moins de 3 mm de fond : des cases moins creuses.");
+si (paroi < 3)
+    echo("Des parois de moins de 3 casseront : plus épaisses.");
+planche([L + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+k = rect(o, [L, H], 6);
+nommer(#k, "bloc");
+// la case (i, j) : colonne i de gauche à droite, rangée j de haut en bas
+function coin(i, j) = o + [marge + e + i * (a + e), e + (nr - 1 - j) * (b + e)];
+pour (i = [0 : nc - 1])
+    pour (j = [0 : nr - 1]) {
+        c = rect(coin(i, j), [a, b], 3);
+        nommer(#c, "case");
+    }
+pour (j = [0 : nr - 1]) {
+    M = mesure_texte(lettres[j], 10, "Hershey Sans1") / 10;
+    t = texte(o + [marge / 2 - 6 * (M[2] + M[3]) / 2, coin(0, j)[1] - o[1] + b / 2 - 3], 6, lettres[j], police = "Hershey Sans1");
+    nommer(#t, "lettre");
+}
+pour (i = [0 : nc - 1]) {
+    s = str(i + 1);
+    M = mesure_texte(s, 10, "Hershey Sans1") / 10;
+    t = texte(coin(i, 0) + [a / 2 - 6 * (M[2] + M[3]) / 2, b + e + marge / 2 - 3], 6, s, police = "Hershey Sans1");
+    nommer(#t, "chiffre");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "lettre", outil = "Pointe V 90", profondeur = 0.6, nom = "Lettres");
+usinage("gravure", "chiffre", outil = "Pointe V 90", profondeur = 0.6, nom = "Chiffres");
+usinage("poche", "case", outil = "Boule Ø6", profondeur = creux, passe = 2, nom = "Cases");
+usinage("contour", "bloc", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Bloc");
