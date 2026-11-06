@@ -2,6 +2,23 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+   "date": "2026-11-06",
+   "titre": "Un atelier Relief plus clair, un rectangle tracé par son centre et des fichiers de relief bien plus légers",
+   "points": [
+    "Atelier Relief : des grandes bulles dessinées sur les choix « Où usiner » et « La pièce ». On pose la souris, le dessin et l'explication viennent ; l'écran reste court.",
+    "L'étape Usiner du relief est allégée : moins de texte, des dessins plus grands, la précision de la carte repliée.",
+    "Sans pièce choisie, « Tout le rectangle » s'allume, et un bouton mène au choix de la pièce ; une pièce choisie se change sans effacer son contour.",
+    "Le relief se voit sur le brut dans la vue Croquis de l'atelier : on le place en voyant ce qu'on fait.",
+    "Une poche qui enlèverait le haut d'un relief se signale, et un bouton descend le relief d'autant.",
+    "Le bombé d'un grand carré ne fige plus l'écran : 1,7 s au lieu de 57 s.",
+    "« Outil de dégagement » devient « Fraise pour dégrossir », avec un dessin qui montre à quoi elle sert.",
+    "Le rectangle se trace aussi par son centre : Maj au premier clic, et le centre reste attaché au point visé.",
+    "Compactage 3D à 0,02 mm d'office dans un document neuf : sur un médaillon de 120 mm, 12 à 20 fois moins de points.",
+    "Au Pilotage, un déplacement tenu s'arrête seul si le logiciel cesse de répondre un instant.",
+    "Simulation : plus de mur fantôme au bord du brut pendant la lecture."
+   ]
+  },
+  {
     "date": "2026-11-05",
     "titre": "La poche en cascade montre ses deux fraises, et la durée compte le temps de les changer",
     "points": [
