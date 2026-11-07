@@ -2,6 +2,19 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+   "date": "2026-11-07",
+   "titre": "Un modèle 3D net dans le Relief, et des poches à fond plat qui remontent en quart de rond",
+   "points": [
+    "Relief : « Rayon du fond », sous le profil Rond d'un creux. Un arc de ce rayon le long du bord, puis un fond bien plat : la poche d'un plateau d'apéro, ou d'un vide-poche.",
+    "Un modèle 3D gagne en finesse : 1 500 points sur le grand côté en Automatique au lieu de 500. Les parois raides ne sortent plus en dents de peigne.",
+    "« Adoucir les grandes marches » ne coupe plus un modèle 3D en arcs et ne l'aplatit plus : pattes et volumes restent entiers, et le détail ressort mieux.",
+    "Nouveau réglage « Renforcer le détail » : le gros volume s'écrase, le détail fin garde sa hauteur. Un modèle ramené à 5 mm reste lisible.",
+    "« Choisir l'angle » : des boutons au degré près et un bouton « À plat », pour redresser un modèle sans y passer dix minutes. Le fondu du bord proposé passe de 6 % à 2 %.",
+    "L'aperçu du Relief devient deux fois plus fin au repos : les pointillés le long des silhouettes, que la carte usinée n'a pas, se voient bien moins.",
+    "Photo lissée : plus de peignes le long des falaises d'un relief."
+   ]
+  },
+  {
    "date": "2026-11-06",
    "titre": "Un atelier Relief plus clair, un rectangle tracé par son centre et des fichiers de relief bien plus légers",
    "points": [
@@ -15,35 +28,39 @@
     "Le rectangle se trace aussi par son centre : Maj au premier clic, et le centre reste attaché au point visé.",
     "Compactage 3D à 0,02 mm d'office dans un document neuf : sur un médaillon de 120 mm, 12 à 20 fois moins de points.",
     "Au Pilotage, un déplacement tenu s'arrête seul si le logiciel cesse de répondre un instant.",
-    "Simulation : plus de mur fantôme au bord du brut pendant la lecture."
+    "Simulation : plus de mur fantôme au bord du brut pendant la lecture.",
+    "Vectoriser une image : dans le menu Fichier, on choisit son seuil et son lissage, l'image devient un dessin qu'on retouche.",
+    "Sept fraises de plus dans la bibliothèque.",
+    "La pile du Relief se réordonne vraiment : toute la ligne reçoit la forme qu'on glisse. Le Seuil du noir monte à 90 %.",
+    "L'arbre des opérations dit « Le plus bas, sous le dessus » : l'épaisseur de bois qu'il faut, pour tout le programme."
    ]
   },
   {
-    "date": "2026-11-05",
-    "titre": "La poche en cascade montre ses deux fraises, et la durée compte le temps de les changer",
-    "points": [
-      "Une cascade dont les fraises sont à l'envers (la grosse à l'opération, la petite au dégagement) ne travaillait qu'avec une seule fraise, sans le dire. Un message l'explique sous la case, et un bouton « Échanger les deux fraises » la remet à l'endroit.",
-      "L'arbre des opérations donne à chaque fraise sa ligne et sa durée (« Ø6 ébauche », « Ø2 finition ») ; l'en-tête de l'outil montre les deux numéros.",
-      "La simulation peut s'arrêter à chaque changement d'outil, le temps de monter la fraise ; Espace reprend.",
-      "La durée estimée compte les changements d'outil : un temps à régler dans Réglages machine › Général.",
-      "Un document enregistré ailleurs emporte bien son image ou son maillage de relief, même quand le dossier d'arrivée ne les contient pas.",
-      "Dans un panneau étroit, la vue en coupe de la simulation passe avant les réglages de finesse et d'opacité, et reste à portée de clic."
-    ]
+   "date": "2026-11-05",
+   "titre": "La poche en cascade montre ses deux fraises, et la durée compte le temps de les changer",
+   "points": [
+    "Une cascade dont les fraises sont à l'envers (la grosse à l'opération, la petite au dégagement) ne travaillait qu'avec une seule fraise, sans le dire. Un message l'explique sous la case, et un bouton « Échanger les deux fraises » la remet à l'endroit.",
+    "L'arbre des opérations donne à chaque fraise sa ligne et sa durée (« Ø6 ébauche », « Ø2 finition ») ; l'en-tête de l'outil montre les deux numéros.",
+    "La simulation peut s'arrêter à chaque changement d'outil, le temps de monter la fraise ; Espace reprend.",
+    "La durée estimée compte les changements d'outil : un temps à régler dans Réglages machine › Général.",
+    "Un document enregistré ailleurs emporte bien son image ou son maillage de relief, même quand le dossier d'arrivée ne les contient pas.",
+    "Dans un panneau étroit, la vue en coupe de la simulation passe avant les réglages de finesse et d'opacité, et reste à portée de clic."
+   ]
   },
   {
-    "date": "2026-11-04",
-    "titre": "Le document qui emporte ses fichiers, des médaillons mieux finis et neuf retouches venues d'une démonstration",
-    "points": [
-      "Le fichier .vcam emporte l'image ou le maillage du relief, jusqu'à 25 Mo par fichier : un document s'échange et se réutilise sans perdre son modèle.",
-      "Finition 3D : un motif « Rectangles du milieu au bord », qui suit la forme du cadre, du tout petit au très grand.",
-      "Relief : en finesse Automatique, la carte garde la finesse d'une image de la pile, jusqu'à 0,05 mm.",
-      "Poche concentrique et spirale : le rattrapage juge le fond réellement laissé, ce qui évite des trajets inutiles sans laisser de matière.",
-      "Onglets répartis : ils se posent sur les côtés droits, plus dans les coins arrondis.",
-      "Réglages de la carte : « Appliquer » prend la valeur en cours de saisie. Dans le calcul des régimes, une broche baissée au plafond d'avance mène à la « Broche mini ».",
-      "Plus clair : un libellé trop long passe sur deux lignes, « Position saisie » devient « Zéro à un point du dessin », l'aperçu du cercle dit d'abord le Ø, et une barre d'outils se prend aussi au bouton du milieu.",
-      "La table de la machine se montre aussi en Croquis, et l'opacité du brut agit partout dans la vue 3D.",
-      "Le facteur de chronométrage se calcule de la durée annoncée et de la durée chronométrée."
-    ]
+   "date": "2026-11-04",
+   "titre": "Le document qui emporte ses fichiers, des médaillons mieux finis et neuf retouches venues d'une démonstration",
+   "points": [
+    "Le fichier .vcam emporte l'image ou le maillage du relief, jusqu'à 25 Mo par fichier : un document s'échange et se réutilise sans perdre son modèle.",
+    "Finition 3D : un motif « Rectangles du milieu au bord », qui suit la forme du cadre, du tout petit au très grand.",
+    "Relief : en finesse Automatique, la carte garde la finesse d'une image de la pile, jusqu'à 0,05 mm.",
+    "Poche concentrique et spirale : le rattrapage juge le fond réellement laissé, ce qui évite des trajets inutiles sans laisser de matière.",
+    "Onglets répartis : ils se posent sur les côtés droits, plus dans les coins arrondis.",
+    "Réglages de la carte : « Appliquer » prend la valeur en cours de saisie. Dans le calcul des régimes, une broche baissée au plafond d'avance mène à la « Broche mini ».",
+    "Plus clair : un libellé trop long passe sur deux lignes, « Position saisie » devient « Zéro à un point du dessin », l'aperçu du cercle dit d'abord le Ø, et une barre d'outils se prend aussi au bouton du milieu.",
+    "La table de la machine se montre aussi en Croquis, et l'opacité du brut agit partout dans la vue 3D.",
+    "Le facteur de chronométrage se calcule de la durée annoncée et de la durée chronométrée."
+   ]
   },
   {
    "date": "2026-11-03",
