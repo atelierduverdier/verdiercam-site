@@ -65,9 +65,11 @@ for vcs in "$LOGICIEL"/ressources/pieces/*.vcs; do
     R=""
     [ "$T" != "$THEME_OUVERT" ] && R="+clic:pieces:theme:$THEME_OUVERT+attendre:150+clic:pieces:theme:$T+attendre:150"
     BRUTE=$MAISON/$P.png
+    # LA GALERIE RESTE OUVERTE APRÈS « INSÉRER » (vu le 09/11/2026 : 71 captures montraient la galerie et non la pièce) :
+    # un clic sur sa croix (px:1232,93, la fenêtre centrée sur 1536 × 1024) la ferme avant de passer en Simulation.
     systemd-run --user --scope -q -p MemoryMax=6G timeout -s KILL 300 env HOME="$MAISON" XDG_CONFIG_HOME="$MAISON/config" \
         "$EXE" --capture "$BRUTE" --taille 1536x1024 --theme Clair \
-        --scenario "ctrl:N+attendre:300+clic:menu:Dessin+clic:article:Pièces paramétriques+attendre:500$R+clic:pieces:$P+attendre:2500+clic:pieces:Insérer+attendre:3000+px:1234,211+attendre:300+onglet:Simulation+attendre:500+vue:3D+attendre:300+sim:Pièce finie+attendre:15000+touches:0+attendre:1500" \
+        --scenario "ctrl:N+attendre:300+clic:menu:Dessin+clic:article:Pièces paramétriques+attendre:500$R+clic:pieces:$P+attendre:2500+clic:pieces:Insérer+attendre:3000+px:1232,93+attendre:300+px:1234,211+attendre:300+onglet:Simulation+attendre:500+vue:3D+attendre:300+sim:Pièce finie+attendre:15000+touches:0+attendre:1500" \
         > "$MAISON/$P.log" 2>&1 || true
     if grep -q "choisie « $P »" "$MAISON/$P.log" && [ -s "$BRUTE" ]; then
         # La vue 3D seule : sous la barre de la vue, entre l'arbre du projet et le panneau de droite.

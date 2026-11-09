@@ -2,6 +2,42 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+   "date": "2026-11-09",
+   "titre": "La boîte dans la masse, des fraises plus grosses dans « Nouvel outil », et des trous qui traversent vraiment",
+   "points": [
+    "Nouvelle pièce : la boîte dans la masse, base creusée et couvercle emboîté, rectangle, rond ou hexagone.",
+    "Photo de la pièce : le premier fond, « Comme la vue », garde le sol et le ciel choisis pour la vue 3D. Sans les chutes, l'ombre ne suit plus que les morceaux gardés.",
+    "Vue 3D : la taille du motif du sol se règle, de 10 à 500 %.",
+    "Bibliothèque d'outils : des fraises plus grosses, dans la grille de « Nouvel outil » comme dans la liste. En thème Gris bleu ou Vert, la partie qui coupe prend la couleur du thème.",
+    "Catalogue : trente et un trous « à travers » restaient borgnes de la pointe du foret ; ils traversent. L'engrenage se découpe dans 8 mm, à la portée de sa Ø3.",
+    "Perçage « à travers » avec un foret trop court : le panneau dit d'abord que la longueur utile est dépassée.",
+    "Une case à nombre quittée avec un calcul faux le dit quatre secondes sous la souris, et garde la valeur d'avant.",
+    "Réglages machine › Paramètres de la carte : avec une autre machine choisie dans la liste, une alerte rappelle que chaque réglage part à la carte branchée.",
+    "Un tableau de points enregistré par un tableur entre guillemets se lit ; un repère refusé par la carte ne se renvoie plus en boucle.",
+    "Poche en cascade : « Échanger les deux fraises » donne à la fine sa propre vitesse de plongée — elle plongeait à celle de la grosse.",
+    "Usinage sur deux faces : la vérification regarde aussi le dessous — un porte-outil qui entrerait dans le bois du dessous est signalé. Deux goupilles posées sur l'axe de retournement sont dites avant l'usinage.",
+    "Un G-code d'ailleurs écrit en minuscules : la fraise remonte de nouveau avant de reprendre après un changement d'outil, et l'avis d'un arrêt retrouve la fraise demandée.",
+    "Coller deux fois ne pose plus la seconde copie sur la première ; deux pièces aux noms voisins ne s'écrasent plus à l'export pièce par pièce.",
+    "En anglais, les pièces du catalogue s'usinent : leurs fraises sont retrouvées quelle que soit la langue.",
+    "Un fichier STEP abîmé ne ferme plus VerdierCAM à l'import : la ligne illisible est écartée, le reste se lit."
+   ]
+  },
+  {
+   "date": "2026-11-08",
+   "titre": "Une bibliothèque d'outils où l'on reconnaît chaque fraise, et la pièce posée dans un vrai décor",
+   "points": [
+    "Bibliothèque d'outils : « Nouvel outil » demande quelle fraise on a en main et montre dix-sept fraises dessinées pour de vrai — queue d'acier, partie qui coupe, goujures en hélice. On clique sa forme, il ne reste que ses cotes à remplir.",
+    "La fiche d'une fraise ne garde dépliées que les cotes de son type, et dit dans quelles opérations du document elle sert. Son nom suit ses cotes tant qu'on ne le tape pas ; « Changer de type » rouvre la grille des formes.",
+    "La liste des outils montre le dessin de chaque fraise. Une fraise qu'on crée soi-même choisit le sien parmi les dix-sept.",
+    "Vue 3D : un fond au choix, dans Affichage › Fond de la vue 3D… — un sol sous la pièce, un panorama photographié autour, une ombre douce pour la poser. Uni par défaut.",
+    "Brut : la matière se choisit sur un seul bouton, « Matière » — les teintes unies, dix-neuf bois en photo, des lamellés-collés bien contrastés et cinq métaux.",
+    "Simulation : la planche en bois photographié, éclairée comme un bois huilé, ou en MDF revêtu noir.",
+    "Croquis : la tangente se pose entre une courbe et un arc qui la prolonge, ou entre deux courbes qui se touchent.",
+    "La rampe d'un onglet suit le contour : elle n'entame plus le coin arrondi de la pièce.",
+    "Pilotage : Échap, Ctrl+. et ARRÊT finissent un déplacement à la main bouton tenu ; il ne repart qu'à un nouvel appui."
+   ]
+  },
+  {
    "date": "2026-11-07",
    "titre": "Un modèle 3D net dans le Relief, et des poches à fond plat qui remontent en quart de rond",
    "points": [
