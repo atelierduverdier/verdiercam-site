@@ -865,6 +865,23 @@ def main() -> None:
         manifeste = json.loads(publiee.read_text(encoding='utf-8'))
         if not str(manifeste.get('version', '')).strip()[:1].isdigit():
             sys.exit("generer : site/version-publiee.json sans « version » lisible")
+        # LA DATE DU MANIFESTE, GARDÉE (09/11/2026, Christophe : « oui » à la garde) : le logiciel la RETIENT et ne revient
+        # jamais en arrière (voir dans verdiercam-imgui la fonction RetenirJourDuManifeste) — c'est ce qui tient l'essai de
+        # 30 jours face à une horloge reculée. Une date fausse (2027 au lieu de 2026, la date de sortie prévue mise trop tôt)
+        # finirait l'essai de tous les postes d'un coup, et la corriger après ne rendrait rien. Écrite AAAA-MM-JJ, et jamais
+        # après aujourd'hui : sinon rien ne se publie.
+        if 'date' in manifeste:
+            from datetime import date as jour
+            texte = str(manifeste['date'])
+            try:
+                d = jour.fromisoformat(texte)
+            except ValueError:
+                d = None
+            if d is None or len(texte) != 10 or texte != d.isoformat():
+                sys.exit(f"generer : la « date » de site/version-publiee.json ({texte}) ne s'écrit pas AAAA-MM-JJ — rien n'est publié")
+            if d > jour.today():
+                sys.exit(f"generer : la « date » de site/version-publiee.json ({texte}) est après aujourd'hui "
+                         f"({jour.today().isoformat()}) : les essais en cours s'arrêteraient — rien n'est publié")
         (PUBLIC / 'version.json').write_text(json.dumps(manifeste, ensure_ascii=False) + '\n', encoding='utf-8')
 
     polices = publier_polices()

@@ -82,8 +82,13 @@ Le logiciel lit au lancement `https://verdiercam.fr/version.json` et montre sa v
 l'interrupteur : sans lui, aucun client ne voit passer une version.
 
 ```json
-{"version": "0.9.160", "page": "https://verdiercam.fr/#telecharger", "notes": "Pignons, script façon OpenSCAD"}
+{"version": "0.9.160", "page": "https://verdiercam.fr/#telecharger", "notes": "Pignons, script façon OpenSCAD", "date": "2026-10-14"}
 ```
+
+**`date` : le jour de la publication, AAAA-MM-JJ, jamais plus tard qu'aujourd'hui.** Le logiciel la retient et ne revient
+jamais en arrière : c'est ce qui tient l'essai de 30 jours. Une date fausse (2027 au lieu de 2026, ou la date de sortie
+prévue mise trop tôt) finirait l'essai de tous les postes, sans retour possible. `generer.py` refuse de publier une date
+mal écrite ou dans le futur.
 
 Absent, le site ne publie pas de manifeste et le logiciel reste en gris.
 
