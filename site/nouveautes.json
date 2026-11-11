@@ -2,6 +2,34 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+   "date": "2026-11-11",
+   "titre": "Le mode d'emploi suit, et le programme est rangé",
+   "points": [
+    "Le mode d'emploi, en ligne comme sous F1 dans le logiciel, décrit les nouveautés de la veille : Préférences en pages, clic droit dans le vide, refus qui proposent, bibliothèque d'outils, en-tête d'une opération.",
+    "En coulisses, le programme est rangé en fichiers plus petits et ses contrôles en un fichier chacun : rien ne change à l'écran ni dans les parcours — les 832 parcours relevés sur 303 documents restent identiques —, mais chaque correction à venir se fera plus vite."
+   ]
+  },
+  {
+   "date": "2026-11-10",
+   "titre": "Des colonnes plus larges, des refus qui proposent une solution, Ctrl+K jusqu'aux réglages et des Préférences en pages",
+   "points": [
+    "Les colonnes de gauche et de droite sont plus larges d'office : les onglets du panneau de droite se lisent en entier, et l'arbre garde le nom des opérations — l'œil et la corbeille apparaissent au survol.",
+    "Une opération refusée propose une solution : Perçage, Hélicoïdal ou Filetage posés sur un contour proposent de percer les cercles du dessin ; une Poche sur un trait ouvert propose une Rainure ; un Contour sans rien de choisi propose le tour extérieur de la pièce.",
+    "Le refus reste affiché tant que la sélection ne change pas, et « Pourquoi ? » ouvre la fiche de la famille dans le mode d'emploi.",
+    "Après le choix de la fraise d'une opération neuve, « Suivant : régler l'opération → » ; l'en-tête de l'opération rappelle sa profondeur, par exemple « Poche à 8 mm · T1 ».",
+    "Ctrl+K mène aussi aux réglages du brut et de l'opération — dimensions, décalages, profondeur, passe, vitesses —, la case amenée sous les yeux.",
+    "Nouvelle pièce : le panneau Brut s'ouvre devant, la largeur entourée, pour commencer par les dimensions ; « Nouvelle pièce » aussi dans la fenêtre d'accueil.",
+    "Les Préférences sont rangées en pages, Général et Apparence, chaque groupe dans sa carte, comme les Réglages machine.",
+    "Un clic droit dans le vide de la vue ouvre un petit menu : Coller, Tout sélectionner, Cadrer, Grille visible, Accrocher à la grille.",
+    "Bibliothèque d'outils : la liste de gauche montre chaque fraise en silhouette, dessinée d'après ses cotes ; les dessins détaillés restent dans « Nouvel outil » et sur la fiche. Elle s'ouvre aussi depuis le menu Machine.",
+    "Brut : « Opacité » devient « Opacité à l'écran » et passe après la matière — un réglage de l'affichage, pas une propriété du bois.",
+    "Les raccourcis à deux touches s'écrivent « G puis T » ; la bulle d'une icône du ruban dit son groupe, « Contraintes › Horizontale (H) » ; un article de menu grisé dit pourquoi au survol.",
+    "En Débutant, le bas de la fenêtre s'ouvre sur « Travail effectué » ; au Pilotage, le chiffre des curseurs Avance et Broche ne se cache plus sous le pouce.",
+    "Simulation : « Aller à » reste sur la ligne de la lecture, et le panneau tient dans la fenêtre.",
+    "Une bibliothèque d'outils Fusion 360 aux réglages inattendus ne ferme plus VerdierCAM à l'import."
+   ]
+  },
+  {
    "date": "2026-11-09",
    "titre": "La boîte dans la masse, des fraises plus grosses dans « Nouvel outil », et des trous qui traversent vraiment",
    "points": [
@@ -19,7 +47,8 @@
     "Un G-code d'ailleurs écrit en minuscules : la fraise remonte de nouveau avant de reprendre après un changement d'outil, et l'avis d'un arrêt retrouve la fraise demandée.",
     "Coller deux fois ne pose plus la seconde copie sur la première ; deux pièces aux noms voisins ne s'écrasent plus à l'export pièce par pièce.",
     "En anglais, les pièces du catalogue s'usinent : leurs fraises sont retrouvées quelle que soit la langue.",
-    "Un fichier STEP abîmé ne ferme plus VerdierCAM à l'import : la ligne illisible est écartée, le reste se lit."
+    "Un fichier STEP abîmé ne ferme plus VerdierCAM à l'import : la ligne illisible est écartée, le reste se lit.",
+    "L'avant-vol ne dit plus « plus profond que le brut » sur un perçage qui débouche ; sous Windows, deux pièces dont les noms ne diffèrent que par une majuscule accentuée ne s'écrasent plus à l'export."
    ]
   },
   {
