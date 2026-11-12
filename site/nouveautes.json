@@ -2,11 +2,34 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+   "date": "2026-11-12",
+   "titre": "Une revue de tout le programme, des parois de poche sans vagues et des fonds plats au catalogue",
+   "points": [
+    "Poche en zigzag : nouveau réglage « Finition des parois ». Le va-et-vient s'arrête à cette distance des parois et des îlots, puis un seul tour enlève la même épaisseur partout : la paroi ne garde plus la trace des allers-retours. Éteint d'office ; 0,3 à 0,5 mm suffisent.",
+    "Catalogue : la boîte dans la masse et le casier à composants ont un fond plat. La fraise droite finit le fond, la boule ne passe plus qu'au pied des murs pour le congé de 3 mm — elle balayait tout le fond et y laissait des crêtes de 0,6 mm.",
+    "Calcul : une fraise qui ne coupe pas au centre entre en rampe ou en hélice à l'angle permis, cannelures comprises ; plus de plongée droite aux paliers du surfaçage ; l'ébauche 2.5D rampe chaque plongée depuis le bois resté sous la fraise ; la passe de paroi d'une rainure en épingle reste dans la saignée ; le Martelé au fond d'une poche ne traverse plus le bois entre deux zones.",
+    "Poche : la spirale autour d'un îlot tourne dans le sens de la paroi, et celle d'un anneau étroit suit la paroi.",
+    "Usinage du dessous : la poche, la poche en cascade, l'Ébavurer et la Révolution se retournent comme il faut ; Ctrl+A et le clic sur un contour ne prennent plus les formes de l'autre face ; les retouches du G-code ne passent plus dans le fichier de l'autre face.",
+    "G-code : une finition vide n'emporte plus le changement de repère, et après un changement d'outil la fraise ne redescend plus au-dessus de la pièce quittée. Avec un RichAuto en « Pièces identiques », plus de diagonale montante vers la pièce suivante. Chaque fichier par outil dit sa durée.",
+    "Pilotage : un programme en coordonnées relatives (G91) reprend comme il était ; la broche s'arrête au changement d'outil retenu et repart à la reprise ; relancer avec une autre fraise que celle du zéro est refusé ; « T2 » puis « M6 » tapés à la console passent par la garde du martyr ; un programme d'un million de lignes ne fige plus le pupitre au changement d'outil.",
+    "L'arrêt d'urgence Ctrl+. part aussi sur un clavier AZERTY, et quitter VerdierCAM en plein usinage demande d'abord.",
+    "Laser : la découpe sur une pièce 3D garde la butée du bec — 8 mm en 4 passes ne descend plus dans le bois ; la puissance réglée pour une carte GRBL ne multiplie plus celle d'un programme LinuxCNC ; la reprise d'un programme n'allume plus le faisceau tête immobile ; le cadrage ne part plus de X0 Y0. Des pièces identiques sur plusieurs repères sont refusées, et le refus dit quoi faire.",
+    "Relief : la profondeur d'un relief de l'atelier Relief se lit au panneau d'usinage et se règle dans Relief ; les paliers d'un relief usiné se creusent à leur vraie profondeur. Graver une image : une gravure reprise dans l'autre langue remplace l'ancienne, et Ctrl+Z referme la fenêtre.",
+    "Croquis : un texte tourné, mis à l'échelle ou en miroir devient des formes ordinaires, et la console le dit — tourné avec son chemin, il reste un texte. Un contour qui se croise lui-même (une étoile d'un seul trait, un huit) n'est plus décalé de travers : il est refusé, avec la raison. « Combiner › Réunion » de cent formes ne fige plus l'écran.",
+    "Une opération neuve ne reprend plus de la précédente ce qui tient à ses formes : onglets posés à la main, Départ, face. Deux réglages sans effet sur la machine choisie sont grisés, avec la raison.",
+    "Réglages et documents : importer les réglages d'un autre poste ne prend plus sa langue ni sa date d'essai ; l'écart du zéro remis à 0 le reste après l'enregistrement ; un document ouvert par un lien s'enregistre dans le vrai fichier ; l'image d'une gravure part avec le document.",
+    "Une pièce du catalogue ne se réécrit plus par ses variables : « Enregistrer dans le script » modifiait le fichier livré avec VerdierCAM.",
+    "Quinze titres (Les formes du relief, Nouvel outil, le laser, le mode Script…) sortaient 20 % trop gros : ils sont à leur taille."
+   ]
+  },
+  {
    "date": "2026-11-11",
    "titre": "Le mode d'emploi suit, et le programme est rangé",
    "points": [
     "Le mode d'emploi, en ligne comme sous F1 dans le logiciel, décrit les nouveautés de la veille : Préférences en pages, clic droit dans le vide, refus qui proposent, bibliothèque d'outils, en-tête d'une opération.",
-    "En coulisses, le programme est rangé en fichiers plus petits et ses contrôles en un fichier chacun : rien ne change à l'écran ni dans les parcours — les 832 parcours relevés sur 303 documents restent identiques —, mais chaque correction à venir se fera plus vite."
+    "En coulisses, le programme est rangé en fichiers plus petits et ses contrôles en un fichier chacun : rien ne change à l'écran ni dans les parcours — les 832 parcours relevés sur 303 documents restent identiques —, mais chaque correction à venir se fera plus vite.",
+    "Croquis : une barre d'outils tirée près du haut ou du bas de la vue se couche, près d'un côté elle se met debout ; le bouton qui replie le panneau de droite ne se cache plus sous elles.",
+    "Ctrl+K lance la ligne surlignée et mène au réglage en Débutant aussi. Après un refus, le tour extérieur et la Rainure proposés restent sur leur face, et le Perçage proposé ne prend plus un cercle de construction."
    ]
   },
   {

@@ -72,10 +72,13 @@ for vcs in "$LOGICIEL"/ressources/pieces/*.vcs; do
         --scenario "ctrl:N+attendre:300+clic:menu:Dessin+clic:article:Pièces paramétriques+attendre:500$R+clic:pieces:$P+attendre:2500+clic:pieces:Insérer+attendre:3000+px:1232,93+attendre:300+px:1234,211+attendre:300+onglet:Simulation+attendre:500+vue:3D+attendre:300+sim:Pièce finie+attendre:15000+touches:0+attendre:1500" \
         > "$MAISON/$P.log" 2>&1 || true
     if grep -q "choisie « $P »" "$MAISON/$P.log" && [ -s "$BRUTE" ]; then
-        # La vue 3D seule : sous la barre de la vue, entre l'arbre du projet et le panneau de droite.
+        # La vue 3D seule : sous la légende des parcours, entre l'arbre du projet et le panneau de droite. LES COLONNES SONT
+        # PLUS LARGES DEPUIS LE 10/11/2026 (logiciel 0.99.6xx) : l'ancien cadre (308, 162, 1224, 790) prenait la légende,
+        # le bord de l'arbre et le haut du panneau de droite (vu le 12/11 sur la boîte dans la masse). 800 × 548, le rapport
+        # 916/628 de la page : ni les flèches de repli des panneaux sur les bords, ni l'étiquette de l'opération en bas.
         python3 -c "
 from PIL import Image
-Image.open('$BRUTE').convert('RGB').crop((308, 162, 1224, 790)).save('$SORTIE/$P.png', optimize=True)"
+Image.open('$BRUTE').convert('RGB').crop((348, 186, 1148, 734)).save('$SORTIE/$P.png', optimize=True)"
         echo "$EMPREINTE" > "$SORTIE/$P.sha1"
         faites=$((faites + 1)); echo "  ok  $P"
     else
