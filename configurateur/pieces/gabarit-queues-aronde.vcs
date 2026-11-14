@@ -1,0 +1,50 @@
+// GABARIT DE QUEUES D'ARONDE — le traceur du menuisier : accroché au bout de la planche par son talon, il donne la pente
+// des queues d'un trait de crayon ou de pointe à tracer. Une pente à chaque bout : 1:6 pour les bois tendres, 1:8 pour les
+// bois durs.
+// thème : Atelier et gabarits
+//
+// LA LAME : `longueur` × `largeur`. Le TALON : une bande de `talon` le long de son bord du bas, laissée à pleine
+// épaisseur, le reste de la lame creusé par DESSOUS de `hauteur_talon` — le talon descend le long du bout de la planche,
+// la lame pose à plat sur sa face ; le bord de la feuillure, contre le bout de la planche, est la RÉFÉRENCE. Les deux
+// bouts de la lame sont coupés en pente : 1 de côté pour `pente_tendre` (à gauche) et pour `pente_dur` (à droite) de
+// hauteur ; chaque pente gravée à côté.
+//
+// L'USINAGE : la feuillure du dessous (Poche, face du dessous), les pentes gravées (Gravure, Pointe V 90°), puis la lame
+// (Contour extérieur, onglets). Laiton ou alu de 6 pour un outil de toujours, ou hêtre de 12 ; ici en bois.
+
+longueur   = 110;    // longueur de la lame, au bord de référence (mm)
+largeur    = 60;     // largeur de la lame (mm)
+talon      = 12;     // largeur du talon (mm)
+hauteur_talon = 6;   // le talon descend de tant (mm)
+pente_tendre = 6;    // la pente de gauche : 1 pour tant (bois tendre)
+pente_dur  = 8;      // la pente de droite : 1 pour tant (bois dur)
+epaisseur  = 12;     // épaisseur (mm)
+rognure    = 5;      // du bord du brut à la lame (mm)
+
+L = longueur;  W = largeur;
+dg = W / pente_tendre;  dd = W / pente_dur;    // de combien chaque bout rentre en haut
+si (hauteur_talon > epaisseur - 4)
+    echo("Le talon laisse moins de 4 mm de lame : moins haut.");
+planche([L + 2 * rognure, W + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+// La lame : le bas de toute la longueur ; les deux bouts rentrent en montant, chacun de sa pente.
+g = polyligne([o, o + [L, 0], o + [L - dd, W], o + [dg, W]], fermee = vrai);
+nommer(#g, "lame");
+pour (k = [0 : 1]) {
+    s = k == 0 ? str("1:", pente_tendre) : str("1:", pente_dur);
+    M = mesure_texte(s, 10, "Hershey Sans1") / 10;
+    x = k == 0 ? dg + 14 : L - dd - 14 - 6 * (M[3] - M[2]);
+    t = texte(o + [x - 6 * M[2], W - 14], 6, s, police = "Hershey Sans1");
+    nommer(#t, "pente");
+}
+// Le dessous creusé au-dessus du talon (débordant de la lame) ; la référence est le bord bas de la lame.
+face("dessous");
+f = rect(o + [-3, talon], [L + 6, W - talon + 3]);
+nommer(#f, "feuillure");
+face("dessus");
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "feuillure", outil = "Fraise droite Ø8", profondeur = hauteur_talon, passe = 3, nom = "Feuillure du dessous");
+usinage("gravure", "pente", outil = "Pointe V 90", profondeur = 0.4, nom = "Pentes");
+usinage("contour", "lame", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Lame");

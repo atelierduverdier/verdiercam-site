@@ -1,0 +1,92 @@
+// MORPION ET PUISSANCE 4 — un plateau de jeu à cases creusées et ses pions découpés dans la même planche, marqués d'une
+// croix ou d'un rond : le morpion de voyage (3 × 3) ou le puissance 4 à plat (7 × 6).
+// thème : Jeux et jouets
+//
+// LE JEU : `jeu` = 1, le morpion — 3 × 3 cases, 5 pions par joueur ; `jeu` = 2, le puissance 4 joué à plat — 7 colonnes
+// de 6 cases, 21 pions par joueur (on pose son pion dans la case libre la plus basse de la colonne). Les cases sont des
+// coupelles rondes (`d_case`) creusées de `prof_case` : un pion de `d_pion` y entre avec du jeu. Un quadrillage gravé
+// les sépare. Les pions du joueur 1 portent une croix, ceux du joueur 2 un rond.
+//
+// L'USINAGE (déclaré en bas) :
+//   · les cases : Poche, fraise droite Ø6, `prof_case` ;
+//   · le quadrillage et les marques des pions : Gravure, Pointe V 90°, 1 mm ;
+//   · les pions : Contour extérieur, fraise droite Ø6, deux onglets chacun — puis le plateau, quatre onglets.
+// Des pions de 18 mm sont des palets ; pour des jetons plus fins, les découper dans une autre planche (`pions` = 0 ici).
+
+jeu        = 1;      // 1 : morpion (3 × 3) ; 2 : puissance 4 à plat (7 × 6)
+d_case     = 44;     // Ø d'une case (mm)
+pas_case   = 54;     // d'une case à la suivante (mm)
+prof_case  = 5;      // profondeur des cases (mm)
+d_pion     = 40;     // Ø d'un pion (mm) — moins que la case
+pions      = 1;      // découper les pions dans la même planche (1 : oui, 0 : non)
+epaisseur  = 18;     // épaisseur du bois (mm)
+marge      = 20;     // des cases au bord du plateau (mm)
+R_coin     = 10;     // rayon des coins du plateau (mm)
+espace     = 10;     // entre deux pièces sur la planche (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+nc = jeu == 2 ? 7 : 3;                       // colonnes
+nr = jeu == 2 ? 6 : 3;                       // rangées
+np = jeu == 2 ? 21 : 5;                      // pions par joueur
+si (d_pion > d_case - 2)
+    echo("Le pion est presque aussi large que la case : il y entrera mal (au moins 2 mm de moins).");
+
+// ── Le plateau ──
+L = 2 * marge + (nc - 1) * pas_case + d_case;
+H = 2 * marge + (nr - 1) * pas_case + d_case;
+o = [rognure, rognure];
+// Les pions : une grille à droite du plateau, rangée par rangée, aussi haute que lui (ou plus, s'il le faut).
+pp = d_pion + espace;                        // le pas des pions
+par_col = max(1, floor((H + espace) / pp));  // pions par colonne
+ncol_p = pions == 1 ? ceil(2 * np / par_col) : 0;
+H_tot = max(H, pions == 1 ? min(2 * np, par_col) * pp - espace : 0);
+planche([2 * rognure + L + (pions == 1 ? espace + ncol_p * pp - espace : 0), 2 * rognure + H_tot, epaisseur]);
+
+p = rect(o, [L, H], R_coin);
+nommer(#p, "plateau");
+function centre(i, j) = o + [marge + d_case / 2 + i * pas_case, marge + d_case / 2 + j * pas_case];
+pour (i = [0 : nc - 1])
+    pour (j = [0 : nr - 1]) {
+        c = cercle(centre(i, j), d_case / 2);
+        nommer(#c, "case");
+    }
+// Le quadrillage : une ligne entre deux colonnes, entre deux rangées, sur la largeur des cases.
+x0 = o[0] + marge / 2;  x1 = o[0] + L - marge / 2;
+y0 = o[1] + marge / 2;  y1 = o[1] + H - marge / 2;
+pour (i = [1 : nc - 1]) {
+    q = ligne([o[0] + marge + d_case / 2 + (i - 0.5) * pas_case, y0], [o[0] + marge + d_case / 2 + (i - 0.5) * pas_case, y1]);
+    nommer(#q, "quadrillage");
+}
+pour (j = [1 : nr - 1]) {
+    q = ligne([x0, o[1] + marge + d_case / 2 + (j - 0.5) * pas_case], [x1, o[1] + marge + d_case / 2 + (j - 0.5) * pas_case]);
+    nommer(#q, "quadrillage");
+}
+
+// ── Les pions : le joueur 1 (une croix), puis le joueur 2 (un rond) ──
+m = d_pion * 0.25;                           // la demi-branche de la croix, le rayon du rond
+si (pions == 1)
+    pour (k = [0 : 2 * np - 1]) {
+        c = o + [L + espace + floor(k / par_col) * pp + d_pion / 2, (k % par_col) * pp + d_pion / 2];
+        d = cercle(c, d_pion / 2);
+        nommer(#d, "pion");
+        si (k < np) {
+            a = ligne(c + [-m, -m], c + [m, m]);
+            nommer(#a, "marque");
+            b = ligne(c + [-m, m], c + [m, -m]);
+            nommer(#b, "marque");
+        } sinon {
+            r = cercle(c, m);
+            nommer(#r, "marque");
+        }
+    }
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "case", outil = "Fraise droite Ø6", profondeur = prof_case, passe = 2.5, nom = "Cases");
+usinage("gravure", "quadrillage", outil = "Pointe V 90", profondeur = 1, nom = "Quadrillage");
+si (pions == 1) {
+    usinage("gravure", "marque", outil = "Pointe V 90", profondeur = 1, nom = "Marques des pions");
+    usinage("contour", "pion", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+            onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Pions");
+}
+usinage("contour", "plateau", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Détourage du plateau");

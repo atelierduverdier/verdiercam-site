@@ -1,0 +1,46 @@
+// PORTE-SACHETS DE THÉ — le bloc où les sachets en enveloppe se rangent debout, une case par sorte, son nom gravé devant :
+// on voit ce qui reste, on prend celui qu'on veut d'un doigt.
+// thème : Cuisine
+//
+// LES CASES : une par sorte de `sortes`, chacune de la largeur d'une enveloppe (`largeur_sachet`) plus 2 et assez longue
+// pour `sachets` enveloppes de `epaisseur_sachet`, creusées de `creux` ; `paroi` de bois entre deux. Une ENCOCHE en
+// demi-ellipse au milieu de l'avant de chaque case pour attraper le premier sachet. Le nom de la sorte gravé devant.
+//
+// L'USINAGE : les noms (Gravure, Pointe V 90°), les cases et leurs encoches (Poche, fraise droite Ø6), puis le bloc
+// (Contour extérieur, onglets). Chêne ou hêtre de 18 ; huile alimentaire.
+
+largeur_sachet = 75; // largeur d'une enveloppe de sachet (mm)
+epaisseur_sachet = 5;  // épaisseur d'une enveloppe (mm)
+sachets    = 6;      // enveloppes par case
+creux      = 15;     // profondeur des cases (mm) : 18 au plus pour la fraise Ø6, 3 de fond au moins
+paroi      = 8;      // bois entre deux cases (mm)
+epaisseur  = 18;     // épaisseur (mm)
+rognure    = 5;      // du bord du brut au bloc (mm)
+
+sortes = ["VERT", "NOIR", "MENTHE", "TILLEUL", "ROOIBOS", "VERVEINE"];
+n = len(sortes);  lc = largeur_sachet + 2;  pc = sachets * epaisseur_sachet + 4;   // une case : en travers, en profondeur
+L = n * lc + (n + 1) * paroi;  H = pc + 2 * paroi + 16;   // 16 devant pour les noms
+si (creux > epaisseur - 3)
+    echo("Moins de 3 mm sous les cases : moins creuses.");
+planche([L + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+b = rect(o, [L, H], 6);
+nommer(#b, "bloc");
+pour (k = [0 : n - 1]) {
+    x0 = paroi + k * (lc + paroi);  y0 = 16 + paroi;
+    // la case et son encoche (une demi-ellipse de 28 × 6,3 qui mord dans la paroi de devant)
+    q = concat([o + [x0, y0]],
+               [for (i = [0 : 12]) o + [x0 + lc / 2 + 14 * cos(180 + 180 * i / 12), y0 + 6.3 * sin(180 + 180 * i / 12)]],
+               [o + [x0 + lc, y0], o + [x0 + lc, y0 + pc], o + [x0, y0 + pc]]);
+    c = polyligne(q, fermee = vrai);
+    nommer(#c, "case");
+    M = mesure_texte(sortes[k], 10, "Hershey Sans1") / 10;
+    t = texte(o + [x0 + lc / 2 - 5 * (M[2] + M[3]) / 2, 4], 5, sortes[k], police = "Hershey Sans1");
+    nommer(#t, "nom");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "nom", outil = "Pointe V 90", profondeur = 0.5, nom = "Noms");
+usinage("poche", "case", outil = "Fraise droite Ø6", profondeur = creux, passe = 3, nom = "Cases");
+usinage("contour", "bloc", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Bloc");

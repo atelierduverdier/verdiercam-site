@@ -1,0 +1,50 @@
+// PLAQUE DE PALIERS DE PROFONDEUR — une rangée de poches de plus en plus profondes, chacune gravée de sa cote : on la
+// mesure au pied à coulisse, et l'on sait ce que la machine creuse vraiment (le zéro Z, la flèche de la fraise, le jeu
+// de l'axe). Une jauge de bois pour régler ensuite les incrustations, les feuillures, les mi-bois.
+// thème : Atelier et gabarits
+//
+// LES PALIERS : `nombre` poches de `largeur_palier` × `hauteur_palier`, la première à `prof_min`, chacune `pas` plus
+// profonde que la précédente. Sa cote est gravée dessous. Comparer chaque fond au pied à coulisse (la jauge de
+// profondeur, depuis le dessus) : un écart constant est le zéro Z ; un écart qui grandit, la passe ou la machine.
+//
+// L'USINAGE : chaque palier sa Poche (fraise droite Ø6, une passe par mm), les cotes gravées (Pointe V 90°, 0,5 mm), la
+// plaque détourée (onglets). Surfacer la planche d'abord : le dessus est la référence.
+
+nombre     = 10;     // nombre de paliers
+prof_min   = 0.5;    // profondeur du premier palier (mm)
+pas        = 0.5;    // d'un palier au suivant (mm)
+largeur_palier = 20; // largeur d'une poche (mm)
+hauteur_palier = 30; // hauteur d'une poche (mm)
+ecart      = 6;      // matière entre deux poches (mm)
+police     = "Hershey Sans1";    // la police des cotes
+epaisseur  = 18;     // épaisseur de la planche (mm)
+marge      = 10;     // des poches aux bords de la plaque (mm)
+rognure    = 5;      // du bord du brut à la plaque (mm)
+
+n = max(1, round(nombre));
+function prof(k) = prof_min + k * pas;
+si (prof(n - 1) > epaisseur - 3)
+    echo(str("Le dernier palier (", prof(n - 1), " mm) laisse moins de 3 mm de fond : moins de paliers, ou un pas plus petit."));
+hl = min(5, largeur_palier / 4);              // la hauteur des cotes gravées
+W = 2 * marge + n * largeur_palier + (n - 1) * ecart;
+H = 2 * marge + hauteur_palier + hl + 6;
+planche([W + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+p = rect(o, [W, H], 4);
+nommer(#p, "plaque");
+pour (k = [0 : n - 1]) {
+    x = marge + k * (largeur_palier + ecart);
+    q = rect(o + [x, marge + hl + 6], [largeur_palier, hauteur_palier], 3.2);
+    nommer(#q, str("palier ", k + 1));
+    s = str(prof(k));
+    M = mesure_texte(s, 10, police) / 10;
+    t = texte(o + [x + largeur_palier / 2 - hl * (M[2] + M[3]) / 2, marge], hl, s, police = police);
+    nommer(#t, "cote");
+}
+
+// ── L'USINAGE, déclaré : une poche par palier, chacune à sa profondeur ──
+pour (k = [0 : n - 1])
+    usinage("poche", str("palier ", k + 1), outil = "Fraise droite Ø6", profondeur = prof(k), passe = 1, nom = str("Palier ", prof(k), " mm"));
+usinage("gravure", "cote", outil = "Pointe V 90", profondeur = 0.5, nom = "Cotes");
+usinage("contour", "plaque", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Détourage de la plaque");

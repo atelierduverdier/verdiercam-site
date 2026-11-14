@@ -1,0 +1,101 @@
+// BOÎTE À COUVERCLE COULISSANT — la boîte à crayons, à dominos, à thé : le couvercle glisse dans deux rainures des côtés
+// et vient buter dans celle du dos ; il passe par-dessus le devant, plus bas. Six pièces, tenons traversants dans le fond.
+// thème : Rangement
+//
+// LA CAISSE : `longueur` × `largeur` à l'intérieur, `hauteur` de haut. Les CÔTÉS courent sur toute la longueur ; le DOS
+// et le DEVANT se logent entre eux. Côtés et dos portent, à `rainure_haut` de leur haut, une RAINURE de la `languette` du
+// couvercle plus son jeu, creusée de `profondeur_rainure` ; le devant s'arrête au bas de la rainure. Chaque paroi entre
+// dans le FOND par des tenons (le fond déborde de 8 tout autour). LE COUVERCLE est feuilluré sur trois chants (dessus) :
+// il n'y reste qu'une languette de `languette`, qui glisse dans les rainures ; une encoche pour le doigt à l'avant.
+//
+// L'USINAGE : les rainures, les feuillures et l'encoche (Poche ; les rainures et feuillures débordent des pièces, pour
+// s'ouvrir franchement), les mortaises (Contour intérieur, coins dégagés), puis les pièces (Contour extérieur, coins
+// dégagés aux tenons, onglets). Bois dur de 9.
+
+longueur   = 160;    // longueur intérieure (mm)
+largeur    = 90;     // largeur intérieure (mm)
+hauteur    = 60;     // hauteur des côtés (mm)
+languette  = 4;      // épaisseur de la languette du couvercle (mm)
+profondeur_rainure = 4;  // profondeur des rainures (mm)
+rainure_haut = 5;    // du haut des parois au haut de la rainure (mm)
+jeu        = 0.15;   // jeu des tenons, par côté (mm)
+jeu_couvercle = 0.3; // jeu du couvercle dans ses rainures, par côté (mm)
+epaisseur  = 9;      // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  Li = longueur;  Wi = largeur;  H = hauteur;  pr = profondeur_rainure;  jc = jeu_couvercle;
+gw = languette + 2 * jc;                       // la largeur d'une rainure
+yr = H - rainure_haut - gw;                    // le bas de la rainure, depuis le bas d'une paroi
+Ls = Li + 2 * ep;                              // un côté
+Hd = yr;                                       // le devant : il s'arrête au bas de la rainure
+Lc = Li + ep + pr - jc;                        // le couvercle : du devant (affleurant) au fond de la rainure du dos
+Wc = Wi + 2 * pr - 2 * jc;
+fe = ep - languette;                           // la profondeur des feuillures du couvercle
+Lb = Ls + 16;  Wb = Wi + 2 * ep + 16;          // le fond
+si (pr >= ep - 3)
+    echo("Les rainures percent presque les parois : moins profondes, ou des parois plus épaisses.");
+si (languette >= ep - 2)
+    echo("La languette est presque aussi épaisse que le couvercle : plus mince.");
+planche([max(Lb + espace + Lc, 2 * Ls + espace, 2 * Wi + espace) + 2 * rognure, Wb + 3 * espace + 2 * (H + ep) + Hd + ep + 2 * rognure, epaisseur]);
+
+// ── Le fond et ses mortaises (les parois posées à 8 de son bord) ──
+ob = [rognure, rognure];
+b = rect(ob, [Lb, Wb], 4);
+nommer(#b, "fond");
+pour (y = [8, 8 + ep + Wi])
+    pour (x = [ep + 15, Ls - ep - 45]) {
+        m = rect(ob + [8 + x - jeu, y - jeu], [30 + 2 * jeu, ep + 2 * jeu]);
+        nommer(#m, "mortaise");
+    }
+pour (x = [8, 8 + Ls - ep]) {
+    m = rect(ob + [x - jeu, 8 + ep + Wi / 4 - jeu], [ep + 2 * jeu, Wi / 2 + 2 * jeu]);
+    nommer(#m, "mortaise");
+}
+
+// ── Une paroi, debout : `tenons` = [début, longueur] de chacun ; une rainure si `rainure` ──
+module paroi(o, L, h, tenons, rainure, nom) {
+    t = [for (j = [0 : 4 * len(tenons) - 1]) o + [tenons[floor(j / 4)][0] + [0, 0, 1, 1][j % 4] * tenons[floor(j / 4)][1], [0, -ep, -ep, 0][j % 4]]];
+    q = polyligne(concat([o], t, [o + [L, 0], o + [L, h], o + [0, h]]), fermee = vrai);
+    nommer(#q, nom);
+    si (rainure == 1) {
+        r = rect(o + [-4, yr], [L + 8, gw]);
+        nommer(#r, "rainure");
+    }
+}
+y2 = rognure + Wb + espace + ep;
+paroi([rognure, y2], Ls, H, [[ep + 15, 30], [Ls - ep - 45, 30]], 1, "côté");
+paroi([rognure + Ls + espace, y2], Ls, H, [[ep + 15, 30], [Ls - ep - 45, 30]], 1, "côté");
+y3 = y2 + H + espace + ep;
+paroi([rognure, y3], Wi, H, [[Wi / 4, Wi / 2]], 1, "dos");
+paroi([rognure + Wi + espace, y3], Wi, Hd, [[Wi / 4, Wi / 2]], 0, "devant");
+
+// ── Le couvercle : feuilluré sur ses deux longs chants et sur le bout arrière (à droite) ; l'encoche du doigt à gauche ──
+oc = [rognure + Lb + espace, rognure];
+c = rect(oc, [Lc, Wc]);
+nommer(#c, "couvercle");
+f1 = rect(oc + [-4, -4], [Lc + 8, pr + 4]);
+nommer(#f1, "feuillure");
+f2 = rect(oc + [-4, Wc - pr], [Lc + 8, pr + 4]);
+nommer(#f2, "feuillure");
+f3 = rect(oc + [Lc - pr, -4], [pr + 4, Wc + 8]);
+nommer(#f3, "feuillure");
+d = oblong(oc + [ep + 18, Wc / 2], 34, 14, 90);
+nommer(#d, "encoche");
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "rainure", outil = "Fraise droite Ø3", profondeur = pr, passe = 1.5, nom = "Rainures");
+usinage("poche", "feuillure", outil = "Fraise droite Ø6", profondeur = fe, passe = 2.5, nom = "Feuillures du couvercle");
+usinage("poche", "encoche", outil = "Fraise droite Ø6", profondeur = 3, passe = 1.5, nom = "Encoche");
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaises");
+usinage("contour", "côté", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Côtés");
+usinage("contour", "dos", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Dos");
+usinage("contour", "devant", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Devant");
+usinage("contour", "couvercle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Couvercle");
+usinage("contour", "fond", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Fond");

@@ -1,0 +1,54 @@
+// PANNEAU EN ÉVENTAIL — un soleil Art déco qui se lève du coin du panneau : des rayons gravés à la fraise en V, dont le
+// sillon s'élargit en s'éloignant, chaque facette alternativement lumière et ombre, et au cœur des quarts d'anneaux.
+// thème : Décoration et cadeaux
+//
+// LE MOTIF : des rayons depuis le coin bas-gauche, régulièrement répartis sur un quart de tour, jusqu'au « rayon » du
+// soleil. Pour que l'arête entre deux rayons reste vive, la profondeur croît avec la distance au coin (d = distance ×
+// écart angulaire / (2 × tan(angle / 2))) : chaque rayon est gravé en deux tronçons, du quart à la moitié du soleil
+// puis de la moitié au bord, chacun en Vagues d'un quart d'onde (la profondeur monte doucement, du double de la
+// précédente au plus). Au cœur, des quarts d'anneaux à profondeur constante. Motif imaginé par Fable (Claude) le
+// 01/11/2026.
+//
+// L'USINAGE : une seule fraise en V, trois opérations. Fraise conseillée : une V à 90° (à 120°, le cœur paraît plat).
+// La V 90° Ø6 de la bibliothèque d'office creuse 2,75 mm au plus : 44 rayons pour un soleil de 150. Avec une grande V
+// de carving (Ø32), moins de rayons, plus larges : donner son « angle » et son nom dans « fraise ».
+
+largeur   = 150;   // largeur du panneau (mm)
+hauteur   = 150;   // hauteur du panneau (mm)
+epaisseur = 18;    // épaisseur du panneau (mm)
+soleil    = 150;   // rayon du soleil, depuis le coin (mm) [20:400]
+rayons    = 44;    // nombre d'intervalles entre les rayons, sur le quart de tour [4:200]
+ecart     = 5;     // écart entre deux quarts d'anneaux du cœur (mm) [1:0.5:30]
+angle     = 90;    // l'angle de la fraise en V (°) : 90 conseillé [20:5:170]
+fraise    = "Pointe V 90";   // la fraise en V, son nom dans la bibliothèque
+
+t = tan(angle / 2);
+dth = 90 / rayons;                                    // l'écart angulaire entre deux rayons (degrés)
+function creux(r) = r * dth * PI / 180 / (2 * t) * 1.02;   // la profondeur qui garde l'arête vive à la distance r
+r0 = soleil / 4;  r1 = soleil / 2;  r2 = soleil;
+coeur = ecart / (2 * t);
+echo(str("Rayons gravés de ", round(creux(r0) * 100) / 100, " à ", round(creux(r2) * 100) / 100, " mm."));
+planche([largeur, hauteur, epaisseur]);
+
+pour (k = [0 : rayons]) {
+    u = [cos(k * dth), sin(k * dth)];
+    a = ligne(r0 * u, r1 * u);
+    nommer(#a, "rayon interieur");
+    b = ligne(r1 * u, r2 * u);
+    nommer(#b, "rayon exterieur");
+}
+pour (r = [ecart / 2 : ecart : r0 - 0.001]) {
+    q = arc([0, 0], [r, 0], [0, r]);
+    nommer(#q, "coeur");
+}
+
+// ── L'usinage ──
+// Un quart d'onde : au départ du tronçon la profondeur vaut le milieu (d(r) au bord intérieur), elle monte jusqu'au
+// maximum (d(r) au bord extérieur) en un quart de longueur d'onde — la longueur du tronçon.
+usinage("texture", "rayon interieur", outil = fraise, profondeur = creux(r1), motif = "vagues", sillons = 1,
+        ecart_sillons = ecart, longueur_onde = 4 * (r1 - r0), profondeur_mini = 2 * creux(r0) - creux(r1),
+        dephasage = 0, nom = "Rayons, cœur du soleil");
+usinage("texture", "rayon exterieur", outil = fraise, profondeur = creux(r2), motif = "vagues", sillons = 1,
+        ecart_sillons = ecart, longueur_onde = 4 * (r2 - r1), profondeur_mini = 2 * creux(r1) - creux(r2),
+        dephasage = 0, nom = "Rayons, bord du soleil");
+usinage("gravure", "coeur", outil = fraise, profondeur = coeur, nom = "Cœur");

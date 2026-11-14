@@ -1,0 +1,55 @@
+// SUPPORT DE CASQUE AUDIO — un montant et un pied qui se croisent à mi-bois, sans vis ni colle : le casque se pose sur la
+// selle arrondie du haut, son serre-tête suit la courbe et ne se marque pas. Se démonte à plat.
+// thème : Rangement
+//
+// LE MONTANT : `hauteur` de haut ; en bas un pied de `largeur_pied` sur `hauteur_pied`, puis un cou de `largeur_cou`, puis
+// la SELLE de `largeur_selle`, bombée en arc de cercle de `fleche_selle` de flèche, ses bouts 12 plus bas que l'arc. LE
+// PIED, en travers : la même largeur et la même hauteur que le pied du montant, ses bouts en pente. Le montant est fendu par
+// le BAS, le pied par le HAUT, chacun sur la moitié de `hauteur_pied` : les deux pièces se croisent en croix et posent
+// toutes deux au sol. Fentes de l'épaisseur plus le `jeu` de chaque côté.
+//
+// L'USINAGE : le montant et le pied (Contour extérieur, coins dégagés au fond des fentes, onglets). Contreplaqué de
+// bouleau de 18, ou chêne ; poncer la selle, ou y coller une bande de feutre.
+
+hauteur    = 270;    // hauteur du montant (mm)
+largeur_pied = 170;  // largeur des deux pieds (mm)
+hauteur_pied = 50;   // hauteur des pieds, où les pièces se croisent (mm)
+largeur_cou = 45;    // largeur du cou (mm)
+largeur_selle = 110; // largeur de la selle (mm) : celle du serre-tête, ou plus
+fleche_selle = 18;   // la selle bombe de tant au milieu (mm)
+jeu        = 0.15;   // jeu des fentes, par côté (mm)
+epaisseur  = 18;     // épaisseur (mm) : 18 au plus pour la fraise Ø6
+espace     = 10;     // entre les deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+H = hauteur;  B = largeur_pied / 2;  hp = hauteur_pied;  c = largeur_cou / 2;  S = largeur_selle / 2;  f = fleche_selle;
+w = epaisseur + 2 * jeu;  ym = hp / 2;
+ys = H - f - 12;                               // le bas des bouts de la selle
+Rs = (S * S + f * f) / (2 * f);  as = asin(S / Rs);   // l'arc de la selle : rayon, demi-angle
+si (c - w / 2 < 8)
+    echo("Le cou est trop étroit autour de la fente : plus large.");
+si (largeur_pied < 0.5 * hauteur)
+    echo("Le pied est étroit pour la hauteur : le support basculera.");
+planche([2 * B + espace + 2 * B + 2 * rognure, H + 2 * rognure, epaisseur]);
+
+// ── Le montant : le côté droit de bas en haut (pied, épaule en pente, cou, évasement, bout de selle), la selle en arc, le
+// côté gauche en miroir ; la fente par le bas ──
+droit = [[B, 0], [B, hp - 10], [B - 10, hp], [c + 25, hp], [c, hp + 25], [c, ys - 40], [S, ys]];
+haut = [for (i = [0 : 24]) [Rs * sin(as - 2 * as * i / 24), H - Rs + Rs * cos(as - 2 * as * i / 24)]];   // de droite à gauche
+pts = concat([[w / 2, 0]], droit, haut, [for (k = [len(droit) - 1 : -1 : 0]) [-droit[k][0], droit[k][1]]],
+             [[-w / 2, 0], [-w / 2, ym], [w / 2, ym]]);
+o1 = [rognure + B, rognure];
+m = polyligne([for (q = pts) o1 + q], fermee = vrai);
+nommer(#m, "montant");
+
+// ── Le pied : bouts en pente, fendu par le haut ──
+o2 = [rognure + 3 * B + espace, rognure];
+p = polyligne([for (q = [[-B, 0], [B, 0], [B, hp - 10], [B - 10, hp], [w / 2, hp], [w / 2, ym], [-w / 2, ym], [-w / 2, hp],
+                         [-B + 10, hp], [-B, hp - 10]]) o2 + q], fermee = vrai);
+nommer(#p, "pied");
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "montant", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 2, nom = "Montant");
+usinage("contour", "pied", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 2, nom = "Pied");

@@ -1,0 +1,72 @@
+// PUZZLE — des pièces à tenons ronds, découpées d'un trait de fraise fine dans une planchette : un puzzle d'enfant en
+// bois, à graver d'une image ou d'un prénom avant de le découper.
+// thème : Jeux et jouets
+//
+// LES PIÈCES : `colonnes` × `rangees` sur `largeur` × `hauteur`. Chaque arête commune à deux pièces porte un tenon à tête
+// ronde, tourné d'un côté ou de l'autre au hasard de la `graine` (un autre nombre : un autre puzzle) ; les arêtes du bord
+// restent droites. Le tenon se règle en part de l'arête : `tenon` (la largeur de la base de son cou) ; la tête est 1,3
+// fois plus large, le cou se resserre jusqu'à elle — la pièce voisine ne peut pas ressortir. La fraise enlève son Ø de chaque trait : sur un puzzle d'enfant, c'est le jeu qui fait glisser les pièces.
+//
+// L'USINAGE : les traits de découpe en Rainure, fraise droite Ø3, sur toute l'épaisseur MOINS `peau` — un voile qui tient
+// toutes les pièces jusqu'au bout, que l'on ponce au dos pour les libérer ; puis le tour, en Contour extérieur, onglets.
+// Graver l'image AVANT (Fichier › Graver une image, ou un texte), sur la même origine.
+
+largeur    = 240;    // largeur du puzzle (mm)
+hauteur    = 180;    // hauteur du puzzle (mm)
+colonnes   = 4;      // pièces sur la largeur
+rangees    = 3;      // pièces sur la hauteur
+graine     = 3;      // graine du hasard (un autre nombre : d'autres tenons)
+tenon      = 0.2;    // largeur du cou d'un tenon, en part de l'arête
+epaisseur  = 6;      // épaisseur de la planchette (mm)
+peau       = 0.3;    // le voile laissé sous les traits (mm)
+R_coin     = 6;      // rayon des coins du puzzle (mm)
+rognure    = 5;      // du bord du brut au puzzle (mm)
+
+nc = max(1, round(colonnes));  nr = max(1, round(rangees));
+cw = largeur / nc;  ch = hauteur / nr;
+o = [rognure, rognure];
+planche([largeur + 2 * rognure, hauteur + 2 * rognure, epaisseur]);
+function frac(x) = x - floor(x);
+function alea(a, b) = frac(sin(a * 12.9898 + b * 78.233 + graine * 37.719) * 43758.5453);
+si (min(cw, ch) * tenon < 6)
+    echo("Le cou des tenons fait moins de 6 mm : la fraise Ø3 n'en laisserait presque rien — moins de pièces, ou un tenon plus large.");
+
+// ── UNE ARÊTE À TENON, de A à B, le tenon du côté s (+1 : à gauche de A→B, −1 : à droite). En coordonnées de l'arête :
+// t le long (0 à l), h en travers. Le cou part de t = l/2 ± tenon·l/2 et monte jusqu'au cercle de la tête (rayon rh,
+// centre à hc), qu'il touche à 220° et 320° ; la tête se parcourt par le haut. ──
+module arete(A, B, s) {
+    l = norm(B - A);
+    u = (B - A) / l;
+    v = s * [-u[1], u[0]];
+    function P(t, h) = A + t * u + h * v;
+    w = tenon * l / 2;                       // la demi-largeur du cou à sa base
+    rh = 1.3 * w;                             // la tête : 1,3 fois la base du cou (le cou se resserre jusqu'à elle)
+    hc = 0.12 * l + 0.75 * rh;                // le centre de la tête
+    Pl = P(l / 2 + rh * cos(220), hc + rh * sin(220));
+    Pr = P(l / 2 + rh * cos(320), hc + rh * sin(320));
+    C = P(l / 2, hc);
+    a = polyligne([A, P(l / 2 - w, 0), Pl]);
+    // L'arc de la tête, dans le sens trigonométrique du monde : de Pr à Pl si le tenon est à gauche, sinon l'inverse.
+    t = s > 0 ? arc(C, Pr, Pl) : arc(C, Pl, Pr);
+    joindre(#a, #t);
+    b = polyligne([Pr, P(l / 2 + w, 0), B]);
+    joindre(#a, #b);
+    nommer(#a, "découpe");
+}
+
+// ── Les arêtes : verticales (entre deux colonnes), puis horizontales (entre deux rangées) ──
+pour (i = [1 : nc - 1])
+    pour (j = [0 : nr - 1])
+        arete(o + [i * cw, j * ch], o + [i * cw, (j + 1) * ch], alea(i, j) < 0.5 ? 1 : -1);
+pour (j = [1 : nr - 1])
+    pour (i = [0 : nc - 1])
+        arete(o + [i * cw, j * ch], o + [(i + 1) * cw, j * ch], alea(i + 100, j) < 0.5 ? 1 : -1);
+k = rect(o, [largeur, hauteur], R_coin);
+nommer(#k, "tour");
+echo(str(nc * nr, " pièces de ", round(cw), " × ", round(ch), " mm, ", (nc - 1) * nr + (nr - 1) * nc, " tenons."));
+
+// ── L'USINAGE, déclaré ──
+si (nc * nr > 1)
+    usinage("rainure", "découpe", outil = "Fraise droite Ø3", profondeur = epaisseur - peau, passe = 1.5, nom = "Découpes");
+usinage("contour", "tour", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2,
+        onglets = 4, onglet_long = 6, onglet_haut = 1.5, nom = "Tour du puzzle");

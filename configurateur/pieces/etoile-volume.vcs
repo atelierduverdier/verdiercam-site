@@ -1,0 +1,51 @@
+// ÉTOILE EN VOLUME — deux étoiles plates qui s'emboîtent à angle droit et deviennent une étoile en volume : elle tient
+// debout seule, sur quatre pointes. La décoration de table qui se range à plat, à faire par séries.
+// thème : Décoration et cadeaux
+//
+// L'ÉTOILE : `branches` branches (un nombre pair : 6, 8…) de `rayon` à la pointe, ses creux à `creux` × `rayon` du centre.
+// Elle est tournée pour avoir un CREUX en haut et un en bas, sur l'axe : c'est là que passent les fentes, dans le bois
+// plein, jamais dans une pointe. LA PREMIÈRE est fendue du creux du BAS jusqu'au centre, LA SECONDE du creux du HAUT
+// jusqu'au centre : croisées, leurs fentes se rencontrent et les deux étoiles posent sur leurs deux pointes du bas.
+// Fentes de l'épaisseur plus le `jeu` de chaque côté. `etoiles` étoiles complètes, deux pièces chacune.
+//
+// L'USINAGE : les étoiles (Contour extérieur, fraise droite Ø3, coins dégagés au fond des fentes, onglets).
+// Contreplaqué de bouleau de 4 ; une peinture dorée, ou rien.
+
+etoiles    = 3;      // nombre d'étoiles complètes
+branches   = 6;      // branches (pair)
+rayon      = 55;     // rayon des pointes (mm)
+creux      = 0.577;  // rayon des creux, en part du rayon des pointes (0,577 : l'étoile de David)
+jeu        = 0.1;    // jeu des fentes, par côté (mm)
+epaisseur  = 4;      // épaisseur (mm)
+espace     = 8;      // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+n = 2 * max(2, round(branches / 2));  R = rayon;  ri = creux * R;  w = epaisseur + 2 * jeu;
+function sommet(i) = (i % 2 == 0 ? ri : R) * [cos(90 + 180 * i / n), sin(90 + 180 * i / n)];   // pairs : les creux
+// Le point d'une arête (de a vers b) où x = xc.
+function sur(a, b, xc) = a + (xc - a[0]) / (b[0] - a[0]) * (b - a);
+hy = max(ri, R * cos(180 / n));  wx = R;       // la demi-hauteur et la demi-largeur d'une étoile
+si (ri * sin(180 / n) < w + 4)
+    echo("Le creux est trop étroit pour la fente : une étoile plus grande, ou des creux plus loin du centre.");
+planche([etoiles * 2 * (2 * wx + espace) - espace + 2 * rognure, 2 * hy + 2 * rognure, epaisseur]);
+
+// La première : du sommet n + 1 au sommet n − 1 en tournant (sens trigonométrique), puis la fente du creux du bas (n).
+function premiere() = concat([for (i = [n + 1 : 2 * n + n - 1]) sommet(i % (2 * n))],
+                             [sur(sommet(n - 1), sommet(n), -w / 2), [-w / 2, 0], [w / 2, 0], sur(sommet(n), sommet(n + 1), w / 2)]);
+// La seconde : du sommet 1 au sommet 2n − 1, puis la fente du creux du haut (0).
+function seconde() = concat([for (i = [1 : 2 * n - 1]) sommet(i)],
+                            [sur(sommet(2 * n - 1), sommet(0), w / 2), [w / 2, 0], [-w / 2, 0], sur(sommet(0), sommet(1), -w / 2)]);
+pour (k = [0 : etoiles - 1]) {
+    c1 = [rognure + wx + k * 2 * (2 * wx + espace), rognure + hy];
+    a = polyligne([for (q = premiere()) c1 + q], fermee = vrai);
+    nommer(#a, "étoile du bas");
+    c2 = c1 + [2 * wx + espace, 0];
+    b = polyligne([for (q = seconde()) c2 + q], fermee = vrai);
+    nommer(#b, "étoile du haut");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "étoile du bas", outil = "Fraise droite Ø3", cote = "exterieur", coins = "dogbone", profondeur = epaisseur,
+        passe = 1.5, onglets = 3, onglet_long = 3, onglet_haut = 1, nom = "Étoiles fendues par le bas");
+usinage("contour", "étoile du haut", outil = "Fraise droite Ø3", cote = "exterieur", coins = "dogbone", profondeur = epaisseur,
+        passe = 1.5, onglets = 3, onglet_long = 3, onglet_haut = 1, nom = "Étoiles fendues par le haut");

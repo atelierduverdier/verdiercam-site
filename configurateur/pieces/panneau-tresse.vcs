@@ -1,0 +1,51 @@
+// PANNEAU EN TRESSE — des rubans torsadés en chaîne, gravés à la fraise en V : dans chaque colonne deux brins ondulent
+// et se croisent ; à chaque croisement l'un plonge pendant que l'autre affleure, une arête oblique traverse chaque
+// maille, et une vague plus loin c'est l'inverse.
+// thème : Décoration et cadeaux
+//
+// LE MOTIF : deux sinusoïdes en miroir par colonne, x = axe ± amplitude × cos(360 × y / onde). Le long de chaque brin
+// la profondeur suit une vague de la même période : un brin est au plus creux aux croisements où l'autre est au plus
+// haut. Pour ce décalage d'une demi-vague sans réglage de plus, le second brin est gravé de haut en bas, la vague
+// ajustée pour que la hauteur en compte un nombre entier. L'amplitude remplit juste la maille (tan(angle / 2) × creux
+// moyen) et les colonnes se touchent. Motif imaginé par Fable (Claude) le 01/11/2026.
+//
+// L'USINAGE : une seule fraise en V, une opération. Fraise conseillée : une V à 60° (la Ø12,7 : période 36, creux de 2
+// à 6) — le plus contrasté ; à 90° et 120°, lisible mais plus mou. La V 90° Ø6 de la bibliothèque d'office creuse 2,75
+// mm au plus. Donner l'« angle » et le nom de la fraise dans « fraise ».
+
+largeur   = 150;   // largeur du panneau (mm)
+hauteur   = 150;   // hauteur du panneau (mm)
+epaisseur = 18;    // épaisseur du panneau (mm)
+onde      = 16;    // longueur d'une vague, d'un croisement au même croisement (mm), ajustée à la hauteur [4:200]
+mini      = 0.75;  // la profondeur d'un brin quand il affleure (mm) [0:0.1:12]
+creux     = 2.75;  // la profondeur d'un brin quand il plonge (mm) [0.2:0.1:12]
+angle     = 90;    // l'angle de la fraise en V (°) : 60 conseillé [20:5:170]
+fraise    = "Pointe V 90";   // la fraise en V, son nom dans la bibliothèque
+
+t = tan(angle / 2);
+nv = max(1, round(hauteur / onde));
+P = hauteur / nv;                     // un nombre entier de vagues dans la hauteur
+N = 64;  dy = P / N;
+moyen = (mini + creux) / 2;
+a = t * moyen;                        // la maille entre les deux brins juste remplie
+p = min(2 * t * creux, 2 * a + 2 * t * moyen);   // les colonnes voisines se touchent
+function brin(y) = a * cos(360 * y / P);
+lam = pow(norm([for (j = [0 : N - 1]) sqrt(norm([brin((j + 1) * dy) - brin(j * dy), dy]))]), 2);
+colonnes = floor((largeur - p) / p) + 1;
+x0 = (largeur - (colonnes - 1) * p) / 2;
+echo(str(colonnes, " colonnes au pas de ", round(p * 100) / 100, " mm, brins gravés de ", mini, " à ", creux, " mm."));
+planche([largeur, hauteur, epaisseur]);
+
+// Le premier brin part du bas, à son écart le plus grand : un quart de vague plus haut, au croisement, il est au plus
+// creux. Le second, en miroir, part du haut : au croisement suivant, c'est lui qui plonge.
+pour (k = [0 : colonnes - 1]) {
+    x = x0 + k * p;
+    b1 = polyligne([for (j = [0 : nv * N]) [x + brin(j * dy), j * dy]]);
+    nommer(#b1, "brin");
+    b2 = polyligne([for (j = [0 : nv * N]) [x - brin(hauteur - j * dy), hauteur - j * dy]]);
+    nommer(#b2, "brin");
+}
+
+// ── L'usinage ──
+usinage("texture", "brin", outil = fraise, profondeur = creux, motif = "vagues", sillons = 1, ecart_sillons = p,
+        longueur_onde = lam, profondeur_mini = mini, dephasage = 0, nom = "Tresse");

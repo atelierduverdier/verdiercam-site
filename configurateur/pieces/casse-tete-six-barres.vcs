@@ -1,0 +1,68 @@
+// CASSE-TÊTE À SIX BARRES — le « nœud du diable » : six barres entaillées qui s'emboîtent en croix. Assemblé, il est
+// rigide — une seule barre peut bouger, la CLÉ (la barre 1, sans entaille), qui sort droit ; les cinq autres se démontent
+// ensuite. Le remonter, c'est le casse-tête.
+// thème : Jeux et jouets
+//
+// LA GÉOMÉTRIE : chaque barre fait 2 × 2 × 8 cubes ; le cube vaut la moitié de `epaisseur` (de 18, des barres de
+// 18 × 18 × 72). Les entailles ne touchent que les quatre cubes du milieu. Ce dessin a été CHERCHÉ par ordinateur (le
+// 15/10/2026) : assemblage sans chevauchement, rigide, démontable — le contrôle du catalogue le rejoue sur les formes
+// dessinées. Une entaille qui traverse la barre est dans son contour ; un cube retiré d'une seule couche est une poche par
+// le DESSUS ou par le DESSOUS. Toutes les entailles ont le `jeu` de chaque côté (à 0,15, l'assemblage glisse sans flotter).
+//
+// L'USINAGE, en deux faces : dessus, les numéros (Gravure), les poches du dessus et les barres (Contour extérieur, coins
+// dégagés, onglets) ; dessous, les poches du dessous. Bois dur et stable (hêtre, érable), raboté juste à `epaisseur`.
+
+epaisseur  = 18;     // épaisseur des barres (mm) : deux cubes
+jeu        = 0.15;   // jeu de chaque entaille, par côté (mm)
+espace     = 10;     // entre deux barres (mm)
+rognure    = 5;      // du bord du brut aux barres (mm)
+
+u = epaisseur / 2;  j = jeu;
+// ── Les données (en cubes) : le contour de chaque barre — un sommet [X, sx, Y, sy] est en (X·u + sx·jeu, Y·u + sy·jeu) —,
+// ses poches du dessus et du dessous — [x, y, largeur, hauteur], en cubes. Générées depuis la solution trouvée. ──
+contours = [[[0, 0, 0, 0], [8, 0, 0, 0], [8, 0, 2, 0], [0, 0, 2, 0]],
+            [[0, 0, 0, 0], [2, -1, 0, 0], [2, -1, 1, 1], [6, 1, 1, 1], [6, 1, 0, 0], [8, 0, 0, 0], [8, 0, 2, 0], [0, 0, 2, 0]],
+            [[0, 0, 0, 0], [8, 0, 0, 0], [8, 0, 2, 0], [6, 1, 2, 0], [6, 1, 1, -1], [4, -1, 1, -1], [4, -1, 2, 0], [3, 1, 2, 0],
+             [3, 1, 1, -1], [2, -1, 1, -1], [2, -1, 2, 0], [0, 0, 2, 0]],
+            [[0, 0, 0, 0], [3, -1, 0, 0], [3, -1, 1, 1], [5, 1, 1, 1], [5, 1, 0, 0], [8, 0, 0, 0], [8, 0, 2, 0], [0, 0, 2, 0]],
+            [[0, 0, 0, 0], [8, 0, 0, 0], [8, 0, 2, 0], [5, 1, 2, 0], [5, 1, 1, -1], [2, -1, 1, -1], [2, -1, 2, 0], [0, 0, 2, 0]],
+            [[0, 0, 0, 0], [2, -1, 0, 0], [2, -1, 1, 1], [4, 1, 1, 1], [4, 1, 0, 0], [5, -1, 0, 0], [5, -1, 1, 1], [6, 1, 1, 1],
+             [6, 1, 0, 0], [8, 0, 0, 0], [8, 0, 2, 0], [0, 0, 2, 0]]];
+dessus = [[], [], [], [], [[3, 0, 1, 1], [5, 1, 1, 1]], [[4, 1, 1, 1]]];
+dessous = [[], [[3, 1, 1, 1]], [[3, 0, 2, 1], [3, 1, 1, 1]], [[2, 1, 1, 1], [4, 1, 1, 1], [5, 0, 1, 1]], [], []];
+si (jeu > 0.4)
+    echo("Un jeu de plus de 0,4 : le casse-tête flottera, il ne tiendra plus assemblé.");
+planche([2 * (8 * u + espace) - espace + 2 * rognure, 3 * (2 * u + espace) - espace + 2 * rognure, epaisseur]);
+
+// Une poche [x, y, l, h] en cubes, agrandie du jeu ; un bord sur le chant de la barre déborde de 4 (la poche s'ouvre).
+function poche(o, r) = [o + [r[0] * u - j, r[1] == 0 ? -4 : r[1] * u - j],
+                        [r[2] * u + 2 * j, (r[1] + r[3] == 2 ? 2 * u + 4 : (r[1] + r[3]) * u + j) - (r[1] == 0 ? -4 : r[1] * u - j)]];
+pour (k = [0 : 5]) {
+    o = [rognure + (k % 2) * (8 * u + espace), rognure + floor(k / 2) * (2 * u + espace)];
+    b = polyligne([for (q = contours[k]) o + [q[0] * u + q[1] * j, q[2] * u + q[3] * j]], fermee = vrai);
+    nommer(#b, "barre");
+    n = texte(o + [0.25 * u, 0.5 * u], u, str(k + 1), police = "Hershey Sans1");
+    nommer(#n, "numéro");
+    pour (r = dessus[k]) {
+        pr = poche(o, r);
+        d = rect(pr[0], pr[1]);
+        nommer(#d, "poche dessus");
+    }
+}
+face("dessous");
+pour (k = [0 : 5]) {
+    o = [rognure + (k % 2) * (8 * u + espace), rognure + floor(k / 2) * (2 * u + espace)];
+    pour (r = dessous[k]) {
+        pr = poche(o, r);
+        d = rect(pr[0], pr[1]);
+        nommer(#d, "poche dessous");
+    }
+}
+face("dessus");
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "numéro", outil = "Pointe V 90", profondeur = 0.6, nom = "Numéros");
+usinage("poche", "poche dessus", outil = "Fraise droite Ø6", coins = "dogbone", profondeur = u + jeu, passe = 3, nom = "Poches du dessus");
+usinage("contour", "barre", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Barres");
+usinage("poche", "poche dessous", outil = "Fraise droite Ø6", coins = "dogbone", profondeur = u + jeu, passe = 3, nom = "Poches du dessous");

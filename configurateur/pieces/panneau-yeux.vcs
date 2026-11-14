@@ -1,0 +1,73 @@
+// PANNEAU À YEUX — des colonnes d'yeux en amande, gravés à la fraise en V qui court le long de chaque œil en ondulant
+// et en s'enfonçant au plus large, puis remonte vers la pointe ; une colonne sur deux décalée d'une demi-vague : entre
+// deux colonnes, le bois laissé fait un ruban qui ondule, toujours de la même largeur. Un panneau de porte, un fond de
+// cadre.
+// thème : Décoration et cadeaux
+//
+// LE MOTIF : de chaque côté de la colonne, la pointe suit UN chemin en vague douce (un cosinus) : contre l'axe à la
+// pointe de l'œil, au plus loin au milieu. Sa profondeur ondule de même, en phase — au plus haut à la pointe, au plus
+// creux au milieu de l'œil, sans à-coup (une Texture en Vagues d'un seul sillon, la longueur d'onde égale à celle du
+// chemin). Les deux sillons de l'œil s'ouvrent en croissants ; la largeur de l'œil et l'écart des colonnes se CALCULENT
+// depuis le creux, l'angle et le méplat de la fraise, pour qu'une crête vive passe au milieu de chaque pupille et une
+// entre deux colonnes — le ruban, fin partout (Christophe : « je veux juste une crête ici, et une crête ici »).
+// « pupille » et « ruban » y laissent une bande plate de la largeur voulue. Parce que le chemin et sa profondeur
+// suivent la même vague, et que la colonne voisine est décalée d'une demi-vague, le ruban garde la même largeur tout du
+// long. « pointes » à 1 : les deux chemins se touchent à la pointe de l'œil ; plus petit, ils s'y croisent.
+//
+// L'USINAGE : une seule fraise en V, une passe. La V 90° Ø6 de la bibliothèque d'office (méplat 0,5) descend de 2,75 mm
+// au plus ; au-delà, c'est sa queue qui couperait. Une grande V de carving (Ø32 : 16 mm de creux à 90°, 9 mm à 120°) se
+// donne dans « fraise », avec son « angle » et son « meplat » (0 si elle est vive) : l'œil et l'écart se recalculent. À
+// 120°, les pans sont plus couchés et la lumière plus douce ; à 60°, les crêtes sont plus hautes et plus vives. Bois
+// dur à grain fin (noyer, chêne) ou MDF à peindre. En haut et en bas, les chemins s'arrêtent au bord : le panneau se
+// prend dans un cadre.
+
+largeur    = 120;  // largeur du panneau (mm)
+hauteur    = 200;  // hauteur du panneau (mm)
+epaisseur  = 18;   // épaisseur du panneau (mm)
+oeil_long  = 18;   // longueur d'un œil, de pointe à pointe : une vague (mm) [4:100]
+creux      = 2.5;  // profondeur de la pointe au milieu de l'œil (mm) [0.2:0.1:12]
+mini       = 0.2;  // profondeur de la pointe à la pointe de l'œil (mm) [0:0.1:12]
+meplat     = 0.5;  // le méplat au bout de la fraise (mm) : 0,5 pour la V 90° Ø6 d'office, 0 si elle est vive [0:0.05:3]
+pupille    = 0;    // la bande plate en haut de la pupille (mm) : 0, une crête [0:0.1:10]
+ruban      = 0;    // la bande plate entre deux colonnes (mm) : 0, une crête [0:0.1:10]
+pointes    = 1;    // 1 : les deux chemins se touchent à la pointe de l'œil ; moins : ils s'y croisent [0.1:0.1:1]
+angle      = 90;   // l'angle de la fraise en V (°) : 60, 90, 120, 150… [20:5:170]
+fraise     = "Pointe V 90";   // la fraise en V, son nom dans la bibliothèque (la V 90° Ø6 : 2,75 mm de creux au plus)
+
+// LES RAPPORTS : un sillon en V est large de 2 × profondeur × tan(angle / 2), plus le méplat — deux fois sa profondeur
+// à 90°, 1,15 fois à 60°, 3,46 fois à 120°. Au milieu de l'œil, les deux sillons laissent entre eux la largeur de l'œil
+// moins 2 × creux × t moins le méplat : c'est la pupille. Entre deux colonnes, le bord d'un sillon et celui de la
+// voisine restent à l'écart moins (2b + (creux + mini) × t + méplat) : le ruban.
+P = oeil_long;
+t = tan(angle / 2);                          // la demi-largeur d'un sillon par millimètre de profondeur
+oeil_large = 2 * creux * t + meplat + pupille;   // la largeur de l'œil entre les deux chemins, au milieu
+a = oeil_large / 2 / (1 + pointes);  b = a * pointes;   // l'écart à l'axe, b + a·cos : b + a = demi-largeur au milieu
+pas = 2 * b + (creux + mini) * t + meplat + ruban;   // l'écart entre deux colonnes
+N = 32;  dy = P / N;                     // 32 points par vague
+colonnes = floor((largeur - 2 * (b + a + creux * t + meplat / 2)) / pas) + 1;   // les sillons du bord restent dedans
+x0 = (largeur - (colonnes - 1) * pas) / 2;
+echo(str("Œil de ", round(oeil_large * 100) / 100, " mm de large, colonnes tous les ", round(pas * 100) / 100,
+         " mm (méplat de la fraise compté : ", meplat, " mm)."));
+planche([largeur, hauteur, epaisseur]);
+
+function ecart_axe(y, ypic) = b + a * cos(360 * (y - ypic) / P);
+// La longueur d'une vague le long du chemin, celle que la Texture mesure : la somme des 32 segments (Σ v = |√v|²).
+onde = pow(norm([for (j = [0 : N - 1]) sqrt(norm([ecart_axe((j + 1) * dy, 0) - ecart_axe(j * dy, 0), dy]))]), 2);
+
+pour (k = [0 : colonnes - 1]) {
+    x = x0 + k * pas;
+    ypic = (k % 2) * P / 2;   // le milieu d'un œil ; une colonne sur deux décalée d'une demi-vague
+    // Les Vagues sont au plus creux à un quart d'onde du départ : le chemin part au point d'inflexion un quart de
+    // vague avant le milieu d'un œil, et s'arrête à un point d'inflexion (les deux chemins n'y sont pas au même point :
+    // le calcul ne les soude pas en un seul).
+    y0 = ypic - P / 4 + ceil((P / 4 - ypic) / P) * P;
+    n = floor((hauteur - y0) / (P / 2)) * N / 2;
+    pour (cote = [1, -1]) {
+        c = polyligne([for (j = [0 : n]) [x + cote * ecart_axe(y0 + j * dy, ypic), y0 + j * dy]]);
+        nommer(#c, "chemin");
+    }
+}
+
+// ── L'usinage ──
+usinage("texture", "chemin", outil = fraise, profondeur = creux, motif = "vagues", sillons = 1, ecart_sillons = pas,
+        longueur_onde = onde, profondeur_mini = mini, dephasage = 0, nom = "Yeux");

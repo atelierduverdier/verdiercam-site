@@ -1,0 +1,199 @@
+// BOÎTE DANS LA MASSE — une boîte à bijoux, à alliances, à petits riens, taillée dans deux blocs de bois plein : la base
+// creusée, et son couvercle qui s'emboîte. Sans colle, sans assemblage : rectangle aux coins ronds, rond ou hexagone.
+// thème : Rangement
+//
+// LA BASE : `longueur` × `largeur` dehors (pour le rond, `longueur` est le diamètre ; pour l'hexagone, la cote sur
+// plats), `hauteur_base` de haut, c'est l'épaisseur de la planche. Sa CAVITÉ laisse des murs de `paroi` et un fond de
+// `fond`. LE COUVERCLE, de `hauteur_couvercle`, sort de la même planche, à côté ; sa face creusée est celle qui se pose
+// sur la base. L'EMBOÎTEMENT (`emboitement`) :
+//   0 recouvrement extérieur — le couvercle est plus grand : une jupe de `largeur_emboitement` enveloppe la base, creusée
+//     de `profondeur_emboitement` ;
+//   1 recouvrement intérieur — même contour : un tenon plein, à `paroi` + `jeu` du bord, entre dans la cavité ;
+//   2 épaulement extérieur — une feuillure tout autour du haut de la base ; la lèvre du couvercle s'y pose, bord à bord ;
+//   3 épaulement intérieur — une feuillure au bord intérieur du mur ; le tenon du couvercle s'y loge.
+// Le `jeu` se prend toujours sur la pièce qui entre.
+//
+// L'USINAGE : le couvercle ramené à sa hauteur si elle est plus basse que la planche (Poche), la feuillure ou la jupe,
+// la cavité (Poche, fraise droite Ø6 ; avec `fond_arrondi`, la droite s'arrête à 3 mm du fond, finit le fond à plat à
+// 3 mm des murs, et la Boule Ø6 ne fait que le tour des murs, en bas : le congé de 3), puis les deux pièces (Contour
+// extérieur, `fraise_detourage`, la droite Ø8 d'office : ses 24 mm utiles passent la planche, onglets). Retourner
+// le couvercle : sa face creusée va dessous.
+//
+// LE COUVERCLE CREUSÉ (13/11/2026, Christophe : « pouvoir le creuser plus profondément […] ça me ferait plus d'espace dans
+// la boîte ») : avec `dessus_couvercle`, le couvercle a sa propre cavité, dans le prolongement de celle de la base, et ne
+// garde au-dessus que ce bois plein — l'épaisseur choisie pour graver. Une planche épaisse donne alors une boîte haute
+// sans couvercle massif : sur 35, un couvercle de 35 creusé jusqu'à 6 du dessus.
+//
+// UNE AUTRE FRAISE POUR DÉTOURER (13/11/2026, Christophe : « si je n'ai pas de fraise de diamètre 8 ») : son nom dans la
+// bibliothèque, son diamètre et sa longueur utile. L'écart entre les pièces et la rognure du brut suivent son diamètre ;
+// la planche se compare à sa longueur utile.
+
+forme      = 0;      // la forme (0 : rectangle aux coins ronds, 1 : rond, 2 : hexagone)
+longueur   = 120;    // longueur dehors, ou diamètre, ou cote sur plats (mm)
+largeur    = 80;     // largeur dehors, pour le rectangle (mm)
+R_coin     = 12;     // rayon des coins du rectangle (mm)
+hauteur_base = 22;   // hauteur de la base : l'épaisseur de la planche (mm), la longueur utile de la fraise au plus
+hauteur_couvercle = 12; // hauteur du couvercle, la planche ou moins (mm)
+paroi      = 8;      // épaisseur des murs (mm)
+fond       = 5;      // épaisseur du fond de la base (mm) [0:100]
+emboitement = 2;     // l'emboîtement (0 : recouvrement ext., 1 : recouvrement int., 2 : épaulement ext., 3 : épaulement int.)
+largeur_emboitement = 4;    // jupe, lèvre ou feuillure : sa largeur (mm)
+profondeur_emboitement = 5; // et sa profondeur (mm)
+jeu        = 0.2;    // jeu de l'emboîtement, par côté (mm)
+fond_arrondi = 1;    // le pied des murs arrondi à la Boule Ø6 (1 : oui, 0 : non)
+dessus_couvercle = 0; // le bois plein gardé au-dessus du creux du couvercle, pour graver (mm) ; 0 : couvercle plein
+espace     = 20;     // entre la base et le couvercle (mm) : deux passages de fraise et 4 au moins
+rognure    = 15;     // du bord du brut aux pièces (mm) : une fraise et 4 au moins, que les onglets tiennent
+fraise_detourage = "Fraise droite Ø8"; // la fraise qui détoure les deux pièces, son nom dans la bibliothèque
+d_detourage = 8;     // son diamètre (mm)
+utile_detourage = 24; // sa longueur utile (mm) : la planche ne la dépasse pas
+
+E = hauteur_base;  e = paroi;  gw = largeur_emboitement;  gd = profondeur_emboitement;
+hc = min(hauteur_couvercle, E);
+L = longueur;  l = forme == 0 ? largeur : longueur;
+mode = round(emboitement);
+// Ce que le couvercle déborde de la base (recouvrement extérieur), et la place de chaque pièce.
+deb = mode == 0 ? gw + jeu : 0;
+Lx = (forme == 2 ? L * 2 / sqrt(3) : L) + 2 * deb;  Ly = (forme == 0 ? l : L) + 2 * deb;   // l'hexagone, couché : ses pointes à gauche et à droite
+// LES ONGLETS TIENNENT AU BRUT (09/11/2026, Christophe : « il faudrait agrandir le brut pour que les onglets tiennent ») :
+// à 6 mm du bord, la Ø8 emportait toute la bande ; il en faut une fraise et 4 de rab.
+D = d_detourage;
+rg = max(rognure, D + 4);
+cb = [rg + Lx / 2, rg + Ly / 2];                        // le centre de la base
+// DEUX PASSAGES DE FRAISE ENTRE LES PIÈCES (09/11/2026, Christophe : « un onglet est coupé dans la boîte ronde ») : à 12 mm,
+// la Ø8 du détourage de l'une repassait sur les onglets de l'autre, là où les deux bords se font face.
+esp = max(espace, 2 * D + 4);
+cc = cb + [Lx + esp, 0];                                 // celui du couvercle
+
+// LA FRAISE DE LA CAVITÉ ET DU CREUX (13/11/2026, revue : « le script ne compare que la planche à `utile_detourage` ») :
+// la Fraise droite Ø6 et la Boule Ø6 ne se choisissent pas, leur longueur utile est celle de la bibliothèque d'origine
+// (3 × Ø6) — sans avertissement, seule la simulation le disait.
+utile_cavite = 18;
+si (E > utile_detourage)
+    echo(str("La planche dépasse les ", utile_detourage, " mm utiles de la ", fraise_detourage,
+             " : une planche plus mince, ou une fraise plus longue."));
+si (E - fond < 5)
+    echo("La cavité fait moins de 5 mm de creux : un fond plus mince, ou une planche plus épaisse.");
+si (E - fond > utile_cavite)
+    echo(str("La cavité descend à ", round((E - fond) * 10) / 10, " mm, au-delà des ", utile_cavite,
+             " mm utiles de la Fraise droite Ø6 et de la Boule Ø6 : un fond plus épais, ou une planche plus mince."));
+si (min(L, l) - 2 * e < 10)
+    echo("La cavité est presque vide : des murs plus minces, ou une boîte plus grande.");
+si (gd >= hc - 3)
+    echo("Le couvercle est presque percé par l'emboîtement : moins profond, ou un couvercle plus haut.");
+si ((mode == 2 || mode == 3) && gw >= e - 2)
+    echo("La feuillure mange presque tout le mur : moins large, ou des murs plus épais.");
+si (mode == 0 && gw < 3)
+    echo("La jupe du couvercle fait moins de 3 mm : fragile.");
+si (gd >= E - fond)
+    echo("La feuillure descend sous le fond de la cavité : moins profonde.");
+
+planche([2 * Lx + esp + 2 * rg, Ly + 2 * rg, E]);
+
+// ── La forme, décalée de `d` (positive : vers l'extérieur), nommée `nom` ──
+module forme_decalee(c, d, nom) {
+    si (forme == 1) {
+        q = cercle(c, L / 2 + d);
+        nommer(#q, nom);
+    } sinon {
+        si (forme == 2) {
+            q = polygone(c, L + 2 * d, 6, 0, plats = vrai);
+            nommer(#q, nom);
+        } sinon {
+            q = rect(c - [L / 2 + d, l / 2 + d], [L + 2 * d, l + 2 * d], max(R_coin + d, 0));
+            nommer(#q, nom);
+        }
+    }
+}
+
+// ── La base ──
+forme_decalee(cb, 0, "base");
+forme_decalee(cb, -e, "cavité");
+// LE FOND PLAT DE LA CAVITÉ, À 3 MM DES MURS (12/11/2026, Christophe : « ça fait des vaguelettes ») : la Boule Ø6 balayait
+// tout le fond en zigzag, au pas de 3,6 — des crêtes de 0,6 mm entre ses passages. Le fond se fait à la droite, sur la
+// cavité resserrée du rayon du congé ; la boule ne passe plus qu'au pied des murs. Plus étroite que deux congés, la cavité
+// n'a pas de fond plat : la boule fait tout.
+// DANS LES COINS (13/11/2026, revue), rien qu'avec le rectangle : il reste une toute petite bosse, environ 0,1 mm — le
+// coin de la droite (R 3) et la boule à son bord ne se rejoignent pas tout à fait sur la diagonale. Mesurée « à 0 mm
+// près » le 12/11/2026, mais entre les congés seulement : un coup de papier de verre l'enlève.
+fondPlat = fond_arrondi == 1 && min(L, l) - 2 * e > 12;
+// OÙ LA DROITE S'ARRÊTE (13/11/2026, revue : « la cavité fait 3 mm quoi qu'il arrive ») : 3 mm au-dessus du fond
+// demandé, 0 si la cavité est plus fine que ça — comme le casier (`zf`).
+zf = max(E - fond - 3, 0);
+si (fondPlat)
+    forme_decalee(cb, -(e + 3), "fond de la cavité");
+si (mode == 2) {                                         // la feuillure du bord extérieur : un anneau qui déborde
+    forme_decalee(cb, 4, "feuillure");
+    forme_decalee(cb, -(gw + jeu), "feuillure");
+}
+si (mode == 3)                                           // celle du bord intérieur : la cavité élargie, sur `gd`
+    forme_decalee(cb, -(e - gw), "feuillure");
+
+// ── Le couvercle ──
+forme_decalee(cc, deb, "couvercle");
+si (hc < E) {
+    s = rect(cc - [Lx / 2 + 6, Ly / 2 + 6], [Lx + 12, Ly + 12]);
+    nommer(#s, "surfaçage");
+}
+si (mode == 0)                                           // la jupe : la base y entre, avec son jeu
+    forme_decalee(cc, jeu, "emboîtement");
+si (mode == 1) {                                         // le tenon qui entre dans la cavité
+    forme_decalee(cc, 4, "emboîtement");
+    forme_decalee(cc, -(e + jeu), "emboîtement");
+}
+si (mode == 2)                                           // la lèvre : le haut de la base y entre
+    forme_decalee(cc, -gw, "emboîtement");
+si (mode == 3) {                                         // le tenon qui se loge dans la feuillure intérieure
+    forme_decalee(cc, 4, "emboîtement");
+    forme_decalee(cc, -(e - gw + jeu), "emboîtement");
+}
+// LE CREUX DU COUVERCLE : à l'aplomb du mur intérieur de la base (la jupe et la lèvre), ou d'un mur de tenon — `paroi` pour
+// le recouvrement intérieur, la largeur de la feuillure moins le jeu pour l'épaulement intérieur. Il part du fond de
+// l'emboîtement (la jupe, la lèvre) ou du bout du tenon, et descend jusqu'à `dessus_couvercle` du dessus.
+cr = mode == 1 ? 2 * e + jeu : e;                        // son retrait depuis le bord de la base
+dc = mode == 0 || mode == 2 ? E - hc + gd : E - hc;      // où il commence (depuis le haut de la planche)
+pc = E - dessus_couvercle - dc;                          // ce qu'il creuse
+creuxCouvercle = dessus_couvercle > 0 && pc > 0.5 && min(L, l) - 2 * cr > 10;
+si (dessus_couvercle > 0 && !creuxCouvercle)
+    echo("Le couvercle n'est pas creusé : son dessus garde toute sa hauteur au-delà de l'emboîtement, ou le creux serait presque vide.");
+si (creuxCouvercle && dessus_couvercle < 3)
+    echo("Le dessus du couvercle fait moins de 3 mm : fragile, et peu de place pour graver.");
+si (creuxCouvercle && dc + pc > utile_cavite)
+    echo(str("Le creux du couvercle descend à ", round((dc + pc) * 10) / 10, " mm, au-delà des ", utile_cavite,
+             " mm utiles de la Fraise droite Ø6 : un dessus plus épais, ou un couvercle moins haut."));
+si (creuxCouvercle)
+    forme_decalee(cc, -cr, "creux du couvercle");
+echo(str("Boîte fermée : ", round((E + hc - gd) * 10) / 10, " mm de haut ; cavité de ", E - fond, " mm de creux",
+         creuxCouvercle ? str(", ", round((E - fond + pc) * 10) / 10, " avec le creux du couvercle") : "", "."));
+
+// ── L'USINAGE, déclaré ──
+ps = E - hc;                                             // ce que le couvercle perd de haut
+si (hc < E)
+    usinage("poche", "surfaçage", outil = "Fraise droite Ø6", profondeur = ps, passe = 3, nom = "Couvercle à sa hauteur");
+// BORNÉE À LA PLANCHE (13/11/2026, revue : « un couvercle de 4 sur 22, gd = 5 → 23 mm dans 22 ») : sans ça, un
+// emboîtement plus profond que ce que le couvercle a de haut (`gd >= hc`) entamait le martyr ; seul « presque percé »
+// (3 mm avant) le disait, et continuait quand même.
+usinage("poche", "emboîtement", outil = "Fraise droite Ø6", profondeur = min(ps + gd, E), passe = 2, nom = "Emboîtement du couvercle");
+si (creuxCouvercle)
+    usinage("poche", "creux du couvercle", outil = "Fraise droite Ø6", depart = dc, profondeur = pc, passe = 3,
+            nom = "Creux du couvercle");
+si (mode >= 2)
+    usinage("poche", "feuillure", outil = "Fraise droite Ø6", profondeur = gd, passe = 2, nom = "Feuillure de la base");
+si (fond_arrondi == 1) {
+    // La droite jusqu'à `zf`, 3 mm au-dessus du fond demandé (0 si la cavité est plus fine que ça : comme le casier) ;
+    // la boule, dans le reste, au long des murs seulement : son centre à 3 mm du mur, sa pointe au fond — le quart de
+    // rond qui raccorde le mur au fond plat.
+    si (zf > 0)
+        usinage("poche", "cavité", outil = "Fraise droite Ø6", profondeur = zf, passe = 3, nom = "Cavité, ébauche");
+    si (fondPlat)
+        usinage("poche", "fond de la cavité", outil = "Fraise droite Ø6", depart = zf, profondeur = E - fond - zf, passe = 3,
+                nom = "Cavité, fond plat");
+    usinage("contour", "cavité", outil = "Boule Ø6", cote = "interieur", depart = zf, profondeur = E - fond - zf, passe = 1.5,
+            nom = "Cavité, pied des murs arrondi");
+} sinon {
+    usinage("poche", "cavité", outil = "Fraise droite Ø6", profondeur = E - fond, passe = 3, nom = "Cavité");
+}
+usinage("contour", "couvercle", outil = fraise_detourage, cote = "exterieur", profondeur = E, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 1.5, nom = "Détourage du couvercle");
+usinage("contour", "base", outil = fraise_detourage, cote = "exterieur", profondeur = E, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 1.5, nom = "Détourage de la base");
