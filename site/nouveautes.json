@@ -2,6 +2,38 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+   "date": "2026-11-14",
+   "titre": "La dernière revue avant la 1.0, et le mode d'emploi à jour",
+   "points": [
+    "Taraudage : un dernier verrou relit le programme. Le taraud ne descend que dans un trou qu'une opération d'avant a percé, sur le même repère et assez bas — un perçage limité à une zone, qui contourne une zone interdite ou fait « une seule fois » sur plusieurs repères ne laisse plus un trou plein sous le taraud. Un cercle dessiné en deux arcs est refusé, avec de quoi le rejoindre.",
+    "Taraudage, suite : l'avant-vol juge la longueur utile du taraud à sa pointe et prévient d'un taraud qui sort sous la pièce sans filets complets ; le Pilotage compte sa durée au pas × tr/min.",
+    "Laser au fond d'une poche : la tête reste au-dessus du brut entre deux tracés, à la hauteur du bec, au lieu de passer en rapide sous la surface de la planche.",
+    "Reliefs prêts : chaque contour est juste. La banderole à plis avait un contour ouvert, et quatre autres un contour qui se recoupait : « Prendre le tour extérieur » coupait la bande du texte, ou ne découpait rien.",
+    "Fenêtre de fichiers : « Enregistrer sous » ne remplace plus sans demander un fichier dont on tape le chemin ; un partage dont le serveur est éteint ne fige plus la fenêtre, qu'on le clique dans la liste ou qu'il se monte à la demande ; le mot de passe d'une adresse smb:// ne s'affiche plus.",
+    "Liste des polices : elle garde le clavier — Suppr n'efface plus les formes choisies, Échap ne perd plus le texte en cours, Entrée prend la police sans fermer la boîte. Une police abîmée se lit sans s'attarder.",
+    "Mes reliefs : une image très haute et étroite ne fait plus planter VerdierCAM, et les vignettes se calculent sans figer l'écran.",
+    "Catalogue : le casier à composants prévient au-delà des 18 mm utiles de la fraise. Un nom d'outil fait d'espaces est refusé comme un nom vide.",
+    "Le mode d'emploi est à jour, en ligne comme sous F1 : le taraudage, les reliefs prêts, le réseau, la liste des polices, la finition des parois, et toutes ses captures rejouées sur la version d'aujourd'hui. Les Premiers pas aussi."
+   ]
+  },
+  {
+   "date": "2026-11-13",
+   "titre": "Le taraudage synchronisé, des reliefs prêts à poser, le réseau dans la fenêtre de fichiers et des polices qu'on voit avant de choisir",
+   "points": [
+    "Filetage au taraud, pour une broche à codeur sous LinuxCNC : un type d'outil Taraud, une case « Broche à codeur » dans Réglages machine, et chaque trou descendu en G33.1 — l'avance suit la broche tour pour tour, le filet tombe juste. Refusé sur toute autre carte. Le premier essai sur une vraie machine reste à faire.",
+    "Le trou percé avant le taraud est vérifié : absent, trop court ou trop large, l'opération le dit. Un trou débouchant peut avoir ses filets complets jusqu'en bas : le perçage descend alors « Dans le martyr », et le panneau rappelle de vérifier son épaisseur.",
+    "Atelier Relief : une bibliothèque de reliefs prêts. La tuile « Un relief prêt… » ouvre trente reliefs décoratifs en quatre thèmes — banderoles (à plis, en arche, à crosses, en parchemin…), cartouches, ornements (volute, rinceau, feuille d'acanthe, rosace, coquille) et symboles —, posés d'un clic à leur taille, leur contour déjà dans le croquis pour la découpe.",
+    "« Mes reliefs » : un dossier à soi, VerdierCAM/reliefs dans le dossier personnel. Chaque image en gris qu'on y pose paraît en tête de la fenêtre, avec sa vignette. Le transparent d'un PNG compte comme le fond.",
+    "Catalogue : chaque pièce paramétrique a sa photo, la pièce finie usinée avec ses valeurs d'office, au-dessus de l'aperçu en traits. La boîte dans la masse choisit sa fraise de détourage (son nom, son diamètre, sa longueur utile) et peut creuser son couvercle, pour une boîte haute sans couvercle massif.",
+    "Fenêtre de fichiers : un groupe « Réseau » liste les partages montés, chacun avec son serveur ; un serveur éteint ne fige plus rien, sa ligne se grise. Une adresse smb://serveur/partage tapée mène au dossier monté, sinon « Parcourir… » passe la main à la fenêtre de fichiers du système.",
+    "Texte : la liste des polices écrit votre texte dans chaque police et encadre de rouge les lettres qui manquent. Survoler une ligne ou la viser aux flèches essaie la police, sur la feuille comme dans l'aperçu ; Entrée la prend, Échap revient à l'ancienne. Les dernières prises en tête, une étoile pour les favorites.",
+    "Laser : toutes les opérations gardent la butée du bec — marquage, gravure remplie, photo, calligraphie et les planches d'essai ne descendent plus sous « Bec au plus bas ». Une gravure peut se faire au fond d'une poche déjà creusée.",
+    "Poche : la finition des parois se borne au rayon de la fraise — au-delà, une crête de bois restait debout dans les angles.",
+    "Un nom d'outil laissé vide dans une pièce ou un script refuse de poser l'opération, au lieu de prendre en silence le premier outil de l'atelier.",
+    "Chaque soir, le G-code de tout le catalogue et de vrais documents d'atelier est relu comme la carte le lirait : rapide dans le bois, fraise qui ne coupe pas au centre et plonge, coupe sous le fond permis, longueur d'outil, repère et courses de la machine."
+   ]
+  },
+  {
    "date": "2026-11-12",
    "titre": "Une revue de tout le programme, des parois de poche sans vagues et des fonds plats au catalogue",
    "points": [
