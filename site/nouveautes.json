@@ -2,6 +2,16 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+   "date": "2026-11-15",
+   "titre": "Un cercle tangent qui garde sa taille, et le taraud dans Nouvel outil",
+   "points": [
+    "Croquis : un cercle posé tangent garde son rayon. Il ne grandit plus en se rapprochant du trait (un R11 devenait R17) ; il ne change de taille que si la tangence l'exige, comme entre deux traits trop écartés pour lui.",
+    "Bibliothèque d'outils : une case « Taraud » dans Nouvel outil pose un taraud machine M6 × 1, avec son dessin et des vitesses de taraud — 500 tr/min, la descente au pas —, jamais celles d'une fraise de son diamètre. « Changer de type › Taraud » reprend le pas normal du diamètre gardé.",
+    "Simulation et Pilotage : le taraud se dessine avec ses filets et son entrée en cône, et plus comme un simple cylindre.",
+    "Mode d'emploi : le chapitre des outils dit la case Taraud, et les captures du Pilotage faites sur une carte simulée sont rejouées sur la dernière version."
+   ]
+  },
+  {
    "date": "2026-11-14",
    "titre": "La dernière revue avant la 1.0, et le mode d'emploi à jour",
    "points": [
@@ -10,6 +20,7 @@
     "Laser au fond d'une poche : la tête reste au-dessus du brut entre deux tracés, à la hauteur du bec, au lieu de passer en rapide sous la surface de la planche.",
     "Reliefs prêts : chaque contour est juste. La banderole à plis avait un contour ouvert, et quatre autres un contour qui se recoupait : « Prendre le tour extérieur » coupait la bande du texte, ou ne découpait rien.",
     "Fenêtre de fichiers : « Enregistrer sous » ne remplace plus sans demander un fichier dont on tape le chemin ; un partage dont le serveur est éteint ne fige plus la fenêtre, qu'on le clique dans la liste ou qu'il se monte à la demande ; le mot de passe d'une adresse smb:// ne s'affiche plus.",
+    "Croquis : un cercle posé tangent à un trait, en face de lui, reste en face et glisse le long du trait, au lieu de sauter sur son bout le plus proche ; un trait qui part du cercle garde sa tangence à son bout.",
     "Liste des polices : elle garde le clavier — Suppr n'efface plus les formes choisies, Échap ne perd plus le texte en cours, Entrée prend la police sans fermer la boîte. Une police abîmée se lit sans s'attarder.",
     "Mes reliefs : une image très haute et étroite ne fait plus planter VerdierCAM, et les vignettes se calculent sans figer l'écran.",
     "Catalogue : le casier à composants prévient au-delà des 18 mm utiles de la fraise. Un nom d'outil fait d'espaces est refusé comme un nom vide.",
