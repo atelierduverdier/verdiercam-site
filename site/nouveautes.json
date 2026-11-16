@@ -3,14 +3,20 @@
  "jours": [
   {
    "date": "2026-11-16",
-   "titre": "Les textures écrites entrent dans le logiciel",
+   "titre": "Les textures écrites entrent dans le logiciel, et chaque face a ses brides",
    "points": [
     "Relief : les textures écrites sortent de l'essai, en Pro comme en Débutant. La tuile « Une texture écrite… » ouvre l'onglet Textures : quelques lignes de recette, ou des boîtes reliées entre elles, fabriquent des vagues, du grain, des galets, des briques, posés sur le bois à la hauteur voulue puis usinés comme toute forme du Relief. Trente-huit textures toutes faites pour commencer, dans la Bibliothèque.",
+    "Relief : une texture peu profonde s'usine sans ébauche. Quand la pile n'est faite que de textures et qu'elles tiennent dans le rayon de la boule de finition (1,5 mm pour la Ø3), la boule les prend seule : ni fraise droite, ni changement de fraise. Avec la Ø3, 21 textures de la Bibliothèque sur 38 passent ainsi ; plus hautes, elles gardent leur ébauche, et l'étape Usiner dit pourquoi.",
+    "Relief : quand il y a une ébauche, elle ne frotte plus le dessus du bois. Là où il n'y avait rien à enlever, la fraise droite avançait au ras du brut ; elle saute désormais à la hauteur de dégagement. Sur une texture de 1,5 mm, l'ébauche passait de 2,85 à 1,22 min, pour le même bois.",
     "En Débutant, l'onglet dit le chemin en une phrase : une texture de la Bibliothèque, ses curseurs, puis « Poser dans le Relief ». Rien à écrire pour commencer.",
     "Une image utilisée dans une texture part avec le document : envoyé sur un autre poste, il redonne la même texture. Et quand l'interface est en anglais, les boîtes se lisent en anglais.",
     "Sécurité : une zone de travail sélectionnée avec le reste (Ctrl+A, une boîte de sélection) n'est plus jamais usinée — la poche vidait l'anneau, un Contour découpait son rectangle. Une bride tracée en Lignes avec sa diagonale redonne sa zone interdite entière.",
     "Croquis : une forme verrouillée ne se coupe, ne se prolonge, ne se reflète ni ne se répète plus ; « Joindre » laisse de côté les formes cachées et verrouillées.",
-    "Mode d'emploi et aide F1 : une section pour les textures écrites, avec ses captures. F1 sur la tuile, ou dans l'onglet, ouvre la bonne fiche."
+    "Deux faces : une bride ou une zone de travail marquée sur le dessus ne compte plus pour le dessous, ni l'inverse — la planche retournée ne l'a plus au même endroit. Le résumé de l'opération dit quand sa face n'en a aucune. En 3D, seules les brides de la face montrée se dressent, retournées avec elle.",
+    "Poche : une forme cachée découpe la zone cliquée comme les autres — un rond caché dans un cadre reste un îlot, au lieu d'être creusé. Cacher une forme ne change plus l'usinage. Et « Cliquer les bords un à un » n'ouvre plus que le trait de la face où l'on travaille : un trou traversant tracé au dessous n'emmène plus sa demi-lune.",
+    "Exports SVG et DXF : sans sélection, les zones interdites et de travail ne partent plus — envoyée au laser, une bride était découpée comme une pièce. La fenêtre n'exporte que la face courante, et le dit.",
+    "Croquis : dans l'arbre des formes, une forme de l'autre face se montre grisée, sa face à la place de ses libertés ; un clic sur sa ligne passe sur sa face puis la choisit. Avant, elle se choisissait depuis l'autre face, et Suppr pouvait l'effacer sans qu'on la voie.",
+    "Mode d'emploi et aide F1 : une section pour les textures écrites, avec ses captures, et une autre pour leur usinage sans ébauche. F1 sur la tuile, ou dans l'onglet, ouvre la bonne fiche."
    ]
   },
   {
