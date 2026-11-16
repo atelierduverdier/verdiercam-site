@@ -2,13 +2,32 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
-   "date": "2026-11-15",
-   "titre": "Un cercle tangent qui garde sa taille, et le taraud dans Nouvel outil",
+   "date": "2026-11-16",
+   "titre": "Les textures écrites entrent dans le logiciel",
    "points": [
-    "Croquis : un cercle posé tangent garde son rayon. Il ne grandit plus en se rapprochant du trait (un R11 devenait R17) ; il ne change de taille que si la tangence l'exige, comme entre deux traits trop écartés pour lui.",
+    "Relief : les textures écrites sortent de l'essai, en Pro comme en Débutant. La tuile « Une texture écrite… » ouvre l'onglet Textures : quelques lignes de recette, ou des boîtes reliées entre elles, fabriquent des vagues, du grain, des galets, des briques, posés sur le bois à la hauteur voulue puis usinés comme toute forme du Relief. Trente-huit textures toutes faites pour commencer, dans la Bibliothèque.",
+    "En Débutant, l'onglet dit le chemin en une phrase : une texture de la Bibliothèque, ses curseurs, puis « Poser dans le Relief ». Rien à écrire pour commencer.",
+    "Une image utilisée dans une texture part avec le document : envoyé sur un autre poste, il redonne la même texture. Et quand l'interface est en anglais, les boîtes se lisent en anglais.",
+    "Sécurité : une zone de travail sélectionnée avec le reste (Ctrl+A, une boîte de sélection) n'est plus jamais usinée — la poche vidait l'anneau, un Contour découpait son rectangle. Une bride tracée en Lignes avec sa diagonale redonne sa zone interdite entière.",
+    "Croquis : une forme verrouillée ne se coupe, ne se prolonge, ne se reflète ni ne se répète plus ; « Joindre » laisse de côté les formes cachées et verrouillées.",
+    "Mode d'emploi et aide F1 : une section pour les textures écrites, avec ses captures. F1 sur la tuile, ou dans l'onglet, ouvre la bonne fiche."
+   ]
+  },
+  {
+   "date": "2026-11-15",
+   "titre": "Un cercle tangent qui garde sa taille, le taraud dans Nouvel outil, et les figures tracées en Lignes",
+   "points": [
+    "Croquis : un cercle posé tangent garde son rayon. Il ne grandit plus en se rapprochant du trait (un R11 devenait R17) ; il ne change de taille que si la tangence l'exige, comme entre deux traits trop écartés pour lui. Il le garde aussi quand on le tire ensuite par son centre, ou qu'on change une cote voisine.",
     "Bibliothèque d'outils : une case « Taraud » dans Nouvel outil pose un taraud machine M6 × 1, avec son dessin et des vitesses de taraud — 500 tr/min, la descente au pas —, jamais celles d'une fraise de son diamètre. « Changer de type › Taraud » reprend le pas normal du diamètre gardé.",
     "Simulation et Pilotage : le taraud se dessine avec ses filets et son entrée en cône, et plus comme un simple cylindre.",
-    "Mode d'emploi : le chapitre des outils dit la case Taraud, et les captures du Pilotage faites sur une carte simulée sont rejouées sur la dernière version."
+    "Mode d'emploi : le chapitre des outils dit la case Taraud, et les captures du Pilotage faites sur une carte simulée sont rejouées sur la dernière version.",
+    "Taraudage : le verrou qui exige un perçage avant le taraud lit le vrai ordre du programme. Sur une pièce répétée, un taraudage fait « une seule fois » ne sort plus avant le perçage des copies, et un petit avant-trou ne compte plus quand le perçage qui vide vraiment le trou est limité à la zone de travail.",
+    "Bibliothèque d'outils : un outil passé en taraud, ou un taraud redevenu fraise ou foret, refait ses vitesses dans chaque matière. Avant, un taraud pouvait partir à 13 500 tr/min, ou une fraise rester à 500.",
+    "Laser au fond d'une poche : entre deux tracés, le bec ne file plus en ligne droite au travers de la paroi. Il remonte au-dessus, passe, puis redescend ; une poche plus profonde que la planche est refusée.",
+    "Relief : le contour d'un relief prêt (banderole, cartouche…) suit le relief quand on change sa taille ou sa place, « Ajuster au brut » compris. La découpe autour ne traverse plus les volutes.",
+    "Fenêtre de fichiers : un raccourci vers un partage réseau éteint ne la fige plus (jusqu'à 16 secondes avant).",
+    "Croquis : une figure tracée en Lignes séparées vaut la même tracée d'un trait. Décaler un triangle de trois Lignes donne un seul contour, arrondi aux coins ; l'aire, Imbriquer, le texte sur un chemin et les exports SVG et DXF la lisent fermée.",
+    "Sécurité : une zone interdite tracée en Lignes arrive bien au calcul — la poche qui devait la contourner la traversait. Une moulure sur un cadre de quatre Lignes est moulurée du bon côté, avec ses onglets aux coins."
    ]
   },
   {
