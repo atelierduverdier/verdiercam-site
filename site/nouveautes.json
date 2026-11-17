@@ -2,6 +2,21 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+   "date": "2026-11-17",
+   "titre": "La fenêtre de fichiers cherche partout, et le Relief a sa courbe des hauteurs",
+   "points": [
+    "Fenêtre de fichiers : « Chercher » regarde aussi dans tous les sous-dossiers. Tapé depuis le dossier personnel, « coeur » trouve les « cœur » rangés dans Documents/VerdierCAM, sans tenir compte des accents ni des majuscules. Chaque fichier trouvé dit, sous son nom, le dossier où il est : un clic y mène. Le premier est choisi, Entrée l'ouvre, Échap vide la recherche. Elle n'entre jamais dans un partage du réseau.",
+    "Fenêtre de fichiers : elle s'ouvre plus grande, et les fichiers viennent en tête — deux rangées, puis « Montrer les autres fichiers ». Les dossiers sans fichier se rangent par ordre alphabétique, en colonnes, et la colonne de gauche passe en cadres : Favoris, Lieux, Récents, Réseau, Dossier personnel. Dans une fenêtre basse, l'arbre du dossier personnel garde huit lignes.",
+    "Relief : la courbe des hauteurs. À l'étape Façonner › Transitions, sur une image ou un modèle 3D, un carré où l'on dessine comment la hauteur de l'image devient celle de la pièce : un clic pose un point, on le glisse, un clic droit le retire. Six modèles pour partir — relever le fond, tasser le sommet, plus ou moins de contraste, un socle.",
+    "Rainure, Gravure, Moulure : la cannelure naît en pour-cent. 100 % fait descendre la fraise tout le long du trait, sans mesurer sa longueur : une spirale se creuse du bord au centre d'un seul réglage.",
+    "Sécurité : un taraud qui casserait (sous la « Broche mini », ou plus rapide que la machine) refuse l'export pour de bon, sans « Exporter quand même ». Avec un magasin grblHAL qui mesure chaque fraise, la case « G43 H » reste cochée : la longueur mesurée est vraiment appliquée.",
+    "Usinage : un Contour, une Finition ou une Gravure nés d'un clic de zone laissent de côté les formes cachées, et le disent ; la poche s'en sert toujours pour ses îlots. Une bride à nez rond tracée en traits séparés garde toute sa zone interdite.",
+    "Relief : deux rectangles qui se recouvrent se bombent ensemble, sans marche à la couture ; le rayon d'une roue ne disparaît plus dans le trou de sa jante ; un usinage périmé ouvert depuis l'onglet Usinage s'y met à jour.",
+    "Croquis : l'Horloge murale s'insère de nouveau, comme toute pièce qui usine son dessous ; Ctrl+Z ne remontre plus ce qu'on a caché ; au Relief, la corbeille de l'arbre garde les formes que la pile tient.",
+    "Mode d'emploi et aide F1 : la courbe des hauteurs et la nouvelle fenêtre de fichiers, avec leurs captures."
+   ]
+  },
+  {
    "date": "2026-11-16",
    "titre": "Les textures écrites entrent dans le logiciel, et chaque face a ses brides",
    "points": [
@@ -17,7 +32,18 @@
     "Poche : une forme cachée découpe la zone cliquée comme les autres — un rond caché dans un cadre reste un îlot, au lieu d'être creusé. Cacher une forme ne change plus l'usinage. Et « Cliquer les bords un à un » n'ouvre plus que le trait de la face où l'on travaille : un trou traversant tracé au dessous n'emmène plus sa demi-lune.",
     "Exports SVG et DXF : sans sélection, les zones interdites et de travail ne partent plus — envoyée au laser, une bride était découpée comme une pièce. La fenêtre n'exporte que la face courante, et le dit.",
     "Croquis : dans l'arbre des formes, une forme de l'autre face se montre grisée, sa face à la place de ses libertés ; un clic sur sa ligne passe sur sa face puis la choisit. Avant, elle se choisissait depuis l'autre face, et Suppr pouvait l'effacer sans qu'on la voie.",
-    "Mode d'emploi et aide F1 : une section pour les textures écrites, avec ses captures, et une autre pour leur usinage sans ébauche. F1 sur la tuile, ou dans l'onglet, ouvre la bonne fiche."
+    "Mode d'emploi et aide F1 : une section pour les textures écrites, avec ses captures, et une autre pour leur usinage sans ébauche. F1 sur la tuile, ou dans l'onglet, ouvre la bonne fiche.",
+    "Reliefs prêts : les bombés n'ont plus de plis. L'écusson perd ses traits partis des coins, le cœur bombé son décroché à la pointe ; le cœur, le carreau, le pique et le trèfle des cartes, refaits, sont lisses. La coquille, la coquille striée et le motif central quittent la bibliothèque : 27 reliefs prêts.",
+    "Relief : le « Rayon du bord » d'un bombé rond suit enfin le bord — plus de vagues le long d'un côté ni de pic dans un coin.",
+    "Relief : l'ébauche ne mord plus la surépaisseur laissée entre deux couches (jusqu'à 0,4 mm de bois en trop enlevé sur les pentes douces), sa rampe rejoint vraiment le trajet, et « Autour du relief » creuse tout ce que l'écran montre.",
+    "Relief : un usinage périmé ne part plus. Exporté depuis l'onglet Relief, il est refusé avec la marche à suivre ; enregistré, il se rouvre périmé. Annuler défait ensemble la pile, son contour et ses opérations, et sept calculs qui figeaient l'écran rendent la main.",
+    "Relief : une texture regardée sans être posée a sa ligne en tirets dans la pile, avec une croix qui l'éteint — un clic de trop sur la tuile ne laisse plus des vagues sur tout le bois sans moyen de les retirer.",
+    "Taraudage : un taraud réglé sous la « Broche mini » de la machine arrête l'export. Bridée à son minimum, la broche le ferait descendre douze fois trop vite.",
+    "Réglages machine › Changement d'outil : une case « Longueur d'outil après le changement (G43 H) », pour les cartes qui la lisent. Décochée d'office sous LinuxCNC, où le programme reste celui d'avant, à l'octet ; cochée pour Mach3, Mach4, UCCNC, simCNC et grblHAL avec changeur.",
+    "Croquis : chaque groupe du ruban se pose sur son îlot — Fichier, Dessin, Créer, Transformer, Découpe… se lisent comme des blocs, au Pro comme au Débutant.",
+    "Croquis : Suppr efface de nouveau au retour d'un autre onglet, sans recliquer dans le dessin ; au Relief, il efface les contours que la pile ne tient pas et garde les autres en le disant. L'œil de la barre de l'arbre dit l'état, comme celui de chaque ligne, et une copie (Dupliquer, Répéter, Miroir) reste dans le groupe de son original.",
+    "Préférences › Apparence › Vue 3D : le lissage des bords se règle (sans, ×2, ×4, ×8). Il lisse le bord des faces pleines — le relief, la pièce usinée. Et un trait de la vue 3D ne s'efface plus quand on zoome tout près de lui.",
+    "Mode d'emploi et aide F1 : la vue 3D du Relief sur la planche, le lissage des bords, le ruban à îlots et les 27 reliefs prêts."
    ]
   },
   {
