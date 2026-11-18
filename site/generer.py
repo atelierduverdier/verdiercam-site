@@ -495,14 +495,18 @@ def performances_en_html() -> dict:
     machines, essais = banc.get('machines', []), banc.get('essais', [])
     if not machines or not essais:
         sys.exit(f"generer : {chemins.VERDIERCAM_PERFORMANCES} sans machine ou sans essai — relancer outils/banc/resumer.py")
-    tete = ''.join(f'<th scope="col">{html.escape(m["nom"])}</th>' for m in machines)
+    # UNE MACHINE D'AVANT (18/11/2026, Christophe : « met à jour le site […] avec les nouvelles performances sur raspberry
+    # pi 5 ») : le même Pi mesuré par une version plus ancienne, en gris à côté ; un essai qu'il n'avait pas est « — ».
+    classe = lambda m: ' class="avant"' if m.get('avant') else ''
+    tete = ''.join(f'<th scope="col"{classe(m)}>{html.escape(m["nom"])}</th>' for m in machines)
     lignes = []
     for e in essais:
-        cases = ''.join(f'<td>{en_mots_fr(e["valeurs"][m["id"]], e["unite"])}</td>' for m in machines)
+        valeur = lambda v: '—' if v is None else en_mots_fr(v, e['unite'])
+        cases = ''.join(f'<td{classe(m)}>{valeur(e["valeurs"].get(m["id"]))}</td>' for m in machines)
         lignes.append(f'<tr><th scope="row">{html.escape(e["nom"])}<span>{html.escape(e["detail"])}</span></th>{cases}</tr>')
     tableau = ('<div class="banc"><table>\n  <thead><tr><th scope="col">Essai</th>' + tete + '</tr></thead>\n  <tbody>\n    '
                + '\n    '.join(lignes) + '\n  </tbody>\n</table></div>')
-    fiches = '\n'.join(f'<li><b>{html.escape(m["nom"])}</b>{html.escape(m["description"])}</li>' for m in machines)
+    fiches = '\n'.join(f'<li{classe(m)}><b>{html.escape(m["nom"])}</b>{html.escape(m["description"])}</li>' for m in machines)
     a, mo, j = (int(x) for x in banc['date'].split('-'))
     return {'tableau_performances': tableau, 'machines_performances': f'<ul class="banc-machines">\n{fiches}\n</ul>',
             'version_banc': html.escape(banc['version']), 'date_banc': f'{j}{"er" if j == 1 else ""} {MOIS_FR[mo - 1]} {a}'}

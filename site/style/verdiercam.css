@@ -660,6 +660,9 @@ section.legal { padding-top: 24px; }
 .banc-machines { list-style: none; padding: 0; margin: 0 0 18px; display: grid; gap: 6px; font-size: .9rem;
   color: var(--encre-2); }
 .banc-machines b { color: var(--encre); margin-right: 8px; }
+/* La machine d'avant (18/11/2026) : le même Pi, mesuré par une version plus ancienne — en retrait, pour comparer. */
+.banc td.avant, .banc thead th.avant { color: var(--encre-3); }
+.banc-machines li.avant, .banc-machines li.avant b { color: var(--encre-3); }
 @media (max-width: 520px) {
   .banc table { font-size: .82rem; }
   .banc th, .banc td { padding: 8px 4px; }

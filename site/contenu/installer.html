@@ -148,14 +148,16 @@ sudo reboot</code></pre>
       <h2>Trois machines de l'atelier, chronométrées</h2>
       <p>Les mêmes documents, ouverts et calculés par VerdierCAM {{verdiercam.version_banc}} sur les trois machines de
         l'atelier, le {{verdiercam.date_banc}}. Chaque temps va du lancement du programme à l'image finie, parcours
-        calculés et programme écrit (la médiane de trois passages). Tout fonctionne sur chacune ; seul le temps change.</p>
+        calculés et programme écrit (la médiane de trois passages). Tout fonctionne sur chacune ; seul le temps change.
+        La dernière colonne, en retrait, est le même Raspberry Pi mesuré en octobre : le chemin parcouru depuis.</p>
       {{verdiercam.tableau_performances}}
       {{verdiercam.machines_performances}}
       <p>Le <b>Raspberry Pi 5</b> suffit pour dessiner, régler et lancer l'usinage : un document courant s'y calcule en
-        quelques secondes, et une image du croquis le plus chargé se dessine encore 28 fois par seconde. Sur celui de
-        l'atelier, deux de ses quatre cœurs restent réservés à LinuxCNC, qui pilote la machine : un Pi sans LinuxCNC
-        calcule plus vite. Le <b>PC de l'atelier</b>, au processeur de 2016, fait le même travail en deux fois le temps du
-        PC de bureau.</p>
+        quelques secondes, ses calculs vont 10 à 20 % plus vite qu'en octobre, et une image du croquis le plus chargé se
+        dessine encore 28 fois par seconde. Sur celui de l'atelier, un de ses quatre cœurs reste réservé à LinuxCNC, qui
+        pilote la machine ; tant que LinuxCNC tourne, VerdierCAM se limite de lui-même à deux des trois autres, pour ne
+        jamais gêner le temps réel. Le <b>PC de l'atelier</b>, au processeur de 2016, fait le même travail en deux fois le
+        temps du PC de bureau.</p>
     </div>
   </div>
 </section>
