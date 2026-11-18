@@ -10,7 +10,9 @@
     "Travail enregistré : la copie de secours s'écrit sans figer l'image et ne peut plus se mélanger entre deux documents ; « Rouvrir » une copie demande d'abord s'il faut enregistrer le document en cours.",
     "Fenêtre de fichiers : le double-clic ouvre un résultat de la recherche ou une vignette ; un nom venu d'un Mac ou d'une archive se trouve sans ses accents ; F1 y ouvre la fiche de ce qu'on survole au lieu de fermer la fenêtre.",
     "Croquis : il se redessine plus légèrement à chaque image, et le mode d'emploi se charge plus vite au démarrage. Dégrouper un groupe caché puis Ctrl+Z rend ses formes ; après « dessous » puis Ctrl+Z, le Contour propose de nouveau le tour de la pièce.",
-    "Installer : le tableau des machines refait avec cette version, sur le PC de bureau, le PC de l'atelier et le Raspberry Pi 5 — et, à côté, le même Pi mesuré en octobre, pour voir le chemin parcouru."
+    "Usinage : la gravure remplie au laser laisse vide le rond caché dans la zone cliquée, comme la poche ; la cannelure d'une rainure ne passe plus à la suivante sans qu'on l'ait demandé. Outils › « Abandonner la fraise » rend la pièce, le bandeau de la fraise tient dans les petits écrans, et la pièce reste secourue pendant qu'on dessine une fraise. F1 sur une fenêtre ouverte (fichiers, À propos…) montre sa fiche par-dessus.",
+    "Raspberry Pi 5 : la vue 3D chargée de trajets s'y dessine 20 % plus vite (60 → 49 ms par image), au même dessin.",
+    "Installer : le tableau des machines refait avec cette version, sur le PC de bureau, le PC de l'atelier et le Raspberry Pi 5 — avec, à côté, le même Pi mesuré en octobre, et sous chaque essai le temps que la machine met à usiner ce qui vient d'être calculé. Un essai neuf : la finition fine d'un relief de 20 cm en lignes au pas de 0,25 mm, 6 secondes de calcul sur le Pi pour 1 h 18 de machine."
    ]
   },
   {

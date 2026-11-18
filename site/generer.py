@@ -490,6 +490,14 @@ def en_mots_fr(nombre: float, unite: str) -> str:
     return texte.replace('.', ',') + '\u202f' + unite
 
 
+def duree_usinage_fr(secondes: float) -> str:
+    """« 5 min », « 29 min », « 2 h 03 », « 8 h 25 » : la durée d'usinage d'un essai du banc."""
+    minutes = round(secondes / 60)
+    if minutes < 60:
+        return f'{max(minutes, 1)}\u00a0min'
+    return f'{minutes // 60}\u00a0h\u00a0{minutes % 60:02d}'
+
+
 def performances_en_html() -> dict:
     banc = json.loads(chemins.VERDIERCAM_PERFORMANCES.read_text(encoding='utf-8'))
     machines, essais = banc.get('machines', []), banc.get('essais', [])
@@ -503,7 +511,10 @@ def performances_en_html() -> dict:
     for e in essais:
         valeur = lambda v: '—' if v is None else en_mots_fr(v, e['unite'])
         cases = ''.join(f'<td{classe(m)}>{valeur(e["valeurs"].get(m["id"]))}</td>' for m in machines)
-        lignes.append(f'<tr><th scope="row">{html.escape(e["nom"])}<span>{html.escape(e["detail"])}</span></th>{cases}</tr>')
+        # LA DURÉE D'USINAGE À CÔTÉ (18/11/2026, Christophe : « on a des chiffres, mais on ne sait pas trop à quoi ça
+        # correspond ») : ce que la machine met à usiner ce que chaque machine vient de calculer.
+        usinage = f' — la machine l\'usine en {duree_usinage_fr(e["usinage_s"])}' if e.get('usinage_s') else ''
+        lignes.append(f'<tr><th scope="row">{html.escape(e["nom"])}<span>{html.escape(e["detail"])}{usinage}</span></th>{cases}</tr>')
     tableau = ('<div class="banc"><table>\n  <thead><tr><th scope="col">Essai</th>' + tete + '</tr></thead>\n  <tbody>\n    '
                + '\n    '.join(lignes) + '\n  </tbody>\n</table></div>')
     fiches = '\n'.join(f'<li{classe(m)}><b>{html.escape(m["nom"])}</b>{html.escape(m["description"])}</li>' for m in machines)
