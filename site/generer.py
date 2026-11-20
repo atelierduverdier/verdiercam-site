@@ -404,7 +404,8 @@ GROUPES = [
     ('Découper et évider', ['Profile', 'Pocket', 'Facing', 'Slot', 'Finish']),
     ('Percer et fileter', ['Drill', 'Helical', 'ThreadMill']),
     ('Graver', ['Engrave', 'VCarve', 'Deburr', 'PhotoV', 'Texture']),
-    ('Volumes et reliefs', ['Roughing3D', 'Moulding', 'Revolution']),
+    # Autour de l'axe (19/11/2026, le 4e axe dans la 1.0) : un volume tourné autour de l'axe A, comme la révolution.
+    ('Volumes et reliefs', ['Roughing3D', 'Moulding', 'Revolution', 'AutourDeLAxe']),
     ('Usiner les deux faces', ['Dowels', 'Fence']),
 ]
 # LES FAMILLES EXPÉRIMENTALES, tues par la page (15/10/2026, Christophe : « pas de laser », « pas d'expérimental pour
