@@ -64,6 +64,11 @@ sous elle le **cartouche**, signé par l'oiseau qui se dessine. Puis la capture 
 de Christophe, la présentation en vidéo, **le parcours** — quatre jalons fixés à gauche pendant que les quatre vues
 défilent à droite (croquis, usinage, simulation, pilotage) — et les sections de détail, la sortie, les questions.
 
+Le mode d'emploi et le configurateur viennent d'ailleurs avec leur propre feuille : le site pose après elle une
+**surcouche « plan »** (`site/style/mode-emploi.css`, `site/style/configurateur.css`, fonction `surcouche` de
+`generer.py`) — mêmes polices, encre noire, cadres au trait. Ni le manuel (son PDF, les fiches F1) ni le dépôt du
+logiciel ne changent.
+
 | fichier | rôle |
 |---|---|
 | `site/gabarits/page.html` | le squelette de chaque page : barre, pied, visionneuse |

@@ -825,7 +825,20 @@ def remplir(gabarit: str, valeurs: dict, nom: str) -> str:
 
 
 
-def publier_mode_emploi(favicon: str) -> None:
+def surcouche(nom: str, polices: dict) -> str:
+    """LES SURCOUCHES « PLAN » (20/11/2026) : le mode d'emploi et le configurateur viennent d'ailleurs avec leur propre
+    feuille ; le site pose après elle style/<nom>.css — les polices du site (adresses depuis la racine : les deux vivent
+    dans un sous-dossier), l'encre noire, les cadres au trait. Rend l'adresse servie, depuis la racine."""
+    css = (STYLE / f'{nom}.css').read_text(encoding='utf-8')
+    for marque, chemin in polices.items():
+        css = css.replace('{{' + marque + '}}', '/' + chemin)
+    reste = re.findall(r'\{\{[^}]*\}\}', css)
+    if reste:
+        sys.exit(f"generer : style/{nom}.css — marque(s) non remplie(s) : {', '.join(sorted(set(reste)))}")
+    return servir(css.encode('utf-8'), PUBLIC / 'style', nom, 'css')
+
+
+def publier_mode_emploi(favicon: str, plan: str) -> None:
     """LE MODE D'EMPLOI (21/10/2026) : la version web du manuel (chemins.MODE_EMPLOI), recopiée sous /mode-emploi/. Sa
     page garde son propre habit ; on y ajoute seulement le chemin du retour vers le site, l'adresse canonique,
     l'oiseau de l'onglet et le compteur de l'atelier. Une marque introuvable arrête la génération : le gabarit du manuel a changé."""
@@ -853,6 +866,8 @@ def publier_mode_emploi(favicon: str) -> None:
          '<span class="doc"><a href="/">verdiercam.fr</a> › Mode d’emploi</span>'),
         ('</title>', f'</title>\n<link rel="canonical" href="https://{DOMAINE}/mode-emploi/">'
                      f'\n<link rel="icon" href="/{favicon}" type="image/svg+xml">' + partage),
+        # Le style « plan » du site (20/11/2026), posé après la feuille du manuel.
+        ('</head>', f'<link rel="stylesheet" href="/{plan}">\n</head>'),
         ('</body>', "<script>window.goatcounter = { path: function (p) { return '" + PREFIXE_COMPTEUR + "' + p } };</script>\n"
                     '<script data-goatcounter="https://atelierduverdier.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>\n'
                     '</body>'),
@@ -866,7 +881,7 @@ def publier_mode_emploi(favicon: str) -> None:
     print(f"  mode-emploi/   {page.stat().st_size // 1024} Ko + {images} images")
 
 
-def empreinte_configurateur(dossier: Path) -> None:
+def empreinte_configurateur(dossier: Path, plan: str) -> None:
     """L'EMPREINTE DU CONFIGURATEUR (16/10/2026, Christophe : « je ne vois pas la 3D sur mon navigateur » — GitHub Pages
     laisse le navigateur garder un fichier 10 minutes : la page neuve tournait avec l'ancien configurateur.js). Comme
     les images, nommées par l'empreinte de leur contenu : les adresses de index.html (style.css, configurateur.js,
@@ -883,6 +898,10 @@ def empreinte_configurateur(dossier: Path) -> None:
     marque, n = re.subn(r'((?:src|href)=")([\w.-]+\.(?:js|css))(")', rf'\g<1>\g<2>?v={v}\g<3>', texte)
     if n == 0 or 'configurateur.js?v=' not in marque:
         sys.exit("generer : configurateur/index.html sans script à marquer de son empreinte — la page a changé ?")
+    # Le style « plan » du site (20/11/2026), posé après la feuille du configurateur.
+    if marque.count('</head>') != 1:
+        sys.exit("generer : configurateur/index.html — « </head> » introuvable ou multiple")
+    marque = marque.replace('</head>', f'<link rel="stylesheet" href="/{plan}">\n</head>')
     page.write_text(marque, encoding='utf-8')
 
 
@@ -935,8 +954,8 @@ def main() -> None:
     # LE CONFIGURATEUR DE PIÈCES (10/10/2026) : la page du logiciel (web/configurateur), recopiée telle quelle sous
     # /configurateur/ — sa page, son script, son cœur WebAssembly, ses pièces .vcs. Pas la notice de construction.
     shutil.copytree(chemins.CONFIGURATEUR, PUBLIC / 'configurateur', ignore=shutil.ignore_patterns('README.md', '*.map'))
-    empreinte_configurateur(PUBLIC / 'configurateur')
-    publier_mode_emploi(favicon)
+    empreinte_configurateur(PUBLIC / 'configurateur', surcouche('configurateur', polices))
+    publier_mode_emploi(favicon, surcouche('mode-emploi', polices))
     captures = publier_captures()
     carte = carte_partage()
     faits = faits_verdiercam()
