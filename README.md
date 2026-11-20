@@ -43,19 +43,26 @@ pas l'ancienne.
 ## L'identité
 
 Le site a **sa propre identité**, à part de l'Atelier du Verdier (demandé le 06/10/2026 :
-« plus moderne, ne suis pas ma charte, pas sombre »). Fond clair, encre presque noire,
-l'orange de l'oiseau (`#ff6d00`) en accent. La page se lit comme une **planche de dessin** :
-un papier finement quadrillé, des cotes au trait, des repères numérotés en mono, et l'orange
-pour tout ce qui est « parcours » (la fraise du logo, le jalon actif, le trait sous le mot
-fort du titre). Les polices sont celles du logiciel (Inter, JetBrains Mono), réduites au
-latin et servies d'ici en WOFF2 : la page ne demande rien à Google.
+« plus moderne, ne suis pas ma charte, pas sombre »).
 
-La page d'accueil : à côté du titre, **le tracé** — le vrai parcours de fraise de l'engrenage du catalogue, lu dans son
-G-code, qui se dessine en sept secondes puis laisse la roue découpée (CSS seul ; d'emblée finie si le visiteur a
-demandé moins d'animations) ; puis un héros avec la capture de la gravure florale (le drakkar jusqu'au 21/10/2026) et une
-**loupe** sur son relief (un recadrage de la même capture, `RECADRAGES` dans `generer.py`), une bande de chiffres, puis
-**le parcours** — quatre jalons fixés à gauche pendant que les quatre vues défilent à droite
-(croquis, usinage, simulation, pilotage) — et les sections de détail, la sortie, les questions.
+**Le style « plan »** (20/11/2026). Christophe avait vu le site d'un autre logiciel du même domaine au même dessin que
+le nôtre — fond crème, un seul orange, grotesque serrée, cartes arrondies à ombre douce, pastilles, bande de chiffres,
+coches : le gabarit des pages faites par une IA (« je cherche quelque chose de professionnel, design, léger et qui ne
+ressemble pas à de l'IA […] qui me ressemble »). Des quatre directions dessinées (catalogue d'outillage, planche
+gravée, plan, carnet d'atelier), il a pris **le plan, avec la photo de l'atelier**. La page se lit comme un **dessin
+technique d'atelier** : blanc franc, encre noire, une grille fine là où l'on dessine, des cadres au trait, **aucun
+arrondi, aucune ombre, aucun dégradé**, les repères de section dans une petite case en mono, et l'orange de l'oiseau
+— c'est aussi celui de la machine — pour ce qui est parcours ou action. Polices : **IBM Plex** (libre, OFL), l'étroite
+pour les titres, la normale pour le texte, la mono pour les cotes ; dans `site/polices/`, réduites au latin et servies
+d'ici en WOFF2 : la page ne demande rien à Google.
+
+La page d'accueil : une **feuille** et ses repères de colonnes — à gauche le titre, à droite la **vue de dessus** d'une
+vraie pièce, **le tracé** (le parcours de fraise de l'engrenage du catalogue, lu dans son G-code, qui se dessine en
+sept secondes puis laisse la roue découpée ; CSS seul, d'emblée fini si le visiteur a demandé moins d'animations), et
+sous elle le **cartouche**, signé par l'oiseau qui se dessine. Puis la capture de la gravure florale et sa **loupe**
+(`RECADRAGES` dans `generer.py`), **la photo de la machine** de l'atelier (`site/photos/`, `PHOTOS`) avec l'histoire
+de Christophe, la présentation en vidéo, **le parcours** — quatre jalons fixés à gauche pendant que les quatre vues
+défilent à droite (croquis, usinage, simulation, pilotage) — et les sections de détail, la sortie, les questions.
 
 | fichier | rôle |
 |---|---|

@@ -10,46 +10,54 @@
      logiciel avant d'être écrite. Une fonction ajoutée ici sans l'avoir
      vue dans le code est une promesse, pas une description.
 
-     La page se lit comme une planche de dessin : un papier quadrillé,
-     des cotes, des repères numérotés en mono — et l'orange de l'oiseau
-     pour le parcours de la fraise. -->
+     LE STYLE « PLAN » (20/11/2026, Christophe : le site ressemblait à ceux que fait une IA ; des quatre directions
+     dessinées, il a pris le plan, avec la photo de l'atelier). La page se lit comme un dessin technique d'atelier : une
+     feuille et ses repères de colonnes, la vue de dessus d'une vraie pièce — son parcours lu dans le G-code —, son
+     cartouche signé par l'oiseau, des cadres au trait noir ; l'orange pour le parcours de la fraise. -->
 
-<div class="heros papier">
-  <div class="cadre heros-haut">
-    <div class="heros-texte">
-      {{OISEAU}}
-      <p class="etiquette"><i></i> <!--hors-vente--><a href="{{RACINE}}nouveautes.html">Version {{verdiercam.version}}</a> · sortie le {{editeur.date_sortie}}<!--/hors-vente--><!--vente--><a href="{{RACINE}}nouveautes.html">Version {{verdiercam.publiee}}</a> · disponible<!--/vente--></p>
-      <h1>Du croquis <em>au copeau</em>, dans une seule fenêtre.</h1>
-      <p class="accroche">
-        VerdierCAM dessine la pièce, calcule les parcours, simule la matière enlevée
-        et pilote la défonceuse. Pensé dans un atelier de menuiserie, pour le bois
-        d'abord — et éprouvé sur une vraie machine.
-      </p>
-      <div class="actions">
-        <!--hors-vente--><a class="bouton bouton-plein" href="#sortie">Être prévenu de la sortie</a><!--/hors-vente-->
-        <!--vente--><a class="bouton bouton-plein" href="{{RACINE}}installer.html#telecharger">Essayer {{verdiercam.essai}} jours, gratuitement</a>
-        <a class="bouton bouton-clair" href="{{RACINE}}acheter.html">Acheter une licence</a><!--/vente-->
-        <a class="bouton bouton-clair" href="{{RACINE}}premiers-pas.html">Suivre les premiers pas</a>
-        <a class="bouton bouton-clair" href="#presentation">Voir la présentation en vidéo <span aria-hidden="true">↓</span></a>
-      </div>
-      <p class="essai-heros"><!--hors-vente-->À la sortie : <!--/hors-vente--><b>{{verdiercam.essai}} jours d'essai complets</b>, sans carte bancaire.
-        Ensuite, <b>le dessin et la simulation restent gratuits</b> ; la licence sert à écrire le G-code
-        et à piloter la machine.</p>
-    </div>
-    <!-- LE TRACÉ (21/10/2026) : le parcours de fraise d'une pièce du catalogue, dessiné depuis son G-code réel
-         (site/generer.py, trace_en_ligne), puis la pièce découpée. La fiche passe dessous. -->
-    <div class="heros-cote">
-    {{TRACE}}
-    <ul class="fiche" aria-label="En bref">
-      <li>Linux et Windows</li>
-      <li>{{verdiercam.familles}} familles d'opérations</li>
-      <li>Pensé et écrit en français</li>
-      <li>Licence perpétuelle, sans abonnement</li>
-    </ul>
-    </div>
-  </div>
-
+<div class="heros heros-accueil">
   <div class="cadre large">
+    <div class="feuille">
+      <div class="feuille-reperes" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+      <div class="feuille-dedans">
+        <div class="heros-texte">
+          <h1>Dessiner une pièce en bois, puis la fraiser.</h1>
+          <p class="accroche">VerdierCAM fait le croquis coté, calcule les parcours, simule la matière enlevée et pilote
+            la défonceuse. Tout se passe dans une seule fenêtre.</p>
+          <p class="accroche">Pensé dans un atelier de menuiserie, pour le bois d'abord, et éprouvé sur une vraie machine.</p>
+          <div class="actions">
+            <!--hors-vente--><a class="bouton bouton-plein" href="#sortie">Être prévenu de la sortie</a><!--/hors-vente-->
+            <!--vente--><a class="bouton bouton-plein" href="{{RACINE}}installer.html#telecharger">Essayer {{verdiercam.essai}} jours, gratuitement</a>
+            <a class="bouton bouton-clair" href="{{RACINE}}acheter.html">Acheter une licence</a><!--/vente-->
+            <a class="bouton bouton-clair" href="{{RACINE}}premiers-pas.html">Suivre les premiers pas</a>
+            <a class="bouton bouton-clair" href="#presentation">Voir la présentation en vidéo <span aria-hidden="true">↓</span></a>
+          </div>
+          <p class="essai-heros"><!--hors-vente-->À la sortie : <!--/hors-vente--><b>{{verdiercam.essai}} jours d'essai complets</b>, sans carte bancaire.
+            Ensuite, <b>le dessin et la simulation restent gratuits</b> ; la licence sert à écrire le G-code
+            et à piloter la machine.</p>
+          <ul class="legende-plan" aria-label="Légende du dessin">
+            <li class="l-fraise">le centre de la fraise, lu dans le G-code</li>
+            <li class="l-vide">les déplacements à vide</li>
+            <li class="l-bois">la pièce découpée</li>
+          </ul>
+        </div>
+        <!-- LE TRACÉ (21/10/2026) : le parcours de fraise d'une pièce du catalogue, dessiné depuis son G-code réel
+             (site/generer.py, trace_en_ligne), puis la pièce découpée. Dessous, le cartouche du plan (20/11/2026). -->
+        <div class="heros-plan">
+          <p class="vue-titre"><span class="surtitre">Vue de dessus</span></p>
+          {{TRACE}}
+          <div class="cartouche">
+            <div class="cartouche-signe">{{OISEAU}}</div>
+            <p class="cartouche-designation"><span>Désignation</span>VerdierCAM, CAO et FAO pour défonceuse CNC</p>
+            <p><span>Dessiné par</span>Christophe, Atelier du Verdier</p>
+            <p><span>Systèmes</span>Linux, Windows, Raspberry Pi 5</p>
+            <p><span>Version</span><a href="{{RACINE}}nouveautes.html"><!--hors-vente-->{{verdiercam.version}}<!--/hors-vente--><!--vente-->{{verdiercam.publiee}}<!--/vente--></a></p>
+            <p><span>Sortie</span><!--hors-vente-->le {{editeur.date_sortie}}<!--/hors-vente--><!--vente-->disponible<!--/vente--></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="vitrine apparait">
       <figure class="fenetre fenetre-heros">
         <img src="{{RACINE}}captures/floral.webp" width="1920" height="1080" fetchpriority="high"
@@ -65,15 +73,35 @@
   </div>
 </div>
 
-<section class="chiffres" aria-label="En quelques chiffres">
-  <div class="cadre">
-    <ul>
-      <li><b>{{verdiercam.familles}}</b><span>familles d'opérations</span></li>
-      <li><b>8</b><span>commandes numériques servies</span></li>
-      <li><b>2</b><span>systèmes, Linux et Windows</span></li>
-      <li><b>0</b><span>abonnement</span></li>
-      <li><b>0</b><span>connexion pour travailler</span></li>
-    </ul>
+<!-- L'histoire : les mots de Christophe (11/10/2026, à ChatGPT : « je ne vise aucun marché, j'ai juste été
+     frustré au début de ne pas trouver de logiciel sympa facile et pas cher… »), à peine remis en ordre. Au-dessus, la
+     machine de l'atelier (20/11/2026, le style « plan » avec la photo de l'atelier) : site/photos/machine-atelier.jpg. -->
+<section id="pourquoi" class="histoire">
+  <div class="cadre large">
+    <figure class="photo-atelier apparait">
+      <img src="{{RACINE}}captures/machine-atelier.webp" width="1920" height="866" loading="lazy"
+           alt="La fraiseuse de l'atelier : un bâti orange, un plateau martyr en contreplaqué rainuré, le portique et sa broche, le tout posé sur un établi en OSB">
+      <figcaption><span>La machine de l'atelier</span> C'est sur elle que VerdierCAM est éprouvé.</figcaption>
+    </figure>
+  </div>
+  <div class="cadre large histoire-dedans">
+    <div class="histoire-titre apparait">
+      <span class="surtitre">Pourquoi VerdierCAM</span>
+      <h2>Le logiciel que je n'ai pas trouvé</h2>
+    </div>
+    <div class="histoire-texte apparait">
+      <p>Quand j'ai commencé la CNC, je cherchais un logiciel sympa, facile et pas cher. Je ne l'ai pas
+        trouvé. J'ai bidouillé entre plusieurs logiciels, plus ou moins performants : dessiner dans
+        l'un, calculer les parcours dans l'autre, envoyer le programme avec un troisième.</p>
+      <p>Et je n'avais pas envie de mettre plusieurs centaines d'euros dans un logiciel qui ne tourne
+        que sous Windows, alors que je travaille sous Linux.</p>
+      <p>Alors je l'ai fait. Je ne vise aucun marché : VerdierCAM, c'est l'outil que j'aurais aimé
+        trouver en commençant. Tout dans une seule fenêtre, sous Linux comme sous Windows, à un prix
+        qui ne fait pas hésiter.</p>
+      <p>Et depuis qu'il tourne sur le Raspberry Pi 5 de la machine, je l'utilise directement sur le lieu
+        d'usinage, sans repasser par le bureau, qui est loin.</p>
+      <p class="signature">Christophe, Atelier du Verdier</p>
+    </div>
   </div>
 </section>
 
@@ -100,33 +128,11 @@
   </div>
 </section>
 
-<!-- L'histoire : les mots de Christophe (11/10/2026, à ChatGPT : « je ne vise aucun marché, j'ai juste été
-     frustré au début de ne pas trouver de logiciel sympa facile et pas cher… »), à peine remis en ordre. -->
-<section id="pourquoi" class="histoire">
-  <div class="cadre">
-    <div class="histoire-texte apparait">
-      <span class="surtitre">Pourquoi VerdierCAM</span>
-      <h2>Le logiciel que je n'ai pas trouvé</h2>
-      <p>Quand j'ai commencé la CNC, je cherchais un logiciel sympa, facile et pas cher. Je ne l'ai pas
-        trouvé. J'ai bidouillé entre plusieurs logiciels, plus ou moins performants : dessiner dans
-        l'un, calculer les parcours dans l'autre, envoyer le programme avec un troisième.</p>
-      <p>Et je n'avais pas envie de mettre plusieurs centaines d'euros dans un logiciel qui ne tourne
-        que sous Windows, alors que je travaille sous Linux.</p>
-      <p>Alors je l'ai fait. Je ne vise aucun marché : VerdierCAM, c'est l'outil que j'aurais aimé
-        trouver en commençant. Tout dans une seule fenêtre, sous Linux comme sous Windows, à un prix
-        qui ne fait pas hésiter.</p>
-      <p>Et depuis qu'il tourne sur le Raspberry Pi 5 de la machine, je l'utilise directement sur le lieu
-        d'usinage, sans repasser par le bureau, qui est loin.</p>
-      <p class="signature">Christophe, Atelier du Verdier</p>
-    </div>
-  </div>
-</section>
-
 <section id="parcours" class="papier">
   <div class="cadre">
     <div class="tete apparait">
       <span class="surtitre">Le parcours · un seul document</span>
-      <h2>Dessiner. Préparer. Vérifier avant de couper.</h2>
+      <h2>Le parcours, de la planche au programme</h2>
       <p>Une cote change dans le croquis : les parcours se recalculent, la simulation suit,
         la machine reçoit le bon programme. Sans export entre deux logiciels.</p>
     </div>
@@ -422,7 +428,7 @@ pour (i = [0 : 3]) {
     <div class="fonction">
       <div class="texte apparait">
         <span class="surtitre">03 · Simulation</span>
-        <h2>Voir le bois avant de le couper</h2>
+        <h2>Le bois creusé à l'écran, avant la machine</h2>
         <p>La simulation enlève la matière comme la fraise le fera. Une erreur se voit à
           l'écran, pas sur la pièce.</p>
         <ul class="coches">

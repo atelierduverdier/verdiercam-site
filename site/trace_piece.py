@@ -18,7 +18,8 @@
 #                           ôté, la feuille se voit à travers les jours et l'ombre suit le vrai bord. Les onglets y sont
 #                           compris : la planche n'étant pas dessinée, le pont de bois d'un onglet s'arrêtait au centre du
 #                           trait et faisait une pointe rougie au fond de quatre dents ; la roue s'affiche détachée ;
-#   - la pièce              l'intérieur du contour le plus long, moins l'intérieur des autres ;
+#   - la pièce              l'intérieur du contour le plus long, moins l'intérieur des autres, posée à plat (sans
+#                           ombre depuis le style « plan » du site, 20/11/2026) ;
 #   - le perçage (G81…)     un trou du Ø de l'outil.
 #
 # Animation en CSS seul (aucun script) ; quand le visiteur a demandé moins d'animations, la pièce finie s'affiche
@@ -204,21 +205,21 @@ def svg(gcode: str, duree: float = 7.0, legende: str = '') -> dict:
      aria-label="{legende or 'Le parcours de la fraise, tiré du G-code réel, puis la pièce découpée'}">
 <style>
 .trace-piece{{--fin:{fin:.2f}s}}
-.trace-piece .trace-grille{{fill:none;stroke:rgba(21,23,28,.06);stroke-width:{trait * .25:.3f}}}
+.trace-piece .trace-grille{{fill:none;stroke:rgba(17,17,17,.08);stroke-width:{trait * .25:.3f}}}
 .trace-piece .trace-coupe{{fill:none;stroke:#ff6d00;stroke-width:{trait:.3f};stroke-linecap:round;stroke-linejoin:round;
   stroke-dasharray:1 2;stroke-dashoffset:1.01;animation:trace-tracer linear forwards,trace-estomper ease forwards}}
-.trace-piece .trace-vide{{fill:none;stroke:#6a7080;stroke-width:{trait * .4:.3f};stroke-dasharray:1 2;stroke-dashoffset:1.01;
+.trace-piece .trace-vide{{fill:none;stroke:#5e5e5e;stroke-width:{trait * .4:.3f};stroke-dasharray:1 2;stroke-dashoffset:1.01;
   opacity:.55;animation:trace-tracer linear forwards,trace-eteindre forwards}}
-.trace-piece .trace-fraise{{fill:none;stroke:#15171c;stroke-width:{fraise + trait * .6:.3f};stroke-linecap:round;
+.trace-piece .trace-fraise{{fill:none;stroke:#111;stroke-width:{fraise + trait * .6:.3f};stroke-linecap:round;
   stroke-dasharray:0 3;opacity:0;animation:trace-avancer linear}}
-.trace-piece .trace-percage{{fill:#fdfcfa;stroke:#ff6d00;stroke-width:{trait * .6:.3f};transform-box:fill-box;
+.trace-piece .trace-percage{{fill:#fff;stroke:#ff6d00;stroke-width:{trait * .6:.3f};transform-box:fill-box;
   transform-origin:center;transform:scale(0);animation:trace-percer .35s forwards}}
 .trace-piece .trace-bois,.trace-piece .trace-apres{{opacity:0;animation:trace-montrer .8s var(--fin) forwards}}
 .trace-piece .trace-apres{{animation-delay:calc(var(--fin) + .4s)}}
 .trace-piece .trace-scie{{fill:none;stroke:#000;stroke-width:{fraise:.2f};stroke-linejoin:round;stroke-linecap:round}}
 .trace-piece .trace-jour{{fill:#000}}
-.trace-piece .trace-cote-trait{{fill:none;stroke:#6a7080;stroke-width:{trait * .3:.3f}}}
-.trace-piece .trace-cote{{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:{L / 30:.2f}px;fill:#474c57;
+.trace-piece .trace-cote-trait{{fill:none;stroke:#111;stroke-width:{trait * .3:.3f}}}
+.trace-piece .trace-cote{{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:{L / 30:.2f}px;fill:#111;
   text-anchor:middle}}
 @keyframes trace-tracer{{from{{stroke-dashoffset:1}}to{{stroke-dashoffset:0}}}}
 @keyframes trace-avancer{{from{{opacity:1;stroke-dashoffset:0}}to{{opacity:1;stroke-dashoffset:-1}}}}
@@ -237,9 +238,6 @@ def svg(gcode: str, duree: float = 7.0, legende: str = '') -> dict:
   <linearGradient id="trace-fil-du-bois" x1="0" y1="0" x2="1" y2=".25">
     <stop offset="0" stop-color="#ecd3a8"/><stop offset=".55" stop-color="#e3c391"/><stop offset="1" stop-color="#d9b47d"/>
   </linearGradient>
-  <filter id="trace-ombre" x="-10%" y="-10%" width="120%" height="120%">
-    <feDropShadow dx="0" dy="{trait * .9:.2f}" stdDeviation="{trait * 1.3:.2f}" flood-color="#15171c" flood-opacity=".18"/>
-  </filter>
   <mask id="trace-decoupe" maskUnits="userSpaceOnUse" x="0" y="0" width="{L:.2f}" height="{H:.2f}">
     <rect width="{L:.2f}" height="{H:.2f}" fill="#fff"/>
     {''.join(f'<path class="trace-jour" d="{c[0]}Z"/>' for c in interieurs)}{''.join(trous)}
@@ -247,7 +245,7 @@ def svg(gcode: str, duree: float = 7.0, legende: str = '') -> dict:
   </mask>
 </defs>
 <path class="trace-grille" d="{grille}"/>
-<g class="trace-bois" filter="url(#trace-ombre)">
+<g class="trace-bois">
 <path d="{exterieur[0]}Z" fill="url(#trace-fil-du-bois)" mask="url(#trace-decoupe)"/>
 </g>
 <g>

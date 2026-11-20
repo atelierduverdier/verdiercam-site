@@ -23,7 +23,8 @@ VERDIERCAM_OPERATION = VERDIERCAM / 'src' / 'cam' / 'Operation.h'
 VERDIERCAM_LOGO = VERDIERCAM / 'ressources' / 'logo-verdiercam.svg'
 # La durée de l'essai (kJoursEssai) : le site l'annonce, le logiciel la tient.
 VERDIERCAM_LICENCE = VERDIERCAM / 'src' / 'scene' / 'Licence.h'
-POLICES = VERDIERCAM / 'ressources' / 'polices'        # Inter, JetBrains Mono
+# Les polices du site (IBM Plex) ne sont plus celles du logiciel depuis le style « plan » (20/11/2026) : elles
+# vivent dans site/polices/.
 # Le configurateur de pièces (10/10/2026) : la page et le cœur WebAssembly, construit par outils/construire-wasm.sh
 # du logiciel (le .wasm n'est pas versionné : il se construit, puis le site le recopie).
 CONFIGURATEUR = VERDIERCAM / 'web' / 'configurateur'
@@ -60,7 +61,6 @@ TOUT = {
     'captures': CAPTURES,
     'clips': CLIPS,
     "G-code du tracé de l'accueil (outils/exporter-trace.sh)": TRACE_GCODE,
-    'polices du logiciel': POLICES,
     'configurateur (page)': CONFIGURATEUR / 'index.html',
     'configurateur (cœur WebAssembly, outils/construire-wasm.sh)': CONFIGURATEUR / 'verdiercam-coeur.wasm',
     'configurateur (liste des pièces, outils/construire-wasm.sh)': CONFIGURATEUR / 'pieces.json',

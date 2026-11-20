@@ -16,7 +16,8 @@
 #   les pièces paramétriques      web/configurateur/pieces.json (écrit par outils/construire-wasm.sh)
 #   le logo, l'oiseau animé       ressources/logo-verdiercam.svg
 #   le tracé de l'accueil         le G-code d'une pièce, exporté par outils/exporter-trace.sh
-#   les polices Inter et Mono     ressources/polices/ du logiciel
+#   les polices IBM Plex          site/polices/ (libres, OFL ; le style « plan », 20/11/2026)
+#   la photo de la machine        site/photos/ (prise à l'atelier)
 #
 # Une clé absente, une famille sans groupe, une capture manquante, une
 # marque {{…}} restée vide ARRÊTENT la génération : rien d'à moitié engendré
@@ -235,13 +236,19 @@ def servir(donnees: bytes, dossier: Path, nom: str, ext: str) -> str:
 
 
 # --- Les polices ---------------------------------------------------------
-# Celles du logiciel, servies D'ICI : pas de Google Fonts, donc rien n'est
-# demandé à un tiers au chargement de la page. Réduites au latin (accents
-# français, guillemets, flèches) et passées en WOFF2.
+# IBM Plex, libre (OFL), servie D'ICI : pas de Google Fonts, donc rien n'est demandé à un tiers au chargement de la
+# page. Réduites au latin (accents français, guillemets, flèches) et passées en WOFF2.
+# LE STYLE « PLAN » (20/11/2026, Christophe : le site ressemblait à ceux faits par une IA, « je cherche quelque chose
+# de professionnel, design, léger […] qui me ressemble ») : la grotesque étroite des cartouches pour les titres, la
+# même en largeur normale pour le texte, la mono pour les cotes et les repères. Plus Inter ni JetBrains Mono, celles
+# du logiciel : c'était justement l'air de toutes les pages de logiciel.
+POLICES_SITE = SITE / 'polices'
 POLICES = {
-    'POLICE_TEXTE': 'Inter-Regular.ttf',
-    'POLICE_GRAS': 'Inter-SemiBold.ttf',
-    'POLICE_MONO': 'JetBrainsMono-Medium.ttf',
+    'POLICE_TEXTE': 'IBMPlexSans-Regular.ttf',
+    'POLICE_GRAS': 'IBMPlexSans-SemiBold.ttf',
+    'POLICE_TITRE': 'IBMPlexSansCondensed-SemiBold.ttf',
+    'POLICE_MONO': 'IBMPlexMono-Regular.ttf',
+    'POLICE_MONO_GRAS': 'IBMPlexMono-Medium.ttf',
 }
 JEU = ('U+0020-007E,U+00A0-00FF,U+0152-0153,U+0178,U+02C6,U+2009,U+2013-2014,'
        'U+2018-201E,U+2022,U+2026,U+202F,U+2190-2193,U+2713')
@@ -254,7 +261,7 @@ def publier_polices() -> dict:
         opts = subset.Options()
         opts.flavor = 'woff2'
         opts.layout_features = ['kern', 'liga', 'calt', 'tnum']
-        police = subset.load_font(str(chemins.POLICES / fichier), opts)
+        police = subset.load_font(str(POLICES_SITE / fichier), opts)
         sub = subset.Subsetter(opts)
         sub.populate(unicodes=subset.parse_unicodes(JEU))
         sub.subset(police)
@@ -262,8 +269,7 @@ def publier_polices() -> dict:
         subset.save_font(police, tampon, opts)
         servies[marque] = servir(tampon.getvalue(), PUBLIC / 'polices',
                                  Path(fichier).stem, 'woff2')
-    for licence in ('OFL-Inter.txt', 'OFL-JetBrainsMono.txt'):
-        shutil.copy2(chemins.POLICES / licence, PUBLIC / 'polices' / licence)
+    shutil.copy2(POLICES_SITE / 'OFL-IBMPlex.txt', PUBLIC / 'polices' / 'OFL-IBMPlex.txt')
     poids = sum((PUBLIC / c).stat().st_size for c in servies.values())
     print(f"  {len(servies)} police(s) en WOFF2 — {poids // 1024} Ko")
     return servies
@@ -322,6 +328,12 @@ RECADRAGES = {
     'floral-detail': ('floral_heros', (900, 520, 1700, 970), 1200),
 }
 
+# LES PHOTOS DE L'ATELIER (20/11/2026) : prises à l'atelier, pas refaites par un scénario — elles vivent donc ICI,
+# dans site/photos/, et sortent avec les captures (même WebP, même nom par empreinte).
+PHOTOS = {
+    'machine-atelier.jpg': 'machine-atelier',
+}
+
 CLIPS = {
     'croquis_cote_tapee': 'clip-cote',
     'simulation_creuse': 'clip-simulation',
@@ -364,6 +376,16 @@ def publier_captures() -> dict:
         im = Image.open(f).convert('RGB').crop(boite)
         if im.width > largeur:
             im = im.resize((largeur, round(im.height * largeur / im.width)), Image.LANCZOS)
+        en_webp(im, nom)
+
+    for src, nom in PHOTOS.items():
+        f = SITE / 'photos' / src
+        if not f.is_file():
+            manquants.append(f)
+            continue
+        im = Image.open(f).convert('RGB')
+        if im.width > LARGEUR:
+            im = im.resize((LARGEUR, round(im.height * LARGEUR / im.width)), Image.LANCZOS)
         en_webp(im, nom)
 
     for src, nom in CLIPS.items():
@@ -769,23 +791,24 @@ def carte_partage(image: Path = None, boite: tuple = None, titre: str = '', lign
     if image is None:
         src, boite = RECADRAGE_CARTE
         image = chemins.CAPTURES / f'{src}.png'
-    carte = Image.new('RGB', (L, H), (251, 250, 247))
+    carte = Image.new('RGB', (L, H), (255, 255, 255))
     im = Image.open(image).convert('RGB').crop(boite)
     im = im.resize((L, round(im.height * L / im.width)), Image.LANCZOS)
     haut = (im.height - (H - bandeau)) // 2
     carte.paste(im.crop((0, haut, L, haut + H - bandeau)), (0, 0))
     d = ImageDraw.Draw(carte)
-    d.rectangle([(0, H - bandeau), (L, H)], fill=(251, 250, 247))
-    d.line([(0, H - bandeau), (L, H - bandeau)], fill=(255, 109, 0), width=4)
-    gras = ImageFont.truetype(str(chemins.POLICES / 'Inter-SemiBold.ttf'), 46)
-    texte = ImageFont.truetype(str(chemins.POLICES / 'Inter-Regular.ttf'), 24)
-    d.text((44, H - bandeau + 16), "Verdier", font=gras, fill=(22, 24, 29))
+    # Le style « plan » (20/11/2026) : un cartouche blanc sous un filet noir, le titre en Plex étroite.
+    d.rectangle([(0, H - bandeau), (L, H)], fill=(255, 255, 255))
+    d.line([(0, H - bandeau), (L, H - bandeau)], fill=(17, 17, 17), width=2)
+    gras = ImageFont.truetype(str(POLICES_SITE / 'IBMPlexSansCondensed-SemiBold.ttf'), 50)
+    texte = ImageFont.truetype(str(POLICES_SITE / 'IBMPlexMono-Regular.ttf'), 22)
+    d.text((44, H - bandeau + 12), "Verdier", font=gras, fill=(17, 17, 17))
     x = 44 + d.textlength("Verdier", font=gras)
-    d.text((x, H - bandeau + 16), "CAM", font=gras, fill=(255, 109, 0))
+    d.text((x, H - bandeau + 12), "CAM", font=gras, fill=(181, 74, 0))
     if titre:
-        d.text((x + d.textlength("CAM", font=gras) + 18, H - bandeau + 16), titre, font=gras, fill=(22, 24, 29))
-    d.text((46, H - bandeau + 74), ligne or "CAO/FAO pour défonceuse CNC  ·  verdiercam.fr",
-           font=texte, fill=(74, 79, 90))
+        d.text((x + d.textlength("CAM", font=gras) + 18, H - bandeau + 12), titre, font=gras, fill=(17, 17, 17))
+    d.text((46, H - bandeau + 76), ligne or "CAO/FAO pour défonceuse CNC  ·  verdiercam.fr",
+           font=texte, fill=(94, 94, 94))
     tampon = io.BytesIO()
     carte.save(tampon, 'JPEG', quality=88, optimize=True)
     return servir(tampon.getvalue(), PUBLIC / 'partage', nom, 'jpg')
@@ -961,7 +984,7 @@ def main() -> None:
             'TITRE': page['titre'],
             'DESCRIPTION': injecter_verdiercam(page['description'], faits, page['contenu']),
             'URL': url, 'RACINE': racine, 'FAVICON': favicon, 'CSS': css_servi,
-            'JS': js_servi, 'POLICE_TEXTE': polices['POLICE_TEXTE'],
+            'JS': js_servi, 'POLICE_TEXTE': polices['POLICE_TEXTE'], 'POLICE_TITRE': polices['POLICE_TITRE'],
             'CARTE': f"https://{DOMAINE}/{carte}", 'NAV': nav, 'LIENS': liens,
             'ANNEE': ANNEE, 'PREFIXE_COMPTEUR': PREFIXE_COMPTEUR, 'CORPS': corps,
         }, page['contenu'])
