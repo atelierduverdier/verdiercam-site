@@ -423,6 +423,49 @@ pour (i = [0 : 3]) {
   </div>
 </section>
 
+<!-- LE 4E AXE (21/11/2026, Christophe : « on peut mettre à jour le site internet avec le 4e axe ») : dans la 1.0, marqué
+     « (expérimental) » dans le logiciel (19/11/2026 : « pour le 4e axe, on mettra à côté, expérimental ») — la page le dit
+     avec les mots de son infobulle (BulleQuatriemeAxeExperimental, src/app/Widgets.cpp). Les captures : les documents
+     d'essai du logiciel (tests/documents/essai-axe-*), rejoués par presentation-verdiercam/capturer.sh. -->
+<section id="quatrieme-axe">
+  <div class="cadre">
+    <div class="fonction inverse">
+      <div class="texte apparait">
+        <span class="surtitre">4e axe · expérimental</span>
+        <h2>La pièce tourne sur son diviseur</h2>
+        <p>Avec un diviseur sur la machine, VerdierCAM usine tout autour d'une barre. Un demi-profil couché le long de X
+          devient une pièce ronde — un pied de table, un manche, un gobelet —, et un modèle 3D s'usine tout autour, tenu par
+          deux tenons.</p>
+        <ul class="coches">
+          <li><b>Autour de l'axe</b> : arrondir la barre, ébaucher, finir. Une texture peut se poser sur la pièce ronde.</li>
+          <li><b>Un modèle 3D</b> en STL ou en OBJ, couché le long du diviseur et usiné tout autour.</li>
+          <li><b>La Simulation sur le cylindre</b> : la pièce tourne sous la fraise, comme sur la machine ; les mors, la
+            contre-pointe, la queue de la fraise et le porte-outil sont surveillés.</li>
+          <li>Barre ronde ou carrée, avec ou sans contre-pointe ; le diviseur sur l'axe A, ou branché à la place du moteur Y.</li>
+        </ul>
+        <p class="note-experimental">Le 4e axe est expérimental dans cette version : le programme et la simulation sont justes,
+          mais ils ont encore peu tourné sur de vraies machines. Faites tourner le premier programme à vide, fraise levée.</p>
+      </div>
+      <div class="collage apparait">
+        <figure class="capture">
+          <div class="fenetre">
+            <img src="{{RACINE}}captures/axe-manche.webp" width="1920" height="1080" loading="lazy"
+                 alt="Un manche de tournevis usiné sur le 4e axe, à la Simulation sur le cylindre : la barre tenue dans les mors du diviseur, arrondie, ébauchée puis finie">
+          </div>
+          <figcaption>Un manche de tournevis : la barre arrondie, ébauchée puis finie à la boule Ø 6, à la Simulation sur le cylindre.</figcaption>
+        </figure>
+        <figure class="capture">
+          <div class="fenetre">
+            <img src="{{RACINE}}captures/axe-cavalier.webp" width="1920" height="1080" loading="lazy"
+                 alt="Un cavalier d'échecs en modèle 3D, usiné tout autour sur le 4e axe entre ses deux tenons, à la Simulation">
+          </div>
+          <figcaption>Un cavalier en STL, usiné tout autour entre ses deux tenons.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="simulation" class="teinte">
   <div class="cadre">
     <div class="fonction">

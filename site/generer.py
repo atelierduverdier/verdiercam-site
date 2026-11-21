@@ -63,7 +63,7 @@ PAGES = [
         'titre': "VerdierCAM — logiciel CAO/FAO pour CNC bois, Linux et Windows",
         'description': "Dessiner la pièce, calculer les parcours de la défonceuse CNC, simuler la "
                        "matière et envoyer le G-code à GRBL, grblHAL ou LinuxCNC, dans un seul "
-                       "logiciel : croquis contraint, gravure en V, bas-relief depuis une photo, "
+                       "logiciel : croquis contraint, gravure en V, bas-relief depuis une photo, usinage sur 4e axe, "
                        "{{verdiercam.familles}} familles d'opérations. Licence perpétuelle, sans "
                        "abonnement. Sortie prochaine.",
     },
@@ -294,6 +294,9 @@ IMAGES = {
     'graver_image': 'graver-image',
     'graver_fraise': 'graver-fraise',
     'relief_usine': 'relief-paliers',
+    # Le 4e axe (21/11/2026) : deux pièces tournées sur le diviseur, rejouées depuis les documents d'essai du logiciel.
+    'axe_manche': 'axe-manche',
+    'axe_cavalier': 'axe-cavalier',
     # L'image d'attente de la vidéo « Filetage » (21/10/2026) : la coupe d'un trou fileté, en simulation.
     'filetage_coupe': 'filetage',
     # L'éclairage de la vue 3D (24/10/2026, 0.99.189) : le même crâne, avant et après. Une image composée une fois

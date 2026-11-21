@@ -400,6 +400,9 @@ pre.code code { background: none; border: 0; padding: 0; white-space: pre; font-
 .postes p { color: var(--encre-2); margin: 6px 0 0; font-size: 1rem; }
 .defile li small, .machines li small { font-size: .78em; color: var(--encre-3); }
 .postes p.note-experimental { font-size: .88rem; }
+/* La mise en garde d'une fonction expérimentale (le 4e axe, 21/11/2026) : une petite case au trait, comme un nota sur un plan. */
+.fonction .texte > p.note-experimental { margin: 20px 0 0; padding: 10px 12px; border: 1px solid var(--trait-2);
+  font-size: .92rem; color: var(--encre-2); background: var(--fond); }
 
 /* --- La sortie : une feuille de commande, sans dégradé ----------------- */
 .sortie { border: 1px solid var(--cadre); background: var(--fond); padding: clamp(24px, 4.5vw, 56px);
