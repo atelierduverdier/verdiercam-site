@@ -26,15 +26,16 @@
             la défonceuse. Tout se passe dans une seule fenêtre.</p>
           <p class="accroche">Pensé dans un atelier de menuiserie, pour le bois d'abord, et éprouvé sur une vraie machine.</p>
           <div class="actions">
-            <!--hors-vente--><a class="bouton bouton-plein" href="#sortie">Être prévenu de la sortie</a><!--/hors-vente-->
+            <!--hors-vente--><!--sans-essai--><a class="bouton bouton-plein" href="#sortie">Être prévenu de la sortie</a><!--/sans-essai--><!--essai--><a class="bouton bouton-plein" href="{{RACINE}}installer.html#telecharger">Essayer {{verdiercam.essai}} jours, gratuitement</a><!--/essai--><!--/hors-vente-->
             <!--vente--><a class="bouton bouton-plein" href="{{RACINE}}installer.html#telecharger">Essayer {{verdiercam.essai}} jours, gratuitement</a>
             <a class="bouton bouton-clair" href="{{RACINE}}acheter.html">Acheter une licence</a><!--/vente-->
             <a class="bouton bouton-clair" href="{{RACINE}}premiers-pas.html">Suivre les premiers pas</a>
             <a class="bouton bouton-clair" href="#presentation">Voir la présentation en vidéo <span aria-hidden="true">↓</span></a>
           </div>
-          <p class="essai-heros"><!--hors-vente-->À la sortie : <!--/hors-vente--><b>{{verdiercam.essai}} jours d'essai complets</b>, sans carte bancaire.
+          <p class="essai-heros"><!--hors-vente--><!--sans-essai-->À la sortie : <!--/sans-essai--><!--/hors-vente--><b>{{verdiercam.essai}} jours d'essai complets</b>, sans carte bancaire.
             Ensuite, <b>le dessin et la simulation restent gratuits</b> ; la licence sert à écrire le G-code
-            et à piloter la machine.</p>
+            et à piloter la machine.<!--hors-vente--><!--essai--> Pour Linux d'abord, Windows et le Raspberry Pi 5 suivent ; la
+            licence s'achète à partir du {{editeur.date_sortie}}.<!--/essai--><!--/hors-vente--></p>
           <ul class="legende-plan" aria-label="Légende du dessin">
             <li class="l-fraise">le centre de la fraise, lu dans le G-code</li>
             <li class="l-vide">les déplacements à vide</li>
@@ -52,7 +53,7 @@
             <p><span>Dessiné par</span>Christophe, Atelier du Verdier</p>
             <p><span>Systèmes</span>Linux, Windows, Raspberry Pi 5</p>
             <p><span>Version</span><a href="{{RACINE}}nouveautes.html"><!--hors-vente-->{{verdiercam.version}}<!--/hors-vente--><!--vente-->{{verdiercam.publiee}}<!--/vente--></a></p>
-            <p><span>Sortie</span><!--hors-vente-->le {{editeur.date_sortie}}<!--/hors-vente--><!--vente-->disponible<!--/vente--></p>
+            <p><!--hors-vente--><!--sans-essai--><span>Sortie</span>le {{editeur.date_sortie}}<!--/sans-essai--><!--essai--><span>En vente</span>le {{editeur.date_sortie}}<!--/essai--><!--/hors-vente--><!--vente--><span>Sortie</span>disponible<!--/vente--></p>
           </div>
         </div>
       </div>
@@ -588,6 +589,22 @@ pour (i = [0 : 3]) {
     <div class="sortie apparait">
       <div class="sortie-texte">
         <!--hors-vente-->
+        <!--essai-->
+        <span class="surtitre">La 1.0 · à l'essai</span>
+        <h2>À l'essai, en vente le {{editeur.date_sortie}}</h2>
+        <p>La 1.0 se télécharge pour Linux : {{verdiercam.essai}} jours d'essai complets, sans carte bancaire et sans
+          inscription. Windows et le Raspberry Pi 5 suivent, après leurs derniers essais. La vente ouvre le
+          {{editeur.date_sortie}} : 59&nbsp;€ pendant tout le mois de décembre, puis 79&nbsp;€ à partir de janvier&nbsp;2027.</p>
+        <div class="actions">
+          <a class="bouton bouton-plein" href="{{RACINE}}installer.html#telecharger">Télécharger l'essai pour Linux</a>
+          <a class="bouton bouton-clair"
+             href="mailto:contact@verdiercam.fr?subject=Pr%C3%A9venez-moi%20de%20l%27ouverture%20de%20la%20vente%20de%20VerdierCAM&amp;body=Bonjour%2C%0A%0AJe%20souhaite%20%C3%AAtre%20pr%C3%A9venu%20de%20l%27ouverture%20de%20la%20vente%20de%20VerdierCAM.%0A">
+            Être prévenu de l'ouverture</a>
+        </div>
+        <p class="note-prevenu">Le téléchargement est direct, sans inscription. Pour être prévenu de l'ouverture de la vente,
+          un simple courriel : votre adresse ne sert qu'à ça.</p>
+        <!--/essai-->
+        <!--sans-essai-->
         <span class="surtitre">La sortie</span>
         <h2>Sortie le {{editeur.date_sortie}}</h2>
         <p>La version {{verdiercam.version}} tourne tous les jours à l'atelier. La 1.0 sortira le
@@ -601,6 +618,7 @@ pour (i = [0 : 3]) {
         </div>
         <p class="note-prevenu">Un simple courriel : vous serez prévenu le jour de la sortie, à temps pour le prix de sortie.
           Votre adresse ne sert qu'à ça.</p>
+        <!--/sans-essai-->
         <!--/hors-vente-->
         <!--vente-->
         <span class="surtitre">Acheter</span>
@@ -690,7 +708,7 @@ pour (i = [0 : 3]) {
       <details>
         <summary>Peut-on l'essayer avant de l'acheter ?</summary>
         <p>Oui : <b>{{verdiercam.essai}} jours d'essai complets</b> dès le premier lancement, sans carte bancaire et sans
-          inscription : <!--hors-vente-->à la sortie, <!--/hors-vente-->on télécharge, on lance, c'est tout. Tout
+          inscription : <!--hors-vente--><!--sans-essai-->à la sortie, <!--/sans-essai--><!--/hors-vente-->on télécharge, on lance, c'est tout. Tout
           fonctionne, export du G-code et pilotage de la machine compris — de quoi vérifier que votre carte GRBL ou grblHAL
           suit le pilotage, ou que votre LinuxCNC lit bien le G-code. Ensuite, le dessin et la simulation restent ; seuls l'export et l'envoi à la machine
           demandent une licence.</p>

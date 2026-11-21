@@ -12,13 +12,26 @@
       <h1>Installer VerdierCAM</h1>
       <p class="accroche">
         Rien à installer au sens habituel : un fichier à lancer sous Linux, un dossier à dézipper sous Windows.
-        <!--hors-vente-->À la sortie, le paquet de votre système se téléchargera ici même, directement, sans inscription :
-        {{verdiercam.essai}} jours d'essai complets, sans carte bancaire.<!--/hors-vente-->
+        <!--hors-vente--><!--sans-essai-->À la sortie, le paquet de votre système se téléchargera ici même, directement, sans inscription :
+        {{verdiercam.essai}} jours d'essai complets, sans carte bancaire.<!--/sans-essai--><!--essai-->Le paquet Linux se
+        télécharge ici même, directement, sans inscription : {{verdiercam.essai}} jours d'essai complets, sans carte
+        bancaire. Windows et le Raspberry Pi 5 suivent, après leurs derniers essais ; la licence s'achète à partir du
+        {{editeur.date_sortie}}.<!--/essai--><!--/hors-vente-->
         <!--vente-->Téléchargez le paquet de votre système, directement, sans inscription : {{verdiercam.essai}} jours
         d'essai complets, sans carte bancaire. La licence s'achète ensuite, et arrive par courriel.<!--/vente--> Vos réglages, vos
         outils et votre licence sont gardés d'une version à l'autre.
       </p>
     </div>
+    <!--hors-vente--><!--essai-->
+    <!-- L'ESSAI AVANT LA VENTE (21/11/2026) : la 1.0, Linux seul pour commencer — le paquet de vente de la Release
+         « v<version> » (site/version-publiee.json) ; Windows et le Raspberry Pi 5 après leurs essais. -->
+    <div class="actions pp-telecharger" id="telecharger">
+      <a class="bouton bouton-plein" href="https://github.com/atelierduverdier/verdiercam-site/releases/download/v{{verdiercam.publiee}}/VerdierCAM-{{verdiercam.publiee}}-linux-x86_64.tar.gz">Télécharger pour Linux</a>
+    </div>
+    <p class="pp-version">Version {{verdiercam.publiee}} · Linux 64 bits ·
+      <a href="https://github.com/atelierduverdier/verdiercam-site/releases/download/v{{verdiercam.publiee}}/VerdierCAM-{{verdiercam.publiee}}-SHA256SUMS.txt">empreintes SHA-256</a>
+      · en vente le {{editeur.date_sortie}}</p>
+    <!--/essai--><!--/hors-vente-->
     <!--vente-->
     <!-- LES TÉLÉCHARGEMENTS (15/10/2026) : les paquets de vente (construire-vente.sh du logiciel) dans la Release
          « v<version> » de ce dépôt, la version lue dans site/version-publiee.json — VENDRE.md, « Publier une version ». -->

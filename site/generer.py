@@ -221,6 +221,16 @@ def blocs_de_vente(texte: str, ouverte: bool) -> str:
     return texte.replace(f'<!--{garder}-->', '').replace(f'<!--/{garder}-->', '')
 
 
+def blocs_d_essai(texte: str, ouvert: bool) -> str:
+    """LE TÉLÉCHARGEMENT AVANT LA VENTE (21/11/2026 : la 1.0 se télécharge à l'essai pour Linux, la vente ouvre le
+    1er décembre). <!--essai-->…<!--/essai--> se dit quand l'essai se télécharge (editeur.json « telechargement_ouvert »),
+    <!--sans-essai-->…<!--/sans-essai--> tant qu'il ne se télécharge pas. Toujours DANS un bloc hors-vente : vente ouverte,
+    c'est le bloc <!--vente--> qui donne le téléchargement."""
+    garder, retirer = ('essai', 'sans-essai') if ouvert else ('sans-essai', 'essai')
+    texte = re.sub(rf'<!--{retirer}-->.*?<!--/{retirer}-->', '', texte, flags=re.S)
+    return texte.replace(f'<!--{garder}-->', '').replace(f'<!--/{garder}-->', '')
+
+
 def empreinte(donnees: bytes) -> str:
     """Huit caractères du contenu. **Un nom qui ne change pas est un mensonge
     que le cache répète** : contenu différent, adresse différente."""
@@ -976,7 +986,11 @@ def main() -> None:
     liens_pied = LIENS_PIED + (LIENS_PIED_VENTE if vente else [])
     # La barre aussi change à l'ouverture (15/10/2026) : « Être prévenu » devient « Télécharger », et l'entrée
     # « Sortie » du menu, qui mène à la même section devenue celle de l'achat, « Acheter ».
-    gabarit = blocs_de_vente(gabarit, vente)
+    essai = bool(editeur.get('telechargement_ouvert')) and not vente
+    # Le téléchargement de l'essai vise les paquets de la version du manifeste : sans lui, pas de lien.
+    if essai and 'publiee' not in faits:
+        sys.exit("generer : « telechargement_ouvert » sans site/version-publiee.json — aucun paquet à viser")
+    gabarit = blocs_d_essai(blocs_de_vente(gabarit, vente), essai)
     menu = [(h, 'Acheter' if vente and h == '#sortie' else t) for h, t in NAV]
     a_remplir = []
 
@@ -987,7 +1001,7 @@ def main() -> None:
         # pas) partent toujours de « / », où que le site les serve.
         racine = '' if page['sortie'] == 'index.html' else '/'
         corps = (CONTENU / page['contenu']).read_text(encoding='utf-8')
-        corps = blocs_de_vente(corps, vente)
+        corps = blocs_d_essai(blocs_de_vente(corps, vente), essai)
         corps = corps.replace('{{CLASSE_ACHAT}}', '' if editeur.get('lien_paiement') else 'sans-lien')
         if not editeur.get('lien_paiement'):
             corps = corps.replace('href="{{editeur.lien_paiement}}"', 'href="#"')
@@ -1013,7 +1027,8 @@ def main() -> None:
         (PUBLIC / page['sortie']).write_text(texte, encoding='utf-8')
         print(f"  {page['sortie']:<14} {len(texte.encode()):>7} o")
 
-    print(f"  vente {'OUVERTE' if vente else 'fermée (Acheter, CGV, Licence non publiées)'}")
+    print(f"  vente {'OUVERTE' if vente else 'fermée (Acheter, CGV, Licence non publiées)'}"
+          + (f" ; essai {faits['publiee']} à télécharger" if essai else ""))
     if a_remplir:
         print(f"  ! À REMPLIR dans site/editeur.json — pages concernées : {', '.join(a_remplir)}"
               f" (publier.py refusera)")
