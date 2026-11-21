@@ -1,0 +1,51 @@
+<!-- VerdierCAM — « D'où vient VerdierCAM » (21/11/2026). Le texte est celui de Christophe, validé par lui mot pour mot
+     (« Ok, cela me convient, tu pourras l'insérer dans le site. ») : NE PAS LE RÉÉCRIRE ; seule la typographie peut
+     changer. Les repères de la colonne de gauche ne font que reprendre ses dates. La photo : l'originale de la machine
+     (site/photos/machine-atelier.jpg, jamais la retouche). -->
+
+<div class="heros papier pp-heros">
+  <div class="cadre">
+    <div class="pp-intro apparait">
+      <span class="surtitre">Mon parcours</span>
+      <h1>D'où vient VerdierCAM</h1>
+    </div>
+  </div>
+</div>
+
+<section class="histoire page-parcours">
+  <div class="cadre large">
+    <figure class="photo-atelier apparait">
+      <img src="{{RACINE}}captures/machine-atelier.webp" width="1920" height="866" fetchpriority="high"
+           alt="La PrintNC de l'atelier : un bâti orange, un plateau martyr en lattes de contreplaqué entre des rails à T, le portique et sa broche, le tuyau d'aspiration qui pend au-dessus, le tout posé sur un établi en OSB">
+      <figcaption><span>La PrintNC de l'atelier</span> C'est sur elle que VerdierCAM est éprouvé.</figcaption>
+    </figure>
+  </div>
+  <div class="cadre large histoire-dedans">
+    <ol class="reperes-parcours apparait" aria-label="Les repères">
+      <li><span>Fin 2025</span>La PrintNC et sa carte Flexi-HAL</li>
+      <li><span>Janvier 2026</span>La construction commence</li>
+      <li><span>Mi-mai 2026</span>Les premiers copeaux</li>
+      <li><span>Juin à août 2026</span>Quel logiciel ?</li>
+      <li><span>Septembre 2026</span>VerdierCAM naît</li>
+      <li><span>Novembre 2026</span>La version 1.0</li>
+    </ol>
+    <div class="histoire-texte apparait">
+      <p>Avant la <a href="https://printnc.atelierduverdier.fr">PrintNC</a>, j'avais une machine qui ne me convenait pas.
+        J'ai cherché plus loin quelque chose de costaud, avec une bonne carte de commande, et je suis tombé sur la PrintNC
+        et sa carte Flexi-HAL : le coup de cœur. J'ai passé un bon mois, fin 2025, à éplucher le site de la PrintNC, tout
+        en anglais et pas toujours facile à suivre.</p>
+      <p>En janvier 2026, j'ai commencé à la construire à partir de tubes d'acier : une broche de 2,2&nbsp;kW refroidie à
+        eau, des moteurs pas à pas en boucle fermée, et LinuxCNC sur un Raspberry Pi pour la piloter. Quatre mois de
+        montage et de réglages plus tard, à la mi-mai, elle faisait ses premiers copeaux. Tout le montage est raconté sur
+        mon site, <a href="https://atelierduverdier.fr">atelierduverdier.com</a>.</p>
+      <p>Restait une question : comment passer d'un dessin sur l'ordinateur à une pièce découpée sur la machine ? De juin
+        à août, j'ai essayé bien des logiciels. Les bons étaient payants, souvent chers, et presque aucun ne tournait sous
+        Linux, à part FreeCAD. J'ai même écrit des ateliers pour FreeCAD, comme LaserAtelier pour la gravure au laser.</p>
+      <p>C'est de là qu'est né VerdierCAM, en septembre : dessiner, calculer les parcours, simuler et usiner, dans un seul
+        logiciel et en français. À peine trois mois plus tard, le logiciel est en version 1.0, et de nouvelles fonctions
+        attendent déjà leur tour.</p>
+      <p class="parcours-fin">Un an de travail acharné pour en arriver là.</p>
+      <p class="signature">Christophe, Atelier du Verdier</p>
+    </div>
+  </div>
+</section>

@@ -74,6 +74,14 @@ PAGES = [
         'description': "Ce qui change dans VerdierCAM, jour après jour : les fonctions ajoutées, "
                        "les défauts corrigés, avec les numéros de version.",
     },
+    # D'OÙ VIENT VERDIERCAM (21/11/2026) : le texte de Christophe, validé mot pour mot — la PrintNC, puis le logiciel.
+    {
+        'contenu': 'parcours.html',
+        'sortie': 'parcours.html',
+        'titre': "VerdierCAM — d'où il vient : une PrintNC, puis un an de travail",
+        'description': "L'histoire de VerdierCAM racontée par Christophe, de l'Atelier du Verdier : la PrintNC construite "
+                       "en 2026, la recherche d'un logiciel sous Linux, puis VerdierCAM, de septembre à la version 1.0.",
+    },
     {
         'contenu': 'premiers-pas.html',
         'sortie': 'premiers-pas.html',
@@ -176,6 +184,7 @@ LIENS_PIED = [
     ('mailto:contact@verdiercam.fr', 'contact@verdiercam.fr'),
     ('https://www.youtube.com/@VerdierCAM', 'YouTube'),
     ('{{RACINE}}nouveautes.html', 'Nouveautés'),
+    ('{{RACINE}}parcours.html', 'D’où vient VerdierCAM'),
     ('https://atelierduverdier.fr', 'Atelier du Verdier'),
     ('{{RACINE}}mentions-legales.html', 'Mentions légales'),
     ('{{RACINE}}confidentialite.html', 'Confidentialité'),

@@ -597,6 +597,15 @@ section.legal { padding-top: 24px; border-top: 0; }
 .histoire-texte .signature { margin-top: 22px; font: 500 .86rem var(--mono); letter-spacing: .02em; color: var(--encre); }
 .histoire-texte .signature::before { content: "— "; }
 @media (max-width: 860px) { .histoire-dedans { grid-template-columns: 1fr; gap: 8px; } }
+/* D'où vient VerdierCAM (21/11/2026) : les dates du texte en repères, comme une nomenclature ; la dernière phrase en grand. */
+.reperes-parcours { list-style: none; margin: 0; padding: 0; border: 1px solid var(--cadre); align-self: start; }
+.reperes-parcours li { padding: 10px 14px; border-top: 1px solid var(--trait); color: var(--encre); font-size: .98rem; }
+.reperes-parcours li:first-child { border-top: 0; }
+.reperes-parcours li span { display: block; font: 400 .72rem var(--mono); letter-spacing: .05em; text-transform: uppercase;
+  color: var(--encre-3); margin-bottom: 2px; }
+.histoire-texte .parcours-fin { font: 600 clamp(1.3rem, 2.2vw, 1.7rem)/1.2 var(--titre); color: var(--encre); margin-top: 26px; }
+.histoire.page-parcours { border-top: 0; padding-top: clamp(28px, 4vw, 48px); }
+@media (max-width: 860px) { .reperes-parcours { margin-bottom: 20px; } }
 
 /* --- La présentation en vidéo : une image d'ici, YouTube au clic ------- */
 .video-yt { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--encre); border: 1px solid var(--cadre); }
