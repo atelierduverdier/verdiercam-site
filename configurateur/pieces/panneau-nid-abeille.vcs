@@ -1,0 +1,59 @@
+// PANNEAU EN NID D'ABEILLE — un champ de pyramides hexagonales gravé à la fraise en V : chaque alvéole devient une
+// pointe à six pans, que des facettes et des crêtes vives.
+// thème : Décoration et cadeaux
+//
+// LE MOTIF : les arêtes d'un pavage d'hexagones (« cellule » : du centre à un sommet), parcourues par deux familles de
+// zigzags qui montent en biais, l'une vers la droite, l'autre vers la gauche — chaque arête appartient à un seul
+// zigzag. La profondeur creuse chaque alvéole jusqu'à sa pointe : apothème / tan(angle / 2), et 2 % de plus. Une
+// texture de fond, calme. Motif imaginé par Fable (Claude) le 01/11/2026.
+//
+// L'USINAGE : une seule fraise en V, une gravure à profondeur constante. Fraise conseillée : une V à 120° (des coussins
+// doux ; cellule de 6) ; à 90°, plus vif. La V 90° Ø6 de la bibliothèque d'office creuse 2,75 mm au plus : cellule de 3
+// au plus. Avec une grande V de carving (Ø32), donner son « angle » et son nom dans « fraise ».
+
+largeur   = 150;   // largeur du panneau (mm)
+hauteur   = 150;   // hauteur du panneau (mm)
+epaisseur = 18;    // épaisseur du panneau (mm)
+cellule   = 2.5;   // du centre d'une alvéole à un sommet (mm) [1:0.5:40]
+angle     = 90;    // l'angle de la fraise en V (°) : 120 conseillé [20:5:170]
+fraise    = "Pointe V 90";   // la fraise en V, son nom dans la bibliothèque
+
+t = tan(angle / 2);
+Rh = cellule;
+w = Rh * sqrt(3);                 // la largeur d'une alvéole, d'un pan à l'autre
+creux = Rh * sqrt(3) / 2 / t * 1.02;
+y_depart = -3 * Rh;
+nj = ceil((hauteur - y_depart) / (1.5 * Rh)) + 1;
+derive = ceil(nj / 2) + 1;        // de combien d'alvéoles un zigzag glisse de bas en haut
+echo(str("Alvéoles de ", round(w * 100) / 100, " mm, gravées à ", round(creux * 100) / 100, " mm."));
+planche([largeur, hauteur, epaisseur]);
+
+// Les morceaux d'une suite de points qui tombent dans le panneau : chacun devient un tracé nommé.
+function dedans(p) = p[0] >= 0 && p[0] <= largeur && p[1] >= 0 && p[1] <= hauteur;
+function entre(pts, i) = dedans(pts[i]) && (i == 0 ? true : !dedans(pts[i - 1]));
+function sort(pts, i) = dedans(pts[i]) && (i == len(pts) - 1 ? true : !dedans(pts[i + 1]));
+module morceaux(pts, nom) {
+    d = [for (i = [0 : len(pts) - 1]) if (entre(pts, i)) i];
+    f = [for (i = [0 : len(pts) - 1]) if (sort(pts, i)) i];
+    si (len(d) > 0)
+        pour (r = [0 : len(d) - 1])
+            si (f[r] > d[r]) {
+                c = polyligne([for (i = [d[r] : f[r]]) pts[i]]);
+                nommer(#c, nom);
+            }
+}
+
+// Un zigzag : une arête en biais (un demi-pan de côté, une demi-cellule de haut), une arête verticale (une cellule), et
+// ainsi de suite ; « sens » 1 vers la droite, -1 vers la gauche.
+function hauteur_de(j, q) = y_depart + 1.5 * Rh * j + (q == 0 ? Rh / 2 : 1.5 * Rh);
+pour (sens = [1, -1]) {
+    pour (i = [-derive - 1 : ceil(largeur / w) + derive + 1]) {
+        xs = i * w;
+        morceaux(concat([[xs, y_depart]],
+                        [for (j = [0 : nj]) for (q = [0 : 1]) [xs + sens * (j + 1) * w / 2, hauteur_de(j, q)]]),
+                 "arete");
+    }
+}
+
+// ── L'usinage ──
+usinage("gravure", "arete", outil = fraise, profondeur = creux, nom = "Nid d'abeille");

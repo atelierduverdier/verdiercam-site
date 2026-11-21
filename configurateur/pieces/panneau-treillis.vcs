@@ -1,0 +1,54 @@
+// PANNEAU EN TREILLIS ONDÉ — un quadrillage de lignes qui ondulent, gravé à la fraise en V : les mailles s'ouvrent et
+// se ferment, chacune devient une petite pyramide aux arêtes courbes, comme une soie capitonnée.
+// thème : Décoration et cadeaux
+//
+// LE MOTIF : des lignes verticales x = x0 + amplitude × sin(360 × y / onde), à l'écart régulier, et autant de lignes
+// horizontales de la même façon. La profondeur fait se rejoindre deux lignes voisines en crête vive : écart / (2 ×
+// tan(angle / 2)), et 2 % de plus. « decalage » avance la vague d'une ligne à la suivante : le treillis tourbillonne.
+// Motif imaginé par Fable (Claude) le 01/11/2026.
+//
+// L'USINAGE : une seule fraise en V, une gravure à profondeur constante. Fraise conseillée : une V à 120° ; à 90°, plus
+// anguleux. La V 90° Ø6 de la bibliothèque d'office creuse 2,75 mm au plus : écart de 5,3 au plus. Avec une grande V de
+// carving (Ø32), donner son « angle » et son nom dans « fraise ».
+
+largeur   = 150;   // largeur du panneau (mm)
+hauteur   = 150;   // hauteur du panneau (mm)
+epaisseur = 18;    // épaisseur du panneau (mm)
+ecart     = 5;     // écart entre deux lignes (mm) [2:0.5:30]
+amplitude = 2.1;   // l'écart d'une ligne de part et d'autre de sa place (mm) [0:0.1:20]
+onde      = 30;    // la longueur d'une vague (mm) [5:300]
+decalage  = 0;     // avance de la vague d'une ligne à la suivante (°) [0:5:180]
+angle     = 90;    // l'angle de la fraise en V (°) : 120 conseillé [20:5:170]
+fraise    = "Pointe V 90";   // la fraise en V, son nom dans la bibliothèque
+
+t = tan(angle / 2);
+creux = ecart / (2 * t) * 1.02;
+echo(str("Lignes tous les ", ecart, " mm, gravées à ", round(creux * 100) / 100, " mm."));
+planche([largeur, hauteur, epaisseur]);
+
+// Les morceaux d'une suite de points qui tombent dans le panneau : chacun devient un tracé nommé.
+function dedans(p) = p[0] >= 0 && p[0] <= largeur && p[1] >= 0 && p[1] <= hauteur;
+function entre(pts, i) = dedans(pts[i]) && (i == 0 ? true : !dedans(pts[i - 1]));
+function sort(pts, i) = dedans(pts[i]) && (i == len(pts) - 1 ? true : !dedans(pts[i + 1]));
+module morceaux(pts, nom) {
+    d = [for (i = [0 : len(pts) - 1]) if (entre(pts, i)) i];
+    f = [for (i = [0 : len(pts) - 1]) if (sort(pts, i)) i];
+    si (len(d) > 0)
+        pour (r = [0 : len(d) - 1])
+            si (f[r] > d[r]) {
+                c = polyligne([for (i = [d[r] : f[r]]) pts[i]]);
+                nommer(#c, nom);
+            }
+}
+
+pour (k = [0 : ceil((largeur + 4 * amplitude) / ecart)]) {
+    x0 = ecart / 2 - 2 * amplitude + k * ecart;
+    morceaux([for (y = [0 : 0.5 : hauteur]) [x0 + amplitude * sin(360 * y / onde + k * decalage), y]], "ligne");
+}
+pour (k = [0 : ceil((hauteur + 4 * amplitude) / ecart)]) {
+    y0 = ecart / 2 - 2 * amplitude + k * ecart;
+    morceaux([for (x = [0 : 0.5 : largeur]) [x, y0 + amplitude * sin(360 * x / onde + k * decalage)]], "ligne");
+}
+
+// ── L'usinage ──
+usinage("gravure", "ligne", outil = fraise, profondeur = creux, nom = "Treillis");

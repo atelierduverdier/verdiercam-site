@@ -1,0 +1,67 @@
+// PANNEAU À PLUMES — des colonnes de palmes : de chaque côté d'une tige, des barbes en arc partent en biais et se
+// redressent, serrées comme les barbes d'une plume ; la colonne voisine est décalée d'une demi-barbe et les pointes
+// s'engrènent comme une fermeture éclair. Gravé à la fraise en V, que des facettes et des crêtes.
+// thème : Décoration et cadeaux
+//
+// LE MOTIF : une barbe est un arc de cercle tangent à « depart » degrés à la tige, qui se redresse jusqu'à « fin »
+// degrés ou jusqu'au bord de la colonne ; les barbes sont recopiées en hauteur à l'écart régulier, en miroir de l'autre
+// côté de la tige. La profondeur fait se rejoindre deux barbes voisines en crête vive là où elles sont le moins
+// penchées : écart × cos(depart) / (2 × tan(angle / 2)), et 2 % de plus. Motif imaginé par Fable (Claude) le
+// 01/11/2026.
+//
+// L'USINAGE : une seule fraise en V, une gravure à profondeur constante. Fraise conseillée : une V à 120° (le plus
+// beau : facettes larges et douces) ; à 90°, plus nerveux. La V 90° Ø6 de la bibliothèque d'office creuse 2,75 mm au
+// plus. Avec une grande V de carving (Ø32), donner son « angle » et son nom dans « fraise ».
+
+largeur   = 150;   // largeur du panneau (mm)
+hauteur   = 150;   // hauteur du panneau (mm)
+epaisseur = 18;    // épaisseur du panneau (mm)
+colonne   = 26;    // largeur d'une colonne, d'un bord de palme à l'autre (mm) [8:100]
+ecart     = 6;     // écart entre deux barbes, en hauteur (mm) [2:0.5:30]
+depart    = 35;    // l'angle de la barbe au départ de la tige (°) [10:80]
+fin       = 60;    // l'angle de la barbe au plus redressé (°) [15:85]
+courbure  = 50;    // le rayon de l'arc d'une barbe (mm) [10:500]
+angle     = 90;    // l'angle de la fraise en V (°) : 120 conseillé [20:5:170]
+fraise    = "Pointe V 90";   // la fraise en V, son nom dans la bibliothèque
+
+t = tan(angle / 2);
+W = colonne;  Rb = courbure;
+creux = ecart * cos(depart) / (2 * t) * 1.02;
+echo(str("Barbes tous les ", ecart, " mm, gravées à ", round(creux * 100) / 100, " mm."));
+planche([largeur, hauteur, epaisseur]);
+
+// Une barbe (côté droit), depuis la tige u = 0 : l'arc de rayon Rb, de l'angle -90 + depart jusqu'à -90 + fin, ou
+// jusqu'au bord de la colonne u = W / 2.
+uc = -Rb * sin(depart);  vc = Rb * cos(depart);
+phi0 = -90 + depart;
+phi1 = min(-90 + fin, (W / 2 - uc) / Rb < 1 ? -acos((W / 2 - uc) / Rb) : -90 + fin);
+nb = 40;
+function phi(i) = phi0 + (phi1 - phi0) * i / nb;
+barbe = [for (i = [0 : nb]) [uc + Rb * cos(phi(i)), vc + Rb * sin(phi(i))]];
+haut_barbe = barbe[nb][1];
+
+// Les morceaux d'une suite de points qui tombent dans le panneau : chacun devient un tracé nommé.
+function dedans(p) = p[0] >= 0 && p[0] <= largeur && p[1] >= 0 && p[1] <= hauteur;
+function entre(pts, i) = dedans(pts[i]) && (i == 0 ? true : !dedans(pts[i - 1]));
+function sort(pts, i) = dedans(pts[i]) && (i == len(pts) - 1 ? true : !dedans(pts[i + 1]));
+module morceaux(pts, nom) {
+    d = [for (i = [0 : len(pts) - 1]) if (entre(pts, i)) i];
+    f = [for (i = [0 : len(pts) - 1]) if (sort(pts, i)) i];
+    si (len(d) > 0)
+        pour (r = [0 : len(d) - 1])
+            si (f[r] > d[r]) {
+                c = polyligne([for (i = [d[r] : f[r]]) pts[i]]);
+                nommer(#c, nom);
+            }
+}
+
+pour (k = [0 : ceil(largeur / W)]) {
+    xc = (k + 0.5) * W;
+    pour (y0 = [-haut_barbe - ecart + (k % 2) * ecart / 2 : ecart : hauteur + ecart]) {
+        pour (cote = [1, -1])
+            morceaux([for (p = barbe) [xc + cote * p[0], y0 + p[1]]], "barbe");
+    }
+}
+
+// ── L'usinage ──
+usinage("gravure", "barbe", outil = fraise, profondeur = creux, nom = "Plumes");

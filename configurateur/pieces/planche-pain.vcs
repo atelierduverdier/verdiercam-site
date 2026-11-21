@@ -1,0 +1,60 @@
+// PLANCHE À PAIN ET GRILLE À MIETTES — on coupe le pain sur la grille, les miettes tombent dans le bac par ses lumières ;
+// on soulève la grille par les deux encoches des bouts, on vide le bac. Deux pièces.
+// thème : Cuisine
+//
+// LE BAC : `longueur` × `largeur`, creusé de `creux` à `rebord` du bord, une ENCOCHE ronde au milieu de chaque bout pour
+// passer les doigts sous la grille. LA GRILLE : le creux du bac moins le `jeu` tout autour, des LUMIÈRES de `largeur_lumiere`
+// en travers, au pas de `pas` ; elle dépasse du bac de l'épaisseur moins le creux.
+//
+// L'USINAGE : le bac (Poche, fraise droite Ø6 : ses coins gardent un rayon de 3, la grille a les siens de 4), les lumières
+// (Contour intérieur), puis les deux pièces (Contour extérieur, onglets). Hêtre ou érable de 18 ; huile alimentaire.
+
+longueur   = 380;    // longueur du bac (mm)
+largeur    = 250;    // largeur du bac (mm)
+rebord     = 20;     // largeur du rebord (mm)
+creux      = 10;     // profondeur du bac (mm)
+largeur_lumiere = 8; // largeur des lumières (mm)
+pas        = 16;     // d'une lumière à la suivante (mm)
+jeu        = 1;      // autour de la grille dans le bac (mm)
+epaisseur  = 18;     // épaisseur (mm) : 18 au plus pour la fraise Ø6
+espace     = 10;     // entre les deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+L = longueur;  W = largeur;  r = rebord;  Li = L - 2 * r;  Wi = W - 2 * r;
+Lg = Li - 2 * jeu;  Wg = Wi - 2 * jeu;
+re = 14;  pe = 12;                             // les encoches des doigts : rayon, et de combien elles entrent dans le rebord
+nl = floor((Lg - 30) / pas);                   // les lumières de la grille
+si (creux > epaisseur - 6)
+    echo("Moins de 6 mm sous le bac : moins creux.");
+si (r - pe < 6)
+    echo("Le rebord est trop mince derrière les encoches : plus large.");
+planche([L + 2 * rognure, W + espace + Wg + 2 * rognure, epaisseur]);
+// ── Le bac : le contour, le creux et ses deux encoches (des demi-cercles débordant du creux dans le rebord) ──
+o = [rognure, rognure];
+b = rect(o, [L, W], 10);
+nommer(#b, "bac");
+be = acos((re - pe) / re);
+cr = concat([o + [r, r], o + [L - r, r]],
+             [for (k = [0 : 16]) o + [L - r - re + pe, W / 2] + re * [cos(-be + 2 * be * k / 16), sin(-be + 2 * be * k / 16)]],
+             [o + [L - r, W - r], o + [r, W - r]],
+             [for (k = [0 : 16]) o + [r + re - pe, W / 2] + re * [cos(180 - be + 2 * be * k / 16), sin(180 - be + 2 * be * k / 16)]]);
+c = polyligne(cr, fermee = vrai);
+nommer(#c, "creux");
+// ── La grille, ses lumières en travers ──
+og = [rognure + r + jeu, rognure + W + espace];
+g = rect(og, [Lg, Wg], 4);
+nommer(#g, "grille");
+pour (k = [0 : nl - 1]) {
+    x = (Lg - (nl - 1) * pas) / 2 + k * pas;
+    l = oblong(og + [x, Wg / 2], Wg - 30, largeur_lumiere, 90);
+    nommer(#l, "lumière");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "creux", outil = "Fraise droite Ø6", profondeur = creux, passe = 3, nom = "Bac");
+usinage("contour", "lumière", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3,
+        nom = "Lumières");
+usinage("contour", "grille", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Grille");
+usinage("contour", "bac", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Bac");

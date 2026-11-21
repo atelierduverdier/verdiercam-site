@@ -1,0 +1,94 @@
+// SOUS-VERRES ET DESSOUS-DE-PLAT — une série de sous-verres à cuvette et anneaux gravés, ou un dessous-de-plat ajouré
+// de lumières : les petites pièces de cuisine qui se vendent par lots.
+// thème : Cuisine
+//
+// `type` = 1 : `nombre` SOUS-VERRES ronds (ou carrés à coins arrondis, `carre` = 1) de `diametre` ; une CUVETTE peu
+// profonde garde les gouttes (`cuvette` = 1, à `rebord` du bord), et `anneaux` cercles gravés au fond la décorent.
+// `type` = 2 : un DESSOUS-DE-PLAT carré de `cote`, ajouré de `lumieres` fentes parallèles (l'air passe sous la cocotte,
+// le bois ne marque pas), arrêtées à `bord` du bord.
+//
+// L'USINAGE (déclaré en bas) :
+//   · la cuvette : Poche, fraise droite Ø6, `prof_cuvette` ; ses anneaux : Gravure, Pointe V 90°, 0,8 mm, depuis son fond ;
+//   · les lumières : Contour intérieur, fraise droite Ø6, toute l'épaisseur ;
+//   · chaque pièce : Contour extérieur, fraise droite Ø6, onglets — en dernier.
+
+type       = 1;      // 1 : sous-verres ; 2 : dessous-de-plat
+nombre     = 4;      // nombre de sous-verres
+diametre   = 100;    // Ø (ou côté) d'un sous-verre (mm)
+carre      = 0;      // sous-verres carrés à coins arrondis (1 : oui, 0 : ronds)
+cuvette    = 1;      // cuvette creusée (1 : oui, 0 : non)
+rebord     = 8;      // largeur du rebord autour de la cuvette (mm)
+prof_cuvette = 2;    // profondeur de la cuvette (mm)
+anneaux    = 2;      // cercles gravés au fond de la cuvette (0 : aucun)
+cote       = 200;    // côté du dessous-de-plat (mm)
+lumieres   = 7;      // nombre de lumières du dessous-de-plat
+largeur_lumiere = 8; // largeur d'une lumière (mm) — plus que la fraise
+bord       = 30;     // des bouts des lumières au bord (mm)
+epaisseur  = 18;     // épaisseur du bois (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+d = diametre;
+n = max(1, round(nombre));
+nc = n == 1 ? 1 : 2;                         // les sous-verres sur deux colonnes
+nl = ceil(n / nc);
+R = carre == 1 ? min(12, d / 4) : 0;
+
+si (type == 2) {
+    // ── Le dessous-de-plat ──
+    planche([cote + 2 * rognure, cote + 2 * rognure, epaisseur]);
+    o = [rognure, rognure];
+    p = rect(o, [cote, cote], min(15, cote / 6));
+    nommer(#p, "dessous-de-plat");
+    pas = (cote - 2 * bord) / max(lumieres - 1, 1);
+    pour (k = [0 : lumieres - 1]) {
+        x = lumieres == 1 ? o[0] + cote / 2 : o[0] + bord + k * pas;
+        l = oblong([x, o[1] + cote / 2], cote - 2 * bord, largeur_lumiere, 90);
+        nommer(#l, "lumière");
+    }
+    si (lumieres > 1 && pas - largeur_lumiere < 8)
+        echo("Les barreaux entre les lumières font moins de 8 mm : moins de lumières, ou plus étroites.");
+} sinon {
+    // ── Les sous-verres ──
+    planche([nc * d + (nc - 1) * espace + 2 * rognure, nl * d + (nl - 1) * espace + 2 * rognure, epaisseur]);
+    pour (k = [0 : n - 1]) {
+        c = [rognure + d / 2 + (k % nc) * (d + espace), rognure + d / 2 + floor(k / nc) * (d + espace)];
+        si (carre == 1) {
+            s = rect(c - [d / 2, d / 2], [d, d], R);
+            nommer(#s, "sous-verre");
+        } sinon {
+            s = cercle(c, d / 2);
+            nommer(#s, "sous-verre");
+        }
+        si (cuvette == 1) {
+            si (carre == 1) {
+                u = rect(c - [d / 2 - rebord, d / 2 - rebord], [d - 2 * rebord, d - 2 * rebord], max(R - rebord, 4));
+                nommer(#u, "cuvette");
+            } sinon {
+                u = cercle(c, d / 2 - rebord);
+                nommer(#u, "cuvette");
+            }
+            // Les anneaux, répartis entre le centre et le bord de la cuvette.
+            pour (a = [1 : anneaux]) {
+                r = (d / 2 - rebord) * a / (anneaux + 1);
+                g = cercle(c, r);
+                nommer(#g, "anneau");
+            }
+        }
+    }
+}
+
+// ── L'USINAGE, déclaré ──
+si (type == 2) {
+    usinage("contour", "lumière", outil = "Fraise droite Ø6", cote = "interieur", profondeur = epaisseur, passe = 3, nom = "Lumières");
+    usinage("contour", "dessous-de-plat", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+            onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Détourage");
+} sinon {
+    si (cuvette == 1) {
+        usinage("poche", "cuvette", outil = "Fraise droite Ø6", profondeur = prof_cuvette, passe = prof_cuvette, nom = "Cuvettes");
+        si (anneaux > 0)
+            usinage("gravure", "anneau", outil = "Pointe V 90", depart = prof_cuvette, profondeur = 0.8, nom = "Anneaux");
+    }
+    usinage("contour", "sous-verre", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+            onglets = 3, onglet_long = 6, onglet_haut = 2, nom = "Détourage des sous-verres");
+}

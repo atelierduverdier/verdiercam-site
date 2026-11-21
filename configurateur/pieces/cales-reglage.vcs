@@ -1,0 +1,49 @@
+// CALES DE RÉGLAGE EN ESCALIER — le bloc à marches qui règle une hauteur de fraise ou de lame de scie sans règle : chaque
+// marche est à une hauteur ronde (2, 3, 4, 5, 6, 8, 10, 12, 15, 20 mm), gravée derrière elle. On pose la marche voulue sur
+// la table, la fraise vient l'effleurer.
+// thème : Atelier et gabarits
+//
+// LES MARCHES : dix bandes de `largeur_marche` × `profondeur`, chacune creusée depuis le dessus jusqu'à laisser sa HAUTEUR
+// au-dessus du dessous du bloc — donc creusée de `epaisseur` moins sa hauteur. La justesse tient à l'épaisseur : MESURER
+// le bloc au pied à coulisse après surfaçage et la donner ici, au centième. Derrière, une bande pleine porte les hauteurs
+// gravées.
+//
+// L'USINAGE : les hauteurs (Gravure, Pointe V 90°), une poche par marche (fraise droite Ø8, la seule qui descende à 22),
+// puis le bloc (Contour extérieur, onglets). Hêtre ou MDF de 22, surfacé des deux faces. Contrôler deux marches au pied à
+// coulisse avant de s'y fier.
+
+largeur_marche = 18; // largeur d'une marche (mm)
+profondeur = 50;     // profondeur des marches (mm)
+bande      = 16;     // la bande des hauteurs gravées, derrière (mm)
+epaisseur  = 22;     // épaisseur MESURÉE du bloc (mm) : 24 au plus pour la fraise Ø8
+rognure    = 5;      // du bord du brut au bloc (mm)
+
+hauteurs = [2, 3, 4, 5, 6, 8, 10, 12, 15, 20];
+n = len(hauteurs);  wm = largeur_marche;  ep = epaisseur;
+L = n * wm;  D = profondeur + bande;
+si (max(hauteurs) > ep - 1)
+    echo("Le bloc est moins épais que la plus haute marche : un bloc plus épais.");
+si (ep - min(hauteurs) > 24)
+    echo("La marche la plus basse demande plus de 24 mm de creux : au-delà de la fraise Ø8.");
+planche([L + 2 * rognure, D + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+b = rect(o, [L, D], 3);
+nommer(#b, "bloc");
+pour (k = [0 : n - 1]) {
+    // la poche déborde du bloc par devant et sur les côtés extrêmes : la marche s'ouvre franchement
+    x0 = k == 0 ? -5 : k * wm;
+    x1 = k == n - 1 ? L + 5 : (k + 1) * wm;
+    m = rect(o + [x0, -5], [x1 - x0, profondeur + 5]);
+    nommer(#m, str("marche ", hauteurs[k]));
+    s = str(hauteurs[k]);
+    M = mesure_texte(s, 10, "Hershey Sans1") / 10;
+    t = texte(o + [k * wm + wm / 2 - 7 * (M[2] + M[3]) / 2, profondeur + bande / 2 - 3.5], 7, s, police = "Hershey Sans1");
+    nommer(#t, "hauteur");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "hauteur", outil = "Pointe V 90", profondeur = 0.5, nom = "Hauteurs");
+pour (h = hauteurs)
+    usinage("poche", str("marche ", h), outil = "Fraise droite Ø8", profondeur = ep - h, passe = 4, nom = str("Marche de ", h, " mm"));
+usinage("contour", "bloc", outil = "Fraise droite Ø8", cote = "exterieur", profondeur = epaisseur, passe = 4,
+        onglets = 2, onglet_long = 8, onglet_haut = 2, nom = "Bloc");

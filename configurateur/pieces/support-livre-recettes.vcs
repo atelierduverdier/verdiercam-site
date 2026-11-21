@@ -1,0 +1,66 @@
+// SUPPORT DE LIVRE DE RECETTES — le pupitre de cuisine : le livre ouvert, penché, loin des projections, tenu en bas par un
+// rebord. Trois pièces qui s'emboîtent : le dos, le rebord, la béquille ; elles se démontent pour le ranger à plat.
+// thème : Cuisine
+//
+// LE DOS : `largeur` × `hauteur`, penché de `inclinaison` sur la verticale. LE REBORD, en travers du bas du dos, sort de
+// `profondeur_rebord` ; deux TENONS derrière, dans deux mortaises du dos. LA BÉQUILLE : un triangle debout derrière le dos,
+// son grand côté contre lui (deux tenons dans deux mortaises sur l'axe du dos), son petit côté sur la table ; l'angle
+// entre les deux fait la pente.
+//
+// L'USINAGE : les mortaises (Contour intérieur, coins dégagés), puis les pièces (Contour extérieur, coins dégagés aux
+// tenons, onglets). Contreplaqué de bouleau de 9 ; un vernis qui se lave.
+
+largeur    = 280;    // largeur du dos (mm)
+hauteur    = 220;    // hauteur du dos (mm)
+inclinaison = 20;    // le dos penche de tant en arrière (°)
+profondeur_rebord = 35;  // de combien le rebord sort devant le dos (mm)
+jeu        = 0.1;    // jeu des tenons, par côté (mm)
+epaisseur  = 9;      // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  W = largeur;  H = hauteur;  a = 90 - inclinaison;   // l'angle du dos sur la table
+la = 0.7 * H;                                  // la béquille : son grand côté, contre le dos
+bq = la * cos(a) + 30;                         // son petit côté, sur la table
+tb = [[25, 30], [la - 55, 30]];                // ses tenons : début et longueur, le long du grand côté
+lr = 50;  xr = [W / 4 - lr / 2, 3 * W / 4 - lr / 2];   // les tenons du rebord, le long de sa longueur
+yr = 12;                                       // le dessus du rebord sur le dos, depuis le bas
+si (inclinaison < 5 || inclinaison > 40)
+    echo("Une pente de 5 à 40° : en dehors, le livre tombe ou ne se lit plus.");
+planche([W + espace + bq + 30 + 2 * rognure, H + espace + profondeur_rebord + ep + 2 * rognure, epaisseur]);
+// ── Le dos : les mortaises du rebord en bas, celles de la béquille sur l'axe ──
+od = [rognure, rognure];
+d = rect(od, [W, H], 8);
+nommer(#d, "dos");
+pour (x = xr) {
+    m = rect(od + [x - jeu, yr - ep - jeu], [lr + 2 * jeu, ep + 2 * jeu]);
+    nommer(#m, "mortaise");
+}
+pour (t = tb) {
+    m = rect(od + [W / 2 - ep / 2 - jeu, t[0] - jeu], [ep + 2 * jeu, t[1] + 2 * jeu]);
+    nommer(#m, "mortaise");
+}
+// ── La béquille, debout : A au pied du dos, le grand côté vers C le long du dos, le petit côté de A vers B sur la table ──
+ob = [rognure + W + espace + 15, rognure];
+u = [cos(a), sin(a)];  n = [sin(a), -cos(a)];   // le long du dos ; vers le dos (hors du triangle)
+A = [0, 0];  B = [bq, 0];  C = la * u;
+// le grand côté de C vers A (le triangle parcouru A → B → C → A), ses tenons sortant vers le dos
+dents = [for (t = [tb[1], tb[0]]) for (q = [(t[0] + t[1]) * u, (t[0] + t[1]) * u - ep * n, t[0] * u - ep * n, t[0] * u]) q];
+q = polyligne([for (s = concat([A, B, C], dents)) ob + s], fermee = vrai);
+nommer(#q, "béquille");
+// ── Le rebord, au-dessus du dos : ses tenons sur son long côté du haut ──
+orb = [rognure, rognure + H + espace];
+rb = polyligne([for (s = concat([[0, 0], [W, 0], [W, profondeur_rebord]],
+                                [for (x = [xr[1], xr[0]]) for (k = [[x + lr, profondeur_rebord], [x + lr, profondeur_rebord + ep], [x, profondeur_rebord + ep], [x, profondeur_rebord]]) k],
+                                [[0, profondeur_rebord]])) orb + s], fermee = vrai);
+nommer(#rb, "rebord");
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaises");
+usinage("contour", "béquille", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Béquille");
+usinage("contour", "rebord", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 5, onglet_haut = 1.5, nom = "Rebord");
+usinage("contour", "dos", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 1.5, nom = "Dos");

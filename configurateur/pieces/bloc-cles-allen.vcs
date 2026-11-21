@@ -1,0 +1,57 @@
+// BLOC À CLÉS ALLEN — chaque clé six pans debout dans SON trou hexagonal, sa taille gravée devant : de 1,5 à 10 mm. La
+// clé qui manque se voit tout de suite, et elle ne tombe plus dans le tiroir.
+// thème : Rangement
+//
+// LES TROUS : un hexagone par clé, de la taille de la clé sur plats plus le `jeu` de chaque côté. Une fraise ne fait pas de
+// coin vif : son rayon arrondit les six coins du trou. Le jeu doit donc rattraper cet arrondi pour que les arêtes de la
+// clé passent ; la fraise Ø6 (les clés de 6 et plus) en demande au moins 0,5. Les clés plus petites que 3 n'ont pas
+// d'hexagone qu'une fraise Ø3 sache faire : un trou rond (3,4 au moins). Creusés de 9 à la fraise Ø3, de 15 à la Ø6.
+//
+// L'USINAGE : les tailles (Gravure, Pointe V 90°), les trous (Poche), puis le bloc (Contour extérieur, onglets). Hêtre de
+// 22 ; huiler.
+
+jeu        = 0.3;    // entre la clé et son trou, de chaque côté (mm) ; 0,5 au moins à la fraise Ø6 (imposé)
+ecart      = 8;      // du bois entre deux trous (mm)
+hauteur    = 45;     // profondeur du bloc, de l'avant à l'arrière (mm)
+epaisseur  = 22;     // épaisseur du bloc (mm) : 24 au plus pour la fraise Ø8
+rognure    = 5;      // du bord du brut au bloc (mm)
+
+cles = [1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];
+n = len(cles);
+function j(s) = s >= 6 ? max(jeu, 0.5) : jeu;                    // le jeu tenu à la fraise Ø6
+function plats(s) = s + 2 * j(s);
+function rond(s) = s < 3;                                         // trop petit pour un hexagone
+function d_trou(s) = rond(s) ? max(s / cos(30) + 2 * jeu, 3.4) : plats(s) / cos(30);   // l'encombrement (Ø des sommets)
+function libelle(s) = s == floor(s) ? str(s) : str(floor(s), ",5");
+function large(s) = 5 * (mesure_texte(libelle(s), 10, "Hershey Sans1")[3] - mesure_texte(libelle(s), 10, "Hershey Sans1")[2]) / 10;
+// Les centres : chaque trou à `ecart` du précédent, et assez loin pour que les tailles gravées ne se touchent pas.
+function pas_(k) = max(d_trou(cles[k - 1]) / 2 + ecart + d_trou(cles[k]) / 2, (large(cles[k - 1]) + large(cles[k])) / 2 + 4);
+function px(k) = k == 0 ? 12 + max(d_trou(cles[0]), large(cles[0])) / 2 : px(k - 1) + pas_(k);
+L = px(n - 1) + max(d_trou(cles[n - 1]), large(cles[n - 1])) / 2 + 12;  H = hauteur;  yc = H * 0.6;
+si (jeu < 0.25)
+    echo("Moins de 0,25 de jeu : les arêtes des clés buteront dans l'arrondi de la fraise Ø3.");
+planche([L + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+b = rect(o, [L, H], 6);
+nommer(#b, "bloc");
+pour (k = [0 : n - 1]) {
+    s = cles[k];
+    si (rond(s)) {
+        c = cercle(o + [px(k), yc], d_trou(s) / 2);
+        nommer(#c, "trou fin");
+    } sinon {
+        c = polygone(o + [px(k), yc], plats(s), 6, plats = vrai);
+        nommer(#c, s >= 6 ? "trou gros" : "trou fin");
+    }
+    t = libelle(s);
+    M = mesure_texte(t, 10, "Hershey Sans1") / 10;
+    g = texte(o + [px(k) - 5 * (M[2] + M[3]) / 2, 7], 5, t, police = "Hershey Sans1");
+    nommer(#g, "taille");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "taille", outil = "Pointe V 90", profondeur = 0.4, nom = "Tailles");
+usinage("poche", "trou fin", outil = "Fraise droite Ø3", profondeur = 9, passe = 1.5, nom = "Trous fins");
+usinage("poche", "trou gros", outil = "Fraise droite Ø6", profondeur = 15, passe = 3, nom = "Trous gros");
+usinage("contour", "bloc", outil = "Fraise droite Ø8", cote = "exterieur", profondeur = epaisseur, passe = 4,
+        onglets = 2, onglet_long = 8, onglet_haut = 2, nom = "Bloc");

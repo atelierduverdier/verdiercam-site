@@ -1,0 +1,89 @@
+// FAÇADE DE RACK 19" — la plaque avant d'un tiroir d'électronique (alimentation, préampli, boîtier de commande d'une
+// machine) aux cotes du rack : 482,6 de large, `unites` × 44,45 − 0,8 de haut, les lumières de fixation à 465,1 d'entraxe.
+// De gauche à droite : des embases Neutrik (série D), des interrupteurs, des voyants, un afficheur, et un nom gravé.
+// thème : Électronique et boîtiers
+//
+// LES COTES DU RACK (EIA-310) : par unité, deux lumières de 10 × 6,5 (vis M6 et écrous cage) à 6,35 et 38,1 de son bas,
+// moins le demi-jeu de 0,4 de la façade. LES DÉCOUPES : `nb_neutrik` embases (Ø24, leurs deux vis M3 en diagonale à
+// 19 × 24), `nb_inter` trous de Ø`d_inter`, `nb_voyant` trous de Ø`d_voyant`, un afficheur (`afficheur` = 1 : une fenêtre de
+// `l_afficheur` × `h_afficheur` et ses quatre vis à 75 × 31, celles d'un LCD 1602). Ce qui ne tient pas entre les oreilles
+// est dit à la console.
+//
+// L'USINAGE : le nom (Gravure, Pointe V 90°), les découpes et les lumières (Contour intérieur, fraise droite Ø3, sans
+// onglets : tenir les chutes en aluminium), puis la façade (Contour extérieur, onglets). Aluminium 3 mm (régimes de
+// l'atelier, lubrifié), ou plexiglas.
+
+unites     = 1;      // hauteur en unités de rack (1U = 44,45 mm)
+nb_neutrik = 2;      // embases Neutrik série D
+nb_inter   = 2;      // interrupteurs
+d_inter    = 12.2;   // Ø du trou d'un interrupteur (mm)
+nb_voyant  = 2;      // voyants
+d_voyant   = 5.2;    // Ø du trou d'un voyant (mm)
+afficheur  = 1;      // 1 : une fenêtre d'afficheur, 0 : aucune
+l_afficheur = 71;    // largeur de la fenêtre de l'afficheur (mm)
+h_afficheur = 24;    // hauteur de la fenêtre (mm)
+nom        = "ATELIER";
+epaisseur  = 3;      // épaisseur (mm)
+rognure    = 5;      // du bord du brut à la façade (mm)
+
+U = max(1, round(unites));
+W = 482.6;  H = U * 44.45 - 0.8;
+xl = (W - 465.1) / 2;                          // l'axe des lumières, depuis chaque bord
+planche([W + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+f = rect(o, [W, H], 2);
+nommer(#f, "façade");
+pour (u = [0 : U - 1])
+    pour (y = [6.35, 38.1])
+        pour (x = [xl, W - xl]) {
+            l = oblong(o + [x, u * 44.45 + y - 0.4], 10, 6.5);
+            nommer(#l, "lumière");
+        }
+
+// Les découpes, de gauche à droite, à partir de 35 mm du bord (passé l'oreille), centrées sur la hauteur.
+yc = H / 2;
+x1 = 35;                                       // les embases : 34 chacune
+x2 = x1 + nb_neutrik * 34;                     // les interrupteurs : 24 chacun
+x3 = x2 + nb_inter * 24;                       // les voyants : 15 chacun
+x4 = x3 + nb_voyant * 15;                      // l'afficheur
+x5 = x4 + (afficheur == 1 ? 90 : 0);           // la fin des découpes
+pour (k = [0 : nb_neutrik - 1]) {
+    c = o + [x1 + k * 34 + 17, yc];
+    n1 = cercle(c, 12);
+    nommer(#n1, "découpe");
+    pour (s = [-1, 1]) {
+        v = cercle(c + s * [9.5, 12], 1.6);
+        nommer(#v, "découpe");
+    }
+}
+pour (k = [0 : nb_inter - 1]) {
+    i = cercle(o + [x2 + k * 24 + 12, yc], d_inter / 2);
+    nommer(#i, "découpe");
+}
+pour (k = [0 : nb_voyant - 1]) {
+    v = cercle(o + [x3 + k * 15 + 7.5, yc], d_voyant / 2);
+    nommer(#v, "découpe");
+}
+si (afficheur == 1) {
+    ca = o + [x4 + 45, yc];
+    a = rect(ca - [l_afficheur / 2, h_afficheur / 2], [l_afficheur, h_afficheur], 1.5);
+    nommer(#a, "découpe");
+    pour (s = [[-1, -1], [1, -1], [1, 1], [-1, 1]]) {
+        v = cercle(ca + [s[0] * 37.5, s[1] * 15.5], 1.6);
+        nommer(#v, "découpe");
+    }
+}
+si (nb_neutrik > 0 && H < 36)
+    echo("Une embase Neutrik ne tient pas en hauteur.");
+si (x5 > W - 60)
+    echo(str("Les découpes débordent sur l'oreille droite (", x5, " mm pour ", W - 60, ") : moins de découpes, ou une façade plus haute."));
+M = mesure_texte(nom, 10, "Hershey Sans1") / 10;
+t = texte(o + [max(x5 + 10, W - 40 - 8 * (M[2] + M[3])), yc - 4], 8, nom, police = "Hershey Sans1");
+nommer(#t, "nom");
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "nom", outil = "Pointe V 90", profondeur = 0.3, nom = "Nom");
+usinage("contour", "découpe", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 0.5, nom = "Découpes");
+usinage("contour", "lumière", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 0.5, nom = "Lumières");
+usinage("contour", "façade", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 0.5,
+        onglets = 4, onglet_long = 4, onglet_haut = 0.6, nom = "Façade");

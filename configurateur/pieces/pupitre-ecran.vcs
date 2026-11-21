@@ -1,0 +1,88 @@
+// PUPITRE POUR ÉCRAN TACTILE 7" — le support incliné d'un écran de Raspberry Pi (l'officiel de 7 pouces, ou un autre aux
+// cotes données) : pour un pupitre de machine, une domotique, un cadre de recettes. L'écran se loge par derrière dans la
+// façade, qui ne laisse voir que sa zone d'affichage ; deux jambes la tiennent penchée, une traverse les relie.
+// thème : Électronique et boîtiers
+//
+// LA FAÇADE : l'écran (`l_ecran` × `h_ecran`, mesuré au pied à coulisse) entouré d'un `bord` ; une FENÊTRE de `l_vue` ×
+// `h_vue` (sa zone d'affichage, décalée de `decalage_vue` vers le haut si elle n'est pas centrée) ; par DERRIÈRE (face du
+// dessous), un LOGEMENT aux cotes de l'écran plus le `jeu`, creusé de `profondeur_logement`. Un TENON sur chaque côté
+// traverse une jambe. LES JAMBES tiennent la façade à `inclinaison` degrés du plan de la table, par une mortaise penchée ;
+// la TRAVERSE les relie derrière, en bas.
+//
+// L'USINAGE, en deux faces : dessus, la fenêtre et les mortaises (Contour intérieur, coins dégagés), puis les pièces
+// (Contour extérieur, onglets) ; dessous, le logement (Poche). Contreplaqué de bouleau de 9 ou 12.
+
+l_ecran    = 194;    // largeur de l'écran (mm) : 194 pour l'écran officiel 7"
+h_ecran    = 110;    // hauteur de l'écran (mm)
+l_vue      = 155;    // largeur de sa zone d'affichage (mm)
+h_vue      = 86;     // hauteur de sa zone d'affichage (mm)
+decalage_vue = 0;    // décalage de la zone d'affichage vers le haut, depuis le centre (mm)
+profondeur_logement = 5;  // profondeur du logement de l'écran, par derrière (mm)
+bord       = 16;     // bord de la façade autour de l'écran (mm)
+inclinaison = 65;    // angle de la façade avec la table (°)
+jeu        = 0.3;    // jeu de l'écran dans son logement, par côté (mm)
+jeu_tenon  = 0.1;    // jeu des tenons, par côté (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  a = inclinaison;  jt = jeu_tenon;
+W = l_ecran + 2 * bord;  H = h_ecran + 2 * bord;
+lt = min(70, H - 30);                          // la longueur d'un tenon de la façade
+u = [cos(a), sin(a)];  dv = [u[1], -u[0]];     // la pente de la façade, et l'arrière (sous la ligne de sa face avant)
+p0 = [20, 12];                                 // le bas de la face avant, sur une jambe
+C = p0 + H * u + (ep + 15) * dv;               // le haut d'une jambe, derrière le haut de la façade
+Lj = max(C[0] + 10, p0[0] + H * cos(a) + 40);  // la longueur d'une jambe au sol
+Ht = 40;                                       // la traverse
+si (profondeur_logement > ep - 3)
+    echo("Le logement perce presque la façade : moins profond, ou une façade plus épaisse.");
+si (bord < 10)
+    echo("Le bord est mince autour de l'écran : 10 mm au moins.");
+function penche(q, s0, s1, e) = [q + s0 * u, q + s1 * u, q + s1 * u + e * dv, q + s0 * u + e * dv];
+planche([W + 2 * ep + espace + 2 * Lj + espace + 2 * rognure, max(H + espace + Ht, C[1] + 5) + 2 * rognure, epaisseur]);
+
+// ── La façade : un tenon sur chaque côté, la fenêtre ; par derrière, le logement ──
+of = [rognure + ep, rognure];
+yt = (H - lt) / 2;
+f = polyligne([of, of + [W, 0], of + [W, yt], of + [W + ep, yt], of + [W + ep, yt + lt], of + [W, yt + lt], of + [W, H], of + [0, H],
+               of + [0, yt + lt], of + [-ep, yt + lt], of + [-ep, yt], of + [0, yt]], fermee = vrai);
+nommer(#f, "façade");
+fen = rect(of + [W / 2 - l_vue / 2, H / 2 - h_vue / 2 + decalage_vue], [l_vue, h_vue], 2);
+nommer(#fen, "fenêtre");
+face("dessous");
+lg = rect(of + [bord - jeu, bord - jeu], [l_ecran + 2 * jeu, h_ecran + 2 * jeu]);
+nommer(#lg, "logement");
+face("dessus");
+
+// ── Les jambes, de profil (l'avant à gauche) : la mortaise penchée de la façade, celle de la traverse ──
+module jambe(o) {
+    // le chant avant de la jambe : 10 mm devant la face avant de la façade (du bois devant sa mortaise)
+    q0 = p0 - 10 * dv;
+    j = polyligne([o + [q0[0], 0], o + [Lj, 0], o + C, o + q0 + H * u, o + q0], fermee = vrai);
+    nommer(#j, "jambe");
+    m = polyligne([for (q = penche(o + p0, yt - jt, yt + lt + jt, ep + 2 * jt)) q - jt * dv], fermee = vrai);
+    nommer(#m, "mortaise");
+    t = rect(o + [Lj - 35 - jt, 12 - jt], [ep + 2 * jt, Ht - 10 + 2 * jt]);
+    nommer(#t, "mortaise");
+}
+xj = rognure + W + 2 * ep + espace;
+jambe([xj, rognure]);
+jambe([xj + Lj + espace, rognure]);
+
+// ── La traverse : la largeur de la façade entre les jambes, un tenon à chaque bout (épaulé de 5) ──
+ot = [rognure, rognure + H + espace];
+tr = polyligne([ot + [ep, 0], ot + [W + ep, 0], ot + [W + ep, 5], ot + [W + 2 * ep, 5], ot + [W + 2 * ep, Ht - 5], ot + [W + ep, Ht - 5],
+                ot + [W + ep, Ht], ot + [ep, Ht], ot + [ep, Ht - 5], ot + [0, Ht - 5], ot + [0, 5], ot + [ep, 5]], fermee = vrai);
+nommer(#tr, "traverse");
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "fenêtre", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Fenêtre");
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaises");
+usinage("contour", "façade", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 6, onglet_haut = 2, nom = "Façade");
+usinage("contour", "jambe", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 2, nom = "Jambes");
+usinage("contour", "traverse", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 2, nom = "Traverse");
+usinage("poche", "logement", outil = "Fraise droite Ø6", coins = "dogbone", profondeur = profondeur_logement, passe = 2.5, nom = "Logement de l'écran");

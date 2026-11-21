@@ -1,0 +1,65 @@
+// LUTRIN — le pupitre du livre de recettes (ou de la tablette) : un dossier penché et un pied qui le traverse par une
+// fente au bas ; devant, le pied forme le rebord qui retient le livre, derrière il épaule le dossier. Deux pièces, à
+// démonter à plat.
+// thème : Cuisine
+//
+// L'EMBOÎTEMENT : le DOSSIER (`largeur` × `hauteur`) penche de `angle` en arrière ; le PIED, debout, le croise à angle droit
+// (vu de dessus, une croix). Le dossier a une FENTE qui monte de son bas, au milieu, large de l'épaisseur du pied plus le
+// `jeu` de chaque côté, jusqu'au-dessus du rebord. Le pied, de profil : devant le dossier, le REBORD de `hauteur_rebord`
+// (le livre pose dessus) ; dans la fente, la traversée ; derrière, le dos du pied, dont le bord avant épouse la face
+// arrière du dossier jusqu'à `hauteur_pied` — le dossier s'y appuie.
+//
+// L'USINAGE : le dossier (sa fente : coins dégagés) et le pied en Contour extérieur, fraise droite Ø6, onglets.
+
+largeur    = 280;    // largeur du dossier (mm)
+hauteur    = 340;    // hauteur du dossier, le long de sa pente (mm)
+angle      = 20;     // inclinaison du dossier, depuis la verticale (°)
+hauteur_pied = 180;  // hauteur du pied, derrière le dossier (mm)
+hauteur_rebord = 35; // hauteur du rebord devant le dossier (mm)
+avant      = 45;     // le rebord dépasse devant le dossier (mm)
+arriere    = 120;    // le pied s'étend derrière le bas du dossier (mm)
+jeu        = 0.15;   // jeu de la fente, par côté (mm)
+epaisseur  = 12;     // épaisseur du bois (mm)
+espace     = 12;     // entre les deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  b = angle;  w = ep + 2 * jeu;
+d = [sin(b), cos(b)];                         // la pente du dossier (vers le haut et l'arrière)
+n = [cos(b), -sin(b)];                        // sa normale, vers l'arrière
+ts = (hauteur_rebord + 15) / cos(b);          // la fente du dossier : 15 mm au-dessus du rebord
+si (hauteur_pied / cos(b) > hauteur - 30)
+    echo("Le pied monte presque jusqu'en haut du dossier : un pied plus bas, ou un dossier plus long.");
+si (arriere < (hauteur_pied * tan(b)) + ep + 20)
+    echo("Le pied est trop court derrière : le dossier le dépasse avant son haut — l'allonger (arriere).");
+planche([largeur + espace + avant + arriere + 2 * rognure, max(hauteur, hauteur_pied) + 2 * rognure, epaisseur]);
+
+// ── Le dossier, debout : sa fente monte du bas, au milieu ; le haut arrondi ──
+oA = [rognure, rognure];
+R = 20;
+xa = largeur / 2 - w / 2;  xb = largeur / 2 + w / 2;
+a = polyligne([oA + [xb, 0], oA + [largeur, 0], oA + [largeur, hauteur - R]]);
+a2 = arc(oA + [largeur - R, hauteur - R], oA + [largeur, hauteur - R], oA + [largeur - R, hauteur]);
+joindre(#a, #a2);
+a3 = ligne(oA + [largeur - R, hauteur], oA + [R, hauteur]);
+joindre(#a, #a3);
+a4 = arc(oA + [R, hauteur - R], oA + [R, hauteur], oA + [0, hauteur - R]);
+joindre(#a, #a4);
+a5 = polyligne([oA + [0, hauteur - R], oA + [0, 0], oA + [xa, 0], oA + [xa, ts], oA + [xb, ts], oA + [xb, 0]]);
+joindre(#a, #a5);
+nommer(#a, "dossier");
+
+// ── Le pied, de profil. Origine : l'arête avant du bas du dossier, posée au sol. La face avant du dossier est la droite
+// t·d, sa face arrière t·d + ep·n. ──
+o = [rognure + largeur + espace + avant, rognure];
+function F(v) = (v / d[1]) * d;               // la face avant, à la hauteur v
+function A(v) = F(v - ep * n[1]) + ep * n;     // la face arrière, à la hauteur v
+f = polyligne([o + [-avant, 0], o + [arriere, 0], o + [arriere, hauteur_pied], o + A(hauteur_pied),
+               o + A(ts * d[1] + ep * n[1]), o + F(ts * d[1]), o + F(hauteur_rebord), o + [-avant, hauteur_rebord]], fermee = vrai);
+nommer(#f, "pied");
+echo(str("Dossier penché de ", angle, "°, le livre sur un rebord de ", hauteur_rebord, " mm ; fente de ", round(ts), " × ", w, " mm."));
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "pied", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 8, onglet_haut = 2, nom = "Pied");
+usinage("contour", "dossier", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Dossier");

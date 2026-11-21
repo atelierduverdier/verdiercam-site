@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#ffffff">
+<title>VerdierCAM — d'où il vient : une PrintNC, puis un an de travail</title>
+<meta name="description" content="L'histoire de VerdierCAM racontée par Christophe, de l'Atelier du Verdier : la PrintNC construite en 2026, la recherche d'un logiciel sous Linux, puis VerdierCAM, de septembre à la version 1.0.">
+<link rel="canonical" href="https://verdiercam.fr/parcours.html">
+<link rel="icon" type="image/svg+xml" href="/oiseau.f8508e8c.svg">
+<link rel="preload" href="/polices/IBMPlexSans-Regular.942b070e.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/polices/IBMPlexSansCondensed-SemiBold.0ef3a560.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/style/verdiercam.b4b00b0a.css">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VerdierCAM">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="VerdierCAM — d'où il vient : une PrintNC, puis un an de travail">
+<meta property="og:description" content="L'histoire de VerdierCAM racontée par Christophe, de l'Atelier du Verdier : la PrintNC construite en 2026, la recherche d'un logiciel sous Linux, puis VerdierCAM, de septembre à la version 1.0.">
+<meta property="og:url" content="https://verdiercam.fr/parcours.html">
+<meta property="og:image" content="https://verdiercam.fr/partage/carte.c3987c76.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="VerdierCAM">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="saut" href="#contenu">Aller au contenu</a>
+
+<header class="barre">
+  <div class="cadre large barre-dedans">
+    <a class="marque" href="/" aria-label="VerdierCAM, accueil">
+      <img src="/oiseau.f8508e8c.svg" alt="" width="30" height="30">
+      <span>Verdier<b>CAM</b></span>
+    </a>
+    <nav class="menu" id="menu-sections" aria-label="Sections">
+      <a href="/#parcours">Le parcours</a>
+      <a href="/#usinage">Opérations</a>
+      <a href="/#modes">Modes</a>
+      <a href="/premiers-pas.html">Premiers pas</a>
+      <a href="/mode-emploi/">Mode d’emploi</a>
+      <a href="/installer.html">Installer</a>
+      <a href="/pieces.html">Pièces</a>
+      <a href="/configurateur/">Configurateur</a>
+      <a href="/nouveautes.html">Nouveautés</a>
+      <a href="/#sortie">Sortie</a>
+      <a href="/#questions">Questions</a>
+    </nav>
+    <button class="menu-bouton" type="button" aria-expanded="false" aria-controls="menu-sections">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14"/></svg><span>Menu</span>
+    </button>
+    <a class="bouton bouton-plein petit" href="/#sortie">Être prévenu</a>
+    
+  </div>
+</header>
+
+<main id="contenu">
+<!-- VerdierCAM — « D'où vient VerdierCAM » (21/11/2026). Le texte est celui de Christophe, validé par lui mot pour mot
+     (« Ok, cela me convient, tu pourras l'insérer dans le site. ») : NE PAS LE RÉÉCRIRE ; seule la typographie peut
+     changer. Les repères de la colonne de gauche ne font que reprendre ses dates. La photo : l'originale de la machine
+     (site/photos/machine-atelier.jpg, jamais la retouche). -->
+
+<div class="heros papier pp-heros">
+  <div class="cadre">
+    <div class="pp-intro apparait">
+      <span class="surtitre">Mon parcours</span>
+      <h1>D'où vient VerdierCAM</h1>
+    </div>
+  </div>
+</div>
+
+<section class="histoire page-parcours">
+  <div class="cadre large">
+    <figure class="photo-atelier apparait">
+      <img src="/captures/machine-atelier.ed4584d4.webp" width="1920" height="866" fetchpriority="high"
+           alt="La PrintNC de l'atelier : un bâti orange, un plateau martyr en lattes de contreplaqué entre des rails à T, le portique et sa broche, le tuyau d'aspiration qui pend au-dessus, le tout posé sur un établi en OSB">
+      <figcaption><span>La PrintNC de l'atelier</span> C'est sur elle que VerdierCAM est éprouvé.</figcaption>
+    </figure>
+  </div>
+  <div class="cadre large histoire-dedans">
+    <ol class="reperes-parcours apparait" aria-label="Les repères">
+      <li><span>Fin 2025</span>La PrintNC et sa carte Flexi-HAL</li>
+      <li><span>Janvier 2026</span>La construction commence</li>
+      <li><span>Mi-mai 2026</span>Les premiers copeaux</li>
+      <li><span>Juin à août 2026</span>Quel logiciel ?</li>
+      <li><span>Septembre 2026</span>VerdierCAM naît</li>
+      <li><span>Novembre 2026</span>La version 1.0</li>
+    </ol>
+    <div class="histoire-texte apparait">
+      <p>Avant la <a href="https://printnc.atelierduverdier.fr">PrintNC</a>, j'avais une machine qui ne me convenait pas :
+        je voulais plus solide, avec une bonne carte de commande. En cherchant, je suis tombé sur la PrintNC et sa carte
+        Flexi-HAL : le coup de cœur. J'ai passé un bon mois, fin 2025, à éplucher le site de la PrintNC, tout en anglais et
+        pas toujours facile à suivre.</p>
+      <p>En janvier 2026, j'ai commencé à la construire à partir de tubes d'acier : une broche de 2,2&nbsp;kW refroidie à
+        eau, des moteurs pas à pas en boucle fermée, et LinuxCNC sur un Raspberry Pi pour la piloter. Quatre mois de
+        montage et de réglages plus tard, à la mi-mai, elle faisait ses premiers copeaux. Tout le montage est raconté sur
+        mon site, <a href="https://atelierduverdier.fr">atelierduverdier.fr</a>.</p>
+      <p>Restait une question : comment passer d'un dessin sur l'ordinateur à une pièce découpée sur la machine ? De juin
+        à août, j'ai essayé bien des logiciels. Les bons étaient payants, souvent chers, et presque aucun ne tournait sous
+        Linux, à part FreeCAD. J'ai même écrit des ateliers pour FreeCAD, comme LaserAtelier pour la gravure au laser.</p>
+      <p>C'est de là qu'est né VerdierCAM, en septembre : dessiner, calculer les parcours, simuler et usiner, dans un seul
+        logiciel et en français. À peine trois mois plus tard, le logiciel est en version 1.0, et de nouvelles fonctions
+        attendent déjà leur tour.</p>
+      <p class="parcours-fin">Un an de travail acharné pour en arriver là.</p>
+      <p class="signature">Christophe, Atelier du Verdier</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="pied">
+  <div class="cadre pied-dedans">
+    <div class="pied-marque">
+      <a class="marque" href="/">
+        <img src="/oiseau.f8508e8c.svg" alt="" width="26" height="26">
+        <span>Verdier<b>CAM</b></span>
+      </a>
+      <p>CAO/FAO pour défonceuse CNC, écrite à
+        l'<a href="https://atelierduverdier.fr">Atelier du Verdier</a>.<br>
+        © 2026 Atelier du Verdier.</p>
+    </div>
+    <nav class="pied-liens" aria-label="Liens">
+      <a href="mailto:contact@verdiercam.fr">contact@verdiercam.fr</a>
+      <a href="https://www.youtube.com/@VerdierCAM">YouTube</a>
+      <a href="/nouveautes.html">Nouveautés</a>
+      <a href="/parcours.html">D’où vient VerdierCAM</a>
+      <a href="https://atelierduverdier.fr">Atelier du Verdier</a>
+      <a href="/mentions-legales.html">Mentions légales</a>
+      <a href="/confidentialite.html">Confidentialité</a>
+      <a href="/conditions-utilisation.html">Conditions d’utilisation</a>
+    </nav>
+  </div>
+</footer>
+
+<div class="visionneuse" hidden role="dialog" aria-modal="true" aria-label="Capture agrandie">
+  <img alt="">
+  <button type="button" aria-label="Fermer">×</button>
+</div>
+
+<script src="/style/verdiercam.3cd03b88.js" defer></script>
+<script>
+  window.goatcounter = { path: function (p) { return '/verdiercam' + p } };
+</script>
+<script data-goatcounter="https://atelierduverdier.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

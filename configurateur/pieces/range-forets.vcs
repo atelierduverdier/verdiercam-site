@@ -1,0 +1,48 @@
+// RANGE-FORETS GRADUÉ — le bloc où chaque foret a son trou et son diamètre gravé à côté : de 1 à 10 mm de demi en demi,
+// puis 11, 12 et 13. On voit d'un coup d'œil celui qui manque, et on le range sans hésiter.
+// thème : Rangement
+//
+// LES TROUS : un par foret, en deux rangées en quinconce, au Ø du foret plus le `jeu` — mais 3,4 au moins (les petits
+// forets se tiennent debout dans le trou de la fraise Ø3). Creusés de `profondeur_trous` à la fraise Ø3 (9 au plus) sous
+// 6,5 mm, à la Ø6 au-delà. Le Ø gravé devant chaque trou, à la française (« 2,5 »).
+//
+// L'USINAGE : les diamètres (Gravure, Pointe V 90°), les trous (Poche), puis le bloc (Contour extérieur, onglets). Hêtre ou
+// MDF de 22 ; poncer, huiler.
+
+jeu        = 0.3;    // le trou plus large que le foret (mm)
+profondeur_trous = 9;  // profondeur des trous (mm) : 9 au plus (la fraise Ø3)
+pas        = 18;     // d'un trou au suivant, sur une rangée (mm)
+epaisseur  = 22;     // épaisseur du bloc (mm) : 24 au plus pour la fraise Ø8
+rognure    = 5;      // du bord du brut au bloc (mm)
+
+forets = concat([for (k = [2 : 20]) k / 2], [11, 12, 13]);
+n = len(forets);
+function d_trou(d) = max(d + jeu, 3.4);
+// en deux rangées : les rangs pairs devant, les impairs derrière, décalés d'un demi-pas
+function px(k) = 15 + floor(k / 2) * pas + (k % 2) * pas / 2;
+function py(k) = k % 2 == 0 ? 22 : 52;
+function libelle(d) = d == floor(d) ? str(d) : str(floor(d), ",5");
+L = px(n - 1) + 20;  H = 72;
+si (profondeur_trous > 9)
+    echo("Les petits trous se creusent à la fraise Ø3 : 9 mm au plus.");
+planche([L + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+b = rect(o, [L, H], 6);
+nommer(#b, "bloc");
+pour (k = [0 : n - 1]) {
+    d = forets[k];
+    c = cercle(o + [px(k), py(k)], d_trou(d) / 2);
+    nommer(#c, d_trou(d) < 6.5 ? "trou fin" : "trou gros");
+    s = libelle(d);
+    M = mesure_texte(s, 10, "Hershey Sans1") / 10;
+    // le Ø devant son trou (en dessous sur le plan)
+    t = texte(o + [px(k) - 4 * (M[2] + M[3]) / 2, py(k) - d_trou(d) / 2 - 9], 4, s, police = "Hershey Sans1");
+    nommer(#t, "diamètre");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "diamètre", outil = "Pointe V 90", profondeur = 0.4, nom = "Diamètres");
+usinage("poche", "trou fin", outil = "Fraise droite Ø3", profondeur = profondeur_trous, passe = 1.5, nom = "Trous fins");
+usinage("poche", "trou gros", outil = "Fraise droite Ø6", profondeur = profondeur_trous + 6, passe = 3, nom = "Trous gros");
+usinage("contour", "bloc", outil = "Fraise droite Ø8", cote = "exterieur", profondeur = epaisseur, passe = 4,
+        onglets = 2, onglet_long = 8, onglet_haut = 2, nom = "Bloc");

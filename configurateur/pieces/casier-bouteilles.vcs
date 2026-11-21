@@ -1,0 +1,56 @@
+// CASIER À BOUTEILLES — le croisillon de cave : des planches debout qui se croisent à mi-bois, comme les séparations
+// d'une boîte à œufs, et font des cases carrées où les bouteilles se couchent. Rien d'autre : ni colle, ni vis, il se
+// monte et se démonte d'un geste.
+// thème : Rangement
+//
+// LES CASES : `colonnes` × `rangees`, de `cote_case` de côté (une bouteille de 75 cl fait Ø75 à 80). LES PLANCHES : toutes de
+// `profondeur` (la moitié d'une bouteille, elle repose sur le croisillon) ; `rangees` + 1 planches horizontales, fendues
+// par le BAS à chaque croisement, `colonnes` + 1 verticales, fendues par le HAUT ; chaque fente de la moitié de la
+// profondeur, de l'épaisseur plus le `jeu` de chaque côté. Les planches dépassent de `debord` aux bouts.
+//
+// L'USINAGE : les planches (Contour extérieur, coins dégagés au fond des fentes, onglets). Contreplaqué ou pin de 12 à 18.
+
+colonnes   = 3;      // cases en largeur
+rangees    = 3;      // cases en hauteur
+cote_case  = 100;    // côté d'une case, d'axe en axe des planches (mm)
+profondeur = 200;    // profondeur du casier (mm)
+debord     = 20;     // les planches dépassent des derniers croisements (mm)
+jeu        = 0.2;    // jeu des fentes, par côté (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  D = profondeur;  p = cote_case;  w = ep + 2 * jeu;
+nc = max(1, round(colonnes));  nr = max(1, round(rangees));
+Lh = nc * p + 2 * debord + ep;                 // une planche horizontale : tous les croisements des verticales
+Lv = nr * p + 2 * debord + ep;
+nh = nr + 1;  nv = nc + 1;                     // les planches de chaque sens
+x0 = debord + ep / 2;                          // le premier croisement, depuis le bout d'une planche
+si (p - ep < 80)
+    echo("Les cases sont étroites pour une bouteille de 75 cl : 92 mm au moins d'axe en axe pour du 12.");
+// Les planches en deux colonnes sur la planche brute.
+n = nh + nv;  lignes = ceil(n / 2);
+planche([2 * max(Lh, Lv) + espace + 2 * rognure, lignes * (D + espace) - espace + 2 * rognure, epaisseur]);
+
+// Une planche de longueur L, `n` croisements ; `bas` = 1 : fendue par le bas, 0 : par le haut.
+module latte(o, L, nx, bas, nom) {
+    y1 = bas == 1 ? 0 : D;  y2 = D / 2;
+    fentes = [for (j = [0 : 4 * nx - 1]) o + [x0 + floor(j / 4) * p + [-w / 2, -w / 2, w / 2, w / 2][j % 4], [y1, y2, y2, y1][j % 4]]];
+    q = bas == 1 ? polyligne(concat([o], fentes, [o + [L, 0], o + [L, D], o + [0, D]]), fermee = vrai)
+                 : polyligne(concat([o, o + [L, 0], o + [L, D]], [for (k = [0 : 4 * nx - 1]) fentes[4 * nx - 1 - k]], [o + [0, D]]), fermee = vrai);
+    nommer(#q, nom);
+}
+pour (k = [0 : n - 1]) {
+    o = [rognure + (k % 2) * (max(Lh, Lv) + espace), rognure + floor(k / 2) * (D + espace)];
+    si (k < nh)
+        latte(o, Lh, nv, 1, "horizontale");
+    sinon
+        latte(o, Lv, nh, 0, "verticale");
+}
+echo(str(nc * nr, " bouteilles, casier de ", Lh, " × ", Lv, " × ", D, " mm."));
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "horizontale", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Planches horizontales");
+usinage("contour", "verticale", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Planches verticales");

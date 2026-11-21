@@ -1,0 +1,58 @@
+// PANNEAU EN INTERFÉRENCE — deux familles d'anneaux gravés à la fraise en V, autour de deux centres posés juste hors
+// des bords gauche et droit : leurs crêtes se croisent et dessinent sur tout le panneau des franges qui ondulent et
+// bougent avec la lumière, comme deux ronds dans l'eau.
+// thème : Décoration et cadeaux
+//
+// LE MOTIF : des cercles concentriques à l'écart régulier autour de chaque centre ; chaque famille couvre à elle seule
+// le panneau, la seconde la recoupe. La profondeur est juste celle qui fait se rejoindre deux anneaux voisins en crête
+// vive : l'écart / (2 × tan(angle / 2)) — la moitié de l'écart à 90°. Motif imaginé par Fable (Claude) le 01/11/2026.
+//
+// L'USINAGE : une seule fraise en V, une gravure à profondeur constante sur tous les anneaux. Fraise conseillée : une V
+// à 120° (franges douces et larges) ; à 90°, la version la plus vive. La V 90° Ø6 de la bibliothèque d'office creuse
+// 2,75 mm au plus : écart de 5,5 au plus. Avec une grande V de carving (Ø32), donner son « angle » et son nom dans
+// « fraise ».
+
+largeur   = 150;   // largeur du panneau (mm)
+hauteur   = 150;   // hauteur du panneau (mm)
+epaisseur = 18;    // épaisseur du panneau (mm)
+ecart     = 5;     // écart entre deux anneaux (mm) [2:0.5:30]
+recul     = 15;    // les centres, à cette distance hors des bords gauche et droit (mm) [0:100]
+angle     = 90;    // l'angle de la fraise en V (°) : 120 conseillé [20:5:170]
+fraise    = "Pointe V 90";   // la fraise en V, son nom dans la bibliothèque
+
+t = tan(angle / 2);
+creux = ecart / (2 * t);   // deux anneaux voisins se rejoignent en crête vive
+echo(str("Anneaux tous les ", ecart, " mm, gravés à ", round(creux * 100) / 100, " mm."));
+planche([largeur, hauteur, epaisseur]);
+
+// Les morceaux d'une suite de points qui tombent dans le panneau : chacun devient un tracé nommé.
+function dedans(p) = p[0] >= 0 && p[0] <= largeur && p[1] >= 0 && p[1] <= hauteur;
+function entre(pts, i) = dedans(pts[i]) && (i == 0 ? true : !dedans(pts[i - 1]));
+function sort(pts, i) = dedans(pts[i]) && (i == len(pts) - 1 ? true : !dedans(pts[i + 1]));
+module morceaux(pts, nom) {
+    d = [for (i = [0 : len(pts) - 1]) if (entre(pts, i)) i];
+    f = [for (i = [0 : len(pts) - 1]) if (sort(pts, i)) i];
+    si (len(d) > 0)
+        pour (r = [0 : len(d) - 1])
+            si (f[r] > d[r]) {
+                c = polyligne([for (i = [d[r] : f[r]]) pts[i]]);
+                nommer(#c, nom);
+            }
+}
+
+// Chaque famille : la moitié de cercle tournée vers le panneau, un point par millimètre.
+pour (cote = [-1, 1]) {
+    c = [cote < 0 ? -recul : largeur + recul, hauteur / 2];
+    face = cote < 0 ? 0 : 180;
+    rmax = norm([largeur + recul, hauteur / 2]);
+    pour (r = [ecart / 2 : ecart : rmax]) {
+        si (r > recul) {
+            n = max(16, ceil(PI * r));
+            morceaux([for (i = [0 : n]) c + r * [cos(face - 90 + 180 * i / n), sin(face - 90 + 180 * i / n)]],
+                     "anneau");
+        }
+    }
+}
+
+// ── L'usinage ──
+usinage("gravure", "anneau", outil = fraise, profondeur = creux, nom = "Anneaux");
