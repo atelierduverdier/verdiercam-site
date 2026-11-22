@@ -92,6 +92,14 @@ mal écrite ou dans le futur.
 
 Absent, le site ne publie pas de manifeste et le logiciel reste en gris.
 
+**Les paquets à télécharger directement** (facultatifs : sans eux, « Télécharger » ouvre la page) : un par machine, sous
+SA clé — `"linux"` le PC (`…-linux-x86_64.tar.gz`), `"linux-aarch64"` le Raspberry Pi (`…-linux-aarch64.tar.gz`),
+`"windows"` (`…-windows-x64.zip`), chacun `{"url": …, "taille": …, "sha256": …}`. **Le piège du Pi (22/11/2026)** :
+jusqu'à la 1.0.1, VerdierCAM prenait `"linux"` aussi sur le Pi, et y aurait téléchargé le paquet du PC, qui n'y démarre
+pas. Depuis la correction (verdiercam-imgui, `scene::PaquetPour`), le Pi ne lit que `"linux-aarch64"`. Tant qu'un Pi
+tourne encore en 1.0.0 ou 1.0.1 (celui de l'atelier, ceux des testeurs), ne pas mettre `"linux"` dans le manifeste : le
+passer d'abord à une version corrigée. Le Comptoir annonce `"linux"` (le PC) et `"windows"`, pas encore le Pi.
+
 ## Publier une version (15/10/2026)
 
 Vente ouverte, la page Installer montre trois boutons (bloc `<!--vente-->`) qui visent les paquets de la
