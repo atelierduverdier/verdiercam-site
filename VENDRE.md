@@ -100,6 +100,14 @@ pas. Depuis la correction (verdiercam-imgui, `scene::PaquetPour`), le Pi ne lit 
 tourne encore en 1.0.0 ou 1.0.1 (celui de l'atelier, ceux des testeurs), ne pas mettre `"linux"` dans le manifeste : le
 passer d'abord à une version corrigée. Le Comptoir annonce `"linux"` (le PC) et `"windows"`, pas encore le Pi.
 
+**`date_licence` : pour une version corrective (22/11/2026, Christophe : « Date de la x.y.0 »).** Une x.y.z (z > 0) compte
+pour la licence à la date de la x.y.0 de sa série (verdiercam-imgui, `ressources/licence/series.txt`) : les conditions de
+vente promettent ces corrections même sans renouvellement (article 3). Le manifeste d'une x.y.z porte donc
+`"date_licence": "<date de la x.y.0>"` (pour la 1.0 : `"2026-11-21"`) à côté de `date`, qui reste le jour de la
+publication. Sans lui, la fenêtre « Nouvelle version » d'une licence échue dirait la correction « hors des mises à jour ».
+Le Comptoir ne l'écrit pas encore. Et à la livraison d'une x.y.0, la ligne « x.y AAAA-MM-JJ » de `series.txt` s'ajoute
+dans le dépôt du logiciel : sans elle, la construction de vente des x.y.z suivantes s'arrête.
+
 ## Publier une version (15/10/2026)
 
 Vente ouverte, la page Installer montre trois boutons (bloc `<!--vente-->`) qui visent les paquets de la
