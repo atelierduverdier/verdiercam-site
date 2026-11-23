@@ -248,6 +248,14 @@ def blocs_de_vente(texte: str, ouverte: bool) -> str:
     return texte.replace(f'<!--{garder}-->', '').replace(f'<!--/{garder}-->', '')
 
 
+def blocs_du_monteur(texte: str, publie: bool) -> str:
+    """Garde ou retire les passages entre <!--monteur--> et <!--/monteur--> (23/11/2026, Christophe : « ajoute un lien
+    vers le Monteur sur l'accueil ») : ce qui mène à monteur.html n'existe que si la page part en ligne."""
+    if publie:
+        return texte.replace('<!--monteur-->', '').replace('<!--/monteur-->', '')
+    return re.sub(r'<!--monteur-->.*?<!--/monteur-->', '', texte, flags=re.S)
+
+
 def empreinte(donnees: bytes) -> str:
     """Huit caractères du contenu. **Un nom qui ne change pas est un mensonge
     que le cache répète** : contenu différent, adresse différente."""
@@ -1059,6 +1067,7 @@ def main() -> None:
         racine = '' if page['sortie'] == 'index.html' else '/'
         corps = (CONTENU / page['contenu']).read_text(encoding='utf-8')
         corps = blocs_de_vente(corps, vente)
+        corps = blocs_du_monteur(corps, monteur)
         corps = corps.replace('{{CLASSE_ACHAT}}', '' if editeur.get('lien_paiement') else 'sans-lien')
         if not editeur.get('lien_paiement'):
             corps = corps.replace('href="{{editeur.lien_paiement}}"', 'href="#"')

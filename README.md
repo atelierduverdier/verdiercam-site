@@ -85,12 +85,12 @@ invisibles après un saut d'ancre) et, passé deux secondes, tout se montre quoi
 
 ## Le Monteur
 
-`monteur.html` présente le **Monteur VerdierCAM**, le monteur vidéo donné avec VerdierCAM. C'est un logiciel libre
+`monteur.html` présente le **Monteur VerdierCAM**, le monteur vidéo donné avec VerdierCAM. L'accueil y mène par sa section `#monteur`, entre `<!--monteur-->` et `<!--/monteur-->`. C'est un logiciel libre
 (GPL), dans son propre dépôt (`~/Projets/logiciels/monteur-rs`). Sa version est lue dans `crates/appli/Cargo.toml` :
 c'est `{{verdiercam.monteur}}`. Ses boutons visent les paquets de la Release `v<version>` de
 `atelierduverdier/monteur-rs`.
 
-La page et son lien en pied de page ne partent en ligne que si `site/editeur.json` dit `"monteur_publie": true`.
+La page, la section de l'accueil et le lien en pied de page ne partent en ligne que si `site/editeur.json` dit `"monteur_publie": true`.
 Tant que le dépôt est privé, ses liens ne mèneraient nulle part. Pour la voir dans l'aperçu sans la publier :
 
 ```bash
