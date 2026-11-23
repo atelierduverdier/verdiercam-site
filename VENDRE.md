@@ -146,5 +146,14 @@ Le logiciel n'installe de lui-même que ce que dit **la liste signée des versio
 
 Sans `site/versions-signees.txt`, rien ne change : pas de boîte, le numéro rouge et la fenêtre d'avant.
 
+**À la livraison qui porte la boîte (la 1.1.1)**, remettre dans `site/contenu/confidentialite.html`, sous « En utilisant le
+logiciel », ce paragraphe — retiré le 23/11/2026 pour que la page ne parle pas d'un bouton que la 1.0 vendue n'a pas :
+
+    <p>
+      Quand une nouvelle version est annoncée et que vous cliquez « Mettre à jour », VerdierCAM la télécharge depuis
+      GitHub, où ses paquets sont rangés : comme pour tout téléchargement, GitHub voit l'adresse de l'ordinateur qui la
+      demande. Rien ne se télécharge sans ce clic, et rien d'autre n'est envoyé. Paragraphe ajouté le … (date de la 1.1.1).
+    </p>
+
 Ce qu'une page dit tant qu'on ne vend pas (« le lien arrive par courriel ») se met entre `<!--hors-vente-->`
 et `<!--/hors-vente-->` : retiré à l'ouverture, comme `<!--vente-->` est retiré avant.
