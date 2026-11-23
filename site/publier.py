@@ -10,6 +10,7 @@
 #   python3 site/publier.py --sec    régénère seulement
 # =========================================================================
 
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -28,6 +29,10 @@ def courir(cmd, **kw):
 
 
 def main() -> None:
+    # L'aperçu de la page du Monteur (generer.py) ne part pas en ligne : c'est editeur.json qui le publie.
+    if os.environ.get('VCAM_APERCU_MONTEUR'):
+        sys.exit("publier : VCAM_APERCU_MONTEUR est posé — l'aperçu du Monteur ne se publie pas. "
+                 "Mettre « monteur_publie » à true dans site/editeur.json pour le publier. Rien n'est poussé.")
     r = subprocess.run([sys.executable, str(RACINE / 'site' / 'generer.py')], cwd=RACINE)
     if r.returncode != 0:
         sys.exit("publier : la génération a échoué — rien n'est poussé.")

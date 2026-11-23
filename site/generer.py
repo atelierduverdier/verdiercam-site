@@ -31,6 +31,7 @@ import hashlib
 import html
 import io
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -104,6 +105,19 @@ PAGES = [
         'titre': "VerdierCAM — installer sur Linux, Windows et Raspberry Pi 5",
         'description': "Installer VerdierCAM : une AppImage sous Linux, un dossier sous Windows, une AppImage ARM64 "
                        "sur Raspberry Pi 5 — y compris un Pi sous Debian 12 ou l'image LinuxCNC.",
+    },
+    # LE MONTEUR VERDIERCAM (23/11/2026, Christophe : « mettre à jour le site internet ») : le monteur vidéo donné
+    # avec VerdierCAM. Comme les pages de vente, il ne part en ligne que si editeur.json le dit (« monteur_publie ») :
+    # tant que son dépôt est privé et sa Release absente, ses liens de téléchargement ne mèneraient nulle part.
+    # VCAM_APERCU_MONTEUR=1 le montre dans l'aperçu (generer.py seul : publier.py refuse cette variable).
+    {
+        'contenu': 'monteur.html',
+        'sortie': 'monteur.html',
+        'monteur': True,
+        'titre': "Monteur VerdierCAM — le monteur vidéo gratuit pour filmer VerdierCAM",
+        'description': "Le Monteur VerdierCAM filme VerdierCAM pendant qu'on s'en sert et prépare tout seul le "
+                       "montage : zooms sur les clics, nom des réglages, temps morts coupés, sous-titres. Gratuit et "
+                       "libre, pour Linux et Windows.",
     },
     # Les pages légales. Celles marquées « vente » ne partent en ligne que si
     # editeur.json dit « vente_ouverte » : publier des conditions de vente et un
@@ -189,6 +203,10 @@ LIENS_PIED = [
     ('{{RACINE}}mentions-legales.html', 'Mentions légales'),
     ('{{RACINE}}confidentialite.html', 'Confidentialité'),
     ('{{RACINE}}conditions-utilisation.html', 'Conditions d’utilisation'),
+]
+# Seulement quand le Monteur est publié (editeur.json, « monteur_publie »).
+LIENS_PIED_MONTEUR = [
+    ('{{RACINE}}monteur.html', 'Le Monteur, gratuit'),
 ]
 # Seulement quand la vente est ouverte.
 LIENS_PIED_VENTE = [
@@ -1011,13 +1029,20 @@ def main() -> None:
     # page qui la cite (vente ouverte) arrête la génération : pas de lien vers un paquet qui n'est pas publié.
     if publiee.exists():
         faits['publiee'] = str(manifeste['version']).strip()
+    # LA VERSION DU MONTEUR (23/11/2026) : {{verdiercam.monteur}}, lue dans son Cargo.toml ; ses paquets sont dans la
+    # Release « v<version> » de son dépôt (README.md, « Le Monteur »).
+    m = re.search(r'^version = "([\d.]+)"', chemins.MONTEUR_CARGO.read_text(encoding='utf-8'), re.M)
+    if not m:
+        sys.exit(f"generer : pas de version dans {chemins.MONTEUR_CARGO}")
+    faits['monteur'] = m.group(1)
     gabarit = (GABARITS / 'page.html').read_text(encoding='utf-8')
     oiseau = oiseau_en_ligne()
     trace = trace_en_ligne(faits['version'])
 
     editeur = lire_editeur()
     vente = bool(editeur.get('vente_ouverte'))
-    liens_pied = LIENS_PIED + (LIENS_PIED_VENTE if vente else [])
+    monteur = bool(editeur.get('monteur_publie')) or os.environ.get('VCAM_APERCU_MONTEUR') == '1'
+    liens_pied = LIENS_PIED + (LIENS_PIED_MONTEUR if monteur else []) + (LIENS_PIED_VENTE if vente else [])
     # La barre aussi change à l'ouverture (15/10/2026) : « Être prévenu » devient « Télécharger », et l'entrée
     # « Sortie » du menu, qui mène à la même section devenue celle de l'achat, « Acheter ».
     gabarit = blocs_de_vente(gabarit, vente)
@@ -1026,6 +1051,8 @@ def main() -> None:
 
     for page in PAGES:
         if page.get('vente') and not vente:
+            continue
+        if page.get('monteur') and not monteur:
             continue
         # Seule la page d'accueil vit à la racine : les autres (404, Premiers
         # pas) partent toujours de « / », où que le site les serve.
@@ -1058,6 +1085,8 @@ def main() -> None:
         print(f"  {page['sortie']:<14} {len(texte.encode()):>7} o")
 
     print(f"  vente {'OUVERTE' if vente else 'fermée (Acheter, CGV, Licence non publiées)'}")
+    print(f"  Monteur {'publié' if monteur else 'non publié (monteur.html absente)'}"
+          + (" — APERÇU seulement (VCAM_APERCU_MONTEUR)" if monteur and not editeur.get('monteur_publie') else ""))
     if a_remplir:
         print(f"  ! À REMPLIR dans site/editeur.json — pages concernées : {', '.join(a_remplir)}"
               f" (publier.py refusera)")

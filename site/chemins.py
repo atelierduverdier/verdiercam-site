@@ -55,6 +55,11 @@ MODE_EMPLOI = PROJETS / 'realisations' / 'manuel-verdiercam' / 'sortie' / 'web'
 # Sa vignette de partage (Facebook…) part d'une de ses captures d'écran, refaites par son capturer.sh.
 MODE_EMPLOI_VIGNETTE = PROJETS / 'realisations' / 'manuel-verdiercam' / 'captures' / '00-atelier-simulation.png'
 
+# LE MONTEUR VERDIERCAM (23/11/2026) : le monteur vidéo donné avec VerdierCAM, dépôt à part (GPL). Sa page,
+# monteur.html, lit sa version dans le Cargo.toml de son programme.
+MONTEUR = Path(os.environ['MONTEUR_DEPOT']) if os.environ.get('MONTEUR_DEPOT') else PROJETS / 'logiciels' / 'monteur-rs'
+MONTEUR_CARGO = MONTEUR / 'crates' / 'appli' / 'Cargo.toml'
+
 TOUT = {
     'CMakeLists (version)': VERDIERCAM_CMAKE,
     'Operation.h (familles)': VERDIERCAM_OPERATION,
@@ -70,6 +75,7 @@ TOUT = {
     'configurateur (liste des pièces, outils/construire-wasm.sh)': CONFIGURATEUR / 'pieces.json',
     "mode d'emploi (manuel-verdiercam : python3 fabriquer.py --web)": MODE_EMPLOI / 'index.html',
     "mode d'emploi (capture de sa vignette)": MODE_EMPLOI_VIGNETTE,
+    'Cargo.toml du Monteur (version)': MONTEUR_CARGO,
 }
 
 

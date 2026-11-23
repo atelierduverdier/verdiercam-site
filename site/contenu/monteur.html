@@ -1,0 +1,130 @@
+<!-- LE MONTEUR VERDIERCAM (23/11/2026, Christophe : « je vais fournir gratuitement le logiciel de montage vidéo et de
+     prise de capture de VerdierCAM […] pour motiver les gens à faire des vidéos », puis « mettre à jour le site »).
+     Publiée seulement si editeur.json dit « monteur_publie » (generer.py, PAGES). Chaque affirmation vient du dépôt
+     du Monteur (~/Projets/logiciels/monteur-rs : docs/mode-emploi.md, docs/windows.md, docs/linux.md) ; la version, de
+     son crates/appli/Cargo.toml ; les paquets, de sa Release « v<version> » (README.md d'ici, « Le Monteur »). -->
+
+<div class="heros papier pp-heros">
+  <div class="cadre">
+    <div class="pp-intro apparait">
+      <span class="surtitre">Le Monteur · gratuit</span>
+      <h1>Montrez ce que vous faites avec VerdierCAM</h1>
+      <p class="accroche">
+        Le Monteur VerdierCAM filme VerdierCAM pendant que vous vous en servez, puis prépare tout seul le montage d'après
+        vos gestes : il zoome sur ce que vous cliquez, écrit le nom des réglages que vous touchez, coupe les temps morts et
+        sous-titre votre voix. Vous relisez, vous écrivez la vignette, et la vidéo sort prête pour YouTube.
+        Gratuit et libre, pour Linux et Windows.
+      </p>
+    </div>
+    <div class="actions pp-telecharger" id="telecharger">
+      <a class="bouton bouton-plein" href="https://github.com/atelierduverdier/monteur-rs/releases/download/v{{verdiercam.monteur}}/Monteur-VerdierCAM-{{verdiercam.monteur}}-linux-x86_64.AppImage">Télécharger pour Linux</a>
+      <a class="bouton bouton-plein" href="https://github.com/atelierduverdier/monteur-rs/releases/download/v{{verdiercam.monteur}}/Monteur-VerdierCAM-{{verdiercam.monteur}}-windows-x64.zip">Pour Windows</a>
+    </div>
+    <p class="pp-version">Version {{verdiercam.monteur}} · logiciel libre (GPL) ·
+      <a href="https://github.com/atelierduverdier/monteur-rs">Le code source</a></p>
+    <ol class="pp-sommaire" aria-label="Le Monteur">
+      <li><a href="#filmer"><span>01</span>Filmer</a></li>
+      <li><a href="#preparer"><span>02</span>Le montage tout prêt</a></li>
+      <li><a href="#rendre"><span>03</span>Vignette et YouTube</a></li>
+      <li><a href="#installer"><span>04</span>Installer</a></li>
+      <li><a href="#libre"><span>05</span>Gratuit et libre</a></li>
+    </ol>
+  </div>
+</div>
+
+<section id="filmer" class="pp-etape">
+  <div class="cadre">
+    <div class="texte apparait installer">
+      <span class="surtitre">01 · Filmer</span>
+      <h2>Un bouton : Filmer VerdierCAM</h2>
+      <p>Le Monteur lance VerdierCAM et filme sa fenêtre. Pendant ce temps, VerdierCAM note chacun de vos gestes : où
+        vous cliquez, quel réglage vous changez, quelle boîte vous ouvrez. C'est de ces gestes que naît le montage. Rien
+        de ce que vous tapez n'est noté : seulement « une saisie a lieu dans tel champ ».</p>
+      <ul class="coches">
+        <li><b>La fenêtre seule</b>, même quand une autre passe devant, avec le pointeur, sans la barre de titre.</li>
+        <li><b>Votre voix et le son de l'ordinateur</b>, calés sur la première image ; votre voix des deux côtés, même
+          si votre micro n'en donne qu'un.</li>
+        <li><b>Trois bips</b> annoncent le départ, sans être filmés. Pour arrêter : le bouton Arrêter, ou
+          <kbd>Windows</kbd>+<kbd>F12</kbd> (<kbd>Meta</kbd>+<kbd>F12</kbd> sous Linux) depuis n'importe quelle
+          fenêtre.</li>
+        <li><b>Filmer une fenêtre</b> : n'importe quel autre programme, sans les gestes de VerdierCAM.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="preparer" class="pp-etape teinte">
+  <div class="cadre">
+    <div class="texte apparait installer">
+      <span class="surtitre">02 · Le montage tout prêt</span>
+      <h2>Préparer le montage</h2>
+      <p>La prise arrive dans la liste, s'ouvre, et la préparation se lance d'elle-même. Elle lit la vidéo et le journal
+        des gestes de VerdierCAM :</p>
+      <ul class="coches">
+        <li><b>Un zoom</b> sur chaque endroit où vous travaillez, <b>une étiquette</b> au nom de chaque réglage
+          touché.</li>
+        <li><b>Les temps morts coupés</b> : silence et image immobile.</li>
+        <li><b>Les sous-titres de votre voix</b>, en français ou dans une autre langue, calculés sur votre ordinateur :
+          rien n'est envoyé nulle part.</li>
+      </ul>
+      <p>Tout reste à relire et rien n'est figé : la ligne de temps montre chapitres, zooms, étiquettes, clics,
+        sous-titres et coupes, et chaque élément se glisse, s'allonge ou se supprime. Le panneau Texte montre tout ce que
+        vous dites : un clic va à la phrase, « Couper » la retire du montage. Le bouton Voix nettoie le son (bruit de
+        fond, sifflantes, niveau égal).</p>
+    </div>
+  </div>
+</section>
+
+<section id="rendre" class="pp-etape">
+  <div class="cadre">
+    <div class="texte apparait installer">
+      <span class="surtitre">03 · Vignette et YouTube</span>
+      <h2>De la prise à la vidéo en ligne</h2>
+      <ul class="coches">
+        <li><b>La vignette</b> : l'image choisie dans la vidéo, votre titre, avec le nom et le logo de votre chaîne.</li>
+        <li><b>Le rendu</b> en tâche de fond, pendant que vous continuez à monter : YouTube, YouTube 1440p, court
+          vertical, brouillon, extrait GIF. La vidéo pour YouTube s'ouvre sur 3 secondes de vignette et finit sur un carton
+          « Fait avec VerdierCAM » de 2 secondes, à décocher si vous n'en voulez pas.</li>
+        <li><b>Le titre, la description et les mots-clés</b> proposés d'après la vignette, les chapitres insérés aux bons
+          temps ; puis on les copie et on ouvre YouTube Studio pour y déposer la vidéo.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="installer" class="pp-etape teinte">
+  <div class="cadre">
+    <div class="texte apparait installer">
+      <span class="surtitre">04 · Installer</span>
+      <h2>Un fichier sous Linux, un dossier sous Windows</h2>
+      <p><b>Linux</b> : le fichier <b>Monteur-VerdierCAM-<i>version</i>-linux-x86_64.AppImage</b>, à rendre exécutable
+        puis à lancer. Toute distribution de 2022 ou après convient (Ubuntu 22.04, Debian 12, Mint 21…).</p>
+<pre class="code"><code>chmod +x Monteur-VerdierCAM-*-linux-x86_64.AppImage
+./Monteur-VerdierCAM-*-linux-x86_64.AppImage</code></pre>
+      <p>Pour filmer, il lui faut <b>gpu-screen-recorder</b> (paquet de votre distribution, ou Flatpak) : il passe par
+        le dialogue de votre bureau pour choisir la fenêtre, le même qu'OBS.</p>
+      <p><b>Windows 10 et 11, 64 bits</b> : le fichier <b>Monteur-VerdierCAM-<i>version</i>-windows-x64.zip</b>. Clic
+        droit, <b>Extraire tout</b>, puis <b>Monteur VerdierCAM.exe</b> dans le dossier obtenu. Tout ce que contient le
+        dossier sert au Monteur : il se déplace en entier. Au premier lancement, Windows peut afficher « Windows a protégé
+        votre ordinateur » : cliquer <b>Informations complémentaires</b>, puis <b>Exécuter quand même</b>.</p>
+      <p>Au premier lancement, la boîte <b>Ce qu'il faut</b> dit ce que le Monteur a trouvé. Le modèle des sous-titres
+        se télécharge de là, une seule fois (575 Mo).</p>
+    </div>
+  </div>
+</section>
+
+<section id="libre" class="pp-etape">
+  <div class="cadre">
+    <div class="texte apparait installer">
+      <span class="surtitre">05 · Gratuit et libre</span>
+      <h2>À vous, et à tous ceux qui veulent montrer leur atelier</h2>
+      <p>Le Monteur VerdierCAM est gratuit, sans inscription ni limite de durée, et libre : son code est publié sous
+        licence GPL version 3, sur <a href="https://github.com/atelierduverdier/monteur-rs">GitHub</a>. Le nom et le
+        logo VerdierCAM restent la marque de l'Atelier du Verdier. Il s'appuie sur FFmpeg, whisper.cpp, Dear ImGui, wgpu
+        et cpal ; leurs licences sont livrées avec lui.</p>
+      <p>Il marche avec la version d'essai de VerdierCAM comme avec la version achetée. Une vidéo faite avec lui ?
+        <a href="mailto:contact@verdiercam.fr?subject=Une%20vid%C3%A9o%20faite%20avec%20le%20Monteur">Envoyez-nous le
+        lien</a>.</p>
+    </div>
+  </div>
+</section>
