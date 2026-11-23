@@ -23,6 +23,9 @@ VERDIERCAM_OPERATION = VERDIERCAM / 'src' / 'cam' / 'Operation.h'
 VERDIERCAM_LOGO = VERDIERCAM / 'ressources' / 'logo-verdiercam.svg'
 # La durée de l'essai (kJoursEssai) : le site l'annonce, le logiciel la tient.
 VERDIERCAM_LICENCE = VERDIERCAM / 'src' / 'scene' / 'Licence.h'
+# La liste signée des versions (23/11/2026, la mise à jour en un clic) : vérifiée à la génération par l'outil du logiciel,
+# avec la clé publique de son dépôt (ressources/licence/cle-versions.txt).
+VERDIERCAM_VERSIONS = VERDIERCAM / 'outils' / 'versions.py'
 # Les polices du site (IBM Plex) ne sont plus celles du logiciel depuis le style « plan » (20/11/2026) : elles
 # vivent dans site/polices/.
 # Le configurateur de pièces (10/10/2026) : la page et le cœur WebAssembly, construit par outils/construire-wasm.sh
@@ -57,6 +60,7 @@ TOUT = {
     'Operation.h (familles)': VERDIERCAM_OPERATION,
     'logo VerdierCAM': VERDIERCAM_LOGO,
     'Licence.h (durée de l\'essai)': VERDIERCAM_LICENCE,
+    'versions.py (liste signée des versions)': VERDIERCAM_VERSIONS,
     "performances.json (banc d'essai : outils/banc/resumer.py)": VERDIERCAM_PERFORMANCES,
     'captures': CAPTURES,
     'clips': CLIPS,

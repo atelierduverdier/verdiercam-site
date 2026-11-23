@@ -917,6 +917,30 @@ def empreinte_configurateur(dossier: Path, plan: str) -> None:
     page.write_text(marque, encoding='utf-8')
 
 
+def verifier_versions_signees(fichier: Path, version_publiee: str) -> str:
+    """Le texte de la liste signée, vérifié par outils/versions.py du logiciel (la clé publique de son dépôt) ; arrête la
+    génération si la signature ne se vérifie pas, ou si sa version la plus récente n'est pas celle du manifeste (la boîte
+    du logiciel proposerait autre chose que le numéro rouge)."""
+    import re
+    import subprocess
+    r = subprocess.run([sys.executable, str(chemins.VERDIERCAM_VERSIONS), 'verifier', str(fichier)],
+                       capture_output=True, text=True)
+    if r.returncode != 0:
+        sys.exit(f"generer : site/versions-signees.txt refusée — {(r.stderr or r.stdout).strip()} ; rien n'est publié")
+    texte = fichier.read_text(encoding='utf-8')
+    versions = re.findall(r'^v:\s*(\S+)', texte, flags=re.M)
+    cle = lambda v: tuple(int(x) for x in re.findall(r'\d+', v))
+    plus_recente = max(versions, key=cle) if versions else ''
+    # Le logiciel n'installe que d'une adresse https (file:// seulement pour ses contrôles, d'un manifeste local).
+    for ligne in re.findall(r'^p:.*$', texte, flags=re.M):
+        if not ligne.split()[-1].startswith('https://'):
+            sys.exit(f"generer : un paquet de la liste signée n'est pas en https ({ligne.split()[-1]}) — rien n'est publié")
+    if plus_recente != version_publiee:
+        sys.exit(f"generer : la liste signée finit à la {plus_recente or '(aucune)'}, le manifeste annonce la "
+                 f"{version_publiee} — rien n'est publié")
+    return texte
+
+
 def main() -> None:
     manquants = chemins.verifier()
     if manquants:
@@ -952,6 +976,17 @@ def main() -> None:
             if d > jour.today():
                 sys.exit(f"generer : la « date » de site/version-publiee.json ({texte}) est après aujourd'hui "
                          f"({jour.today().isoformat()}) : les essais en cours s'arrêteraient — rien n'est publié")
+        # LA LISTE SIGNÉE DES VERSIONS (23/11/2026, verdiercam-imgui, docs/chantiers/mise-a-jour-en-un-clic.md, étape 6) :
+        # ce que la mise à jour en un clic installera. Elle vient de site/versions-signees.txt, écrit sur le poste de
+        # l'Atelier par « python3 outils/versions.py signer liste.json -o … » (la clé privée n'est que là) ; elle va dans le
+        # champ « versions » du manifeste, que la 1.0 ignore. Vérifiée ici avec la clé publique du logiciel, comme il le
+        # fera : une liste mal signée, ou dont la dernière version n'est pas celle du manifeste, et rien n'est publié.
+        signee = SITE / 'versions-signees.txt'
+        if 'versions' in manifeste:
+            sys.exit("generer : site/version-publiee.json porte déjà « versions » — la liste signée vient de "
+                     "site/versions-signees.txt, rien n'est publié")
+        if signee.exists():
+            manifeste['versions'] = verifier_versions_signees(signee, str(manifeste['version']).strip())
         (PUBLIC / 'version.json').write_text(json.dumps(manifeste, ensure_ascii=False) + '\n', encoding='utf-8')
 
     polices = publier_polices()

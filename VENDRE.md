@@ -125,5 +125,26 @@ Dans l'ordre, pour qu'aucun lien ne vise un fichier absent :
    `gh release create v<version> --repo atelierduverdier/verdiercam-site --title "VerdierCAM <version>" <les trois>`.
 3. `site/version-publiee.json` à cette version, puis `python3 site/publier.py`.
 
+### Avec la mise à jour en un clic (23/11/2026, dès la version qui porte la boîte)
+
+Le logiciel n'installe de lui-même que ce que dit **la liste signée des versions** (verdiercam-imgui,
+`docs/chantiers/mise-a-jour-en-un-clic.md`), signée sur ce poste avec la clé des versions (`~/.config/verdiercam-vente/`,
+à part de celle des licences). Entre les étapes 1 et 2 ci-dessus, et à l'étape 3 :
+
+1. **Signer chaque paquet, avant tout le reste** (la signature va DANS le paquet et change le fichier) — dans le dépôt du
+   logiciel : `python3 outils/versions.py signer-paquet dist/VerdierCAM-<version>-linux-x86_64.tar.gz --date <AAAA-MM-JJ>`,
+   de même pour `…-windows-x64.zip` et `…-linux-aarch64.tar.gz`. La date est celle de la version ; pour une x.y.z, l'outil
+   met lui-même celle de la x.y.0 (ce que la licence compare). `verifier-paquet` les relit.
+2. La Release (étape 2 ci-dessus) avec ces paquets signés.
+3. **La liste** : une description `liste.json` (toutes les versions publiées, gardées : une licence échue reçoit la
+   dernière que couvre son année ; `serie` monte de un à chaque liste ; pour chaque version ses notes en français et en
+   anglais, deux ou trois lignes, et ses paquets avec `"fichier": "dist/…"` et l'adresse de la Release), puis
+   `python3 outils/versions.py signer liste.json -o ~/Projets/site/Site_VerdierCAM/site/versions-signees.txt`.
+4. `site/version-publiee.json` à la même version, puis `python3 site/publier.py`. `generer.py` relit la liste avec la clé
+   publique du logiciel et refuse de publier une liste mal signée, une liste qui ne finit pas à la version du manifeste,
+   ou un paquet qui n'est pas en https. La 1.0 ignore ce champ : elle garde la fenêtre « Nouvelle version ».
+
+Sans `site/versions-signees.txt`, rien ne change : pas de boîte, le numéro rouge et la fenêtre d'avant.
+
 Ce qu'une page dit tant qu'on ne vend pas (« le lien arrive par courriel ») se met entre `<!--hors-vente-->`
 et `<!--/hors-vente-->` : retiré à l'ouverture, comme `<!--vente-->` est retiré avant.
