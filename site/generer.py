@@ -64,7 +64,8 @@ PAGES = [
         'titre': "VerdierCAM — logiciel CAO/FAO pour CNC bois, Linux et Windows",
         'description': "Dessiner la pièce, calculer les parcours de la défonceuse CNC, simuler la "
                        "matière et envoyer le G-code à GRBL, grblHAL ou LinuxCNC, dans un seul "
-                       "logiciel : croquis contraint, gravure en V, bas-relief depuis une photo, usinage sur 4e axe, "
+                       "logiciel : croquis contraint, gravure en V, bols et vases en relief, usinage sur 4e axe, laser et "
+                       "circuits imprimés, "
                        "{{verdiercam.familles}} familles d'opérations. Licence perpétuelle, sans "
                        "abonnement. Sortie prochaine.",
     },
@@ -321,14 +322,21 @@ IMAGES = {
     'accueil_trois_modes': 'trois-modes',
     'debutant_profondeurs': 'debutant-profondeurs',
     'debutant_vcarve': 'debutant-vcarve',
-    'gravure25d_schema': '25d-schema',
-    'gravure25d_bois': '25d-bois',
     'pilotage_pupitre': 'pupitre',
     'pedalier_script': 'pedalier',
     # Graver une image (13/10/2026) : un insigne de démonstration, jamais une pièce de client.
     'graver_image': 'graver-image',
     'graver_fraise': 'graver-fraise',
     'relief_usine': 'relief-paliers',
+    # Le Relief repensé (24/11/2026, la 1.1) : l'accueil par la pièce et trois exemples de ressources/demo ; l'ancien atelier
+    # en quatre étapes (25d-schema, 25d-bois) n'est plus montré.
+    'relief_accueil': 'relief-accueil',
+    'relief_vase': 'relief-vase',
+    'relief_bol': 'relief-bol',
+    'relief_usinage': 'relief-usinage',
+    # Le laser et le circuit imprimé (25/11/2026, la 1.1) : la Simulation laser, le perçage du clavier d'exemple.
+    'laser_simulation': 'laser-simulation',
+    'circuit_percage': 'circuit-percage',
     # Le 4e axe (21/11/2026) : deux pièces tournées sur le diviseur, rejouées depuis les documents d'essai du logiciel.
     'axe_manche': 'axe-manche',
     'axe_cavalier': 'axe-cavalier',

@@ -214,12 +214,12 @@
     <div class="fonction">
       <div class="texte apparait">
         <span class="surtitre">01 · Croquis</span>
-        <h2>Un vrai croquis contraint, avec les gestes de FreeCAD</h2>
+        <h2>Un vrai croquis contraint, coté au clavier</h2>
         <p>Les formes ne sont pas des dessins figés : ce sont des points, des traits et des
           arcs tenus par des contraintes. On tire un point, le solveur fait suivre le reste.
           On tape une cote, la pièce prend la bonne taille.</p>
         <ul class="coches">
-          <li><b>Les raccourcis de FreeCAD</b> : <kbd>G</kbd><kbd>L</kbd> pour une ligne,
+          <li><b>Deux lettres au clavier</b> : <kbd>G</kbd><kbd>L</kbd> pour une ligne,
             <kbd>K</kbd><kbd>D</kbd> pour une distance, <kbd>C</kbd> pour une coïncidence.</li>
           <li><b>Import SVG, DXF et FreeCAD</b> : le dessin importé reste un croquis qui se contraint.</li>
           <li><b>Réseaux liés</b> : une cote changée sur le premier logement change toute la série.</li>
@@ -252,7 +252,7 @@
       <div class="texte apparait">
         <span class="surtitre">Le croquis en script</span>
         <h3>Des variables, des boucles — et une IA peut l'écrire</h3>
-        <p>Le croquis s'écrit aussi en quelques lignes, à la façon d'OpenSCAD : on change un
+        <p>Le croquis s'écrit aussi en quelques lignes : on change un
           nombre en tête du fichier, toute la pièce suit.</p>
 <pre class="code"><code>dents = 44;  bcd = 104;  c = [101, 101];
 planche([202, 202, 3]);
@@ -371,20 +371,29 @@ pour (i = [0 : 3]) {
   </div>
 </section>
 
+<!-- LE RELIEF REPENSÉ (24/11/2026, la 1.1) : l'atelier part de la pièce qu'on veut tenir en main — « Que voulez-vous
+     sculpter ? », six pièces toutes prêtes (FenetreReliefPiece.cpp, kTuiles), trois temps (La pièce, Le décor,
+     L'usinage), la vue de dessus, la 3D et la coupe. Captures : presentation-verdiercam/capturer.sh, relief_accueil et
+     relief_vase (les exemples de ressources/demo). -->
 <section id="relief">
   <div class="cadre">
     <div class="fonction inverse">
       <div class="texte apparait">
         <span class="surtitre">Reliefs</span>
-        <h2>Une photo devient un bas-relief, sur votre ordinateur</h2>
-        <p>La gravure 2.5D prend un modèle STL ou OBJ, ou une image en niveaux de gris
-          jusqu'au PNG 16 bits : ébauche à la fraise droite, finition à la boule ou à la
-          boule conique.</p>
+        <h2>Un bol, un vase, une médaille : on choisit la pièce, puis on la règle</h2>
+        <p>L'atelier Relief part de la pièce qu'on veut tenir en main. Un clic la pose dans le bois, avec des mesures
+          qui marchent ; elles se changent en millimètres, et on voit tout de suite, de dessus, en 3D et en coupe, ce
+          qui restera du bois.</p>
         <ul class="coches">
+          <li><b>Six pièces toutes prêtes</b> : un bol, un vase, un plateau creusé, une médaille, une image en relief, une
+            texture. Chacune a son exemple.</li>
+          <li><b>Deux faces sans casse-tête</b> : le dedans et le dehors d'un bol ou d'un vase sur un seul dessin vu de
+            dessus, sans miroir.</li>
+          <li><b>Un décor</b> : une image, un modèle 3D, un texte ou une texture, en bosse ou en creux.</li>
           <li><b>Relief par IA</b> : une photo devient une carte de hauteur, avec le modèle
             Depth Anything 3 réécrit en C++ — sans Python et <b>sans connexion</b>.</li>
-          <li>Réglage <b>bas-relief</b> qui écrase les falaises et garde les détails ; calcul en
-            tuiles pour les grandes images.</li>
+          <li>Les fraises, la finesse et sa durée, puis <b>« Usiner et simuler »</b> : la pièce finie s'ouvre dans la
+            Simulation.</li>
           <li>Et aussi : <b>Photo en V</b>, <b>Texture</b> de gouge, <b>Moulure</b> le long d'un
             rail, <b>Révolution</b> pour une assiette ou un bol.</li>
         </ul>
@@ -392,17 +401,17 @@ pour (i = [0 : 3]) {
       <div class="collage apparait">
         <figure class="capture">
           <div class="fenetre">
-            <img src="{{RACINE}}captures/25d-schema.webp" width="1920" height="1080" loading="lazy"
-                 alt="L'atelier Relief : un modèle 3D importé, couché et ajusté au brut, dans la pile des formes">
+            <img src="{{RACINE}}captures/relief-accueil.webp" width="1920" height="1080" loading="lazy"
+                 alt="L'atelier Relief : « Que voulez-vous sculpter ? », six pièces dessinées en coupe dans leur bois — un bol, un vase, un plateau creusé, une médaille, une image en relief, une texture">
           </div>
-          <figcaption>Le modèle 3D entre dans l'atelier Relief, couché et ajusté au brut ; sa hauteur se règle.</figcaption>
+          <figcaption>On choisit la pièce ; elle se pose dans le bois, avec des mesures qui marchent.</figcaption>
         </figure>
         <figure class="capture">
           <div class="fenetre">
-            <img src="{{RACINE}}captures/25d-bois.webp" width="1920" height="1080" loading="lazy"
-                 alt="Le résultat simulé d'une gravure 2.5D : un motif floral en relief, fini à la boule, dans un bloc de laiton">
+            <img src="{{RACINE}}captures/relief-vase.webp" width="1920" height="1080" loading="lazy"
+                 alt="Le vase en étoile des exemples dans l'atelier Relief : vu de dessus, en 3D, et en coupe, le dehors creusé par-dessus et le dedans par-dessous">
           </div>
-          <figcaption>Le résultat simulé : un relief floral dans le laiton, ébauché à la fraise Ø6 puis fini à la boule Ø3.</figcaption>
+          <figcaption>Le vase en étoile des exemples : de dessus, en 3D et en coupe. Le dehors se creuse par-dessus, le dedans par-dessous.</figcaption>
         </figure>
       </div>
     </div>
@@ -561,6 +570,55 @@ pour (i = [0 : 3]) {
   </div>
 </section>
 
+<!-- LE LASER ET LE CIRCUIT IMPRIMÉ (25/11/2026, la 1.1) : le laser est sorti de l'expérimental le 23/11 (pour tous,
+     Débutant compris) ; le Circuit imprimé est proposé hors Débutant (scene::CircuitPropose). Leur Simulation et leur
+     Pilotage sont ceux du fraisage depuis le 24/11 (« Cadrer », la liste à cocher de « Lancer »). La mise en garde du
+     laser reprend celle du logiciel (« Restez près de la machine… ») ; celle du circuit dit qu'il est le plus jeune des
+     ateliers (docs/a-faire.md : la carte d'exemple pas encore gravée en vrai). Les familles laser ne comptent toujours
+     pas dans le nombre de familles d'opérations, celles de la défonceuse (generer.py, familles_laser). -->
+<section id="laser">
+  <div class="cadre">
+    <div class="fonction">
+      <div class="texte apparait">
+        <span class="surtitre">Laser · Circuit imprimé</span>
+        <h2>Le même logiciel grave au laser et fait vos circuits imprimés</h2>
+        <p>Un module laser sur la machine, ou une plaque cuivrée à graver : le sélecteur, en haut à gauche, passe de
+          <b>Fraisage</b> à <b>Laser</b> ou à <b>Circuit imprimé</b>. Le document reste le même, la Simulation et le
+          Pilotage aussi.</p>
+        <ul class="coches">
+          <li><b>Laser</b> : un guide pas à pas, du laser neuf à la première gravure ; le trait, la gravure remplie, la
+            photo, la calligraphie et la découpe ; chaque matériau mesuré une fois, ses tons rangés dans un nuancier.</li>
+          <li><b>La brûlure simulée</b> au fil du faisceau, avant d'allumer.</li>
+          <li><b>Avant de lancer</b> : « Cadrer » fait le tour de la pièce, et « Lancer » demande la pièce calée, le zéro,
+            les lunettes.</li>
+          <li><b>Circuit imprimé</b>, en Pro : les fichiers de fabrication de votre logiciel de circuit, lus tels quels.
+            La pointe en V isole les pistes, les forets percent, la fraise détoure ; le double face se cale sur des
+            goupilles.</li>
+        </ul>
+        <p class="note-experimental">Un laser peut enflammer la pièce : restez près de la machine, avec des lunettes faites
+          pour votre laser. Le Circuit imprimé est le plus jeune des ateliers : faites votre première carte sur une chute
+          de plaque.</p>
+      </div>
+      <div class="collage apparait">
+        <figure class="capture">
+          <div class="fenetre">
+            <img src="{{RACINE}}captures/laser-simulation.webp" width="1920" height="1080" loading="lazy"
+                 alt="L'atelier Laser en Simulation : la tête laser au-dessus d'une planche, la gravure remplie qui se brûle trait après trait">
+          </div>
+          <figcaption>La Simulation du laser : la brûlure suit le faisceau, ligne après ligne.</figcaption>
+        </figure>
+        <figure class="capture">
+          <div class="fenetre">
+            <img src="{{RACINE}}captures/circuit-percage.webp" width="1920" height="1080" loading="lazy"
+                 alt="L'atelier Circuit imprimé : un clavier de douze touches en double face, ses pistes, ses trous et le contour à détourer, avec un outil par diamètre de trou">
+          </div>
+          <figcaption>Le clavier d'exemple : un foret par diamètre, les fentes, le détourage et le double face.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="configurateur" class="teinte">
   <div class="cadre">
     <div class="tete apparait">
@@ -594,7 +652,7 @@ pour (i = [0 : 3]) {
     <div class="tete apparait">
       <span class="surtitre">Ça avance</span>
       <h2>{{verdiercam.versions_depuis}} versions depuis le {{verdiercam.depuis}}</h2>
-      <p>Chaque correction, chaque fonction ajoutée monte le numéro d'un cran. Les derniers jours :</p>
+      <p>Des corrections et des fonctions chaque jour, une version à chaque livraison. Les derniers jours :</p>
     </div>
     <ul class="recents apparait">
 {{verdiercam.nouveautes_recentes}}
@@ -610,7 +668,7 @@ pour (i = [0 : 3]) {
         <!--hors-vente-->
         <span class="surtitre">La sortie</span>
         <h2>Sortie le {{editeur.date_sortie}}</h2>
-        <p>La version {{verdiercam.version}} tourne tous les jours à l'atelier. La 1.0 sortira le
+        <p>La version {{verdiercam.version}} tourne tous les jours à l'atelier. VerdierCAM sortira le
           {{editeur.date_sortie}}, après ses derniers essais sur le bois : 59&nbsp;€ pendant tout le mois de
           décembre, puis 79&nbsp;€ à partir de janvier&nbsp;2027.</p>
         <div class="actions">
@@ -686,8 +744,8 @@ pour (i = [0 : 3]) {
         <summary>Faut-il une connexion internet ?</summary>
         <p>Non. Tout se calcule sur le poste, relief par IA compris. La connexion ne sert qu'à
           télécharger le modèle du relief par IA (1,3 Go), si on le veut — une fois — et à dire,
-          au lancement, si une version plus récente est publiée : le numéro de version passe au
-          rouge en bas de la fenêtre, et un clic propose de la télécharger. Un assistant d'IA branché
+          au lancement, si une version plus récente est publiée : VerdierCAM la propose, et l'installe
+          d'un clic si vous le voulez. Un assistant d'IA branché
           (facultatif) passe, lui, par sa propre connexion.</p>
       </details>
       <details>
@@ -723,9 +781,11 @@ pour (i = [0 : 3]) {
       </details>
       <details>
         <summary>Comment passer à une nouvelle version ?</summary>
-        <p>Quand une version sort, le numéro en bas de la fenêtre passe au <b>rouge</b>. Un clic : ce qui change, et
-          « Télécharger ». Décompressez, lancez — vos réglages, vos outils et votre licence sont gardés. Pendant vos
-          mises à jour comprises, chaque nouvelle version est à vous.</p>
+        <p>Quand une version sort, VerdierCAM le dit : « VerdierCAM … est disponible ». Un clic sur <b>Mettre à
+          jour</b> : elle se télécharge, sa signature se vérifie, puis elle prend la place de l'ancienne et rouvre votre
+          document — jamais pendant que la machine travaille. Vos réglages, vos outils et votre licence sont gardés. Sans
+          Internet, elle s'installe depuis une clé USB. Pendant vos mises à jour comprises, chaque nouvelle version est à
+          vous.</p>
       </details>
       <details>
         <summary>Il manque une chose dont j'ai besoin.</summary>

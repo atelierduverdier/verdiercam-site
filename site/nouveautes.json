@@ -2,12 +2,91 @@
  "_lire": "Les nouveautés de VerdierCAM, une entrée par jour de travail, racontées pour qui usine (pas pour qui programme). Les numéros de version ne s'écrivent PAS ici : generer.py les lit dans l'historique du logiciel, jour par jour. Un jour de l'historique sans entrée est signalé à la génération.",
  "jours": [
   {
+   "date": "2026-11-25",
+   "titre": "La 1.1.3 : le Relief relu de bout en bout",
+   "points": [
+    "Bol en deux faces : le dehors est fini jusque sous la lèvre. Au-delà du tour, une bande reste creusée à la peau que tiennent les onglets, et la fraise en atteint le pied.",
+    "« Dedans seulement », « Dehors seulement » et « Changer de pièce » retirent les opérations du dessous qu'ils défont ; « Changer de pièce » ramène à l'accueil des pièces.",
+    "Une pièce retouchée à la main porte la marque « réglée à la main », et « Rendre à la recette » la remet comme elle était. Un Profil posé à la main sur le bord n'est plus pris pour le détourage.",
+    "« Une face » montre le dessous de son côté, plus en miroir. Le « BOL » et le « 2026 » des exemples se retouchent dans leur police.",
+    "L'exemple du bol rond passe dans un bois de 125 × 125 : dans 120, la saignée du détourage sortait du bois d'un millimètre."
+   ],
+   "images": [
+    [
+     "relief-bol.webp",
+     "Le bol rond des exemples, en deux faces : le dedans creusé dessus, le dehors et « BOL » dessous, la coupe cotée en dessous."
+    ]
+   ]
+  },
+  {
+   "date": "2026-11-24",
+   "titre": "Le Relief repensé : on choisit la pièce, on la règle en millimètres, on la voit finie",
+   "points": [
+    "L'atelier Relief s'ouvre sur « Que voulez-vous sculpter ? » : un bol, un vase, un plateau creusé, une médaille, une image en relief, une texture. Un clic pose la pièce au milieu du bois, avec des mesures qui marchent ; on les change ensuite en millimètres.",
+    "Trois temps — La pièce, Le décor, L'usinage — et trois vues : de dessus, la pièce en 3D qui tourne tout autour, et la coupe, cotée depuis le dessus. Le fond se tire à la souris sur la coupe, et chaque alerte vient avec son remède d'un clic (« Creux de 18 mm », « Bois de 45 mm »).",
+    "Dedans et dehors : un bol ou un vase en deux faces se dessine sur un seul dessin vu de dessus, sans miroir — la paroi et son cadenas, le pied, « On retourne le bois », « Tenir la pièce ».",
+    "Le décor : une image, un modèle 3D, un texte, un dessin du croquis ou une texture, en bosse ou en creux, sur le dessus, au fond du creux ou sous la pièce.",
+    "L'usinage se décide au même endroit : les fraises et leur longueur, trois finesses avec leur durée, les passages sur la 3D, puis un seul bouton, « Usiner et simuler ». Un bol en deux faces s'ouvre dans la Simulation sur ses deux faces, la pièce finie.",
+    "Sept exemples, un par pièce : un bol à trois lobes et sa rosace, un bol rond en deux faces, un vase en étoile, un plateau, une médaille, une fleur de clématite en relief, des vagues. « Voir l'exemple » sur chaque tuile, ou Fichier › Exemples. En Pro, « Toutes les formes » garde la page blanche et tous les réglages.",
+    "Quatre fraises longues dans la bibliothèque d'office (droite Ø6, boule Ø6, deux boules coniques). Une fraise trop courte pour le creux laisse sa place à la plus courte des fraises assez longues, et la phrase sous sa rangée le dit.",
+    "Laser et Circuit imprimé : les onglets Simulation et Pilotage du fraisage remplacent l'Envoi. La liste à cocher se demande à « Lancer » (pièce calée, zéro, lunettes, cadrage) ; « Cadrer » fait le tour avant de graver. La Simulation laser trace la brûlure au fil du faisceau.",
+    "Corrigé (la 1.0 l'avait) : une Gravure 2.5D limitée à une zone vide son ébauche DANS la zone. Il restait un croissant de bois plein au bord, où la boule de finition plongeait de 5 mm.",
+    "Tout ce qui est neuf depuis la 1.0 relu en entier et corrigé : un PDF piégé, une base de fraises énorme ou un Gerber chargé ne figent plus rien."
+   ],
+   "images": [
+    [
+     "relief-accueil.webp",
+     "L'accueil du Relief : on choisit la pièce, elle se pose dans le bois."
+    ],
+    [
+     "relief-usinage.webp",
+     "La médaille des exemples au temps « L'usinage » : les fraises, la finesse et sa durée, les passages sur la 3D."
+    ]
+   ]
+  },
+  {
+   "date": "2026-11-23",
+   "titre": "Le laser et le circuit imprimé, la mise à jour en un clic, et douze petits gestes",
+   "points": [
+    "Mise à jour en un clic : « VerdierCAM 1.x.y est disponible », [Mettre à jour] [Plus tard]. Le paquet se télécharge, sa signature se vérifie, puis « Redémarrer maintenant » — grisé tant que la machine travaille. La nouvelle version rouvre le même document, dans le même atelier.",
+    "Sans Internet : Aide › « Installer une version depuis un fichier… », ou le paquet glissé sur la fenêtre depuis une clé USB. Et si la nouvelle déçoit, Aide › « Revenir à la 1.1.2… » (le numéro de celle d'avant) la remet.",
+    "Le module laser sort de l'expérimental : le sélecteur Fraisage | Laser est là pour tous, Débutant compris. Le Guide mène du laser neuf à la première gravure ; « Poser la mire de kerf » pour qui découpe.",
+    "L'atelier Circuit imprimé, en Pro : le ZIP de fabrication de votre logiciel de circuit, lu tel quel. La pointe en V isole les pistes (ce qu'elle ne passe pas est cerclé de rouge), les forets percent, la fraise détoure avec quatre ponts ; le double face se cale sur des goupilles. Un exemple pour essayer : un clavier de douze touches.",
+    "Reprendre un post-processeur : Machine › « Reprendre un post-processeur… » lit un fichier .pp, ou un G-code qui a déjà tourné sur votre machine. La carte est reconnue, le compte rendu dit ce qui est repris et ce qui est laissé de côté, et « Créer la machine » en fait une machine de plus.",
+    "Les fraises d'une base Vectric (.vtdb) s'importent dans la bibliothèque : boules, fraises droites, pointes en V, avec leurs régimes.",
+    "Petits gestes : un cadenas entre L et H garde les proportions ; « Choisir les cercles d'un diamètre… » ; « Souder à … mm » proposé quand des bouts restent ouverts ; l'accroche « Centre des formes » ; une forme entière se tire d'un bloc ; le centre de Tourner se tire à la main.",
+    "À l'usinage : « Finir les parois à la cote » au bas de la Poche ; « Commencer en haut » pour le zigzag ; le départ d'un contour posé d'un clic ; « Garder d'office » au clic droit d'un champ, pour que les opérations suivantes naissent avec cette valeur.",
+    "Au Pilotage, la languette replie le G-code et la console, même machine en marche ; une alarme ou un arrêt les font revenir. Sur le dessin, la face du dessous a sa couleur, rose.",
+    "L'accueil n'a plus « Nouvelle pièce » : « Commencer » met le Brut devant quand la pièce est vide."
+   ],
+   "images": [
+    [
+     "circuit-percage.webp",
+     "L'atelier Circuit imprimé sur le clavier d'exemple : un foret par diamètre, les fentes, le détourage, le double face."
+    ]
+   ]
+  },
+  {
+   "date": "2026-11-22",
+   "titre": "La 1.1 commence : la machine choisie dès l'accueil, l'import PDF, et des pièces qui se vérifient",
+   "points": [
+    "« Votre machine » dans l'accueil : au premier lancement, la fenêtre Bienvenue fait choisir la carte de la machine, avec ses courses. Le premier G-code n'est plus refusé tout à la fin, après tout le travail. Et cette fenêtre se voit enfin : elle se refermait toute seule.",
+    "L'import PDF : Fichier › Importer › « Un dessin… » lit les traits d'un PDF, à l'échelle, courbes gardées. Un PDF scanné renvoie à Vectoriser une image.",
+    "La première Simulation d'une pièce montre la pièce finie : on voit tout de suite ce qu'on va obtenir. ▶ repart du brut.",
+    "En Débutant, une gravure en V « Entre les traits » prend d'office le fond plat : plus rien ne reste en relief au milieu.",
+    "Relief : « Raccorder ces formes » monte d'un contour à une forme dessinée dedans — un pied en étoile qui finit en rond —, en pente droite, concave, en doucine, ou lisse, sans arête.",
+    "Le langage des pièces : les côtés nommés (#g.bas, #g.haut…), une pièce qui refuse une mesure impossible et dit pourquoi, des réglages en groupes et en listes, des morceaux partagés entre pièces. Les 155 pièces du catalogue sont rejouées et comparées à chaque changement du logiciel.",
+    "Convertir en Bézier lisse chaque sommet et prend aussi les arcs ; l'onglet Script sort de l'expérimental, en Pro."
+   ]
+  },
+  {
    "date": "2026-11-21",
    "titre": "La 1.0 est prête, et un dessin ou une image démesurés ne font plus tomber VerdierCAM",
    "points": [
     "VerdierCAM 1.0 : le logiciel est arrêté après une dernière relecture complète, tous les défauts trouvés corrigés ; ses 2 148 contrôles passent, et ses règles de sécurité du G-code sont tenues sur 13 918 programmes. Les versions suivantes porteront les numéros 1.0.1, 1.0.2… : des corrections.",
     "Fenêtre de fichiers : l'aperçu d'un dessin ou d'un document se lit à côté, sans figer la fenêtre, et il a ses bornes. Un DXF de 24 Ko aux arcs démesurés figeait « Importer un dessin… » et prenait plus de 3 Go, jusqu'à faire fermer VerdierCAM : il montre son icône, en 0,04 s. Un dessin de 200 000 traits garde une vignette légère, prise dans tout le dessin. Une photo PNG ou BMP qui annonce une taille démesurée n'est plus décodée (54 octets en faisaient prendre 2,7 Go), et la vignette d'un modèle aux très grands triangles s'arrête en 0,4 s sur une icône, là où elle prenait jusqu'à près de deux minutes.",
-    "Import d'un dessin : au-delà de 20 millions de points une fois ses arcs et ses courbes aplatis, un DXF ou un SVG est refusé avant que rien ne soit posé, et le journal dit pourquoi : « Ce dessin donnerait plus de 20 millions de points (des arcs ou des courbes démesurés ?) : il n'est pas importé. » Le refus prend une demi-seconde au plus et presque pas de mémoire, là où ces fichiers prenaient plusieurs Go et faisaient fermer VerdierCAM ; le document ouvert ne bouge pas. Un dessin ordinaire en est loin : un SVG chargé de 6,9 Mo en donne 2,1 millions. En anglais, les messages d'import entourent maintenant le nom du fichier de guillemets anglais."
+    "Import d'un dessin : au-delà de 20 millions de points une fois ses arcs et ses courbes aplatis, un DXF ou un SVG est refusé avant que rien ne soit posé, et le journal dit pourquoi : « Ce dessin donnerait plus de 20 millions de points (des arcs ou des courbes démesurés ?) : il n'est pas importé. » Le refus prend une demi-seconde au plus et presque pas de mémoire, là où ces fichiers prenaient plusieurs Go et faisaient fermer VerdierCAM ; le document ouvert ne bouge pas. Un dessin ordinaire en est loin : un SVG chargé de 6,9 Mo en donne 2,1 millions. En anglais, les messages d'import entourent maintenant le nom du fichier de guillemets anglais.",
+    "Imbriquer sur la plaque est aussi au ruban du Croquis et dans le Brut : la commande n'était qu'au menu Dessin › Répéter, et personne ne la trouvait."
    ]
   },
   {
@@ -814,7 +893,7 @@
     "Usinage : cliquer dans une surface choisit la zone, Ctrl+clic en ajoute ou en retire, puis Poche.",
     "Ouvrir les bords d'une poche posés sur le tour de la pièce : la fraise sort dans le brut.",
     "Import FreeCAD : toute une pièce d'un coup, chaque esquisse à sa place.",
-    "Vue 3D orthographique ou en perspective, aux mêmes touches que FreeCAD.",
+    "Vue 3D orthographique ou en perspective.",
     "Pilotage : grands curseurs d'avance et de broche, et l'ondulation de broche contre le broutement.",
     "Surépaisseur négative, pour une fraise usée ou un ajustement serré.",
     "Aide › Signaler un problème et Aide › Suggérer une idée, captures d'écran comprises."
@@ -824,7 +903,7 @@
    "date": "2026-10-06",
    "titre": "Le croquis en script",
    "points": [
-    "La console construit un croquis entier, et un script façon OpenSCAD (variables, boucles, modules) pilote le dessin.",
+    "La console construit un croquis entier, et un script (variables, boucles, modules) pilote le dessin.",
     "Gravure 2.5D : l'ébauche et la finition ont chacune leur fraise, leur motif et leur angle, et l'ébauche s'arrête à ce que la finition reprendra.",
     "Relief par IA : le sommet du relief n'est plus aplati.",
     "Thème clair, et des infobulles compactes.",
