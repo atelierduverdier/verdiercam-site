@@ -213,9 +213,10 @@ b, strong { font-weight: 600; }
   font-size: .9rem; line-height: 1.35; min-width: 0; }
 .cartouche > p span { display: block; font: 400 .64rem/1.3 var(--mono); letter-spacing: .06em; text-transform: uppercase;
   color: var(--encre-3); margin-bottom: 3px; }
-.cartouche-signe { grid-row: span 3; border-left: 0 !important; border-top: 0 !important; display: grid;
+.cartouche-signe { grid-row: span 4; border-left: 0 !important; border-top: 0 !important; display: grid;
   place-items: center; padding: 10px !important; }
 .cartouche-designation { grid-column: span 2; border-top: 0 !important; font: 600 1.06rem/1.25 var(--titre) !important; }
+.cartouche-large { grid-column: span 2; }   /* une case seule sur sa ligne : les langues vont à côté des systèmes */
 .cartouche-designation span { font-weight: 400; }
 .cartouche b { font-weight: 600; }
 .cartouche .oiseau { width: 64px; height: auto; margin: 0; overflow: visible; }
@@ -236,8 +237,8 @@ b, strong { font-weight: 600; }
   .feuille-reperes { grid-template-columns: repeat(3, 1fr); }
   .feuille-reperes span:nth-child(n + 4) { display: none; }
   .cartouche { grid-template-columns: 72px minmax(0, 1fr); }
-  .cartouche-signe { grid-row: span 5; }
-  .cartouche-designation { grid-column: auto; }
+  .cartouche-signe { grid-row: span 6; }
+  .cartouche-designation, .cartouche-large { grid-column: auto; }
   .cartouche .oiseau { width: 48px; }
   .heros-accueil .heros-texte { padding: 24px 18px; }
 }
