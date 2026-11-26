@@ -22,12 +22,7 @@ reste un.
 
 1. **Déclarer l'activité** « édition et vente de licences de logiciels » comme activité secondaire de
    la micro-entreprise, sur le guichet unique de l'INPI. Faire confirmer la catégorie de cotisations
-   (prestations de services BIC, 21,2 % en 2026, d'après la plupart des guides). **Pas encore fait au 26/11/2026** :
-   la fiche de l'entreprise (data.inpi.fr, SIREN 481 773 240) ne porte que « Activités photographiques », APE 7420Z,
-   nature libérale non réglementée et artisanale, début d'activité le 18/07/2015. À ajouter par une déclaration de
-   modification sur le guichet unique (Christophe crée son compte INPI le 26/11/2026). Dans la même déclaration : l'adresse de
-   l'établissement, encore « Lieu-dit Le Pont » au registre — c'est le même endroit que le 107 rue du mont Flambé du site
-   (Christophe, 26/11/2026) —, et le domicile personnel, pas à jour au registre.
+   (prestations de services BIC, 21,2 % en 2026, d'après la plupart des guides).
 2. ~~**Choisir un médiateur de la consommation**~~ — CM2C, adhésion signée (Christophe, 26/11/2026). La
    plateforme européenne RLL a fermé le 20 juillet 2025 : n'y renvoyer nulle part.
 3. **Remplir `site/editeur.json`** : nom tel qu'au répertoire SIRENE, adresse, téléphone, SIRET.
@@ -64,12 +59,6 @@ feu vert de Christophe. Ce qui demande une clé privée (licences, versions), c'
       pour de vrai : l'essai qui démarre, une licence signée, une licence collée depuis un courriel, la fin d'essai qui
       bloque l'export — sur Linux, Windows et le Pi.
 - [ ] Le lien de paiement Stripe à 59 € (Christophe le regarde dans son tableau de bord).
-- [ ] La déclaration de l'activité (point 1 ci-dessus) : brouillon presque fini le 26/11 au soir sur le guichet unique
-      (activité secondaire « Autres services d'information », forme commerciale, greffe du TCO de Caen ; adresse de
-      l'établissement par décision de la mairie ; verdiercam.fr). Bloqué à l'étape 6 : la correspondance « L'entreprise »
-      n'accepte plus d'adresse depuis l'annulation du déménagement du domicile (qui mettait Neuilly-sur-Marne comme
-      adresse de l'entreprise au récapitulatif). À finir avec « Besoin d'aide ? On vous rappelle ! » ; le domicile, dans
-      une autre déclaration. Puis signature FranceConnect+ et frais de greffe éventuels.
 - [x] Le Comptoir joint au courriel d'une licence neuve les CGV et la licence d'utilisation en PDF (point 7), et refuse
       de l'envoyer s'ils manquent ; pas au renouvellement (Christophe, 26/11/2026 : « Non ne joint pas la licence et
       les conditions de vente ») — Comptoir 0.15.0.
