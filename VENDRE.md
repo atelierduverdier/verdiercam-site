@@ -22,8 +22,10 @@ reste un.
 
 1. **Déclarer l'activité** « édition et vente de licences de logiciels » comme activité secondaire de
    la micro-entreprise, sur le guichet unique de l'INPI. Faire confirmer la catégorie de cotisations
-   (prestations de services BIC, 21,2 % en 2026, d'après la plupart des guides). Le 26/11/2026, Christophe ne savait
-   plus si c'était fait : à vérifier.
+   (prestations de services BIC, 21,2 % en 2026, d'après la plupart des guides). **Pas encore fait au 26/11/2026** :
+   la fiche de l'entreprise (data.inpi.fr, SIREN 481 773 240) ne porte que « Activités photographiques », APE 7420Z,
+   nature libérale non réglementée et artisanale, début d'activité le 18/07/2015. À ajouter par une déclaration de
+   modification sur le guichet unique (Christophe crée son compte INPI le 26/11/2026).
 2. ~~**Choisir un médiateur de la consommation**~~ — CM2C, adhésion signée (Christophe, 26/11/2026). La
    plateforme européenne RLL a fermé le 20 juillet 2025 : n'y renvoyer nulle part.
 3. **Remplir `site/editeur.json`** : nom tel qu'au répertoire SIRENE, adresse, téléphone, SIRET.
