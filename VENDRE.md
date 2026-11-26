@@ -57,9 +57,10 @@ feu vert de Christophe. Ce qui demande une clé privée (licences, versions), c'
 
 **Avant, d'ici le 30 novembre**
 
-- [ ] La 1.2.1 livrée (séance du logiciel), avec la ligne `1.2 2026-11-26` dans `ressources/licence/series.txt`
-      (la 1.2.0 est 6afccc82) : sans elle, sa construction de vente s'arrête.
-- [ ] Ses trois paquets de vente faits (`outils/construire-vente.sh`, arbre propre, pas de « NE PAS PUBLIER ») et essayés
+- [x] La 1.2.1 livrée (séance du logiciel), avec la ligne `1.2 2026-11-26` dans `ressources/licence/series.txt` :
+      commit ba66065e.
+- [ ] Ses trois paquets de vente faits (`outils/construire-vente.sh`, clone propre sur ba66065e : fait le 26/11/2026, posés
+      sur le poste, le PC Windows et le Pi ; « Essai terminé » vérifié sur l'AppImage) et essayés
       pour de vrai : l'essai qui démarre, une licence signée, une licence collée depuis un courriel, la fin d'essai qui
       bloque l'export — sur Linux, Windows et le Pi.
 - [ ] Le lien de paiement Stripe à 59 € (Christophe le regarde dans son tableau de bord).
