@@ -64,7 +64,12 @@ feu vert de Christophe. Ce qui demande une clé privée (licences, versions), c'
       pour de vrai : l'essai qui démarre, une licence signée, une licence collée depuis un courriel, la fin d'essai qui
       bloque l'export — sur Linux, Windows et le Pi.
 - [ ] Le lien de paiement Stripe à 59 € (Christophe le regarde dans son tableau de bord).
-- [ ] La déclaration de l'activité (point 1 ci-dessus), commencée le 26/11 sur le guichet unique, en brouillon.
+- [ ] La déclaration de l'activité (point 1 ci-dessus) : brouillon presque fini le 26/11 au soir sur le guichet unique
+      (activité secondaire « Autres services d'information », forme commerciale, greffe du TCO de Caen ; adresse de
+      l'établissement par décision de la mairie ; verdiercam.fr). Bloqué à l'étape 6 : la correspondance « L'entreprise »
+      n'accepte plus d'adresse depuis l'annulation du déménagement du domicile (qui mettait Neuilly-sur-Marne comme
+      adresse de l'entreprise au récapitulatif). À finir avec « Besoin d'aide ? On vous rappelle ! » ; le domicile, dans
+      une autre déclaration. Puis signature FranceConnect+ et frais de greffe éventuels.
 - [x] Le Comptoir joint au courriel d'une licence neuve les CGV et la licence d'utilisation en PDF (point 7), et refuse
       de l'envoyer s'ils manquent ; pas au renouvellement (Christophe, 26/11/2026 : « Non ne joint pas la licence et
       les conditions de vente ») — Comptoir 0.15.0.
