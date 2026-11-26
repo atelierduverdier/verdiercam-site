@@ -74,6 +74,24 @@ La licence (au nom de l'acheteur, date de fin des mises à jour comparée à la 
 l'essai de quinze jours et la révocation existent depuis le 07/10/2026 : `docs/licence.md` du
 logiciel.
 
+## Une série par an, le 1er décembre (26/11/2026)
+
+Christophe, 26/11/2026 : les nouveautés arrivent dans la série en cours (1.2.1, 1.2.2…), et **une nouvelle série sort
+chaque 1er décembre**, jour anniversaire du lancement : la 1.3.0 le 1er décembre 2027, la 1.4.0 le 1er décembre 2028…
+(« beaucoup de gens m'ont dit ça sera mon cadeau de Noël »). Une série en janvier aurait fait manquer la 1.3 d'un mois
+aux acheteurs de décembre 2026.
+
+La licence le fait sans rien changer au logiciel : une x.y.z compte à la date de la x.y.0 (`docs/licence.md`, « La date
+de la série »), donc une licence ouvre toute série dont la x.y.0 date d'avant la fin de ses mises à jour. Avec une série
+chaque 1er décembre, tout acheteur a la série en cours et la suivante, chacune jusqu'à sa dernière version : entre un et
+deux ans de nouveautés. Les conditions de vente (article 3) et la licence d'utilisation (article 2) disent la règle de
+la série, sans calendrier ; le 1er décembre n'est que sur l'accueil et la page Acheter : une série en retard de quelques
+jours n'est pas un manquement au contrat.
+
+**Le piège : commiter la x.y.0 au plus tard le 30 novembre**, la publier le 1er décembre. Elle compte à la date de son
+commit (`series.txt`), et `licence.py signer` compte 365 jours, pas une année : une licence achetée le 1er décembre 2027
+finit le 30 novembre 2028 (2028 est bissextile). Une 1.4.0 commitée le 1er décembre 2028 manquerait à cet acheteur.
+
 ## Annoncer une nouvelle version (07/10/2026)
 
 Le logiciel lit au lancement `https://verdiercam.fr/version.json` et montre sa version en **vert** (à jour) ou en
