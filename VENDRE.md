@@ -64,8 +64,9 @@ feu vert de Christophe. Ce qui demande une clé privée (licences, versions), c'
       bloque l'export — sur Linux, Windows et le Pi.
 - [ ] Le lien de paiement Stripe à 59 € (Christophe le regarde dans son tableau de bord).
 - [ ] La déclaration de l'activité (point 1 ci-dessus), commencée le 26/11 sur le guichet unique, en brouillon.
-- [ ] Le Comptoir joint au courriel de licence les CGV et la licence d'utilisation en PDF (point 7) : il ne le fait pas
-      au 26/11/2026 (il ajoute bien la confirmation de renonciation).
+- [x] Le Comptoir joint au courriel d'une licence neuve les CGV et la licence d'utilisation en PDF (point 7), et refuse
+      de l'envoyer s'ils manquent ; pas au renouvellement (Christophe, 26/11/2026 : « Non ne joint pas la licence et
+      les conditions de vente ») — Comptoir 0.15.0.
 
 **Le jour même**
 
@@ -74,17 +75,15 @@ feu vert de Christophe. Ce qui demande une clé privée (licences, versions), c'
 2. **Christophe** signe les trois paquets, dans le dépôt du logiciel :
    `python3 outils/versions.py signer-paquet dist/VerdierCAM-1.2.1-<machine>.<ext> --date <date de la 1.2.1>`
    (`linux-x86_64.tar.gz`, `windows-x64.zip`, `linux-aarch64.tar.gz`) ; `verifier-paquet` les relit.
-3. Le Comptoir, onglet Versions, **« Publier »** : la publication `v1.2.1` de `verdiercam-archives`, Linux et Windows
-   sous leurs noms fixes. Puis le Pi, que le Comptoir ne publie pas encore, ajouté à la même publication sous son nom
-   fixe : `cp dist/VerdierCAM-1.2.1-linux-aarch64.tar.gz <dossier jetable>/VerdierCAM-linux-aarch64.tar.gz`, puis
-   `gh release upload v1.2.1 <dossier jetable>/VerdierCAM-linux-aarch64.tar.gz --repo atelierduverdier/verdiercam-archives`.
+3. Le Comptoir, onglet Versions, **« Publier »** : la publication `v1.2.1` de `verdiercam-archives`, Linux, Windows et
+   le Pi sous leurs noms fixes (Comptoir 0.15.0).
 4. **Christophe** signe la liste des versions (`liste.json` : `serie` 1, la 1.2.1, ses notes en français et en anglais,
    ses trois paquets avec `"fichier": "dist/…"` et leur adresse dans `verdiercam-archives`) :
    `python3 outils/versions.py signer liste.json -o ~/Projets/site/Site_VerdierCAM/site/versions-signees.txt`.
 5. `"vente_ouverte": true` dans `site/editeur.json` ; commiter `editeur.json` et `versions-signees.txt`.
-6. Le Comptoir, **« Annoncer »** : `site/version-publiee.json` à la 1.2.1 (date du jour), commité, poussé, le site
-   republié. Le Pi n'y est pas (le Comptoir n'écrit que `"linux"` et `"windows"`) : ajouter `"linux-aarch64"` à la main
-   et republier (`python3 site/publier.py`) — tous les Pi sont au-delà de la 1.0.1.
+6. Le Comptoir, **« Annoncer »** : `site/version-publiee.json` à la 1.2.1 (date du jour, `"linux"`, `"linux-aarch64"`,
+   `"windows"` et `"date_licence"` de la série — Comptoir 0.15.0), commité, poussé, le site republié. Tous les Pi sont
+   au-delà de la 1.0.1.
 7. Vérifier en ligne : Acheter, Conditions de vente et Licence répondent ; les trois boutons de la page Installer
    téléchargent ; `version.json` dit 1.2.1 ; un paiement va jusqu'au bout (puis remboursé), et son courriel arrive.
 
@@ -187,10 +186,9 @@ Dans l'ordre, pour qu'aucun lien ne vise un fichier absent :
 
 1. `outils/construire-vente.sh` dans le dépôt du logiciel, **arbre propre** (`git status` vide : un paquet
    emporte tout `ressources/`, fichiers non commités compris) — « NE PAS PUBLIER » s'il le dit.
-2. La publication `v<version>` de `verdiercam-archives` : le Comptoir, onglet Versions, « Publier » (Linux et Windows sous
-   leurs noms fixes), puis le Pi à la main sous `VerdierCAM-linux-aarch64.tar.gz` (`gh release upload`).
-3. `site/version-publiee.json` à cette version : le Comptoir, « Annoncer » (il commite, pousse et republie), puis
-   `"linux-aarch64"` ajouté à la main.
+2. La publication `v<version>` de `verdiercam-archives` : le Comptoir, onglet Versions, « Publier » (Linux, Windows et le
+   Pi sous leurs noms fixes).
+3. `site/version-publiee.json` à cette version : le Comptoir, « Annoncer » (il commite, pousse et republie).
 
 ### Avec la mise à jour en un clic (23/11/2026, dès la version qui porte la boîte)
 
