@@ -25,7 +25,9 @@ reste un.
    (prestations de services BIC, 21,2 % en 2026, d'après la plupart des guides). **Pas encore fait au 26/11/2026** :
    la fiche de l'entreprise (data.inpi.fr, SIREN 481 773 240) ne porte que « Activités photographiques », APE 7420Z,
    nature libérale non réglementée et artisanale, début d'activité le 18/07/2015. À ajouter par une déclaration de
-   modification sur le guichet unique (Christophe crée son compte INPI le 26/11/2026).
+   modification sur le guichet unique (Christophe crée son compte INPI le 26/11/2026). Dans la même déclaration : l'adresse de
+   l'établissement, encore « Lieu-dit Le Pont » au registre — c'est le même endroit que le 107 rue du mont Flambé du site
+   (Christophe, 26/11/2026) —, et le domicile personnel, pas à jour au registre.
 2. ~~**Choisir un médiateur de la consommation**~~ — CM2C, adhésion signée (Christophe, 26/11/2026). La
    plateforme européenne RLL a fermé le 20 juillet 2025 : n'y renvoyer nulle part.
 3. **Remplir `site/editeur.json`** : nom tel qu'au répertoire SIRENE, adresse, téléphone, SIRET.
@@ -35,17 +37,58 @@ reste un.
    03/11/2026 : « il n'y a pas de limite »).
 5. ~~**Régler la page de paiement**~~ — fait le 15/10/2026 (ci-dessous) ; son adresse de production va
    dans `lien_paiement`.
-6. **Héberger les paquets** : les **Releases** de ce dépôt (public), `releases/latest`, où pointent le
-   courriel de livraison et la page Installer. Les paquets de vente (`outils/construire-vente.sh` du
-   logiciel : Linux, Windows, Raspberry Pi 5) ne se publient qu'à l'ouverture.
+6. **Héberger les paquets** : les publications du dépôt public **`atelierduverdier/verdiercam-archives`**, celui du
+   Comptoir (Christophe, 26/11/2026 : « verdiercam-archives »), sous des **noms fixes** (`VerdierCAM-linux-x86_64.tar.gz`,
+   `VerdierCAM-windows-x64.zip`, `VerdierCAM-linux-aarch64.tar.gz`) ; le courriel de licence du Comptoir mène à
+   `releases/latest`, la page Installer à `releases/download/v<version>/…`. Les paquets de vente
+   (`outils/construire-vente.sh` du logiciel : Linux, Windows, Raspberry Pi 5) ne se publient qu'à l'ouverture.
 7. **Les CGV et la licence d'utilisation en PDF**, datées du jour de l'ouverture : jointes à chaque
    courriel de livraison (la confirmation sur support durable « reprend ces conditions », art. L221-13).
    `outils/conditions-pdf.sh` les imprime (WeasyPrint) d'une copie du site engendrée vente ouverte, dans
    `~/Documents/VerdierCAM-vente/` : à relancer chaque fois que `date_conditions` change.
-8. **Ouvrir** : `date_conditions` à jour, puis `outils/conditions-pdf.sh`, la Release (« Publier une
-   version » ci-dessous), `vente_ouverte` à `true`, `python3 site/publier.py`.
+8. **Ouvrir** : « Le jour de l'ouverture », ci-dessous.
 9. **Suivre le total** des ventes à des particuliers des autres pays de l'UE : au-delà de 10 000 €
    par an, la TVA du pays de l'acheteur est due (guichet OSS), même en franchise.
+
+## Le jour de l'ouverture : le 1er décembre 2026, dans l'ordre (écrit le 26/11/2026)
+
+Le téléchargement et l'achat arrivent ENSEMBLE : rien de ce qui suit ne part en ligne avant le 1er décembre, ni sans le
+feu vert de Christophe. Ce qui demande une clé privée (licences, versions), c'est Christophe qui le lance, sur ce poste.
+
+**Avant, d'ici le 30 novembre**
+
+- [ ] La 1.2.1 livrée (séance du logiciel), avec la ligne `1.2 2026-11-26` dans `ressources/licence/series.txt`
+      (la 1.2.0 est 6afccc82) : sans elle, sa construction de vente s'arrête.
+- [ ] Ses trois paquets de vente faits (`outils/construire-vente.sh`, arbre propre, pas de « NE PAS PUBLIER ») et essayés
+      pour de vrai : l'essai qui démarre, une licence signée, une licence collée depuis un courriel, la fin d'essai qui
+      bloque l'export — sur Linux, Windows et le Pi.
+- [ ] Le lien de paiement Stripe à 59 € (Christophe le regarde dans son tableau de bord).
+- [ ] La déclaration de l'activité (point 1 ci-dessus), commencée le 26/11 sur le guichet unique, en brouillon.
+- [ ] Le Comptoir joint au courriel de licence les CGV et la licence d'utilisation en PDF (point 7) : il ne le fait pas
+      au 26/11/2026 (il ajoute bien la confirmation de renonciation).
+
+**Le jour même**
+
+1. `site/editeur.json` : `"date_conditions": "1er décembre 2026"`, puis `outils/conditions-pdf.sh` : les deux PDF datés
+   dans `~/Documents/VerdierCAM-vente/`.
+2. **Christophe** signe les trois paquets, dans le dépôt du logiciel :
+   `python3 outils/versions.py signer-paquet dist/VerdierCAM-1.2.1-<machine>.<ext> --date <date de la 1.2.1>`
+   (`linux-x86_64.tar.gz`, `windows-x64.zip`, `linux-aarch64.tar.gz`) ; `verifier-paquet` les relit.
+3. Le Comptoir, onglet Versions, **« Publier »** : la publication `v1.2.1` de `verdiercam-archives`, Linux et Windows
+   sous leurs noms fixes. Puis le Pi, que le Comptoir ne publie pas encore, ajouté à la même publication sous son nom
+   fixe : `cp dist/VerdierCAM-1.2.1-linux-aarch64.tar.gz <dossier jetable>/VerdierCAM-linux-aarch64.tar.gz`, puis
+   `gh release upload v1.2.1 <dossier jetable>/VerdierCAM-linux-aarch64.tar.gz --repo atelierduverdier/verdiercam-archives`.
+4. **Christophe** signe la liste des versions (`liste.json` : `serie` 1, la 1.2.1, ses notes en français et en anglais,
+   ses trois paquets avec `"fichier": "dist/…"` et leur adresse dans `verdiercam-archives`) :
+   `python3 outils/versions.py signer liste.json -o ~/Projets/site/Site_VerdierCAM/site/versions-signees.txt`.
+5. `"vente_ouverte": true` dans `site/editeur.json` ; commiter `editeur.json` et `versions-signees.txt`.
+6. Le Comptoir, **« Annoncer »** : `site/version-publiee.json` à la 1.2.1 (date du jour), commité, poussé, le site
+   republié. Le Pi n'y est pas (le Comptoir n'écrit que `"linux"` et `"windows"`) : ajouter `"linux-aarch64"` à la main
+   et republier (`python3 site/publier.py`) — tous les Pi sont au-delà de la 1.0.1.
+7. Vérifier en ligne : Acheter, Conditions de vente et Licence répondent ; les trois boutons de la page Installer
+   téléchargent ; `version.json` dit 1.2.1 ; un paiement va jusqu'au bout (puis remboursé), et son courriel arrive.
+
+Le 1er janvier 2027 : le prix passe à 79 € (point 4).
 
 ## La page de paiement : là où se garde la preuve
 
@@ -133,19 +176,21 @@ dans le dépôt du logiciel : sans elle, la construction de vente des x.y.z suiv
 ## Publier une version (15/10/2026)
 
 Vente ouverte, la page Installer montre trois boutons (bloc `<!--vente-->`) qui visent les paquets de la
-version **du manifeste** (`{{verdiercam.publiee}}`, lu dans `site/version-publiee.json`) :
+version **du manifeste** (`{{verdiercam.publiee}}`, lu dans `site/version-publiee.json`), dans le dépôt du Comptoir et sous
+leurs noms fixes (26/11/2026 ; jusque-là, ce dépôt-ci et les noms de `dist/`) :
 
-    https://github.com/atelierduverdier/verdiercam-site/releases/download/v<version>/VerdierCAM-<version>-linux-x86_64.tar.gz
-                                                                          …/VerdierCAM-<version>-windows-x64.zip
-                                                                          …/VerdierCAM-<version>-linux-aarch64.tar.gz
+    https://github.com/atelierduverdier/verdiercam-archives/releases/download/v<version>/VerdierCAM-linux-x86_64.tar.gz
+                                                                               …/VerdierCAM-windows-x64.zip
+                                                                               …/VerdierCAM-linux-aarch64.tar.gz
 
 Dans l'ordre, pour qu'aucun lien ne vise un fichier absent :
 
 1. `outils/construire-vente.sh` dans le dépôt du logiciel, **arbre propre** (`git status` vide : un paquet
    emporte tout `ressources/`, fichiers non commités compris) — « NE PAS PUBLIER » s'il le dit.
-2. La Release `v<version>` de ce dépôt, ses trois fichiers sous leur nom de `dist/` :
-   `gh release create v<version> --repo atelierduverdier/verdiercam-site --title "VerdierCAM <version>" <les trois>`.
-3. `site/version-publiee.json` à cette version, puis `python3 site/publier.py`.
+2. La publication `v<version>` de `verdiercam-archives` : le Comptoir, onglet Versions, « Publier » (Linux et Windows sous
+   leurs noms fixes), puis le Pi à la main sous `VerdierCAM-linux-aarch64.tar.gz` (`gh release upload`).
+3. `site/version-publiee.json` à cette version : le Comptoir, « Annoncer » (il commite, pousse et republie), puis
+   `"linux-aarch64"` ajouté à la main.
 
 ### Avec la mise à jour en un clic (23/11/2026, dès la version qui porte la boîte)
 
