@@ -88,10 +88,10 @@ invisibles après un saut d'ancre) et, passé deux secondes, tout se montre quoi
 `monteur.html` présente le **Monteur VerdierCAM**, le monteur vidéo donné avec VerdierCAM. L'accueil y mène par sa section `#monteur`, entre `<!--monteur-->` et `<!--/monteur-->`. C'est un logiciel libre
 (GPL), dans son propre dépôt (`~/Projets/logiciels/monteur-rs`). Sa version est lue dans `crates/appli/Cargo.toml` :
 c'est `{{verdiercam.monteur}}`. Ses boutons visent les paquets de la Release `v<version>` de
-`atelierduverdier/monteur-rs`.
+`atelierduverdier/monteur-verdiercam` (le dépôt public, renommé le 26/11/2026 ; le dossier local garde le nom `monteur-rs`).
 
 La page, la section de l'accueil et le lien en pied de page ne partent en ligne que si `site/editeur.json` dit `"monteur_publie": true`.
-Tant que le dépôt est privé, ses liens ne mèneraient nulle part. Pour la voir dans l'aperçu sans la publier :
+Tant que le dépôt n'a pas de Release, ses liens ne mèneraient nulle part. Pour la voir dans l'aperçu sans la publier :
 
 ```bash
 VCAM_APERCU_MONTEUR=1 python3 site/generer.py
@@ -101,10 +101,9 @@ VCAM_APERCU_MONTEUR=1 python3 site/generer.py
 
 Le jour où on le donne :
 1. Construire ses paquets, dans son dépôt : `outils/construire-windows.sh` et `outils/construire-linux.sh`.
-2. Rendre public `atelierduverdier/monteur-rs`.
-3. Créer sa Release avec les deux paquets :
-   `gh release create v<version> dist/Monteur-VerdierCAM-<version>-windows-x64.zip dist/Monteur-VerdierCAM-<version>-linux-x86_64.AppImage --repo atelierduverdier/monteur-rs`.
-4. Mettre `"monteur_publie": true` dans `site/editeur.json`, puis `python3 site/publier.py`.
+2. Créer sa Release avec les deux paquets (le dépôt est public depuis le 26/11/2026) :
+   `gh release create v<version> dist/Monteur-VerdierCAM-<version>-windows-x64.zip dist/Monteur-VerdierCAM-<version>-linux-x86_64.AppImage --repo atelierduverdier/monteur-verdiercam`.
+3. Mettre `"monteur_publie": true` dans `site/editeur.json`, puis `python3 site/publier.py`.
 
 ## Le domaine
 
