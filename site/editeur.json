@@ -1,7 +1,7 @@
 {
   "_lisezmoi": "Les informations de l'éditeur, injectées dans les pages légales ({{editeur.xxx}}). Un champ vide s'affiche « À REMPLIR » dans l'aperçu, et publier.py REFUSE d'envoyer le site tant qu'il en reste un. À remplir par Christophe : nom tel qu'il figure au répertoire SIRENE, adresse de l'entreprise, SIRET, médiateur de la consommation choisi, lien de paiement (Stripe ou autre). « date_sortie » : la date annoncée de la sortie de la 1.0, à l'accueil (03/11/2026, Christophe : « mets la date du 1 décembre »). « vente_ouverte » : false tant qu'on ne vend pas — les pages Acheter, Conditions de vente et Licence ne sont alors pas publiées, ni le médiateur (obligatoire seulement pour vendre). « monteur_publie » : false tant que le Monteur VerdierCAM n'est pas donné — sa page monteur.html et son lien en pied de page ne sont alors pas publiés (son dépôt public et sa Release d'abord : README.md, « Le Monteur »).",
   "vente_ouverte": false,
-  "monteur_publie": false,
+  "monteur_publie": true,
   "nom": "VERDIER Christophe",
   "adresse": "107 rue du mont Flambé 14400 Crouay",
   "email": "contact@verdiercam.fr",
