@@ -1,8 +1,8 @@
 # Vendre VerdierCAM — ce que le site fait, et ce qu'il reste à régler ailleurs
 
-Écrit le 6 octobre 2026. Les pages légales sont **à faire relire** (avocat, ou au moins le service
-juridique d'une CCI / CMA) avant la première vente : elles suivent le code de la consommation, mais
-personne de qualifié ne les a encore lues.
+Écrit le 6 octobre 2026. Les pages légales **ont été relues** par quelqu'un de qualifié (Christophe, 26/11/2026).
+La règle des séries (conditions de vente, article 3 ; licence, article 2), écrite le 26/11/2026, est venue après cette
+relecture.
 
 ## Ce qui est dans le site
 
@@ -22,9 +22,9 @@ reste un.
 
 1. **Déclarer l'activité** « édition et vente de licences de logiciels » comme activité secondaire de
    la micro-entreprise, sur le guichet unique de l'INPI. Faire confirmer la catégorie de cotisations
-   (prestations de services BIC, 21,2 % en 2026, d'après la plupart des guides).
-2. **Choisir un médiateur de la consommation** (obligatoire, même en micro-entreprise ; quelques
-   dizaines d'euros par an) et remplir `mediateur_nom`, `mediateur_adresse`, `mediateur_site`. La
+   (prestations de services BIC, 21,2 % en 2026, d'après la plupart des guides). Le 26/11/2026, Christophe ne savait
+   plus si c'était fait : à vérifier.
+2. ~~**Choisir un médiateur de la consommation**~~ — CM2C, adhésion signée (Christophe, 26/11/2026). La
    plateforme européenne RLL a fermé le 20 juillet 2025 : n'y renvoyer nulle part.
 3. **Remplir `site/editeur.json`** : nom tel qu'au répertoire SIRENE, adresse, téléphone, SIRET.
 4. Les prix sont décidés (Christophe, 05/11/2026) : **59 € du 1er au 31 décembre 2026, 79 € à partir de
@@ -117,6 +117,8 @@ jusqu'à la 1.0.1, VerdierCAM prenait `"linux"` aussi sur le Pi, et y aurait té
 pas. Depuis la correction (verdiercam-imgui, `scene::PaquetPour`), le Pi ne lit que `"linux-aarch64"`. Tant qu'un Pi
 tourne encore en 1.0.0 ou 1.0.1 (celui de l'atelier, ceux des testeurs), ne pas mettre `"linux"` dans le manifeste : le
 passer d'abord à une version corrigée. Le Comptoir annonce `"linux"` (le PC) et `"windows"`, pas encore le Pi.
+**Le 26/11/2026, Christophe : tous les Pi (atelier, testeurs) sont au-delà de la 1.0.1** — le manifeste de la vente peut
+porter les trois clés.
 
 **`date_licence` : pour une version corrective (22/11/2026, Christophe : « Date de la x.y.0 »).** Une x.y.z (z > 0) compte
 pour la licence à la date de la x.y.0 de sa série (verdiercam-imgui, `ressources/licence/series.txt`) : les conditions de
