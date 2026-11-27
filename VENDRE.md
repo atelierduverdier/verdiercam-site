@@ -53,9 +53,10 @@ feu vert de Christophe. Ce qui demande une clé privée (licences, versions), c'
 **Avant, d'ici le 30 novembre**
 
 - [x] La 1.2.1 livrée (séance du logiciel), avec la ligne `1.2 2026-11-26` dans `ressources/licence/series.txt` :
-      commit ba66065e. Puis la **1.2.2**, livraison du soir du 26/11 (e4e4c41d) : c'est ELLE qui ouvre la vente.
-- [ ] Ses trois paquets de vente faits (`outils/construire-vente.sh` ; ceux de la 1.2.2 dans `dist/`, faits le 26/11 au soir, posés
-      sur le poste, le PC Windows et le Pi ; « Essai terminé » vérifié sur l'AppImage) et essayés
+      commit ba66065e. Puis la 1.2.2, livraison du soir du 26/11 (e4e4c41d), et la **1.2.3**, livraison du 27/11 (db901126) :
+      c'est ELLE qui ouvre la vente.
+- [ ] Ses trois paquets de vente faits (`outils/construire-vente.sh` ; ceux de la 1.2.3 dans `dist/`, faits le 27/11 ; posés
+      sur le poste ; le PC Windows et le Pi, éteints, à leur prochain allumage ; « Essai terminé » vérifié sur l'AppImage) et essayés
       pour de vrai : l'essai qui démarre, une licence signée, une licence collée depuis un courriel, la fin d'essai qui
       bloque l'export — sur Linux, Windows et le Pi.
 - [ ] Le lien de paiement Stripe à 59 € (Christophe le regarde dans son tableau de bord).
@@ -68,19 +69,19 @@ feu vert de Christophe. Ce qui demande une clé privée (licences, versions), c'
 1. `site/editeur.json` : `"date_conditions": "1er décembre 2026"`, puis `outils/conditions-pdf.sh` : les deux PDF datés
    dans `~/Documents/VerdierCAM-vente/`.
 2. **Christophe** signe les trois paquets, dans le dépôt du logiciel :
-   `python3 outils/versions.py signer-paquet dist/VerdierCAM-1.2.2-<machine>.<ext> --date <date de la 1.2.2>`
+   `python3 outils/versions.py signer-paquet dist/VerdierCAM-1.2.3-<machine>.<ext> --date <date de la 1.2.3>`
    (`linux-x86_64.tar.gz`, `windows-x64.zip`, `linux-aarch64.tar.gz`) ; `verifier-paquet` les relit.
-3. Le Comptoir, onglet Versions, **« Publier »** : la publication `v1.2.2` de `verdiercam-archives`, Linux, Windows et
+3. Le Comptoir, onglet Versions, **« Publier »** : la publication `v1.2.3` de `verdiercam-archives`, Linux, Windows et
    le Pi sous leurs noms fixes (Comptoir 0.15.0).
-4. **Christophe** signe la liste des versions (`liste.json` : `serie` 1, la 1.2.2, ses notes en français et en anglais,
+4. **Christophe** signe la liste des versions (`liste.json` : `serie` 1, la 1.2.3, ses notes en français et en anglais,
    ses trois paquets avec `"fichier": "dist/…"` et leur adresse dans `verdiercam-archives`) :
    `python3 outils/versions.py signer liste.json -o ~/Projets/site/Site_VerdierCAM/site/versions-signees.txt`.
 5. `"vente_ouverte": true` dans `site/editeur.json` ; commiter `editeur.json` et `versions-signees.txt`.
-6. Le Comptoir, **« Annoncer »** : `site/version-publiee.json` à la 1.2.2 (date du jour, `"linux"`, `"linux-aarch64"`,
+6. Le Comptoir, **« Annoncer »** : `site/version-publiee.json` à la 1.2.3 (date du jour, `"linux"`, `"linux-aarch64"`,
    `"windows"` et `"date_licence"` de la série — Comptoir 0.15.0), commité, poussé, le site republié. Tous les Pi sont
    au-delà de la 1.0.1.
 7. Vérifier en ligne : Acheter, Conditions de vente et Licence répondent ; les trois boutons de la page Installer
-   téléchargent ; `version.json` dit 1.2.2 ; un paiement va jusqu'au bout (puis remboursé), et son courriel arrive.
+   téléchargent ; `version.json` dit 1.2.3 ; un paiement va jusqu'au bout (puis remboursé), et son courriel arrive.
 
 Le 1er janvier 2027 : le prix passe à 79 € (point 4).
 
