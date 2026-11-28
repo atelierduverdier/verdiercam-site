@@ -1,0 +1,55 @@
+// PORTE-ROULEAU D'ESSUIE-TOUT — le socle rond et son mât en croix, que le rouleau enfile. Trois pièces : le socle, deux
+// lames croisées à mi-bois qui font le mât ; la première traverse le socle par un tenon.
+// thème : Cuisine
+//
+// LE MÂT : deux LAMES de `largeur_mat` × `hauteur`, croisées à mi-bois (la première fendue par le haut, la seconde par le
+// bas, jusqu'à mi-hauteur, de l'épaisseur plus le `jeu` de chaque côté) : vue de dessus, une croix qui tient dans le
+// carton du rouleau (Ø`d_carton`). La première porte en bas un TENON, épaulé de 6 de chaque côté, qui traverse le SOCLE
+// (Ø`d_socle`) ; la seconde pose sur le socle. Les bouts du haut sont chanfreinés, le rouleau s'enfile tout seul.
+//
+// L'USINAGE : la mortaise (Contour intérieur, coins dégagés), puis le socle et les lames (Contour extérieur, coins dégagés,
+// onglets). Hêtre ou chêne de 12 ; un feutre sous le socle.
+
+hauteur    = 300;    // hauteur du mât au-dessus du socle (mm)
+largeur_mat = 36;    // largeur d'une lame du mât (mm)
+d_carton   = 42;     // Ø intérieur du carton du rouleau (mm)
+d_socle    = 160;    // Ø du socle (mm)
+jeu        = 0.1;    // jeu des fentes et du tenon, par côté (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  H = hauteur;  wm = largeur_mat;  w = ep + 2 * jeu;  wt = wm - 12;
+ch = 6;                                        // le chanfrein du haut
+si (wm > d_carton - 4)
+    echo("Le mât est plus large que le carton du rouleau : des lames plus étroites.");
+si (d_socle < 2.5 * d_carton)
+    echo("Le socle est petit : le rouleau plein le ferait basculer.");
+planche([d_socle + espace + 2 * (wm + espace) + 2 * rognure, max(d_socle, H + ep) + 2 * rognure, epaisseur]);
+
+// ── Le socle et sa mortaise ──
+c = [rognure + d_socle / 2, rognure + d_socle / 2];
+s = cercle(c, d_socle / 2);
+nommer(#s, "socle");
+m = rect(c - [wt / 2 + jeu, ep / 2 + jeu], [wt + 2 * jeu, ep + 2 * jeu]);
+nommer(#m, "mortaise");
+
+// ── Les lames, debout : la première (tenon en bas, fendue par le haut), la seconde (fendue par le bas) ──
+x1 = rognure + d_socle + espace;
+o1 = [x1, rognure];
+a = polyligne([o1 + [6, 0], o1 + [6 + wt, 0], o1 + [6 + wt, ep], o1 + [wm, ep], o1 + [wm, ep + H - ch], o1 + [wm - ch, ep + H],
+               o1 + [wm / 2 + w / 2, ep + H], o1 + [wm / 2 + w / 2, ep + H / 2], o1 + [wm / 2 - w / 2, ep + H / 2],
+               o1 + [wm / 2 - w / 2, ep + H], o1 + [ch, ep + H], o1 + [0, ep + H - ch], o1 + [0, ep], o1 + [6, ep]], fermee = vrai);
+nommer(#a, "lame");
+o2 = [x1 + wm + espace, rognure + ep];
+b = polyligne([o2, o2 + [wm / 2 - w / 2, 0], o2 + [wm / 2 - w / 2, H / 2], o2 + [wm / 2 + w / 2, H / 2], o2 + [wm / 2 + w / 2, 0],
+               o2 + [wm, 0], o2 + [wm, H - ch], o2 + [wm - ch, H], o2 + [ch, H], o2 + [0, H - ch]], fermee = vrai);
+nommer(#b, "lame");
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaise");
+usinage("contour", "lame", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 2, nom = "Lames du mât");
+usinage("contour", "socle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Socle");

@@ -1,0 +1,43 @@
+/* =========================================================================
+   configurateur.css — la surcouche « plan » du configurateur de pièces
+   =========================================================================
+   Le configurateur vient du dépôt du logiciel (web/configurateur), avec sa
+   feuille ; le site le recopie sous /configurateur/ et pose CETTE feuille
+   après la sienne (generer.py) : les polices du site, l'encre noire, les
+   cadres au trait, sans arrondi ni ombre (le style « plan », 20/11/2026).
+   La vue 3D garde ses couleurs : elles sont dans son script.
+   ========================================================================= */
+
+@font-face { font-family: "IBM Plex Sans"; font-weight: 400; font-display: swap; src: url("/polices/IBMPlexSans-Regular.06cf99ce.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 600; font-display: swap; src: url("/polices/IBMPlexSans-SemiBold.b114e898.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Sans Condensed"; font-weight: 600; font-display: swap; src: url("/polices/IBMPlexSansCondensed-SemiBold.acc95e7b.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 400; font-display: swap; src: url("/polices/IBMPlexMono-Regular.72439fad.woff2") format("woff2"); }
+
+:root {
+  --orange: #ff6d00; --orange-fonce: #b54a00; --orange-pale: #fff1e6;
+  --encre: #111111; --encre-douce: #5e5e5e;
+  --fond: #ffffff; --carte: #ffffff; --bord: #111111; --rayon: 0;
+}
+*, *::before, *::after { border-radius: 0 !important; box-shadow: none !important; }
+
+body { font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  background-image: linear-gradient(#ececec 1px, transparent 1px), linear-gradient(90deg, #ececec 1px, transparent 1px);
+  background-size: 24px 24px; }
+.entete { border-bottom: 1px solid var(--encre); }
+.marque span { font: 600 1.28rem "IBM Plex Sans Condensed", "Arial Narrow", sans-serif; }
+.entete h1 { font-family: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif; font-size: 1.2rem; color: var(--encre-douce); }
+.champ .nom, .script-texte { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+select, input[type="text"] { border-color: #a8a8a8; }
+.cadre { border-color: #d4d4d4; }
+
+button:hover:not(:disabled) { background: #f4f4f2; }
+button.principal { border-color: var(--encre); }
+button.principal:hover:not(:disabled) { background: #ff8a2b; border-color: var(--encre); color: var(--encre); }
+.onglet.actif, .onglet.actif:hover:not(:disabled) { background: var(--encre); color: #fff; }
+
+/* Les encadrés : un cadre entier plutôt qu'un liseré à gauche. */
+.erreur { border: 1px solid var(--erreur); }
+.usinage-liste li { border: 1px solid var(--encre); background: var(--carte); }
+.script { border-color: var(--encre); }
+.script-texte { background: #f4f4f2; border-top-color: #d4d4d4; }
+@media (max-width: 760px) { .apercu { border-bottom: 1px solid var(--encre); } }

@@ -1,0 +1,51 @@
+// PANNEAU PLISSÉ — des zigzags gravés à la fraise en V dont la profondeur ondule et s'inverse d'une rangée à l'autre :
+// une arête sur deux haute puis basse, les plis se versent, et le bois a l'air d'un tissu plié en trois dimensions.
+// thème : Décoration et cadeaux
+//
+// LE MOTIF : des zigzags horizontaux (une pointe basse et une pointe haute par « periode »), à l'écart régulier en
+// hauteur. Le long de chaque zigzag, la profondeur suit une vague d'une période : sur une rangée, au plus creux aux
+// pointes basses ; sur la suivante, aux pointes hautes — sans ce décalage d'une demi-vague, ce ne seraient que des
+// chevrons plats. Pour l'obtenir sans réglage de plus, une rangée sur deux est gravée de droite à gauche, et la période
+// est ajustée pour que la largeur du panneau en compte un nombre entier. La profondeur mini fait se rejoindre deux
+// rangées voisines en crête vive : écart / (2 × tan(angle / 2)), et 2 % de plus. Motif imaginé par Fable (Claude) le
+// 01/11/2026.
+//
+// L'USINAGE : une seule fraise en V, une opération. Fraise conseillée : une V à 90°. La V 90° Ø6 de la bibliothèque
+// d'office creuse 2,75 mm au plus : le pli y est léger. Avec une grande V 90° Ø32 : écart 6, période 30, hauteur 8,
+// versant 2,9 (6 mm au plus creux) — donner son nom dans « fraise ».
+
+largeur   = 150;   // largeur du panneau (mm)
+hauteur   = 150;   // hauteur du panneau (mm)
+epaisseur = 18;    // épaisseur du panneau (mm)
+periode   = 20;    // longueur d'un zigzag, d'une pointe basse à la suivante (mm), ajustée à la largeur [4:200]
+pointe    = 5;     // hauteur d'une pointe, de part et d'autre de la rangée (mm) [0.5:50]
+ecart     = 4;     // écart entre deux rangées (mm) [1:0.5:30]
+versant   = 0.7;   // ce que le pli creuse de plus que la crête (mm) [0:0.1:10]
+angle     = 90;    // l'angle de la fraise en V (°) : 90 conseillé [20:5:170]
+fraise    = "Pointe V 90";   // la fraise en V, son nom dans la bibliothèque
+
+t = tan(angle / 2);
+n = max(1, round(largeur / periode));
+P = largeur / n;                        // la période ajustée : un nombre entier de zigzags dans la largeur
+A = pointe;
+mini = ecart / (2 * t) * 1.02;          // vif jusqu'aux pointes
+creux = mini + versant;
+onde = 2 * sqrt(P * P / 4 + 4 * A * A); // la longueur d'un zigzag, le long du tracé
+echo(str("Zigzags de ", round(P * 100) / 100, " mm, gravés de ", round(mini * 100) / 100, " à ",
+         round(creux * 100) / 100, " mm."));
+planche([largeur, hauteur, epaisseur]);
+
+// Une rangée : elle part à mi-pente, un quart de zigzag avant une pointe basse (là, les Vagues sont au plus creux un
+// quart d'onde après le départ), et finit à mi-pente au bord droit. Gravée de droite à gauche, elle est au plus creux
+// aux pointes hautes.
+pour (y0 = [A : ecart : hauteur - A]) {
+    rangee = concat([[0, y0]], [for (m = [0 : 2 * n - 1]) [P / 4 + m * P / 2, y0 + (m % 2 == 0 ? -A : A)]],
+                    [[largeur, y0]]);
+    impaire = round((y0 - A) / ecart) % 2 == 1;
+    z = polyligne(impaire ? [for (i = [len(rangee) - 1 : -1 : 0]) rangee[i]] : rangee);
+    nommer(#z, "zigzag");
+}
+
+// ── L'usinage ──
+usinage("texture", "zigzag", outil = fraise, profondeur = creux, motif = "vagues", sillons = 1, ecart_sillons = ecart,
+        longueur_onde = onde, profondeur_mini = mini, dephasage = 0, nom = "Plissé");

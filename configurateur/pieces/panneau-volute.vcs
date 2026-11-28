@@ -1,0 +1,52 @@
+// PANNEAU EN VOLUTE — un médaillon en double spirale gravé à la fraise en V, comme une empreinte digitale : les crêtes
+// entre les deux bras ondulent, et l'ondulation tourne d'un tour à l'autre.
+// thème : Décoration et cadeaux
+//
+// LE MOTIF : deux spirales d'Archimède entrelacées, un demi-tour d'écart (« pas » entre deux tours d'un même bras, donc
+// un demi-pas entre bras voisins), jusqu'au bord du médaillon. Le long de chaque bras la profondeur suit une vague de
+// longueur fixe ; le second bras a sa vague décalée d'une demi-onde (il part une demi-onde plus loin du centre). La
+// profondeur mini fait se rejoindre les deux bras en crête vive : demi-pas / (2 × tan(angle / 2)), et 2 % de plus.
+// Motif imaginé par Fable (Claude) le 01/11/2026.
+//
+// L'USINAGE : une seule fraise en V, une opération. Fraise conseillée : une V à 60° (la Ø12,7 de la bibliothèque, 10,8
+// mm de creux au plus) ; à 90°, plus doux. Le médaillon tient dans le carré du panneau.
+
+largeur   = 150;   // largeur du panneau (mm)
+hauteur   = 150;   // hauteur du panneau (mm)
+epaisseur = 18;    // épaisseur du panneau (mm)
+pas       = 7;     // écart entre deux tours d'un même bras (mm) [2:0.5:40]
+onde      = 20;    // longueur de la vague le long d'un bras (mm) [4:200]
+relief    = 1.8;   // le creux le plus profond, en fois le creux de la crête [1:0.1:4]
+angle     = 60;    // l'angle de la fraise en V (°) : 60 conseillé [20:5:170]
+fraise    = "Pointe V 60° Ø12,7"; // la fraise en V, son nom dans la bibliothèque
+
+t = tan(angle / 2);
+e = pas / 2;
+mini = e / (2 * t) * 1.02;
+creux = mini * relief;
+rmax = min(largeur, hauteur) / 2 - creux * t - 1;   // les sillons restent dans le panneau
+c = [largeur / 2, hauteur / 2];
+k = pas / (2 * PI);                                  // r = k × θ (radians) + r0
+echo(str("Spirale au pas de ", pas, " mm, gravée de ", round(mini * 100) / 100, " à ", round(creux * 100) / 100,
+         " mm."));
+planche([largeur, hauteur, epaisseur]);
+
+// Un bras : r = k·θ + r0, un point tous les 0,5 mm le long du tracé (θ tiré de s ≈ k·θ²/2 + r0·θ).
+function theta(s, r0) = (-r0 + sqrt(r0 * r0 + 2 * k * s)) / k;
+function angle_de(s, r0, phase) = theta(s, r0) * 180 / PI + phase;
+function point(s, r0, phase) = c + (k * theta(s, r0) + r0) * [cos(angle_de(s, r0, phase)), sin(angle_de(s, r0, phase))];
+function longueur_max(r0) = k * pow((rmax - r0) / k, 2) / 2 + r0 * (rmax - r0) / k;
+// La longueur vraie, du départ au point i (Σ v = |√v|²) : pour trouver où le second bras doit commencer.
+function prefixe(pts, m) = m == 0 ? 0 : pow(norm([for (i = [0 : m - 1]) sqrt(norm(pts[i + 1] - pts[i]))]), 2);
+
+bras1 = [for (s = [0 : 0.5 : longueur_max(e / 2)]) point(s, e / 2, 0)];
+bras2_entier = [for (s = [0 : 0.5 : longueur_max(e / 2)]) point(s, e / 2, 180)];
+debut2 = [for (m = [0 : 80]) if (prefixe(bras2_entier, m) >= onde / 2) m][0];
+a = polyligne(bras1);
+nommer(#a, "bras");
+b = polyligne([for (i = [debut2 : len(bras2_entier) - 1]) bras2_entier[i]]);
+nommer(#b, "bras");
+
+// ── L'usinage ──
+usinage("texture", "bras", outil = fraise, profondeur = creux, motif = "vagues", sillons = 1, ecart_sillons = e,
+        longueur_onde = onde, profondeur_mini = mini, dephasage = 0, nom = "Volute");

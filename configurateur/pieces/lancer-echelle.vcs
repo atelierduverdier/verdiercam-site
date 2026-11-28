@@ -1,0 +1,77 @@
+// LANCER À L'ÉCHELLE — le jeu de jardin (« ladder toss ») en version de table : deux montants à large pied, trois
+// échelons qui les traversent ; on y lance des bolas (deux balles reliées par une cordelette) pour qu'elles s'enroulent.
+// Échelon du haut 3 points, du milieu 2, du bas 1 : les points sont gravés dessus.
+// thème : Jeux et jouets
+//
+// LES MONTANTS, de profil : `hauteur`, un fût de `largeur_fut` qui s'évase en un pied de `largeur_pied`, évidé d'une arche
+// par en dessous. Chacun est percé de trois MORTAISES, une par échelon, au pas `ecart_echelons` depuis le haut. LES
+// ÉCHELONS : `largeur` entre les montants, `hauteur_echelon` de haut ; à chaque bout un TENON épaulé de 8 en haut et en
+// bas, qui traverse le montant et le dépasse de 12. Mortaises plus grandes que les tenons du `jeu` de chaque côté.
+//
+// L'USINAGE : les points (Gravure, Pointe V 90°), les mortaises (Contour intérieur, coins dégagés), puis montants et
+// échelons (Contour extérieur, coins dégagés, onglets). Les bolas : deux balles de golf percées, 25 cm de cordelette.
+
+hauteur    = 400;    // hauteur des montants (mm)
+largeur_pied = 200;  // largeur du pied d'un montant (mm)
+largeur_fut = 50;    // largeur du fût d'un montant (mm)
+largeur    = 300;    // largeur entre les montants (mm)
+ecart_echelons = 110;  // d'un échelon au suivant (mm)
+hauteur_echelon = 40;  // hauteur d'un échelon (mm)
+jeu        = 0.1;    // jeu des tenons dans les mortaises, par côté (mm)
+epaisseur  = 18;     // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+ep = epaisseur;  H = hauteur;  Wb = largeur_pied;  wu = largeur_fut;  he = hauteur_echelon;
+ht = he - 16;                                  // la hauteur d'un tenon
+Lr = largeur + 2 * ep + 2 * 12;                // la longueur d'un échelon, tenons compris
+ye = [for (k = [0 : 2]) H - 40 - k * ecart_echelons];   // les échelons, du haut (3 points) au bas (1)
+hf = 25;                                       // la hauteur du pied, à ses bouts
+he_pied = 90;                                  // où le fût commence à s'évaser
+si (ye[2] - ht / 2 < he_pied + 15)
+    echo("L'échelon du bas touche l'évasement du pied : des échelons plus serrés, ou un montant plus haut.");
+si (wu - ep < 24)
+    echo("Le fût est trop étroit autour des mortaises : plus large.");
+planche([2 * Wb + espace + espace + Lr + 2 * rognure, max(H, 3 * (he + espace)) + 2 * rognure, epaisseur]);
+
+// ── Un montant, de profil : le pied évasé, le fût, le haut arrondi, les trois mortaises ──
+module montant(o) {
+    c = Wb / 2;
+    a = polyligne([o + [Wb - 45, 0], o + [Wb, 0], o + [Wb, hf], o + [c + wu / 2, he_pied], o + [c + wu / 2, H - wu / 2]]);
+    t = arc(o + [c, H - wu / 2], o + [c + wu / 2, H - wu / 2], o + [c - wu / 2, H - wu / 2]);
+    joindre(#a, #t);
+    b = polyligne([o + [c - wu / 2, H - wu / 2], o + [c - wu / 2, he_pied], o + [0, hf], o + [0, 0], o + [45, 0]]);
+    joindre(#a, #b);
+    w2 = c - 45;  ar = 15;                     // l'arche sous le pied : de 45 de chaque bout, haute de 15
+    rA = (w2 * w2 + ar * ar) / (2 * ar);
+    r = arc(o + [c, ar - rA], o + [Wb - 45, 0], o + [45, 0]);
+    joindre(#a, #r);
+    nommer(#a, "montant");
+    pour (y = ye) {
+        m = rect(o + [c - ep / 2 - jeu, y - ht / 2 - jeu], [ep + 2 * jeu, ht + 2 * jeu]);
+        nommer(#m, "mortaise");
+    }
+}
+montant([rognure, rognure]);
+montant([rognure + Wb + espace, rognure]);
+
+// ── Les échelons, à plat : un tenon à chaque bout, épaulé de 8 ; les points gravés au milieu ──
+pour (k = [0 : 2]) {
+    o = [rognure + 2 * (Wb + espace), rognure + k * (he + espace)];
+    e = polyligne([o + [12 + ep, 0], o + [Lr - 12 - ep, 0], o + [Lr - 12 - ep, 8], o + [Lr, 8], o + [Lr, he - 8], o + [Lr - 12 - ep, he - 8],
+                   o + [Lr - 12 - ep, he], o + [12 + ep, he], o + [12 + ep, he - 8], o + [0, he - 8], o + [0, 8], o + [12 + ep, 8]], fermee = vrai);
+    nommer(#e, "échelon");
+    s = str(k + 1);                            // l'échelon du bas de la planche est celui du bas de l'échelle
+    M = mesure_texte(s, 10, "Hershey Sans1") / 10;
+    n = texte(o + [Lr / 2 - 20 * (M[2] + M[3]) / 2, he / 2 - 10], 20, s, police = "Hershey Sans1");
+    nommer(#n, "points");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "points", outil = "Pointe V 90", profondeur = 1.5, nom = "Points");
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, coins = "dogbone",
+        profondeur = epaisseur, passe = 3, nom = "Mortaises");
+usinage("contour", "montant", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Montants");
+usinage("contour", "échelon", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 8, onglet_haut = 2, nom = "Échelons");

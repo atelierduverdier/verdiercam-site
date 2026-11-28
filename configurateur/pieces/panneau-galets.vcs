@@ -1,0 +1,57 @@
+// PANNEAU AUX DEUX GALETS — deux familles d'anneaux gravés à la fraise en V autour de deux centres posés dans le
+// panneau : deux cibles, comme deux galets jetés dans l'eau, et entre elles des franges qui ondulent et se croisent.
+// thème : Décoration et cadeaux
+//
+// LE MOTIF : des cercles concentriques à l'écart régulier autour de chaque centre, jusqu'aux coins ; les deux familles
+// se recoupent. La profondeur fait se rejoindre deux anneaux voisins en crête vive : l'écart / (2 × tan(angle / 2)) —
+// la moitié de l'écart à 90°. Un anneau coupé par un bord devient deux tracés. Motif imaginé par Fable (Claude) le
+// 01/11/2026.
+//
+// L'USINAGE : une seule fraise en V, une gravure à profondeur constante sur tous les anneaux. Fraise conseillée : une V
+// à 120° (franges douces) ; à 90°, plus vive. La V 90° Ø6 de la bibliothèque d'office creuse 2,75 mm au plus : écart de
+// 5,5 au plus. Avec une grande V de carving (Ø32), donner son « angle » et son nom dans « fraise ».
+
+largeur   = 150;   // largeur du panneau (mm)
+hauteur   = 150;   // hauteur du panneau (mm)
+epaisseur = 18;    // épaisseur du panneau (mm)
+ecart     = 5;     // écart entre deux anneaux (mm) [2:0.5:30]
+entraxe   = 90;    // distance entre les deux centres (mm) [0:300]
+angle     = 90;    // l'angle de la fraise en V (°) : 120 conseillé [20:5:170]
+fraise    = "Pointe V 90";   // la fraise en V, son nom dans la bibliothèque
+
+t = tan(angle / 2);
+creux = ecart / (2 * t);   // deux anneaux voisins se rejoignent en crête vive
+echo(str("Anneaux tous les ", ecart, " mm, gravés à ", round(creux * 100) / 100, " mm."));
+planche([largeur, hauteur, epaisseur]);
+
+// Les morceaux d'une suite de points qui tombent dans le panneau : chacun devient un tracé nommé.
+function dedans(p) = p[0] >= 0 && p[0] <= largeur && p[1] >= 0 && p[1] <= hauteur;
+function entre(pts, i) = dedans(pts[i]) && (i == 0 ? true : !dedans(pts[i - 1]));
+function sort(pts, i) = dedans(pts[i]) && (i == len(pts) - 1 ? true : !dedans(pts[i + 1]));
+module morceaux(pts, nom) {
+    d = [for (i = [0 : len(pts) - 1]) if (entre(pts, i)) i];
+    f = [for (i = [0 : len(pts) - 1]) if (sort(pts, i)) i];
+    si (len(d) > 0)
+        pour (r = [0 : len(d) - 1])
+            si (f[r] > d[r]) {
+                c = polyligne([for (i = [d[r] : f[r]]) pts[i]]);
+                nommer(#c, nom);
+            }
+}
+
+pour (cote = [-1, 1]) {
+    c = [largeur / 2 + cote * entraxe / 2, hauteur / 2];
+    rmax = norm([max(c[0], largeur - c[0]), max(c[1], hauteur - c[1])]);
+    pour (r = [ecart / 2 : ecart : rmax]) {
+        si (c[0] - r >= 0 && c[0] + r <= largeur && c[1] - r >= 0 && c[1] + r <= hauteur) {
+            a = cercle(c, r);   // l'anneau entier dans le panneau
+            nommer(#a, "anneau");
+        } sinon {
+            n = max(24, ceil(2 * PI * r));
+            morceaux([for (i = [0 : n]) c + r * [cos(360 * i / n), sin(360 * i / n)]], "anneau");
+        }
+    }
+}
+
+// ── L'usinage ──
+usinage("gravure", "anneau", outil = fraise, profondeur = creux, nom = "Anneaux");

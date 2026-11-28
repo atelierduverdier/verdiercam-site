@@ -1,0 +1,66 @@
+// PANNEAU EN CRESCENDO — le panneau à yeux dont l'œil grandit de gauche à droite : de fines côtes qui s'ouvrent peu à
+// peu en grands yeux en amande, gravés à la fraise en V, crêtes vives partout.
+// thème : Décoration et cadeaux
+//
+// LE MOTIF : celui du panneau à yeux — de chaque côté d'une colonne, la pointe suit un chemin en vague douce et sa
+// profondeur ondule en phase, la colonne voisine décalée d'une demi-vague — mais le creux monte par paliers, de
+// « debut » à gauche à « creux » à droite. Chaque palier a son œil (2 × creux × tan(angle / 2) + méplat) et l'écart à
+// sa voisine tient compte de la plus profonde des deux : la crête reste vive. La vague est ajustée pour que la hauteur
+// en compte un nombre entier, et une colonne sur deux est gravée de haut en bas : le motif va d'un bord à l'autre.
+// Motif imaginé par Fable (Claude) le 01/11/2026.
+//
+// L'USINAGE : une seule fraise en V, une opération par palier (la longueur d'onde change avec l'œil). Fraise
+// conseillée : une V à 90°. La V 90° Ø6 de la bibliothèque d'office (méplat 0,5) creuse 2,75 mm au plus. Avec une
+// grande V de carving (Ø32), donner son « angle », son « meplat » (0 si elle est vive) et son nom dans « fraise ».
+
+largeur   = 150;   // largeur du panneau (mm)
+hauteur   = 150;   // hauteur du panneau (mm)
+epaisseur = 18;    // épaisseur du panneau (mm)
+oeil_long = 18;    // longueur d'un œil, une vague (mm), ajustée à la hauteur [4:100]
+debut     = 0.6;   // le creux des colonnes de gauche (mm) [0.1:0.1:12]
+creux     = 2.6;   // le creux des colonnes de droite (mm) [0.2:0.1:12]
+mini      = 0.1;   // la profondeur à la pointe de l'œil (mm) [0:0.1:12]
+paliers   = 8;     // le nombre de paliers de creux [2:20]
+par_palier = 4;    // colonnes par palier [1:20]
+meplat    = 0.5;   // le méplat au bout de la fraise (mm) : 0,5 pour la V 90° Ø6 d'office, 0 si elle est vive [0:0.05:3]
+angle     = 90;    // l'angle de la fraise en V (°) : 90 conseillé [20:5:170]
+fraise    = "Pointe V 90";   // la fraise en V, son nom dans la bibliothèque
+
+t = tan(angle / 2);
+nv = max(1, round(hauteur / oeil_long));
+P = hauteur / nv;                    // la vague ajustée : un nombre entier d'yeux dans la hauteur
+N = 32;  dy = P / N;
+function palier(k) = min(paliers - 1, floor(k / par_palier));
+function D(k) = debut + (creux - debut) * palier(k) / max(1, paliers - 1);
+function a(k) = (2 * D(k) * t + meplat) / 4;                       // l'écart à l'axe : a + a·cos, l'œil de 4a
+function pas_entre(k) = 2 * t * max(D(k), D(k + 1)) + t * mini + 1.5 * meplat;
+function x_col(k) = k == 0 ? 2 * a(0) + t * D(0) + meplat : x_col(k - 1) + pas_entre(k - 1);
+function tient(k) = x_col(k) + 2 * a(k) + t * D(k) + meplat <= largeur;
+K = [for (k = [0 : paliers * par_palier - 1]) if (tient(k)) k];
+nb = len(K);
+function ecart_axe(y, ypic, k) = a(k) + a(k) * cos(360 * (y - ypic) / P);
+function pas_de(j, k) = norm([ecart_axe((j + 1) * dy, 0, k) - ecart_axe(j * dy, 0, k), dy]);
+function onde(k) = pow(norm([for (j = [0 : N - 1]) sqrt(pas_de(j, k))]), 2);
+echo(str(nb, " colonnes, creux de ", debut, " à ", D(nb - 1), " mm, yeux de ", round(P * 100) / 100, " mm."));
+planche([largeur, hauteur, epaisseur]);
+
+// Une colonne paire part du bas, à l'inflexion un quart de vague avant le milieu d'un œil ; une impaire, décalée d'une
+// demi-vague, part du haut — la hauteur comptant un nombre entier de vagues, elle part elle aussi à l'inflexion.
+pour (k = K) {
+    pour (cote = [1, -1]) {
+        pts = k % 2 == 0
+                  ? [for (j = [0 : nv * N]) [x_col(k) + cote * ecart_axe(j * dy, P / 4, k), j * dy]]
+                  : [for (j = [0 : nv * N]) [x_col(k) + cote * ecart_axe(hauteur - j * dy, 3 * P / 4, k),
+                                             hauteur - j * dy]];
+        c = polyligne(pts);
+        nommer(#c, str("colonne ", palier(k) + 1));
+    }
+}
+
+// ── L'usinage ──
+pour (l = [0 : paliers - 1]) {
+    si (l * par_palier < nb)
+        usinage("texture", str("colonne ", l + 1), outil = fraise, profondeur = D(l * par_palier), motif = "vagues",
+                sillons = 1, ecart_sillons = 2 * a(l * par_palier), longueur_onde = onde(l * par_palier),
+                profondeur_mini = mini, dephasage = 0, nom = str("Palier ", l + 1));
+}

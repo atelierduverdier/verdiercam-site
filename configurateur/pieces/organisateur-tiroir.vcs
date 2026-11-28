@@ -1,0 +1,56 @@
+// ORGANISATEUR DE TIROIR — un bloc de bois creusé de cases aux coins ronds, à poser dans un tiroir : couverts, crayons,
+// mèches, bijoux. Sans une colle ni un assemblage : tout sort d'une planche épaisse.
+// thème : Rangement
+//
+// LES CASES : `colonnes` × `rangees`, de même taille, séparées par des `cloison`s pleines, à `bord` des bords du bloc,
+// creusées de `profondeur` (le fond garde l'épaisseur − profondeur : 4 mm au moins). Leurs coins ont le rayon `R_case`,
+// qui laisse les doigts attraper le fond — au moins le rayon de la fraise. `grande_case` = 1 réunit toute la rangée du
+// haut en une seule case longue (couverts, règles).
+//
+// L'USINAGE : les cases en Poche, fraise droite Ø6 (passes de 3), puis le bloc en Contour extérieur, fraise droite Ø8
+// (ses 24 mm utiles passent l'épaisseur ; la Ø6 n'en a que 18), onglets.
+// Mesurer le DEDANS du tiroir : `longueur` et `largeur` 2 mm de moins.
+
+longueur   = 300;    // longueur du bloc (mm)
+largeur    = 200;    // largeur du bloc (mm)
+epaisseur  = 22;     // épaisseur de la planche (mm) : 24 au plus pour la fraise Ø8
+colonnes   = 3;      // cases sur la longueur
+rangees    = 2;      // cases sur la largeur
+cloison    = 8;      // épaisseur des cloisons entre les cases (mm)
+bord       = 10;     // épaisseur des bords (mm)
+profondeur = 18;     // profondeur des cases (mm)
+R_case     = 10;     // rayon des coins des cases (mm)
+grande_case = 0;     // la rangée du haut en une seule case (1 : oui, 0 : non)
+R_coin     = 6;      // rayon des coins du bloc (mm)
+rognure    = 5;      // du bord du brut au bloc (mm)
+
+nc = max(1, round(colonnes));  nr = max(1, round(rangees));
+lc = (longueur - 2 * bord - (nc - 1) * cloison) / nc;     // une case
+hc = (largeur - 2 * bord - (nr - 1) * cloison) / nr;
+R = max(min(R_case, min(lc, hc) / 2 - 0.5), 3.2);
+si (epaisseur - profondeur < 4)
+    echo(str("Le fond ne fait que ", epaisseur - profondeur, " mm : moins de profondeur, ou une planche plus épaisse."));
+si (min(lc, hc) < 15)
+    echo("Des cases de moins de 15 mm : moins de cases, ou des cloisons plus fines.");
+
+planche([longueur + 2 * rognure, largeur + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+b = rect(o, [longueur, largeur], R_coin);
+nommer(#b, "bloc");
+pour (j = [0 : nr - 1]) {
+    si (grande_case == 1 && j == nr - 1 && nr > 1) {
+        q = rect(o + [bord, bord + j * (hc + cloison)], [longueur - 2 * bord, hc], R);
+        nommer(#q, "case");
+    } sinon {
+        pour (i = [0 : nc - 1]) {
+            q = rect(o + [bord + i * (lc + cloison), bord + j * (hc + cloison)], [lc, hc], R);
+            nommer(#q, "case");
+        }
+    }
+}
+echo(str("Cases de ", round(lc * 10) / 10, " × ", round(hc * 10) / 10, " mm, ", profondeur, " de creux."));
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "case", outil = "Fraise droite Ø6", profondeur = profondeur, passe = 3, nom = "Cases");
+usinage("contour", "bloc", outil = "Fraise droite Ø8", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Détourage du bloc");

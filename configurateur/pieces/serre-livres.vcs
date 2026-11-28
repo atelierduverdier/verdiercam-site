@@ -1,0 +1,67 @@
+// SERRE-LIVRES — une paire, chacun un montant au sommet arrondi qui entre par deux tenons dans les mortaises de son
+// socle : sans une vis, collé, il tient debout la rangée de livres.
+// thème : Rangement
+//
+// LE MONTANT : `largeur` × `hauteur` au-dessus du socle, le haut en demi-cercle, un jour rond (`jour`) pour le coup d'œil ;
+// dessous, deux tenons de l'épaisseur du socle, larges du quart du montant. LE SOCLE : `largeur` × `profondeur`, ses deux
+// MORTAISES à `retrait` de son bord arrière, plus grandes que les tenons de `jeu` de chaque côté, leurs coins dégagés
+// (dogbone) — les tenons ont des angles vifs. Les livres s'appuient contre le montant, le socle dessous les retient.
+//
+// L'USINAGE : les mortaises et le jour (Contour intérieur, fraise droite Ø6, coins dégagés), puis les montants et les
+// socles (Contour extérieur, coins dégagés aux pieds des tenons, onglets). Dessous du socle : un feutre.
+
+largeur    = 130;    // largeur du montant et du socle (mm)
+hauteur    = 180;    // hauteur du montant au-dessus du socle (mm)
+profondeur = 120;    // profondeur du socle (mm)
+epaisseur  = 18;     // épaisseur du bois (mm) : montant et socle
+retrait    = 10;     // du bord arrière du socle aux mortaises (mm)
+jeu        = 0.1;    // jeu des tenons dans les mortaises, par côté (mm)
+jour       = 45;     // Ø du jour rond dans le montant (mm, 0 : aucun)
+paire      = 1;      // une paire (1) ou un seul (0)
+espace     = 12;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+W = largeur;  ep = epaisseur;
+t = W / 4;                                     // la largeur d'un tenon
+xt = [W / 4 - t / 2, 3 * W / 4 - t / 2];       // leurs bords gauches
+n = paire == 1 ? 2 : 1;
+Hm = hauteur + ep;                             // le montant, tenons compris
+planche([n * (W + espace) + n * (W + espace) - espace + 2 * rognure, max(Hm, profondeur) + 2 * rognure, epaisseur]);
+si (hauteur < W / 2 + 20)
+    echo("Le montant est à peine plus haut que son arrondi : plus haut, ou moins large.");
+
+module montant(o) {
+    // De bas en haut : les tenons (ils descendent de `ep` sous le socle), le côté droit, l'arrondi, le côté gauche.
+    b = polyligne([o + [0, ep], o + [xt[0], ep], o + [xt[0], 0], o + [xt[0] + t, 0], o + [xt[0] + t, ep], o + [xt[1], ep],
+                   o + [xt[1], 0], o + [xt[1] + t, 0], o + [xt[1] + t, ep], o + [W, ep], o + [W, Hm - W / 2]]);
+    a = arc(o + [W / 2, Hm - W / 2], o + [W, Hm - W / 2], o + [0, Hm - W / 2]);
+    joindre(#b, #a);
+    g = ligne(o + [0, Hm - W / 2], o + [0, ep]);
+    joindre(#b, #g);
+    nommer(#b, "montant");
+    si (jour > 0) {
+        j = cercle(o + [W / 2, Hm - W / 2], jour / 2);
+        nommer(#j, "jour");
+    }
+}
+module socle(o) {
+    s = rect(o, [W, profondeur], 4);
+    nommer(#s, "socle");
+    pour (x = xt) {
+        m = rect(o + [x - jeu, profondeur - retrait - ep - jeu], [t + 2 * jeu, ep + 2 * jeu]);
+        nommer(#m, "mortaise");
+    }
+}
+pour (k = [0 : n - 1]) {
+    montant([rognure + k * (W + espace), rognure]);
+    socle([rognure + n * (W + espace) + k * (W + espace), rognure]);
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "mortaise", outil = "Fraise droite Ø6", cote = "interieur", profondeur = epaisseur, passe = 3, coins = "dogbone", nom = "Mortaises");
+si (jour > 0)
+    usinage("contour", "jour", outil = "Fraise droite Ø6", cote = "interieur", profondeur = epaisseur, passe = 3, nom = "Jours");
+usinage("contour", "montant", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3, coins = "dogbone",
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Montants");
+usinage("contour", "socle", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Socles");

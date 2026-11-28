@@ -1,0 +1,220 @@
+// HORLOGE À ENGRENAGES — la minuterie en bois d'une horloge murale : l'aiguille des heures fait un tour quand celle des
+// minutes en fait douze, par deux paires de roues à développante que l'on voit tourner derrière le cadran ajouré.
+// thème : Technique et mécanique
+//
+// LE TRAIN : le mouvement (un mouvement à quartz à axe long, ou votre propre échappement) fait tourner l'axe des minutes.
+// Son pignon de `z1` dents mène une roue de `z2` dents, collée sur l'axe intermédiaire avec un pignon de `z3` dents qui
+// mène la roue des heures, `z4` dents, sur un tube autour de l'axe des minutes. Le rapport fait (z2 / z1) × (z4 / z3) =
+// 12, et les deux paires ont le MÊME entraxe (z1 + z2 = z3 + z4, même module) : la roue des heures tourne autour de l'axe
+// des minutes. D'office 15 → 45 (× 3) puis 12 → 48 (× 4). La console dit si le rapport n'est pas 12, ou les entraxes
+// différents.
+//
+// LES DENTS sont celles de la pièce « Engrenage droit » de ce catalogue, recopiées telles quelles (un script n'en inclut
+// pas un autre) : la développante que taillerait la crémaillère ISO 53, le pied en trochoïde, le sous-taillage d'un petit
+// pignon. 25° de pression ici : les pignons de 12 et 15 dents restent pleins au pied (20° les creuserait sous 17 dents).
+//
+// LE CADRAN porte les douze repères, les chiffres 12, 3, 6 et 9, le trou du tube des heures au centre et celui de l'axe
+// intermédiaire à l'entraxe, vers 1 h 30 (entre deux chiffres). Deux aiguilles, percées pour leurs tubes. L'USINAGE : les gravures du cadran
+// (Pointe V 90°), les alésages (Contour intérieur, fraise droite Ø3), les roues et les aiguilles (Contour extérieur,
+// fraise droite Ø3, onglets), le cadran en dernier (fraise droite Ø6).
+
+module     = 3;      // module des dents (mm) — entraxe = module × (z1 + z2) / 2 ; la fraise Ø3 passe au fond dès 2,6
+z1         = 15;     // pignon des minutes (dents)
+z2         = 45;     // roue intermédiaire (dents)
+z3         = 12;     // pignon intermédiaire (dents)
+z4         = 48;     // roue des heures (dents)
+angle_pression = 25; // angle de pression (°)
+jeu        = 0.15;   // jeu d'engrènement (mm, pris sur l'épaisseur des dents)
+d_axe_minutes = 6;   // Ø de l'axe des minutes (alésage du pignon des minutes, mm)
+d_tube_heures = 10;  // Ø du tube des heures (alésage de la roue des heures et trou du cadran, mm)
+d_axe_inter = 6;     // Ø de l'axe intermédiaire (mm)
+diametre_cadran = 300;  // Ø du cadran (mm)
+police     = "Hershey Sans1";  // la police des chiffres
+epaisseur  = 9;      // épaisseur du bois (mm) : contreplaqué de bouleau — 9 au plus : la fraise Ø3 n'a que 9 mm utiles
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+// ══ LES DENTS : recopié d'engrenage.vcs (de « Les grandeurs » à la fin du module « roue ») — à garder pareil. ══
+// ── Les grandeurs, en degrés comme tout le script (les fonctions trigonométriques le sont) ──
+a_p = angle_pression;
+function rad(d) = d * PI / 180;
+function deg(t) = t * 180 / PI;
+function invo(a) = tan(a) - rad(a);                 // la fonction développante, d'un angle en degrés (radians rendus)
+function r_p(z) = module * z / 2;                   // rayon primitif
+function r_b(z) = r_p(z) * cos(a_p);                // rayon de base : la développante en part
+function r_a(z, x) = r_p(z) + module * (1 + x);     // rayon de tête
+function r_f(z, x) = r_p(z) - module * (1.25 - x);  // rayon de pied
+J = jeu / 2;                                        // l'amincissement de chaque dent, sur le primitif
+// L'ARRONDI DE TÊTE de la crémaillère : 0,38 × module (ISO 53, pensé pour 20°). Au-delà de 23° environ, il ne tient plus
+// dans la tête de la dent de crémaillère : ses deux arrondis se chevauchaient, le pied d'une dent passait celui de la
+// suivante, et le contour se recoupait — un arc de pied d'ouverture négative fait presque un tour (mesuré le 15/10/2026 :
+// 4,069° de demi-angle au pied pour 4° de demi-pas, 45 dents à 25° ; le contournage ne finissait plus). Plafonné à ce
+// qui tient : le centre de l'arrondi au plus au milieu de la dent de crémaillère, un rien en dessous.
+rho_max = (PI * module / 4 + J / 2 - 1.25 * module * tan(a_p)) * cos(a_p) / (1 - sin(a_p));
+rho = max(0, min(0.38 * module, 0.97 * rho_max));
+nf = 10;                                            // points de la trochoïde (le pied)
+ni = 30;                                            // points de la développante (le flanc)
+
+// ── La crémaillère qui taille une roue de z dents, déport x. Repère « monde » : la roue au centre, la crémaillère au-
+// dessus, sa ligne de roulement à y = r_p tangente au primitif, sa ligne de référence décalée du déport. La dent de la
+// roue (axe vertical) occupe le creux de la crémaillère ; on suit la dent de crémaillère de droite, son flanc gauche. ──
+function y_d(z, x) = r_p(z) + x * module;                                   // ligne de référence
+function y_c(z, x) = y_d(z, x) - 1.25 * module + rho;                       // centre de l'arrondi de tête
+function u_c(z, x) = (PI * module / 2 - J) / 2 + (y_d(z, x) - y_c(z, x) + rho * sin(a_p)) * tan(a_p) + rho * cos(a_p);
+function y_F(z, x) = y_c(z, x) - rho * sin(a_p);                            // où le flanc droit rejoint l'arrondi
+
+// LE POINT TAILLÉ : le point Q de la crémaillère, de normale n, touche la roue quand sa normale passe par le point
+// primitif (0, r_p) ; la crémaillère a alors glissé de d, la roue tourné de φ = −d / r_p. Rendu en [rayon, angle depuis
+// l'axe de la dent (°)], côté horaire.
+function engendre(z, Q, n) = rpsi(z, Q, n, (r_p(z) - Q[1]) / n[1]);
+function rpsi(z, Q, n, s) = [sqrt(s * n[0] * s * n[0] + Q[1] * Q[1]), atan2(-s * n[0], Q[1]) + deg((Q[0] + s * n[0]) / r_p(z))];
+
+// Le pied : la trochoïde, l'arrondi parcouru de sa normale verticale (fond du creux) à celle du flanc.
+function theta(k) = -90 - (90 - a_p) * k / nf;
+function troch(z, x) = [for (k = [0 : nf]) engendre(z, [u_c(z, x) + rho * cos(theta(k)), y_c(z, x) + rho * sin(theta(k))],
+                                                      [cos(theta(k)), sin(theta(k))])];
+
+// Le flanc : la développante. Son demi-angle au rayon R, et si le flanc DROIT de la crémaillère l'a taillé à ce rayon
+// (au-dessus de l'arrondi, sur la vraie branche).
+function s_dent(x) = PI * module / 2 + 2 * x * module * tan(a_p) - J;      // épaisseur de la dent sur le primitif
+function psi_dev(z, x, R) = deg(s_dent(x) / (2 * r_p(z)) + invo(a_p) - invo(acos(r_b(z) / R)));
+function y_de(z, R) = r_p(z) + sin(a_p) * (sqrt(R * R - r_b(z) * r_b(z)) - r_p(z) * sin(a_p));
+function dev_ok(z, x, R) = R >= r_b(z) && (R < r_b(z) ? faux : y_de(z, R) >= y_F(z, x) - 1e-9);
+
+// LE SOUS-TAILLAGE : la trochoïde passe-t-elle à l'intérieur de la développante ? Le premier point qui le fait marque
+// la coupure ; le profil est la trochoïde jusque-là, puis la développante.
+function viole(z, x, T, k) = dev_ok(z, x, T[k][0]) ? psi_dev(z, x, T[k][0]) < T[k][1] : faux;
+function coupure(z, x, T, k) = k > nf ? nf + 1 : (viole(z, x, T, k) ? k : coupure(z, x, T, k + 1));
+function ecart_t(z, x, T, k) = T[k][1] - psi_dev(z, x, T[k][0]);
+function r_coupe(z, x, T, kc) = kc > nf ? T[nf][0]
+    : (kc > 0 && (kc > 0 ? dev_ok(z, x, T[kc - 1][0]) : faux))
+        ? T[kc - 1][0] + (T[kc][0] - T[kc - 1][0]) * ecart_t(z, x, T, kc - 1) / (ecart_t(z, x, T, kc - 1) - ecart_t(z, x, T, kc))
+        : T[kc][0];
+
+// La tête : le rayon de tête, rabattu si la dent y devient pointue (moins de 0,2 × module de large).
+function largeur(z, x, R) = 2 * R * rad(psi_dev(z, x, R));
+function bissec(z, x, a, b, n) = n == 0 ? a
+    : (largeur(z, x, (a + b) / 2) > 0.2 * module ? bissec(z, x, (a + b) / 2, b, n - 1) : bissec(z, x, a, (a + b) / 2, n - 1));
+function r_tete(z, x) = largeur(z, x, r_a(z, x)) >= 0.2 * module ? r_a(z, x) : bissec(z, x, max(r_b(z), r_f(z, x)), r_a(z, x), 40);
+
+// LE PROFIL d'un côté de la dent, du pied à la tête : [rayon, demi-angle (°)].
+function profil(z, x) = profil2(z, x, troch(z, x));
+function profil2(z, x, T) = profil3(z, x, T, coupure(z, x, T, 0));
+function profil3(z, x, T, kc) = profil4(z, x, T, kc, r_coupe(z, x, T, kc), r_tete(z, x));
+function profil4(z, x, T, kc, rc, rt) = concat([for (k = [0 : min(kc, nf + 1) - 1]) T[k]],
+                                               [for (j = [kc > nf ? 1 : 0 : ni]) [rc + (rt - rc) * j / ni, psi_dev(z, x, rc + (rt - rc) * j / ni)]]);
+// Le demi-angle de la dent au rayon R (le profil interpolé) : pour mesurer le creux.
+function psi_a(P, R, k) = k >= len(P) - 1 ? P[len(P) - 1][1]
+    : (P[k + 1][0] >= R ? P[k][1] + (P[k + 1][1] - P[k][1]) * (R - P[k][0]) / (P[k + 1][0] - P[k][0]) : psi_a(P, R, k + 1));
+
+function pt(c, R, a) = c + R * [cos(a), sin(a)];
+
+// ── LA ROUE : un seul contour fermé — pour chaque dent, son flanc droit (polyligne), sa tête (arc), son flanc gauche
+// (polyligne), puis le pied jusqu'à la dent suivante (arc) ; chaque morceau joint au premier. La dent 0 a son axe à
+// l'angle `phase`. ──
+module roue(c, z, P, phase, nom, aide) {
+    n = len(P);
+    premier = arc(c, pt(c, P[0][0], phase + 360 * (z - 1) / z + P[0][1]), pt(c, P[0][0], phase - P[0][1]));   // le pied avant la dent 0
+    pour (i = [0 : z - 1]) {
+        ax = phase + 360 * i / z;
+        d = polyligne([for (p = P) pt(c, p[0], ax - p[1])]);
+        joindre(#premier, #d);
+        t = arc(c, pt(c, P[n - 1][0], ax - P[n - 1][1]), pt(c, P[n - 1][0], ax + P[n - 1][1]));
+        joindre(#premier, #t);
+        g = polyligne([for (k = [n - 1 : -1 : 0]) pt(c, P[k][0], ax + P[k][1])]);
+        joindre(#premier, #g);
+        si (i < z - 1) {
+            f = arc(c, pt(c, P[0][0], ax + P[0][1]), pt(c, P[0][0], phase + 360 * (i + 1) / z - P[0][1]));
+            joindre(#premier, #f);
+        }
+    }
+    nommer(#premier, nom);
+    si (aide == 1)
+        construction(#premier);
+}
+
+// ── Le train : le rapport et les entraxes ──
+a1 = module * (z1 + z2) / 2;
+a2 = module * (z3 + z4) / 2;
+rapport = (z2 / z1) * (z4 / z3);
+si (abs(rapport - 12) > 1e-9)
+    echo(str("Le rapport du train fait ", round(rapport * 1000) / 1000, " et non 12 : l'aiguille des heures ne suivra pas."));
+si (abs(a1 - a2) > 1e-9)
+    echo(str("Les deux paires n'ont pas le même entraxe (", a1, " et ", a2, " mm) : z1 + z2 doit égaler z3 + z4."));
+P1 = profil(z1, 0);  P2 = profil(z2, 0);  P3 = profil(z3, 0);  P4 = profil(z4, 0);
+function ra(P) = P[len(P) - 1][0];
+z_min = 2 / (sin(a_p) * sin(a_p));
+si (min(z1, z3) < z_min)
+    echo(str("Sous-taillage : un pignon a moins de ", round(z_min * 10) / 10, " dents — son pied est creusé par la taille."));
+
+// ── La planche : le cadran à gauche, les roues en colonne, les pignons et les aiguilles à côté ──
+Rc = diametre_cadran / 2;
+c0 = [rognure + Rc, rognure + Rc];                          // le centre du cadran
+xg = rognure + 2 * Rc + espace;                              // la colonne des roues
+Dg = 2 * max(ra(P2), ra(P4));
+y4 = rognure + ra(P4);                                       // la roue des heures, en bas
+y2 = rognure + 2 * ra(P4) + espace + ra(P2);                 // la roue intermédiaire au-dessus
+xp = xg + Dg + espace;                                       // les pignons et les aiguilles
+yp1 = rognure + ra(P1);
+yp3 = rognure + 2 * ra(P1) + espace + ra(P3);
+L_min = 0.4 * diametre_cadran;  L_heu = 0.27 * diametre_cadran;   // les aiguilles
+w_min = max(14, d_axe_minutes + 8);  w_heu = max(16, d_tube_heures + 8);
+xa = xp + 2 * max(ra(P1), ra(P3)) + espace;                  // la colonne des aiguilles
+H_tot = max(2 * Rc, y2 + ra(P2) - rognure, 1.25 * L_min + espace + 1.25 * L_heu);
+planche([xa + w_min + espace + w_heu + rognure, H_tot + 2 * rognure, epaisseur]);
+
+// ── Les roues, chacune avec son alésage ──
+module roue_alesee(c, z, P, d) {
+    roue(c, z, P, 90, "roue", 0);
+    t = cercle(c, d / 2);
+    nommer(#t, "alésage");
+}
+roue_alesee([xg + Dg / 2, y4], z4, P4, d_tube_heures);      // les heures
+roue_alesee([xg + Dg / 2, y2], z2, P2, d_axe_inter);        // l'intermédiaire
+roue_alesee([xp + max(ra(P1), ra(P3)), yp1], z1, P1, d_axe_minutes);   // le pignon des minutes
+roue_alesee([xp + max(ra(P1), ra(P3)), yp3], z3, P3, d_axe_inter);     // le pignon intermédiaire
+
+// ── Le cadran : le disque, ses deux trous, douze repères, quatre chiffres ──
+k = cercle(c0, Rc);
+nommer(#k, "cadran");
+h0 = cercle(c0, d_tube_heures / 2);
+nommer(#h0, "alésage");
+hi = cercle(c0 + a1 * [cos(45), sin(45)], d_axe_inter / 2);   // entre 1 h et 2 h : aucun chiffre
+nommer(#hi, "alésage");
+pour (i = [0 : 11]) {
+    an = 90 - 30 * i;
+    r0 = i % 3 == 0 ? Rc - 38 : Rc - 26;
+    g = ligne(c0 + r0 * [cos(an), sin(an)], c0 + (Rc - 12) * [cos(an), sin(an)]);
+    nommer(#g, "repère");
+}
+hc = min(24, Rc / 6);
+pour (i = [0 : 3]) {
+    s = ["12", "3", "6", "9"][i];
+    an = 90 - 90 * i;
+    M = mesure_texte(s, 10, police) / 10;
+    q = c0 + (Rc - 38 - 8 - 0.8 * hc) * [cos(an), sin(an)];   // le centre du chiffre, au-dedans des grands repères
+    t = texte(q - hc * [(M[2] + M[3]) / 2, (M[4] + M[5]) / 2], hc, s, police = police);
+    nommer(#t, "repère");
+}
+
+// ── Les aiguilles : une lame en losange, une queue, un trou pour son axe ──
+module aiguille(c, L, w, d) {
+    a = polyligne([c + [0, -0.22 * L], c + [w / 2, 0], c + [w / 5, 0.72 * L], c + [0, L], c + [-w / 5, 0.72 * L], c + [-w / 2, 0]],
+                  fermee = vrai);
+    nommer(#a, "aiguille");
+    t = cercle(c, d / 2);
+    nommer(#t, "alésage");
+}
+aiguille([xa + w_min / 2, rognure + 0.22 * L_min], L_min, w_min, d_axe_minutes);
+aiguille([xa + w_min + espace + w_heu / 2, rognure + 0.22 * L_heu], L_heu, w_heu, d_tube_heures);
+echo(str("Train ", z1, " → ", z2, " · ", z3, " → ", z4, " : rapport ", round(rapport * 1000) / 1000, ", entraxe ", a1, " mm."));
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "repère", outil = "Pointe V 90", profondeur = 1, nom = "Repères et chiffres");
+usinage("contour", "alésage", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1.5, nom = "Alésages");
+usinage("contour", "roue", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1.5,
+        onglets = 3, onglet_long = 4, onglet_haut = 1.5, nom = "Roues");
+usinage("contour", "aiguille", outil = "Fraise droite Ø3", cote = "exterieur", profondeur = epaisseur, passe = 1.5,
+        onglets = 2, onglet_long = 4, onglet_haut = 1.5, nom = "Aiguilles");
+usinage("contour", "cadran", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2.5,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Cadran");

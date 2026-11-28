@@ -1,0 +1,69 @@
+// QUARTO — le jeu de Blaise Müller : seize pièces toutes différentes, un plateau de 4 × 4. On pose la pièce que
+// l'adversaire a choisie pour soi ; gagne qui aligne quatre pièces ayant un caractère commun.
+// thème : Jeux et jouets
+//
+// LES QUATRE CARACTÈRES, à plat : RONDE ou CARRÉE, GRANDE ou PETITE, MARQUÉE d'un trait gravé à son pourtour ou non,
+// CREUSÉE d'une cuvette au milieu ou pleine. Seize combinaisons, une pièce chacune. LE PLATEAU : seize logements ronds de
+// `creux_case` de profondeur, assez larges pour la plus grande pièce (le carré y entre par sa diagonale).
+//
+// L'USINAGE : les marques (Gravure, Pointe V 90°), les cuvettes et les logements (Poche), puis les pièces et le plateau
+// (Contour extérieur, onglets). Hêtre ou érable de 12 ; teinter les pièces marquées si l'on veut deux couleurs.
+
+grande     = 36;     // Ø d'une grande pièce ronde ; le côté d'un grand carré en est 0,78 fois (mm)
+petite     = 25;     // Ø d'une petite pièce ronde (mm)
+creux_case = 2;      // profondeur des logements du plateau (mm)
+cuvette    = 3;      // profondeur des cuvettes (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 8;      // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+function cote(d) = 0.78 * d;                   // le carré d'une taille : sa diagonale = 1,1 × le Ø
+dl = cote(grande) * sqrt(2) + 2;               // Ø d'un logement : la diagonale du grand carré, plus 1 de chaque côté
+pc = dl + 6;  m = 15;  Pl = 4 * pc + 2 * m;    // le plateau
+pp = grande + espace;                          // le pas des pièces
+si (petite > grande - 6)
+    echo("Petites et grandes se distinguent mal : un écart de 6 au moins.");
+planche([Pl + espace + 4 * pp + 2 * rognure, max(Pl, 4 * pp) + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+b = rect(o, [Pl, Pl], 10);
+nommer(#b, "plateau");
+pour (i = [0 : 3])
+    pour (j = [0 : 3]) {
+        c = cercle(o + [m + (i + 0.5) * pc, m + (j + 0.5) * pc], dl / 2);
+        nommer(#c, "logement");
+    }
+// ── Les seize pièces : le numéro k (0 à 15) écrit en binaire donne ses caractères ──
+pour (k = [0 : 15]) {
+    carree = k % 2;  grand = floor(k / 2) % 2;  marquee = floor(k / 4) % 2;  creusee = floor(k / 8) % 2;
+    d = grand == 1 ? grande : petite;
+    c = o + [Pl + espace + (k % 4 + 0.5) * pp, (floor(k / 4) + 0.5) * pp];
+    si (carree == 1) {
+        a = cote(d);
+        q = rect(c - [a / 2, a / 2], [a, a], 2);
+        nommer(#q, "pièce");
+        si (marquee == 1) {
+            r = rect(c - [a / 2 - 3, a / 2 - 3], [a - 6, a - 6]);
+            nommer(#r, "marque");
+        }
+    } sinon {
+        q = cercle(c, d / 2);
+        nommer(#q, "pièce");
+        si (marquee == 1) {
+            r = cercle(c, d / 2 - 3);
+            nommer(#r, "marque");
+        }
+    }
+    si (creusee == 1) {
+        u = cercle(c, d / 2 - 7);
+        nommer(#u, "cuvette");
+    }
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "marque", outil = "Pointe V 90", profondeur = 0.6, nom = "Marques");
+usinage("poche", "cuvette", outil = "Fraise droite Ø6", profondeur = cuvette, passe = 1.5, nom = "Cuvettes");
+usinage("poche", "logement", outil = "Fraise droite Ø6", profondeur = creux_case, passe = 1, nom = "Logements");
+usinage("contour", "pièce", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 4, onglet_haut = 1.5, nom = "Pièces");
+usinage("contour", "plateau", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Plateau");

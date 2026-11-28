@@ -1,0 +1,32 @@
+// PANNEAU EN DUNES — des sillons droits à la pointe V 90°, tous creusés au même rythme : les creux s'alignent en
+// travers du panneau, comme des dunes de sable.
+// thème : Décoration et cadeaux
+//
+// LE MOTIF : la Texture en Vagues sur un trait guide, le long du bord gauche. Chaque sillon descend de la profondeur
+// mini au creux et remonte, sur une longueur d'onde ; à la V 90°, il est deux fois plus large que profond. Déphasage
+// nul : tous les sillons sont au plus creux à la même hauteur, et les arêtes entre eux restent droites. Le panneau
+// Texture dit la largeur du ruban qui reste entre deux sillons.
+//
+// L'USINAGE : une seule pointe V 90°, une passe, sans fraise de dégagement. Une Ø6 (celle de la bibliothèque d'office)
+// creuse 2,75 mm au plus ; avec une V 90° Ø12, doubler l'écart, la longueur d'onde et les deux profondeurs : le même
+// motif, deux fois plus grand. Bois dur à grain fin (noyer, chêne) ou MDF à peindre ; les sillons courent jusqu'aux
+// bords, le panneau se prend dans un cadre.
+
+largeur   = 150;   // largeur du panneau (mm)
+hauteur   = 200;   // hauteur du panneau (mm)
+epaisseur = 18;    // épaisseur du panneau (mm)
+ecart     = 4;     // écart entre deux sillons (mm) [1:0.5:30]
+onde      = 20;    // longueur d'onde : un creux et une bosse (mm) [4:200]
+creux     = 2.75;  // profondeur au plus creux (mm) [0.5:0.25:12]
+mini      = 0.25;  // profondeur au plus haut de la vague (mm) [0:0.25:12]
+dephasage = 0;   // avance de la vague d'un sillon au suivant (°) : 180 met un creux en face d'une bosse [0:15:360]
+fraise    = "Pointe V 90";   // la pointe V 90°, son nom dans la bibliothèque
+
+sillons = floor((largeur - ecart) / ecart) + 1;   // le premier à un demi-écart du bord gauche, le dernier du droit
+planche([largeur, hauteur, epaisseur]);
+g = ligne([ecart / 2, hauteur], [ecart / 2, 0]);   // de haut en bas : les sillons partent vers la droite
+nommer(#g, "guide");
+
+// ── L'usinage ──
+usinage("texture", "guide", outil = fraise, profondeur = creux, motif = "vagues", sillons = sillons,
+        ecart_sillons = ecart, longueur_onde = onde, profondeur_mini = mini, dephasage = dephasage, nom = "Dunes");

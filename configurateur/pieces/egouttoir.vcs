@@ -1,0 +1,75 @@
+// ÉGOUTTOIR À ASSIETTES — deux peignes debout, crantés pour les assiettes, tenus par deux traverses croisées à mi-bois.
+// Quatre pièces, sans colle ni vis : il se démonte pour sécher, et se range à plat.
+// thème : Cuisine
+//
+// LES PEIGNES : `longueur` × `hauteur`, `assiettes` crans de `largeur_cran` (l'épaisseur du bord d'une assiette et du
+// jeu), profonds de `profondeur_cran`, au fond arrondi, au `pas` régulier, centrés. Par le BAS, chaque peigne est fendu
+// deux fois (à `retrait` de ses bouts) jusqu'à la moitié de la hauteur d'une traverse. LES TRAVERSES : écartent les
+// peignes de `ecart` (intérieur), débordent de 25 de chaque côté, fendues par le HAUT d'autant ; leur bas affleure celui
+// des peignes. Chaque fente a l'épaisseur plus le `jeu` de chaque côté.
+//
+// L'USINAGE : peignes et traverses (Contour extérieur, coins dégagés au fond des fentes, onglets). Bois dur huilé (hêtre,
+// chêne) ou bambou ; arrondir les arêtes des crans au papier.
+
+longueur   = 380;    // longueur d'un peigne (mm)
+hauteur    = 90;     // hauteur d'un peigne (mm)
+assiettes  = 10;     // nombre de crans
+largeur_cran = 10;   // largeur d'un cran (mm)
+profondeur_cran = 50;  // profondeur d'un cran (mm)
+pas        = 32;     // d'un cran au suivant (mm)
+ecart      = 150;    // entre les deux peignes, à l'intérieur (mm)
+hauteur_traverse = 40;  // hauteur d'une traverse (mm)
+retrait    = 40;     // des bouts d'un peigne aux traverses (mm)
+jeu        = 0.15;   // jeu des fentes, par côté (mm)
+epaisseur  = 12;     // épaisseur (mm)
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+L = longueur;  H = hauteur;  ep = epaisseur;  w = ep + 2 * jeu;
+n = max(1, round(assiettes));
+s = largeur_cran;  d = profondeur_cran;  ht = hauteur_traverse;
+x0 = (L - (n - 1) * pas - s) / 2;              // le bord gauche du premier cran
+T = ecart + 2 * ep + 2 * 25;                   // la longueur d'une traverse
+xt = [25, 25 + ep + ecart];                    // ses fentes : le bord intérieur de chaque peigne
+si (x0 < 15)
+    echo("Les crans arrivent au bout du peigne : moins de crans, ou un pas plus petit.");
+si (d > H - ht / 2 - 10)
+    echo("Les crans descendent trop près des fentes du bas : moins profonds, ou un peigne plus haut.");
+si (pas - s < 8)
+    echo("Les dents entre les crans ont moins de 8 mm : un pas plus grand.");
+planche([max(L, 2 * T + espace) + 2 * rognure, 2 * H + ht + 2 * espace + 2 * rognure, epaisseur]);
+
+// ── Un peigne : le haut cranté (de gauche à droite), le côté droit, le bas fendu deux fois, le côté gauche ──
+module peigne(o) {
+    a = polyligne([o + [0, H], o + [x0, H], o + [x0, H - d + s / 2]]);
+    pour (k = [0 : n - 1]) {
+        x = x0 + k * pas;
+        c = arc(o + [x + s / 2, H - d + s / 2], o + [x, H - d + s / 2], o + [x + s, H - d + s / 2]);
+        joindre(#a, #c);
+        suite = k < n - 1 ? [o + [x + s, H - d + s / 2], o + [x + s, H], o + [x + pas, H], o + [x + pas, H - d + s / 2]]
+                          : [o + [x + s, H - d + s / 2], o + [x + s, H], o + [L, H]];
+        b = polyligne(suite);
+        joindre(#a, #b);
+    }
+    xr = [L - retrait - w, retrait];           // les fentes du bas, de droite à gauche
+    bas = [for (j = [0 : 7]) o + [xr[floor(j / 4)] + [w, w, 0, 0][j % 4], [0, ht / 2, ht / 2, 0][j % 4]]];
+    f = polyligne(concat([o + [L, H], o + [L, 0]], bas, [o + [0, 0], o + [0, H]]));
+    joindre(#a, #f);
+    nommer(#a, "peigne");
+}
+peigne([rognure, rognure]);
+peigne([rognure, rognure + H + espace]);
+
+// ── Les traverses : fendues par le haut, aux bords intérieurs des peignes ──
+pour (k = [0 : 1]) {
+    o = [rognure + k * (T + espace), rognure + 2 * (H + espace)];
+    haut = [for (j = [0 : 7]) o + [xt[1 - floor(j / 4)] + [w, w, 0, 0][j % 4] - jeu, [ht, ht / 2, ht / 2, ht][j % 4]]];
+    t = polyligne(concat([o, o + [T, 0], o + [T, ht]], haut, [o + [0, ht]]), fermee = vrai);
+    nommer(#t, "traverse");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "traverse", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 1.5, nom = "Traverses");
+usinage("contour", "peigne", outil = "Fraise droite Ø6", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Peignes");

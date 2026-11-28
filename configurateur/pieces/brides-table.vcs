@@ -1,0 +1,58 @@
+// BRIDES DE TABLE RAINURÉE — des brides de serrage pour fixer le brut sur la table de la CNC (rails en T, inserts) : la
+// barre, percée d'une lumière pour le boulon, et sa cale en escalier qui la tient à la bonne hauteur. Le premier projet
+// d'une CNC : elle fabrique de quoi se brider.
+// thème : Atelier et gabarits
+//
+// LA BARRE : `longueur_bride` × `largeur_bride`, le nez arrondi, une LUMIÈRE de `d_vis` (8,5 pour un boulon M8) qui laisse
+// glisser la bride de `course`. LA CALE : un escalier de `marches` marches de `hauteur_marche` sur `profondeur_marche`,
+// découpé DE PROFIL dans la planche — sa largeur est l'épaisseur de la planche. Le nez de la bride sur le brut, son talon
+// sur la marche à la même hauteur, le boulon au milieu (plus près du brut que de la cale : il serre davantage le brut).
+// `jeux` brides et autant de cales.
+//
+// L'USINAGE : les lumières (Contour intérieur, sans onglets), puis barres et cales (Contour extérieur, onglets). Bois dur
+// ou contreplaqué de bouleau de 18 ; jamais sous la course de la fraise.
+
+jeux       = 4;      // nombre de brides (et de cales)
+longueur_bride = 110;  // longueur d'une bride (mm)
+largeur_bride = 32;  // largeur d'une bride (mm)
+d_vis      = 8.5;    // largeur de la lumière (mm) : le boulon
+course     = 40;     // longueur de la lumière (mm)
+marches    = 5;      // marches de la cale
+hauteur_marche = 8;  // hauteur d'une marche (mm)
+profondeur_marche = 9;  // profondeur d'une marche (mm)
+epaisseur  = 18;     // épaisseur de la planche (mm) : la largeur des cales
+espace     = 10;     // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+n = max(1, round(jeux));
+nm = max(2, round(marches));
+Lc = nm * profondeur_marche;                   // la cale : sa longueur au sol
+Hc = nm * hauteur_marche;                      // sa hauteur
+W = largeur_bride;  L = longueur_bride;
+si (W - d_vis < 2 * 8)
+    echo("Moins de 8 mm de bois de part et d'autre de la lumière : une bride plus large.");
+planche([n * (W + espace) - espace + 2 * rognure + espace + n * (Lc + espace) - espace, max(L, Hc) + 2 * rognure, epaisseur]);
+pour (k = [0 : n - 1]) {
+    // La bride, debout : son nez arrondi en haut ; la lumière décalée vers le nez.
+    o = [rognure + k * (W + espace), rognure];
+    b = polyligne([o + [0, L - W / 2], o, o + [W, 0], o + [W, L - W / 2]]);
+    a = arc(o + [W / 2, L - W / 2], o + [W, L - W / 2], o + [0, L - W / 2]);
+    joindre(#b, #a);
+    nommer(#b, "bride");
+    l = oblong(o + [W / 2, L * 0.55], course + d_vis, d_vis, 90);
+    nommer(#l, "lumière");
+    // La cale en escalier, de profil : le sol, le dos, puis les marches qui descendent vers l'avant.
+    oc = [rognure + n * (W + espace) + k * (Lc + espace), rognure];
+    m = polyligne(concat([oc, oc + [Lc, 0], oc + [Lc, Hc]],
+                         [for (j = [0 : 2 * nm - 2]) oc + [Lc - (floor(j / 2) + 1) * profondeur_marche, Hc - (floor((j + 1) / 2)) * hauteur_marche]]),
+                  fermee = vrai);
+    nommer(#m, "cale");
+}
+echo(str(n, " brides de ", L, " × ", W, " et leurs cales de ", nm, " marches (", hauteur_marche, " à ", Hc, " mm)."));
+
+// ── L'USINAGE, déclaré ──
+usinage("contour", "lumière", outil = "Fraise droite Ø6", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 3, nom = "Lumières");
+usinage("contour", "bride", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 2, nom = "Brides");
+usinage("contour", "cale", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 2, onglet_long = 6, onglet_haut = 2, nom = "Cales");

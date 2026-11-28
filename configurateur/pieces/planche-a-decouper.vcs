@@ -1,0 +1,66 @@
+// PLANCHE À DÉCOUPER — une planche à coins arrondis, sa rigole à jus tout autour du plan de coupe et une poignée
+// ajourée à un bout : le cadeau de cuisine qui se vend le plus.
+// thème : Cuisine
+//
+// LA FORME : un rectangle `longueur` × `largeur` aux coins de rayon `R_coin`. La POIGNÉE (`poignee` = 1) est une lumière
+// oblongue, en travers, à `recul_poignee` du bout droit : on y passe quatre doigts (30 × 100 mm d'ordinaire). La RIGOLE
+// (`rigole` = 1) fait le tour du plan de coupe à `recul_rigole` du bord ; avec une poignée, elle s'arrête avant elle.
+//
+// L'USINAGE (déclaré en bas, dans l'ordre où il se fait) :
+//   · la rigole : Rainure le long de son trait, fraise BOULE Ø6 (un fond rond qui se nettoie), `profondeur_rigole` ;
+//   · la poignée : Contour intérieur, fraise droite Ø6, toute l'épaisseur ;
+//   · la planche : Contour extérieur, fraise droite Ø6, quatre onglets — en DERNIER, elle tient au brut jusqu'au bout.
+// Bois : un bois dur à grain fermé (érable, hêtre, merisier, noyer) ; huile alimentaire après ponçage.
+
+longueur   = 400;    // longueur de la planche (mm)
+largeur    = 250;    // largeur de la planche (mm)
+epaisseur  = 18;     // épaisseur du bois (mm)
+R_coin     = 25;     // rayon des coins (mm)
+poignee    = 1;      // poignée ajourée au bout droit (1 : oui, 0 : non)
+long_poignee = 100;  // longueur de la lumière de la poignée (mm)
+larg_poignee = 30;   // largeur de la lumière (mm) — au moins le Ø de la fraise
+recul_poignee = 25;  // du bout de la planche au bord de la lumière (mm)
+rigole     = 1;      // rigole à jus (1 : oui, 0 : non)
+recul_rigole = 15;   // du bord de la planche à l'axe de la rigole (mm)
+profondeur_rigole = 4;  // profondeur de la rigole (mm)
+rognure    = 5;      // la planche détourée à cette distance du bord du brut (mm)
+
+// ── Le brut, et le coin de la planche ──
+planche([longueur + 2 * rognure, largeur + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+R = min(R_coin, min(longueur, largeur) / 2 - 1);
+avec_poignee = poignee == 1 && larg_poignee >= 7 && long_poignee > larg_poignee && long_poignee < largeur - 2 * recul_rigole - 12;
+si (poignee == 1 && !avec_poignee)
+    echo("Poignée : la lumière ne tient pas dans la largeur (ou plus étroite que la fraise) — la planche reste sans poignée.");
+
+// ── La planche ──
+p = rect(o, [longueur, largeur], R);
+nommer(#p, "planche");
+
+// ── La poignée : une lumière en travers, centrée sur la largeur ──
+x_poignee = o[0] + longueur - recul_poignee - larg_poignee / 2;     // l'axe de la lumière
+si (avec_poignee) {
+    q = oblong([x_poignee, o[1] + largeur / 2], long_poignee, larg_poignee, 90);
+    nommer(#q, "poignée");
+}
+
+// ── La rigole : un rectangle arrondi, son trait est l'axe de la fraise boule ──
+// Avec une poignée, elle s'arrête à `recul_rigole` avant la lumière.
+fin_rigole = avec_poignee ? x_poignee - larg_poignee / 2 - recul_rigole : o[0] + longueur - recul_rigole;
+L_rigole = fin_rigole - (o[0] + recul_rigole);
+H_rigole = largeur - 2 * recul_rigole;
+R_rigole = max(min(R - recul_rigole, min(L_rigole, H_rigole) / 2 - 1), 4);
+si (rigole == 1 && L_rigole > 40 && H_rigole > 40) {
+    g = rect(o + [recul_rigole, recul_rigole], [L_rigole, H_rigole], R_rigole);
+    nommer(#g, "rigole");
+}
+si (rigole == 1 && !(L_rigole > 40 && H_rigole > 40))
+    echo("Rigole : le plan de coupe est trop petit pour elle — pas de rigole.");
+
+// ── L'USINAGE, déclaré ──
+si (rigole == 1 && L_rigole > 40 && H_rigole > 40)
+    usinage("rainure", "rigole", outil = "Boule Ø6", profondeur = profondeur_rigole, passe = 2, nom = "Rigole à jus");
+si (avec_poignee)
+    usinage("contour", "poignée", outil = "Fraise droite Ø6", cote = "interieur", profondeur = epaisseur, passe = 3, nom = "Poignée");
+usinage("contour", "planche", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Détourage de la planche");

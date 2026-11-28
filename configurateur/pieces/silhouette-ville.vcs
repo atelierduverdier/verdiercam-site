@@ -1,0 +1,69 @@
+// SILHOUETTE DE VILLE — une ligne de toits à poser sur une étagère ou une cheminée : immeubles, clocher, toits pointus,
+// les fenêtres ajourées ; une bougie LED derrière, et la ville s'allume. Elle tient debout sur deux pieds emboîtés.
+// thème : Décoration et cadeaux
+//
+// LA VILLE : `longueur` de long, `immeubles` bâtiments de hauteurs et de toits variés (tirés d'une suite fixe : la même
+// ville à chaque fois), entre `hauteur_min` et `hauteur_max` ; un SOCLE de 12 sous eux tous. Les FENÊTRES : des ajours de
+// 5 × 7 en grille dans chaque bâtiment assez large, à 5 de ses bords. LES PIEDS : deux pièces en travers, fendues par
+// le haut ; la ville est fendue par le bas aux mêmes endroits, chacune sur la moitié du socle et de la profondeur.
+//
+// L'USINAGE : les fenêtres (Poche, fraise droite Ø3), puis la ville et les pieds (Contour extérieur, fraise droite Ø3,
+// coins dégagés au fond des fentes, onglets). Contreplaqué de bouleau de 4, ou MDF peint.
+
+longueur   = 360;    // longueur de la ville (mm)
+immeubles  = 9;      // nombre de bâtiments
+hauteur_min = 40;    // hauteur du plus bas (mm)
+hauteur_max = 110;   // hauteur du plus haut (mm)
+profondeur_pied = 50;  // profondeur des pieds (mm)
+jeu        = 0.1;    // jeu des fentes, par côté (mm)
+epaisseur  = 4;      // épaisseur (mm)
+espace     = 8;      // entre deux pièces (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+n = max(3, round(immeubles));  L = longueur;  hs = 12;  w = epaisseur + 2 * jeu;
+// une suite fixe dans [0, 1[ : la même ville à chaque fois
+function hasard(k, s) = (sin(k * 127.1 + s * 311.7) * 43758.5453) - floor(sin(k * 127.1 + s * 311.7) * 43758.5453);
+largs = [for (k = [0 : n - 1]) 0.6 + 0.8 * hasard(k, 1)];
+function somme(v, k) = k < 0 ? 0 : v[k] + somme(v, k - 1);
+function xb(k) = L * (k == 0 ? 0 : somme(largs, k - 1)) / somme(largs, n - 1);   // le bord gauche du bâtiment k
+function hb(k) = hauteur_min + (hauteur_max - hauteur_min) * hasard(k, 2);
+function toit(k) = floor(3 * hasard(k, 3));    // 0 : plat ; 1 : pointu ; 2 : clocher
+xp = [L * 0.2, L * 0.8];                       // les pieds
+planche([L + 2 * rognure, hs + hauteur_max + 40 + espace + profondeur_pied + 2 * rognure, epaisseur]);
+o = [rognure, rognure + profondeur_pied + espace];
+// ── La ligne des toits, de droite à gauche au-dessus du socle ; le socle et ses deux fentes par le bas ──
+function haut(k) = toit(k) == 0 ? [[xb(k + 1), hs + hb(k)], [xb(k), hs + hb(k)]]
+                 : (toit(k) == 1 ? [[xb(k + 1), hs + hb(k)], [(xb(k) + xb(k + 1)) / 2, hs + hb(k) + (xb(k + 1) - xb(k)) * 0.4], [xb(k), hs + hb(k)]]
+                 : [[xb(k + 1), hs + hb(k)], [(xb(k) + xb(k + 1)) / 2 + 6, hs + hb(k)], [(xb(k) + xb(k + 1)) / 2 + 6, hs + hb(k) + 14],
+                    [(xb(k) + xb(k + 1)) / 2, hs + hb(k) + 30], [(xb(k) + xb(k + 1)) / 2 - 6, hs + hb(k) + 14],
+                    [(xb(k) + xb(k + 1)) / 2 - 6, hs + hb(k)], [xb(k), hs + hb(k)]]);
+toits = [for (k = [n - 1 : -1 : 0]) for (q = haut(k)) q];
+fentes = [for (x = xp) for (q = [[x - w / 2, 0], [x - w / 2, hs / 2], [x + w / 2, hs / 2], [x + w / 2, 0]]) q];
+v = polyligne([for (q = concat([[0, 0]], fentes, [[L, 0]], toits)) o + q], fermee = vrai);
+nommer(#v, "ville");
+// ── Les fenêtres : une grille dans chaque bâtiment, à 5 des bords et du toit ──
+pour (k = [0 : n - 1]) {
+    nf = floor((xb(k + 1) - xb(k) - 10 + 4) / 9);
+    nr = floor((hb(k) - 10 + 5) / 12);
+    si (nf >= 1)
+        pour (i = [0 : nf - 1])
+            pour (j = [0 : nr - 1]) {
+                x = (xb(k) + xb(k + 1)) / 2 - (nf * 9 - 4) / 2 + i * 9;
+                f = rect(o + [x, hs + 5 + j * 12], [5, 7]);
+                nommer(#f, "fenêtre");
+            }
+}
+// ── Les pieds, fendus par le haut sur la moitié du socle ──
+pour (k = [0 : 1]) {
+    op = [rognure + k * (profondeur_pied + 2 * 10 + espace), rognure];
+    pd = polyligne([for (q = [[0, 0], [profondeur_pied, 0], [profondeur_pied, hs], [profondeur_pied / 2 + w / 2, hs], [profondeur_pied / 2 + w / 2, hs / 2],
+                              [profondeur_pied / 2 - w / 2, hs / 2], [profondeur_pied / 2 - w / 2, hs], [0, hs]]) op + q], fermee = vrai);
+    nommer(#pd, "pied");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "fenêtre", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 2, nom = "Fenêtres");
+usinage("contour", "ville", outil = "Fraise droite Ø3", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 2,
+        onglets = 4, onglet_long = 4, onglet_haut = 1, nom = "Ville");
+usinage("contour", "pied", outil = "Fraise droite Ø3", cote = "exterieur", coins = "dogbone", profondeur = epaisseur, passe = 2,
+        onglets = 2, onglet_long = 3, onglet_haut = 1, nom = "Pieds");

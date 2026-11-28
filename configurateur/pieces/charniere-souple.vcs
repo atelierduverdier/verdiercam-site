@@ -1,0 +1,53 @@
+// CHARNIÈRE SOUPLE — une bande de fentes décalées qui rend un panneau de contreplaqué mince pliable sans casser (la
+// « living hinge » des découpeuses) : un coin arrondi de boîte, une couverture de carnet, un dos de livre de bois.
+// thème : Technique et mécanique
+//
+// LA BANDE : au milieu du panneau `longueur` × `hauteur`, `largeur_bande` de fentes parallèles au pli. Dans une colonne,
+// des fentes de `longueur_fente` séparées de `pont` de bois ; d'une colonne à la suivante (`ecart`), elles se décalent
+// d'une demi-période — le bois ne garde que des lames qui se tordent. La fraise fait la largeur de chaque fente : entre
+// deux colonnes reste `ecart` − Ø fraise de bois (3 mm à la Ø3 et 6 d'écart). Plus de colonnes, plus de pli ; plus le
+// pont est court, plus c'est souple (et fragile). Contreplaqué de bouleau de 3 à 4 mm, fil du pli parallèle aux fentes.
+//
+// L'USINAGE : les fentes en Rainure, fraise droite Ø3, toute l'épaisseur (le panneau, détouré ensuite, les tient) ; puis
+// le panneau en Contour extérieur, onglets hors de la bande.
+
+longueur   = 200;    // longueur du panneau (mm), en travers du pli
+hauteur    = 120;    // hauteur du panneau (mm), le long du pli
+largeur_bande = 60;  // largeur de la bande de fentes (mm)
+longueur_fente = 30; // longueur d'une fente (mm)
+pont       = 5;      // bois entre deux fentes d'une colonne (mm)
+ecart      = 6;      // d'une colonne de fentes à la suivante (mm)
+epaisseur  = 4;      // épaisseur du contreplaqué (mm)
+d_fraise   = 3;      // Ø de la fraise des fentes (mm) : la Fraise droite Ø3
+rognure    = 5;      // du bord du brut au panneau (mm)
+
+P = longueur_fente + pont;                    // la période d'une colonne
+nk = max(1, floor(largeur_bande / ecart) + 1);  // les colonnes
+x0 = (longueur - (nk - 1) * ecart) / 2;        // la première, la bande centrée
+bord = pont;                                  // les fentes s'arrêtent à un pont entier des bords (un demi-pont, moins le
+                                              // rayon de la fraise, ne laissait qu'un millimètre de bois)
+si (ecart - d_fraise < 1.5)
+    echo(str("Entre deux colonnes ne restent que ", ecart - d_fraise, " mm de bois : un écart plus grand."));
+planche([longueur + 2 * rognure, hauteur + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+p = rect(o, [longueur, hauteur], 3);
+nommer(#p, "panneau");
+// Une colonne : ses fentes, décalées de `dec` ; une fente qui sortirait du panneau est raccourcie à un pont du bord.
+module colonne(x, dec) {
+    pour (j = [-1 : ceil(hauteur / P)]) {
+        y1 = max(bord, dec + j * P);
+        y2 = min(hauteur - bord, dec + j * P + longueur_fente);
+        si (y2 - y1 >= d_fraise + 1) {
+            f = ligne(o + [x, y1], o + [x, y2]);
+            nommer(#f, "fente");
+        }
+    }
+}
+pour (k = [0 : nk - 1])
+    colonne(x0 + k * ecart, k % 2 == 0 ? bord : bord + P / 2);
+echo(str(nk, " colonnes de fentes sur ", (nk - 1) * ecart, " mm : le panneau plie autour de cette bande."));
+
+// ── L'USINAGE, déclaré ──
+usinage("rainure", "fente", outil = "Fraise droite Ø3", profondeur = epaisseur, passe = 1, nom = "Fentes");
+usinage("contour", "panneau", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 2,
+        onglets = 4, onglet_long = 5, onglet_haut = 1, nom = "Panneau");

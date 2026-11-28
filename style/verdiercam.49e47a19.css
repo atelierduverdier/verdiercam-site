@@ -1,0 +1,674 @@
+/* =========================================================================
+   verdiercam.css — la feuille du site verdiercam.fr
+   =========================================================================
+   LE STYLE « PLAN » (20/11/2026). Christophe avait vu le site d'un autre
+   logiciel du même domaine au même dessin que le nôtre — fond crème, un seul
+   orange, grotesque serrée, cartes arrondies à ombre douce, pastilles, bande
+   de chiffres, coches : le gabarit des pages faites par une IA. Ses mots :
+   « je cherche quelque chose de professionnel, design, léger et qui ne
+   ressemble pas à de l'IA […] quelque chose qui me ressemble ». Parmi quatre
+   directions dessinées, il a pris LE PLAN, avec la photo de l'atelier.
+
+   La page se lit comme un DESSIN TECHNIQUE D'ATELIER :
+   - blanc franc, encre noire, gris ; une grille fine là où l'on dessine ;
+   - AUCUN arrondi, AUCUNE ombre, AUCUN dégradé : des cadres au trait noir ;
+   - le haut de l'accueil est une feuille, avec ses repères de colonnes, la
+     vue de dessus d'une vraie pièce (le parcours lu dans son G-code) et son
+     CARTOUCHE ;
+   - les repères de section dans une petite case, en mono ;
+   - l'orange de l'oiseau (c'est aussi celui de la machine) pour ce qui est
+     PARCOURS ou ACTION : le trait de la fraise, le bouton plein.
+
+   Polices : IBM Plex (libre), servie d'ici — l'étroite pour les titres, la
+   normale pour le texte, la mono pour les cotes.
+
+   L'ORANGE N'ÉCRIT PAS DE TEXTE COURANT : #ff6d00 sur blanc ne fait que
+   2,9:1. Le texte orange prend --orange-encre (5,6:1) ; le bouton plein met
+   l'encre noire sur l'orange (7,4:1).
+   ========================================================================= */
+
+@font-face { font-family: "IBM Plex Sans"; font-weight: 400; font-display: swap;
+  src: url("../polices/IBMPlexSans-Regular.06cf99ce.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 600; font-display: swap;
+  src: url("../polices/IBMPlexSans-SemiBold.b114e898.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Sans Condensed"; font-weight: 600; font-display: swap;
+  src: url("../polices/IBMPlexSansCondensed-SemiBold.acc95e7b.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 400; font-display: swap;
+  src: url("../polices/IBMPlexMono-Regular.72439fad.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 500; font-display: swap;
+  src: url("../polices/IBMPlexMono-Medium.407d805c.woff2") format("woff2"); }
+
+:root {
+  --fond: #ffffff;
+  --fond-2: #f4f4f2;           /* le code, une ligne sur deux d'un tableau */
+  --carte: #ffffff;
+  --encre: #111111;
+  --encre-2: #3b3b3b;
+  --encre-3: #5e5e5e;          /* 6,4:1 sur blanc : lisible en petit */
+  --trait: #d4d4d4;            /* les filets fins */
+  --trait-2: #a8a8a8;
+  --cadre: #111111;            /* les cadres : au trait noir */
+  --grille: #ececec;
+  --orange: #ff6d00;
+  --orange-2: #ff8a2b;
+  --orange-clair: #fff1e6;
+  --orange-encre: #b54a00;
+  --sur-orange: #111111;
+  --titre: "IBM Plex Sans Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --texte: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", monospace;
+  --gouttiere: 20px;
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--fond); color: var(--encre); font: 400 17px/1.62 var(--texte);
+  -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+img, video { max-width: 100%; height: auto; display: block; }
+a { color: var(--orange-encre); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { color: var(--encre); }
+h1, h2, h3 { font-family: var(--titre); font-weight: 600; letter-spacing: -.005em; line-height: 1.06; margin: 0;
+  text-wrap: balance; }
+h2 { font-size: clamp(1.85rem, 3.5vw, 2.7rem); }
+h3 { font-size: 1.22rem; }
+p { margin: 0 0 1em; }
+code { font: 400 .86em var(--mono); background: var(--fond-2); border: 1px solid var(--trait);
+  padding: .06em .38em; white-space: nowrap; }
+kbd { display: inline-block; font: 500 .8em var(--mono); color: var(--encre); background: var(--carte);
+  border: 1px solid var(--cadre); padding: .02em .46em; margin: 0 1px; line-height: 1.6; vertical-align: 1px; }
+b, strong { font-weight: 600; }
+:focus-visible { outline: 2px solid var(--orange-encre); outline-offset: 3px; }
+
+.cadre { width: min(1180px, 100% - 2 * var(--gouttiere)); margin-inline: auto; }
+.cadre.large { width: min(1320px, 100% - 2 * var(--gouttiere)); }
+.saut { position: absolute; left: -999px; }
+.saut:focus { left: 16px; top: 12px; z-index: 99; background: var(--carte); padding: 8px 12px; border: 1px solid var(--cadre); }
+
+/* La grille de la feuille : là où l'on dessine, à peine visible, régulière (pas de fondu). */
+.papier, section.teinte, .heros-plan { background-color: var(--fond);
+  background-image: linear-gradient(var(--grille) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--grille) 1px, transparent 1px);
+  background-size: 24px 24px; }
+
+/* --- La barre du haut ------------------------------------------------- */
+/* FOND PLEIN, jamais translucide (06/10/2026 : les grands titres passaient sous le logo). */
+.barre { position: sticky; top: 0; z-index: 50; background: var(--fond); border-bottom: 1px solid var(--cadre); }
+.barre-dedans { display: flex; align-items: center; gap: 16px; height: 64px; }
+.marque { display: inline-flex; align-items: center; gap: 10px; color: var(--encre); text-decoration: none;
+  font: 600 1.28rem var(--titre); letter-spacing: 0; }
+.marque b { color: var(--orange-encre); font-weight: 600; }
+.menu { display: flex; gap: 0; margin-left: auto; }
+.menu a { color: var(--encre-2); text-decoration: none; font-size: .9rem; padding: 8px 9px; white-space: nowrap; }
+.menu a:hover { color: var(--encre); text-decoration: underline; }
+/* Onze entrées (26/10/2026) : la barre prend le cadre large, et se replie avant de pousser le bouton hors de
+   l'écran. Une entrée de plus : remesurer, et replier plus tôt. */
+@media (max-width: 1359px) { .menu { display: none; } .barre .bouton { margin-left: auto; } }
+
+/* Le bouton « Menu », sous 1360 px : il déroule les sections sous la barre (posé par le script, `.js`). */
+.menu-bouton { display: none; align-items: center; gap: 8px; font: 600 .92rem var(--texte); color: var(--encre);
+  background: var(--carte); border: 1px solid var(--cadre); padding: 8px 14px; cursor: pointer; }
+.menu-bouton:hover { background: var(--fond-2); }
+.menu-bouton svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: square; }
+@media (max-width: 1359px) {
+  .js .menu-bouton { display: inline-flex; margin-left: auto; }
+  .js .barre .bouton { margin-left: 0; }
+  .js .menu { display: flex; flex-direction: column; gap: 0; margin: 0;
+    position: absolute; top: 100%; left: 0; right: 0; padding: 0 var(--gouttiere) 12px;
+    background: var(--fond); border-bottom: 1px solid var(--cadre);
+    max-height: calc(100vh - 64px); overflow-y: auto;
+    opacity: 0; visibility: hidden;
+    transition: opacity .15s ease, visibility 0s linear .15s; }
+  .js .barre.menu-ouvert .menu { opacity: 1; visibility: visible; transition: opacity .2s ease, visibility 0s; }
+  .js .menu a { font-size: 1rem; padding: 12px 4px; border-bottom: 1px solid var(--trait); }
+}
+@media (max-width: 480px) {
+  .menu-bouton { padding: 8px; }
+  .menu-bouton span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .barre-dedans { gap: 8px; }
+  .barre .bouton.petit { padding-inline: 12px; }
+}
+
+/* --- Les boutons : des rectangles au trait ------------------------------ */
+.bouton { display: inline-flex; align-items: center; gap: 8px; font: 600 1rem var(--texte);
+  padding: 12px 20px; text-decoration: none; border: 1px solid var(--cadre); cursor: pointer;
+  transition: background .15s, color .15s; }
+.bouton-plein { background: var(--orange); color: var(--sur-orange); }
+.bouton-plein:hover { background: var(--orange-2); color: var(--sur-orange); }
+.bouton-clair { background: var(--carte); color: var(--encre); }
+.bouton-clair:hover { background: var(--encre); color: #fff; }
+.bouton.petit { padding: 8px 14px; font-size: .92rem; }
+.bouton svg { width: 18px; height: 18px; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* --- Les petites pièces : repère, tampon, cote ------------------------ */
+/* Le repère d'une section : une petite case au trait, en mono, comme le nom d'une vue sur un plan. */
+.surtitre { display: inline-block; font: 500 .72rem/1.4 var(--mono); letter-spacing: .07em; text-transform: uppercase;
+  color: var(--encre); border: 1px solid var(--cadre); padding: 3px 8px; margin-bottom: 18px; background: var(--fond); }
+/* Le tampon de la version : une case, sans pastille ni point qui pulse. */
+.etiquette { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; font: 400 .78rem var(--mono);
+  color: var(--encre-2); border: 1px solid var(--cadre); padding: 4px 10px; margin: 0 0 22px; background: var(--fond); }
+.etiquette i { display: none; }
+.etiquette a { color: var(--encre); text-decoration: none; border-bottom: 1px solid currentColor; white-space: nowrap; }
+/* Une cote de dessin : un trait avec ses deux témoins, le texte au milieu. */
+.cote { display: flex; align-items: center; gap: 14px; margin: 22px 0 0; font: 400 .74rem var(--mono);
+  letter-spacing: .04em; text-transform: uppercase; color: var(--encre-3); white-space: nowrap; }
+.cote::before, .cote::after { content: ""; flex: 1; height: 11px;
+  background: linear-gradient(var(--encre-3), var(--encre-3)) center / 100% 1px no-repeat; }
+.cote::before { background-image: linear-gradient(var(--encre-3), var(--encre-3)), linear-gradient(var(--encre-3), var(--encre-3));
+  background-position: center, left; background-size: 100% 1px, 1px 100%; }
+.cote::after { background-image: linear-gradient(var(--encre-3), var(--encre-3)), linear-gradient(var(--encre-3), var(--encre-3));
+  background-position: center, right; background-size: 100% 1px, 1px 100%; }
+
+/* --- Le haut d'une page ------------------------------------------------ */
+.heros { padding: clamp(40px, 6vw, 80px) 0 0; border-bottom: 1px solid var(--trait); }
+.heros-haut { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 40px; }
+.heros-texte { max-width: 46rem; }
+.heros h1 { font-size: clamp(2.5rem, 5.6vw, 4.4rem); line-height: 1.02; max-width: 18ch; }
+.heros h1 em { font-style: normal; color: var(--orange-encre); }
+.heros .accroche, .accroche { font-size: clamp(1.06rem, 1.6vw, 1.22rem); color: var(--encre-2); max-width: 38rem; margin: 22px 0 28px; }
+.pp-heros, .page-legale { padding-bottom: clamp(32px, 5vw, 56px); }
+
+/* --- L'accueil : une feuille de dessin --------------------------------- */
+/* Le cadre de la feuille, ses repères de colonnes en haut ; à gauche le texte, à droite la vue de dessus de la pièce
+   et son cartouche. */
+.heros-accueil { padding: clamp(20px, 3vw, 36px) 0 0; border-bottom: 0; }
+.feuille { border: 1px solid var(--cadre); background: var(--fond); }
+.feuille-reperes { display: grid; grid-template-columns: repeat(6, 1fr); border-bottom: 1px solid var(--cadre);
+  font: 400 .68rem/1 var(--mono); color: var(--encre-3); }
+.feuille-reperes span { text-align: center; padding: 5px 0; border-left: 1px solid var(--trait); }
+.feuille-reperes span:first-child { border-left: 0; }
+.feuille-dedans { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+.heros-accueil .heros-texte { padding: clamp(28px, 4vw, 56px); border-right: 1px solid var(--cadre); max-width: none;
+  display: flex; flex-direction: column; }
+.heros-accueil h1 { font-size: clamp(2.6rem, 5vw, 4.6rem); max-width: 12ch; }
+.heros-accueil .accroche { margin: 24px 0 14px; }
+.heros-accueil .accroche + .accroche { margin-top: 0; font-size: 1rem; color: var(--encre-3); }
+.heros-accueil .actions { margin-top: 14px; }
+.essai-heros { margin: 18px 0 0; font-size: .93rem; color: var(--encre-2); }
+.essai-heros b { color: var(--encre); }
+/* La légende du dessin, en bas de la colonne de texte : ce que veut dire chaque trait. */
+.legende-plan { list-style: none; margin: auto 0 0; padding: 22px 0 0; display: grid; gap: 6px;
+  font: 400 .78rem var(--mono); color: var(--encre-2); }
+.legende-plan li { display: flex; align-items: center; gap: 12px; }
+.legende-plan li::before { content: ""; width: 34px; flex: none; border-top: 2px solid var(--encre); }
+.legende-plan li.l-fraise::before { border-top-color: var(--orange); }
+.legende-plan li.l-vide::before { border-top: 1px dashed var(--encre-3); }
+.legende-plan li.l-bois::before { height: 10px; border: 1px solid #c9a46c; background: #e6c793; }
+@media (max-width: 1000px) { .heros-accueil .legende-plan { margin-top: 28px; } }
+
+.heros-plan { display: flex; flex-direction: column; min-width: 0; }
+.vue-titre { margin: 0; padding: 14px 18px 0; }
+.vue-titre .surtitre { margin: 0; }
+.trace { margin: 0; padding: clamp(12px, 2.6vw, 34px) clamp(20px, 4vw, 64px) 8px; flex: 1;
+  display: flex; flex-direction: column; justify-content: center; }
+.trace svg { display: block; width: 100%; max-height: 470px; height: auto; }
+.trace figcaption { font: 400 .78rem/1.5 var(--mono); color: var(--encre-2); padding: 10px 0 4px; text-align: center; }
+.trace figcaption a { color: var(--orange-encre); white-space: nowrap; }
+
+/* Le cartouche : le pavé d'en bas à droite d'un plan. L'oiseau signe, chaque case a son petit titre en mono. */
+.cartouche { display: grid; grid-template-columns: 96px repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--cadre);
+  background: var(--fond); margin: 0; }
+.cartouche > * { margin: 0; padding: 8px 12px 9px; border-left: 1px solid var(--cadre); border-top: 1px solid var(--cadre);
+  font-size: .9rem; line-height: 1.35; min-width: 0; }
+.cartouche > p span { display: block; font: 400 .64rem/1.3 var(--mono); letter-spacing: .06em; text-transform: uppercase;
+  color: var(--encre-3); margin-bottom: 3px; }
+.cartouche-signe { grid-row: span 4; border-left: 0 !important; border-top: 0 !important; display: grid;
+  place-items: center; padding: 10px !important; }
+.cartouche-designation { grid-column: span 2; border-top: 0 !important; font: 600 1.06rem/1.25 var(--titre) !important; }
+.cartouche-large { grid-column: span 2; }   /* une case seule sur sa ligne : les langues vont à côté des systèmes */
+.cartouche-designation span { font-weight: 400; }
+.cartouche b { font-weight: 600; }
+.cartouche .oiseau { width: 64px; height: auto; margin: 0; overflow: visible; }
+
+/* L'oiseau qui se dessine (le script) : la fraise est un point noir, les rapides en pointillés. */
+.oiseau { display: block; width: clamp(84px, 10vw, 116px); height: auto; overflow: visible; }
+.oiseau .passe { stroke: var(--orange); }
+.oiseau .plein { fill: var(--orange); }
+.oiseau .fraise { fill: var(--encre); opacity: 0; }
+.oiseau .rapide { fill: none; stroke: var(--encre-3); stroke-width: 4; stroke-dasharray: 3 12; opacity: 0; }
+.heros-texte > .oiseau { margin: 0 0 18px -6px; }   /* la page 404 */
+
+@media (max-width: 1000px) {
+  .feuille-dedans { grid-template-columns: 1fr; }
+  .heros-accueil .heros-texte { border-right: 0; border-bottom: 1px solid var(--cadre); }
+}
+@media (max-width: 560px) {
+  .feuille-reperes { grid-template-columns: repeat(3, 1fr); }
+  .feuille-reperes span:nth-child(n + 4) { display: none; }
+  .cartouche { grid-template-columns: 72px minmax(0, 1fr); }
+  .cartouche-signe { grid-row: span 6; }
+  .cartouche-designation, .cartouche-large { grid-column: auto; }
+  .cartouche .oiseau { width: 48px; }
+  .heros-accueil .heros-texte { padding: 24px 18px; }
+}
+
+/* La capture réelle sous la feuille, et le détail posé sur son coin, comme une vue de détail sur un plan. */
+.vitrine { position: relative; margin-top: clamp(28px, 4vw, 48px); }
+.fenetre-heros { margin: 0; }
+.loupe { position: absolute; right: clamp(-12px, -1vw, 28px); bottom: -34px; width: min(34%, 400px); margin: 0;
+  background: var(--carte); border: 1px solid var(--cadre); padding: 6px; }
+.loupe figcaption { font-size: .82rem; line-height: 1.45; color: var(--encre-2); padding: 8px 4px 2px; }
+.loupe figcaption b { color: var(--encre); }
+.vitrine + .cote { margin-top: 64px; }
+@media (max-width: 760px) {
+  .loupe { position: static; width: auto; margin: 12px 0 0; display: grid;
+    grid-template-columns: 42% 1fr; gap: 12px; align-items: center; }
+  .loupe figcaption { padding: 0 4px 0 0; }
+  .vitrine + .cote { margin-top: 24px; }
+}
+
+/* --- Les fenêtres : les captures du logiciel, au trait ----------------- */
+.fenetre { margin: 0; overflow: hidden; background: var(--fond-2); border: 1px solid var(--cadre); }
+.fenetre img, .fenetre video { width: 100%; cursor: zoom-in; }
+.fenetre video { cursor: default; }
+figure.capture { margin: 0; }
+figure.capture figcaption, .vue figcaption { color: var(--encre-2); font-size: .9rem; margin: 10px 0 0; line-height: 1.5; }
+figure.capture figcaption b, .vue figcaption b { color: var(--encre); }
+
+/* --- La photo de l'atelier ---------------------------------------------- */
+.photo-atelier { margin: 0; border: 1px solid var(--cadre); background: var(--fond); }
+.photo-atelier img { width: 100%; aspect-ratio: 1920 / 866; object-fit: cover; }
+.photo-atelier figcaption { display: flex; flex-wrap: wrap; gap: 4px 18px; justify-content: space-between;
+  border-top: 1px solid var(--cadre); padding: 9px 14px; font-size: .9rem; color: var(--encre-2); }
+.photo-atelier figcaption span { font: 400 .72rem/1.9 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--encre-3); }
+
+/* --- Les chiffres : une ligne de nomenclature (plus servie par l'accueil, gardée pour une page) --- */
+.chiffres { padding: 0; margin-top: clamp(48px, 7vw, 88px); }
+.chiffres ul { display: grid; grid-template-columns: repeat(5, 1fr); list-style: none; margin: 0; padding: 0;
+  border: 1px solid var(--cadre); }
+.chiffres li { padding: 16px 18px; border-left: 1px solid var(--cadre); }
+.chiffres li:first-child { border-left: 0; }
+.chiffres b { display: block; font: 600 2rem/1 var(--titre); font-variant-numeric: tabular-nums; }
+.chiffres span { display: block; margin-top: 6px; font: 400 .72rem var(--mono); text-transform: uppercase; color: var(--encre-3); }
+@media (max-width: 760px) { .chiffres ul { grid-template-columns: 1fr 1fr; } .chiffres li { border-left: 0; border-top: 1px solid var(--trait); } }
+
+/* --- Les sections ----------------------------------------------------- */
+section { padding: clamp(64px, 8vw, 112px) 0; border-top: 1px solid var(--trait); }
+main > section:first-child { border-top: 0; }
+section.teinte { border-top: 1px solid var(--trait); }
+.tete { max-width: 50rem; margin-bottom: clamp(32px, 4.5vw, 52px); }
+.tete p { color: var(--encre-2); font-size: 1.1rem; margin: 18px 0 0; max-width: 44rem; }
+
+/* --- Le parcours : jalons fixés, vues qui défilent -------------------- */
+.parcours { display: grid; grid-template-columns: minmax(240px, 4fr) 8fr; gap: clamp(32px, 5vw, 80px); align-items: start; }
+.jalons { list-style: none; margin: 0; padding: 0; position: sticky; top: 92px; display: grid; border: 1px solid var(--cadre);
+  background: var(--fond); }
+.jalons li { position: relative; padding: 14px 16px 14px 56px; border-top: 1px solid var(--trait); transition: background .2s; }
+.jalons li:first-child { border-top: 0; }
+.jalons .num { position: absolute; left: 16px; top: 17px; font: 500 .78rem var(--mono); color: var(--encre); }
+.jalons h3 { font-size: 1.22rem; }
+.jalons p { margin: 4px 0 0; color: var(--encre-2); font-size: .94rem; line-height: 1.5; }
+/* Posé par le script seulement : sans lui, les quatre sont en encre pleine. */
+.jalonne .jalons li { cursor: pointer; }
+.jalonne .jalons li:not(.actif) h3 { color: var(--encre-2); }
+.jalonne .jalons li:not(.actif) p { color: var(--encre-3); }
+.jalonne .jalons li.actif::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  background: var(--orange); }
+.jalonne .jalons li.actif .num { color: var(--orange-encre); }
+.vues { display: grid; gap: clamp(36px, 5vw, 64px); }
+.vue { margin: 0; }
+.vue > .num { display: inline-block; font: 500 .72rem var(--mono); letter-spacing: .07em; text-transform: uppercase;
+  color: var(--encre); border: 1px solid var(--cadre); border-bottom: 0; padding: 3px 8px; background: var(--fond); }
+@media (max-width: 900px) {
+  .parcours { grid-template-columns: 1fr; }
+  .jalons { position: static; grid-template-columns: 1fr 1fr; margin-bottom: 8px; }
+  .jalons li { padding: 12px 12px 12px 44px; border-top: 1px solid var(--trait); }
+  .jalons li:nth-child(2) { border-top: 0; }
+  .jalons li:nth-child(even) { border-left: 1px solid var(--trait); }
+  .jalons .num { left: 12px; top: 15px; }
+}
+@media (max-width: 520px) {
+  .jalons { grid-template-columns: 1fr; }
+  .jalons li:nth-child(2) { border-top: 1px solid var(--trait); }
+  .jalons li:nth-child(even) { border-left: 0; }
+}
+
+/* --- Une fonction : l'explication d'un côté, la capture de l'autre ---- */
+.fonction { display: grid; grid-template-columns: 5fr 7fr; gap: clamp(32px, 5vw, 72px); align-items: center; }
+.fonction.inverse { grid-template-columns: 7fr 5fr; }
+.fonction.inverse .texte { order: 2; }
+@media (max-width: 900px) {
+  .fonction, .fonction.inverse { grid-template-columns: 1fr; gap: 28px; }
+  .fonction.inverse .texte { order: 0; }
+}
+.fonction .texte > p { color: var(--encre-2); font-size: 1.05rem; }
+.fonction h2 { font-size: clamp(1.75rem, 3.1vw, 2.4rem); margin-bottom: 18px; }
+.fonction + .fonction { margin-top: clamp(56px, 8vw, 104px); }
+.fonction h3 { font-size: clamp(1.45rem, 2.4vw, 1.85rem); margin: 0 0 16px; }
+/* min-width: 0 — sans lui, la colonne prend la largeur de la plus longue ligne de code (594 px à 375). */
+.fonction > .texte { min-width: 0; }
+pre.code { margin: 0 0 1.2em; padding: 14px 16px; background: var(--fond-2); border: 1px solid var(--cadre);
+  overflow-x: auto; max-width: 100%; line-height: 1.55; }
+pre.code code { background: none; border: 0; padding: 0; white-space: pre; font-size: .84rem; }
+/* Les listes : un petit carré au trait, comme une puce de nomenclature. */
+.coches { list-style: none; padding: 0; margin: 22px 0 0; display: grid; gap: 9px; }
+.coches li { padding-left: 24px; position: relative; color: var(--encre-2); }
+.coches li::before { content: ""; position: absolute; left: 2px; top: .58em; width: 8px; height: 8px;
+  border: 1.5px solid var(--encre); }
+.coches li b { color: var(--encre); }
+
+/* L'usinage : le grand nombre au trait, puis les familles en cases. */
+.usinage-tete { display: grid; grid-template-columns: auto 1fr; gap: clamp(24px, 4vw, 64px); align-items: start; }
+.usinage-tete .texte { max-width: 44rem; }
+.usinage-tete h2 { font-size: clamp(1.75rem, 3.1vw, 2.4rem); margin-bottom: 18px; }
+.usinage-tete .texte > p { color: var(--encre-2); font-size: 1.05rem; }
+.grand-nombre { font: 600 clamp(6rem, 15vw, 14rem)/.85 var(--titre); color: transparent;
+  -webkit-text-stroke: 1.5px var(--encre); position: sticky; top: 100px; }
+@media (max-width: 760px) { .usinage-tete { grid-template-columns: 1fr; gap: 8px; } .grand-nombre { position: static; } }
+.familles { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-top: clamp(36px, 5vw, 56px); }
+.groupe { background: var(--carte); border: 1px solid var(--cadre); padding: 18px 20px 8px; grid-column: span 2; }
+.groupe:nth-child(4), .groupe:nth-child(5) { grid-column: span 3; }
+.groupe h3 { font: 500 .74rem var(--mono); text-transform: uppercase; letter-spacing: .07em; color: var(--encre);
+  margin: -18px -20px 10px; padding: 8px 20px; border-bottom: 1px solid var(--cadre); background: var(--fond-2); }
+.groupe ul { list-style: none; padding: 0; margin: 0; }
+.groupe li { padding: 10px 0; border-top: 1px solid var(--trait); font-size: .94rem; color: var(--encre-2); line-height: 1.5; }
+.groupe li:first-child { border-top: 0; }
+.groupe li b { display: block; color: var(--encre); font-size: 1rem; }
+@media (max-width: 1000px) { .familles { grid-template-columns: 1fr 1fr; } .groupe, .groupe:nth-child(n) { grid-column: auto; } }
+@media (max-width: 640px) { .familles { grid-template-columns: 1fr; } }
+/* Le catalogue des pièces : les mêmes cases, autant de colonnes que la largeur en tient. */
+.catalogue { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; margin-top: 24px; }
+.catalogue .groupe, .catalogue .groupe:nth-child(n) { grid-column: auto; }
+.catalogue li { padding: 7px 0; }
+.catalogue li a { color: var(--encre); text-decoration: none; }
+.catalogue li a:hover { color: var(--orange-encre); text-decoration: underline; }
+
+/* Les modes : une grande vue, deux petites. */
+.bento { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.bento-grand { grid-column: 1 / -1; }
+@media (max-width: 700px) { .bento { grid-template-columns: 1fr; } }
+
+/* Deux captures l'une sous l'autre, la seconde plus étroite et calée à droite, comme une vue de détail. */
+.collage { display: grid; gap: 20px; }
+.collage figure:last-child { width: 78%; justify-self: end; }
+@media (max-width: 560px) { .collage figure:last-child { width: 100%; } }
+
+/* Les postes : un bandeau qui défile, et la liste sage pour qui lit sans mouvement. */
+.postes { display: grid; gap: 14px; align-self: center; background: var(--carte); border: 1px solid var(--cadre);
+  padding: 24px 24px 20px; }
+.postes .surtitre { margin-bottom: 0; justify-self: start; }
+.defile { overflow: hidden; margin-inline: -8px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.defile ul { display: flex; gap: 8px; width: max-content; margin: 0; padding: 8px; list-style: none;
+  animation: defiler 26s linear infinite; }
+.defile:hover ul { animation-play-state: paused; }
+@keyframes defiler { to { transform: translateX(-50%); } }
+.defile li, .machines li { font: 400 .92rem var(--mono); background: var(--carte); border: 1px solid var(--cadre);
+  padding: 7px 14px; color: var(--encre); white-space: nowrap; }
+.machines { display: none; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.postes p { color: var(--encre-2); margin: 6px 0 0; font-size: 1rem; }
+.defile li small, .machines li small { font-size: .78em; color: var(--encre-3); }
+.postes p.note-experimental { font-size: .88rem; }
+/* La mise en garde d'une fonction expérimentale (le 4e axe, 21/11/2026) : une petite case au trait, comme un nota sur un plan. */
+.fonction .texte > p.note-experimental { margin: 20px 0 0; padding: 10px 12px; border: 1px solid var(--trait-2);
+  font-size: .92rem; color: var(--encre-2); background: var(--fond); }
+
+/* --- La sortie : une feuille de commande, sans dégradé ----------------- */
+.sortie { border: 1px solid var(--cadre); background: var(--fond); padding: clamp(24px, 4.5vw, 56px);
+  display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(28px, 5vw, 64px); align-items: start; }
+.sortie h2 { font-size: clamp(2.1rem, 4.4vw, 3.3rem); }
+.sortie-texte > p { color: var(--encre-2); font-size: 1.1rem; max-width: 36rem; margin: 18px 0 28px; }
+.prevu { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; border: 1px solid var(--cadre); }
+.prevu li { border-top: 1px solid var(--trait); padding: 12px 16px; color: var(--encre-2); font-size: .95rem; line-height: 1.5; }
+.prevu li:first-child { border-top: 0; }
+.prevu li b { display: block; color: var(--encre); font-size: 1rem; }
+.prevu li.prix { display: grid; gap: 4px; padding: 16px 18px 18px; border-bottom: 1px solid var(--cadre); }
+.prevu li.prix + li { border-top: 0; }
+.prix-titre { font: 500 .72rem var(--mono); letter-spacing: .07em; text-transform: uppercase; color: var(--encre); }
+.prix-montant { font: 600 2.7rem/1.05 var(--titre); color: var(--encre); }
+.prix-montant small { font: 400 .9rem var(--mono); color: var(--encre-2); }
+.prix-suite { color: var(--encre-2); }
+.prix-inclus { color: var(--encre); margin-top: 6px; }
+.prix-tva { font-size: .8rem; color: var(--encre-3); }
+.prevu li.prix b { display: inline; font-size: inherit; }
+.prix-une-fois { font-weight: 600; color: var(--encre); }
+.prix-essai { margin-top: 6px; padding: 10px 12px; background: var(--fond-2); border: 1px solid var(--trait); color: var(--encre); }
+@media (max-width: 860px) { .sortie { grid-template-columns: 1fr; } }
+
+/* --- Les questions ---------------------------------------------------- */
+.questions { columns: 2; column-gap: 48px; }
+.questions details { break-inside: avoid; border-top: 1px solid var(--cadre); }
+.questions summary { list-style: none; cursor: pointer; padding: 18px 40px 18px 0; font-weight: 600; font-size: 1.04rem; position: relative; }
+.questions summary::-webkit-details-marker { display: none; }
+.questions summary::after { content: "+"; position: absolute; right: 2px; top: 17px; width: 22px; height: 22px;
+  border: 1px solid var(--cadre); font: 400 1.05rem/20px var(--mono); text-align: center; color: var(--encre); }
+.questions details[open] summary::after { content: "−"; }
+.questions details p { color: var(--encre-2); margin: -4px 0 20px; }
+@media (max-width: 860px) { .questions { columns: 1; } }
+
+/* --- Le pied ---------------------------------------------------------- */
+.pied { border-top: 1px solid var(--cadre); padding: 40px 0 48px; color: var(--encre-3); font-size: .92rem; }
+.pied-dedans { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 24px; }
+.pied p { margin: 12px 0 0; }
+.pied-liens { display: flex; flex-wrap: wrap; gap: 8px 22px; align-items: flex-start; }
+.pied-liens a { color: var(--encre-2); text-decoration: none; }
+.pied-liens a:hover { color: var(--encre); text-decoration: underline; }
+
+/* --- La visionneuse --------------------------------------------------- */
+/* `hidden` reste l'état ; il ne vaut plus `display: none` (un navigateur n'anime jamais `display`) :
+   `visibility` retire la visionneuse fermée du clic et du clavier. */
+.visionneuse { position: fixed; inset: 0; z-index: 100; background: rgba(17,17,17,.9); display: grid;
+  place-items: center; padding: 24px; cursor: zoom-out; transition: opacity .2s ease, visibility 0s; }
+.visionneuse[hidden] { display: grid; opacity: 0; visibility: hidden; transition: opacity .15s ease, visibility 0s linear .15s; }
+.visionneuse img { max-height: 92vh; width: auto; border: 1px solid #fff; }
+.visionneuse button { position: absolute; top: 14px; right: 18px; background: none; border: 0; color: #fff; font-size: 2.2rem; cursor: pointer; }
+
+/* --- L'apparition au défilement (posée par le script seulement) : un simple fondu --- */
+.js .apparait { opacity: 0; transition: opacity .6s ease; }
+.js .apparait.vu { opacity: 1; }
+
+/* --- Premiers pas : le sommaire des onze étapes ------------------------ */
+.pp-intro { max-width: 46rem; }
+.pp-intro .accroche { margin: 18px 0 0; }
+.pp-sommaire { list-style: none; margin: 28px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.pp-sommaire a { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; color: var(--encre);
+  background: var(--carte); border: 1px solid var(--cadre); padding: 0 14px 0 0; font-size: .92rem; }
+.pp-sommaire a:hover { background: var(--fond-2); }
+.pp-sommaire a span { display: inline-flex; align-items: center; justify-content: center; width: 30px; align-self: stretch;
+  border-right: 1px solid var(--cadre); color: var(--encre); font: 500 .72rem var(--mono); flex: none; min-height: 30px; }
+.pp-etape + .pp-etape { border-top: 1px solid var(--trait); }
+.pp-manuel { font-style: italic; color: var(--encre-3); }
+.pp-telecharger { margin-top: 28px; }
+.pp-version { margin: 14px 0 0; color: var(--encre-3); font-size: .92rem; }
+@media (max-width: 480px) { .pp-sommaire a { font-size: .86rem; } .pp-telecharger .bouton { width: 100%; justify-content: center; } }
+
+/* --- Moins de mouvement : tout est là, rien ne bouge ------------------ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js .apparait { opacity: 1; transition: none; }
+  .jalons li, .bouton { transition: none; }
+  .defile { display: none; }
+  .machines { display: flex; }
+  .visionneuse, .visionneuse[hidden] { transition: none; }
+  .js .menu, .js .barre.menu-ouvert .menu { transition: none; }
+}
+
+
+/* =========================================================================
+   Pages légales et page d'achat (06/10/2026)
+   ========================================================================= */
+.page-legale h1 { font-size: clamp(2rem, 5vw, 3rem); }
+section.legal { padding-top: 24px; border-top: 0; }
+.legal-texte { max-width: 46rem; }
+.legal-texte h2 { font-size: 1.35rem; margin: 2.2em 0 .6em; }
+.legal-texte h2:first-child { margin-top: 0; }
+.legal-texte p, .legal-texte li { color: var(--encre-2); }
+.legal-texte ul { padding-left: 1.2em; }
+.legal-texte li { margin: .35em 0; }
+.legal-texte .muet, .legal-date { color: var(--encre-3); font-size: .92rem; }
+.formulaire-type { border: 1px dashed var(--encre-3); padding: 18px 22px; background: var(--carte); }
+/* L'IMPRESSION (15/10/2026) : les CGV et la licence en PDF, jointes au courriel de livraison
+   (outils/conditions-pdf.sh) — le texte seul, sans la barre, le pied ni la grille. */
+@media print {
+  @page { size: A4; margin: 16mm 16mm 18mm; }
+  /* Une police du système au vrai gras : WeasyPrint ne prenait pas le demi-gras servi par la page. */
+  body { background: #fff; font: 400 10.5pt/1.5 "Noto Sans", "DejaVu Sans", sans-serif; }
+  b, strong, h1, h2, h3 { font-weight: 700; font-family: "Noto Sans", "DejaVu Sans", sans-serif; }
+  .barre, .pied, .visionneuse, .saut { display: none !important; }
+  .papier, section.teinte { background-image: none; }
+  .heros { border: 0; }
+  .cadre { width: auto; }
+  .page-legale { padding: 0 0 4mm; }
+  .page-legale h1 { font-size: 22pt; max-width: none; }
+  .surtitre { border: 0; padding: 0; }
+  section.legal { padding-top: 0; }
+  .legal-texte { max-width: none; }
+  .legal-texte h2 { font-size: 13pt; break-after: avoid; }
+  .legal-texte p, .legal-texte li { color: #222; }
+  a { color: inherit; }
+  .formulaire-type { break-inside: avoid; background: #fff; }
+}
+.a-remplir { background: #ffe1d6; color: #9b1c00; font: 500 .85em var(--mono); padding: .1em .4em; }
+
+/* La page d'achat : le bouton ne s'active que les deux cases cochées — en CSS (:has), donc même sans
+   JavaScript ; le script ne fait que l'annoncer. */
+.achat { background: var(--carte); border: 1px solid var(--cadre); padding: clamp(20px, 4vw, 36px); }
+.achat-resume { list-style: none; padding: 0; margin: 0 0 22px; display: grid; gap: 8px; }
+.achat-resume li { padding-left: 24px; position: relative; color: var(--encre-2); }
+.achat-resume li::before { content: ""; position: absolute; left: 2px; top: .58em; width: 8px; height: 8px;
+  border: 1.5px solid var(--encre); }
+.case { display: flex; gap: 12px; align-items: flex-start; margin: 12px 0; cursor: pointer;
+  padding: 14px 16px; border: 1px solid var(--cadre); background: var(--fond); }
+.case input { width: 20px; height: 20px; margin-top: 2px; flex: none; accent-color: var(--orange); }
+.case span { color: var(--encre-2); font-size: .97rem; }
+.achat .payer { margin-top: 10px; opacity: .45; pointer-events: none; filter: grayscale(.3); }
+.achat:has(#accepte-conditions:checked):has(#renonce-retractation:checked) .payer {
+  opacity: 1; pointer-events: auto; filter: none; }
+.achat .payer-aide { color: var(--encre-3); font-size: .9rem; margin-top: 10px; }
+.achat .payer-bientot { display: none; }
+.achat.sans-lien .payer { opacity: .45 !important; pointer-events: none !important; }
+.achat.sans-lien .payer-aide { display: none; }
+.achat.sans-lien .payer-bientot { display: block; color: var(--encre-2); margin-top: 12px; }
+
+/* La promesse sous « Être prévenu de la sortie ». */
+.note-prevenu { margin-top: 14px; font-size: .9rem; color: var(--encre-2); }
+
+/* --- Les nouveautés -------------------------------------------------- */
+.nouveautes { padding: clamp(24px, 4vw, 48px) 0 clamp(56px, 8vw, 96px); border-top: 0; }
+.journee { display: grid; grid-template-columns: 13rem minmax(0, 1fr); gap: 32px;
+  padding: 26px 0; border-top: 1px solid var(--cadre); }
+.journee-quand { display: grid; gap: 6px; align-content: start; }
+.journee-quand time { font: 600 1.1rem var(--titre); color: var(--encre); }
+.journee-version { font: 400 .76rem var(--mono); letter-spacing: .03em; color: var(--encre-3); }
+.journee h2 { font-size: clamp(1.25rem, 2vw, 1.5rem); margin: 0 0 12px; }
+.journee ul { margin: 0; padding-left: 1.1em; color: var(--encre-2); display: grid; gap: 6px; }
+.journee-capture { margin: 18px 0 0; max-width: 760px; }
+@media (max-width: 700px) { .journee { grid-template-columns: 1fr; gap: 10px; } .journee-quand { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; } }
+
+/* --- « Tout voir » : le détail replié sous les points forts (11/10/2026) --- */
+.plus { margin-top: 14px; }
+.plus > summary { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; list-style: none;
+  font-weight: 600; color: var(--encre); padding: 6px 0; }
+.plus > summary::-webkit-details-marker { display: none; }
+.plus > summary::before { content: "+"; width: 20px; height: 20px; border: 1px solid var(--cadre); flex: none;
+  font: 400 1rem/18px var(--mono); text-align: center; }
+.plus[open] > summary::before { content: "−"; }
+.plus > summary:hover { text-decoration: underline; }
+.plus > .coches { margin-top: 8px; }
+/* La vidéo d'une opération (21/10/2026, le filetage) : sous le texte de la section, avant les familles. */
+.journee-video { margin-top: 20px; max-width: 720px; }
+.video-operation { margin: clamp(32px, 4vw, 48px) 0 0; max-width: 820px; }
+.video-operation figcaption { font-size: .92rem; line-height: 1.5; color: var(--encre-2); margin-top: 10px; }
+.plus-familles { margin-top: 28px; }
+.plus-familles > .familles { margin-top: 16px; }
+
+/* --- Ça avance : les trois derniers jours de nouveautés (11/10/2026) --- */
+.recents { list-style: none; margin: 24px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--cadre); }
+.recents li + li { border-left: 1px solid var(--cadre); }
+.recents a { display: grid; gap: 6px; height: 100%; padding: 16px 18px; color: var(--encre); text-decoration: none;
+  transition: background .15s; }
+.recents a:hover { background: var(--fond-2); }
+.recents time { font: 600 1.1rem var(--titre); }
+.recent-version { font: 400 .74rem var(--mono); letter-spacing: .03em; color: var(--encre-3); }
+.recents b { font-weight: 400; color: var(--encre-2); }
+.recents-tout { margin: 18px 0 0; }
+.recents-tout a { font-weight: 600; color: var(--orange-encre); }
+@media (max-width: 760px) { .recents { grid-template-columns: 1fr; } .recents li + li { border-left: 0; border-top: 1px solid var(--cadre); } }
+
+/* --- Pourquoi VerdierCAM : la photo de l'atelier, puis son histoire, à la première personne --- */
+.histoire { padding: clamp(40px, 6vw, 72px) 0 clamp(56px, 8vw, 96px); }
+.histoire-dedans { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: clamp(28px, 5vw, 72px);
+  margin-top: clamp(32px, 4.5vw, 56px); align-items: start; }
+.histoire-titre h2 { font-size: clamp(2rem, 3.8vw, 3rem); }
+.histoire-texte { max-width: 42rem; }
+.histoire-texte p { font-size: clamp(1.05rem, 1.45vw, 1.16rem); color: var(--encre-2); margin: 0 0 14px; }
+.histoire-texte .signature { margin-top: 22px; font: 500 .86rem var(--mono); letter-spacing: .02em; color: var(--encre); }
+.histoire-texte .signature::before { content: "— "; }
+@media (max-width: 860px) { .histoire-dedans { grid-template-columns: 1fr; gap: 8px; } }
+/* D'où vient VerdierCAM (21/11/2026) : les dates du texte en repères, comme une nomenclature ; la dernière phrase en grand. */
+.reperes-parcours { list-style: none; margin: 0; padding: 0; border: 1px solid var(--cadre); align-self: start; }
+.reperes-parcours li { padding: 10px 14px; border-top: 1px solid var(--trait); color: var(--encre); font-size: .98rem; }
+.reperes-parcours li:first-child { border-top: 0; }
+.reperes-parcours li span { display: block; font: 400 .72rem var(--mono); letter-spacing: .05em; text-transform: uppercase;
+  color: var(--encre-3); margin-bottom: 2px; }
+.histoire-texte .parcours-fin { font: 600 clamp(1.3rem, 2.2vw, 1.7rem)/1.2 var(--titre); color: var(--encre); margin-top: 26px; }
+.histoire.page-parcours { border-top: 0; padding-top: clamp(28px, 4vw, 48px); }
+@media (max-width: 860px) { .reperes-parcours { margin-bottom: 20px; } }
+
+/* --- La présentation en vidéo : une image d'ici, YouTube au clic ------- */
+.video-yt { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--encre); border: 1px solid var(--cadre); }
+.video-yt-lien { position: absolute; inset: 0; display: block; color: #fff; text-decoration: none; }
+.video-yt-lien img { width: 100%; height: 100%; object-fit: cover; filter: brightness(.7); transition: filter .2s; }
+.video-yt-lien:hover img, .video-yt-lien:focus-visible img { filter: brightness(.82); }
+.video-yt-lecture { position: absolute; left: 50%; top: 50%; width: 76px; height: 76px; margin: -38px 0 0 -38px;
+  background: var(--orange); border: 1px solid var(--encre); }
+.video-yt-lecture::after { content: ""; position: absolute; left: 29px; top: 22px; border-style: solid;
+  border-width: 16px 0 16px 24px; border-color: transparent transparent transparent var(--encre); }
+.video-yt-lien:hover .video-yt-lecture { background: var(--orange-2); }
+.video-yt-titre { position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 16px; font-weight: 600; font-size: 1.05rem;
+  background: rgba(17,17,17,.78); border-top: 1px solid rgba(255,255,255,.25); }
+.video-yt-titre small { font: 400 .8rem var(--mono); opacity: .85; }
+.video-yt iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+@media (max-width: 520px) { .video-yt-lecture { width: 58px; height: 58px; margin: -29px 0 0 -29px; }
+  .video-yt-lecture::after { left: 22px; top: 16px; border-width: 13px 0 13px 19px; }
+  .video-yt-titre { font-size: .9rem; padding: 8px 12px; } .video-yt-titre small { display: none; } }
+
+/* LA PAGE « PIÈCES » (16/10/2026) : une case par pièce, sa capture simulée, son nom et sa description. */
+.sommaire-pieces { font-size: .95rem; line-height: 1.9; color: var(--encre-3); }
+.sommaire-pieces a { color: var(--orange-encre); white-space: nowrap; }
+.catalogue-images { padding-bottom: clamp(48px, 6vw, 96px); }
+.theme-pieces { margin-top: clamp(40px, 5vw, 64px); scroll-margin-top: 84px; }
+.theme-pieces h2 { font-size: clamp(1.5rem, 2.4vw, 2rem); margin-bottom: 18px; }
+.theme-pieces h2 span { font: 400 .85rem var(--mono); color: var(--encre-3); margin-left: 8px; }
+.galerie-pieces { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.carte-piece { margin: 0; background: var(--carte); border: 1px solid var(--cadre); overflow: hidden;
+  display: flex; flex-direction: column; scroll-margin-top: 84px; }
+.vue-piece { display: block; aspect-ratio: 916 / 628; background: var(--fond-2); border-bottom: 1px solid var(--cadre); }
+.vue-piece img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sans-capture { display: flex; height: 100%; align-items: center; justify-content: center; color: var(--encre-3);
+  font: 400 .8rem var(--mono); text-transform: uppercase; letter-spacing: .06em; }
+.carte-piece figcaption { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 6px; line-height: 1.45; }
+.carte-piece figcaption b { color: var(--encre); font: 600 1.08rem var(--titre); }
+.carte-piece figcaption span { color: var(--encre-2); font-size: .88rem; display: -webkit-box; -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical; overflow: hidden; }
+.carte-piece figcaption a { color: var(--orange-encre); font-size: .88rem; margin-top: auto; padding-top: 4px; }
+
+/* QUELLE MACHINE ? (26/10/2026, page Installer) : le banc d'essai des trois machines de l'atelier, lu dans
+   docs/performances.json du logiciel. Les chiffres en mono, alignés à droite. À 375 px, quatre colonnes tiennent. */
+.banc { margin: 8px 0 18px; }
+.banc table { width: 100%; border-collapse: collapse; font-size: .92rem; border: 1px solid var(--cadre); }
+.banc th, .banc td { padding: 9px 8px; border-bottom: 1px solid var(--trait); vertical-align: top; }
+.banc thead th { font: 500 .74rem var(--mono); text-transform: uppercase; letter-spacing: .04em; color: var(--encre);
+  text-align: right; border-bottom: 1px solid var(--cadre); background: var(--fond-2); }
+.banc thead th:first-child { text-align: left; }
+.banc tbody th { text-align: left; font-weight: 600; color: var(--encre); }
+.banc tbody th span { display: block; font-weight: 400; font-size: .84rem; color: var(--encre-3); margin-top: 2px; }
+.banc td { text-align: right; font: 400 .9rem var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap;
+  color: var(--encre); }
+.banc-machines { list-style: none; padding: 0; margin: 0 0 18px; display: grid; gap: 6px; font-size: .9rem;
+  color: var(--encre-2); }
+.banc-machines b { color: var(--encre); margin-right: 8px; }
+/* La machine d'avant (18/11/2026) : le même Pi, mesuré par une version plus ancienne — en retrait, pour comparer. */
+.banc td.avant, .banc thead th.avant { color: var(--encre-3); }
+.banc-machines li.avant, .banc-machines li.avant b { color: var(--encre-3); }
+@media (max-width: 520px) {
+  .banc table { font-size: .82rem; }
+  .banc th, .banc td { padding: 8px 4px; }
+  .banc thead th { font-size: .64rem; letter-spacing: 0; }
+  .banc td { font-size: .78rem; }
+  .banc tbody th span { font-size: .76rem; }
+  .banc-machines b { display: block; margin: 0; }
+}

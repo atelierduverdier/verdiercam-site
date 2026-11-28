@@ -1,0 +1,87 @@
+// ÉCHIQUIER EN MARQUETERIE — deux bois, deux poches complémentaires : les cases foncées creusées dans le plateau clair,
+// et la planche foncée creusée autour de ses cases, laissées en relief ; on la retourne, on la colle dedans, on rabote son
+// dos — le damier apparaît, d'une seule pièce. Le projet fétiche des forums de CNC.
+// thème : Jeux et jouets
+//
+// LE PLATEAU CLAIR (érable, frêne) : 8 × 8 cases de `case`, une bordure de `bordure` ; les 32 cases foncées y sont des
+// POCHES de `prof_incrustation`, leurs coins arrondis au rayon `R` de la fraise (elle ne fait pas d'angle vif dedans).
+// Les lettres a–h et les chiffres 1–8 sont gravés dans la bordure, un filet entoure le damier.
+//
+// LA PLANCHE FONCÉE (noyer, wengé) : une POCHE autour de 32 îlots — les mêmes cases, coins arrondis au même rayon,
+// moins le `jeu` de chaque côté, et EN MIROIR (la planche se retourne pour le collage : la case a1 passe à droite).
+// La poche fait `prof_incrustation` moins `retrait_colle` : les îlots s'arrêtent avant le fond, la colle a sa place.
+// Après séchage, raboter le dos de la planche foncée jusqu'au plateau : le damier, net. Les deux planches sont posées
+// côte à côte sur le brut (deux bois : usinez-les l'une après l'autre).
+//
+// L'USINAGE : les poches des cases foncées puis la poche autour des îlots (fraise droite Ø6, coins au rayon 3,2), la
+// gravure (Pointe V 90°, 0,8 mm), les deux détourages en dernier.
+
+case       = 40;     // côté d'une case (mm)
+bordure    = 30;     // bordure du plateau autour du damier (mm)
+prof_incrustation = 3;  // profondeur des poches (mm)
+retrait_colle = 0.2; // les îlots plus courts que la poche n'est profonde (mm)
+jeu        = 0.1;    // jeu entre une case incrustée et sa poche, par côté (mm)
+R          = 3.2;    // rayon des coins des cases (mm) : au moins celui de la fraise
+lettres    = 1;      // graver a–h et 1–8 dans la bordure (1 : oui, 0 : non)
+police     = "Hershey Sans1";  // la police des lettres
+epaisseur  = 18;     // épaisseur du plateau clair (mm)
+marge_foncee = 10;   // de la poche au bord de la planche foncée (mm)
+espace     = 15;     // entre les deux planches (mm)
+rognure    = 5;      // du bord du brut aux pièces (mm)
+
+c = case;
+D = 8 * c;                                    // le damier
+A = D + 2 * bordure;                          // le plateau clair
+B = D + 2 * marge_foncee;                     // la planche foncée
+oA = [rognure, rognure];
+oB = [rognure + A + espace, rognure + (A - B) / 2];
+planche([2 * rognure + A + espace + B, 2 * rognure + A, epaisseur]);
+si (R < 3)
+    echo("Un rayon de coin sous 3 mm : la fraise Ø6 ne le fera pas — la Ø3 (R 1,5) le peut.");
+
+// ── Le plateau clair ──
+p = rect(oA, [A, A], 6);
+nommer(#p, "plateau");
+pour (i = [0 : 7])
+    pour (j = [0 : 7])
+        si ((i + j) % 2 == 0) {                 // a1 est une case foncée
+            q = rect(oA + [bordure + i * c, bordure + j * c], [c, c], R);
+            nommer(#q, "case foncée");
+        }
+f = rect(oA + [bordure - 6, bordure - 6], [D + 12, D + 12], 2);
+nommer(#f, "gravure");
+si (lettres == 1) {
+    h = min(bordure * 0.35, c * 0.3);
+    pour (k = [0 : 7]) {
+        s = ["a", "b", "c", "d", "e", "f", "g", "h"][k];
+        M = mesure_texte(s, 10, police) / 10;
+        t = texte(oA + [bordure + k * c + c / 2 - h * (M[2] + M[3]) / 2, (bordure - 6 - h) / 2], h, s, police = police);
+        nommer(#t, "gravure");
+        n = str(k + 1);
+        N = mesure_texte(n, 10, police) / 10;
+        u = texte(oA + [(bordure - 6) / 2 - h * (N[2] + N[3]) / 2, bordure + k * c + c / 2 - h / 2], h, n, police = police);
+        nommer(#u, "gravure");
+    }
+}
+
+// ── La planche foncée : la poche (son bord) et les îlots, en miroir, plus petits du jeu ──
+b = rect(oB, [B, B]);
+nommer(#b, "planche foncée");
+z = rect(oB + [marge_foncee - 3, marge_foncee - 3], [D + 6, D + 6], 3);
+nommer(#z, "incrustation");
+pour (i = [0 : 7])
+    pour (j = [0 : 7])
+        si ((i + j) % 2 == 0) {
+            x = rect(oB + [marge_foncee + (7 - i) * c + jeu, marge_foncee + j * c + jeu], [c - 2 * jeu, c - 2 * jeu], R - jeu);
+            nommer(#x, "incrustation");
+        }
+
+// ── L'USINAGE, déclaré ──
+usinage("poche", "case foncée", outil = "Fraise droite Ø6", profondeur = prof_incrustation, passe = 1.5, nom = "Cases foncées (plateau clair)");
+usinage("poche", "incrustation", outil = "Fraise droite Ø6", profondeur = prof_incrustation - retrait_colle, passe = 1.5,
+        nom = "Autour des îlots (planche foncée)");
+usinage("gravure", "gravure", outil = "Pointe V 90", profondeur = 0.8, nom = "Filet et repères");
+usinage("contour", "planche foncée", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Détourage de la planche foncée");
+usinage("contour", "plateau", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Détourage du plateau");

@@ -1,0 +1,76 @@
+// GABARIT DE CERCLE — un compas pour la défonceuse : la semelle vissée sur sa base, un bras percé tous les `pas` d'un trou
+// de pivot, chacun gravé de son rayon. Une pointe dans le trou choisi, et la défonceuse tourne : plateaux ronds, tables,
+// miroirs.
+// thème : Atelier et gabarits
+//
+// LA SEMELLE : un disque de `d_semelle` (celui de la base de la défonceuse), percé au centre pour la fraise (`d_passage`)
+// et de `vis` trous sur le cercle `cercle_vis` (les vis de la semelle d'origine, à relever sur la machine). LE BRAS : de
+// largeur `largeur_bras`, les trous de pivot de `r_min` à `r_max` mm de l'axe de la fraise, gravés de leur distance.
+// Pour un disque de rayon R (fraise à l'EXTÉRIEUR du trait), prendre le trou R + Ø fraise / 2 ; pour un trou de rayon R
+// (fraise à l'intérieur), R − Ø fraise / 2.
+//
+// Le contour de la plaque est UN trait (le disque et le bras joints) : une pièce paramétrique n'a pas de booléens.
+// L'USINAGE : les rayons gravés (Pointe V 90°, 0,6 mm), les trous (Contour intérieur, fraise droite Ø3), puis la plaque
+// (Contour extérieur, fraise droite Ø6, onglets). Contreplaqué de 6 à 9 mm, ou plexiglas pour voir le trait.
+
+d_semelle  = 150;    // Ø de la semelle (mm) : celui de la base de la défonceuse
+d_passage  = 30;     // Ø du passage de la fraise (mm)
+vis        = 3;      // trous de vis de la semelle
+cercle_vis = 108;    // Ø du cercle des vis de la semelle (mm)
+trou_vis   = 5;      // Ø d'un trou de vis (mm)
+largeur_bras = 60;   // largeur du bras (mm)
+r_min      = 100;    // premier trou de pivot, depuis l'axe de la fraise (mm)
+r_max      = 500;    // dernier trou de pivot (mm)
+pas        = 20;     // d'un trou de pivot au suivant (mm)
+d_pivot    = 6;      // Ø des trous de pivot (mm) : la pointe ou la cheville
+police     = "Hershey Sans1";   // la police des rayons
+epaisseur  = 9;      // épaisseur de la plaque (mm)
+rognure    = 5;      // du bord du brut à la plaque (mm)
+
+Rs = d_semelle / 2;  w = largeur_bras / 2;
+n = floor((r_max - r_min) / pas + 1e-9) + 1;
+bout = r_min + (n - 1) * pas + w;                    // le bout du bras (arrondi), depuis l'axe
+si (w >= Rs)
+    echo("Le bras est plus large que la semelle : le gabarit reste un bras droit.");
+c = [rognure + Rs, rognure + Rs];                     // l'axe de la fraise
+planche([Rs + bout + 2 * rognure, 2 * Rs + 2 * rognure, epaisseur]);
+
+// ── La plaque : le grand arc du disque (côté gauche), le haut du bras, son bout arrondi, son bas ──
+xa = sqrt(Rs * Rs - w * w);                           // où le bras sort du disque
+p = arc(c, c + [xa, w], c + [xa, -w]);
+h = ligne(c + [xa, -w], c + [bout - w, -w]);
+joindre(#p, #h);
+e = arc(c + [bout - w, 0], c + [bout - w, -w], c + [bout - w, w]);
+joindre(#p, #e);
+g = ligne(c + [bout - w, w], c + [xa, w]);
+joindre(#p, #g);
+nommer(#p, "gabarit");
+
+// ── Les trous : le passage, les vis, les pivots ──
+t = cercle(c, d_passage / 2);
+nommer(#t, "trou");
+pour (i = [0 : vis - 1]) {
+    an = 90 + 360 * i / max(vis, 1);
+    v = cercle(c + cercle_vis / 2 * [cos(an), sin(an)], trou_vis / 2);
+    nommer(#v, "trou");
+}
+hl = min(5, pas * 0.3);
+pour (k = [0 : n - 1]) {
+    r = r_min + k * pas;
+    q = cercle(c + [r, 0], d_pivot / 2);
+    nommer(#q, "pivot");
+    s = str(r);
+    M = mesure_texte(s, 10, police) / 10;
+    // le rayon gravé un trou sur deux au-dessus, un sur deux en dessous : ils ne se touchent jamais
+    y = k % 2 == 0 ? d_pivot / 2 + 4 : -d_pivot / 2 - 4 - hl;
+    l = texte(c + [r - hl * (M[2] + M[3]) / 2, y], hl, s, police = police);
+    nommer(#l, "rayon");
+}
+echo(str(n, " trous de pivot, de ", r_min, " à ", r_min + (n - 1) * pas, " mm : des cercles de ", 2 * r_min, " à ", 2 * (r_min + (n - 1) * pas), " mm de Ø."));
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "rayon", outil = "Pointe V 90", profondeur = 0.6, nom = "Rayons gravés");
+usinage("contour", "trou", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1.5, nom = "Passage et vis");
+usinage("contour", "pivot", outil = "Fraise droite Ø3", cote = "interieur", onglets = 0, profondeur = epaisseur, passe = 1.5, nom = "Trous de pivot");
+usinage("contour", "gabarit", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 4, onglet_long = 8, onglet_haut = 2, nom = "Plaque");

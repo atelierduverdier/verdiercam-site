@@ -1,0 +1,57 @@
+// RANGE-CLÉS USB ET CARTES SD — le bloc du bureau où chaque clé USB se plante par sa prise, chaque carte SD et microSD
+// debout dans sa fente : plus de clé perdue au fond d'un tiroir, et l'on voit d'un coup d'œil où est la carte de
+// l'appareil photo.
+// thème : Rangement
+//
+// LES LOGEMENTS, chacun la pièce plus le `jeu` de chaque côté : la prise USB-A (12 × 4,5), la carte SD (24 × 2,1), la
+// microSD (11 × 1, dans une fente de 3 au moins : la fraise Ø3 ne fait pas plus fin). Une fraise laisse ses coins
+// arrondis : le jeu doit laisser passer le coin vif de la pièce, ce que le contrôle vérifie. Creusés de 9. Une rangée par
+// sorte, le nom gravé devant.
+//
+// L'USINAGE : les noms (Gravure, Pointe V 90°), les logements (Poche, fraise droite Ø3), puis le bloc (Contour extérieur,
+// onglets). Hêtre ou noyer de 18 ; huiler.
+
+cles_usb   = 6;      // logements de clé USB
+cartes_sd  = 6;      // fentes de carte SD
+cartes_micro = 8;    // fentes de carte microSD
+jeu        = 0.5;    // autour de chaque pièce, de chaque côté (mm)
+ecart      = 6;      // du bois entre deux logements (mm)
+profondeur = 9;      // profondeur des logements (mm) : 9 au plus (la fraise Ø3)
+epaisseur  = 18;     // épaisseur du bloc (mm)
+rognure    = 5;      // du bord du brut au bloc (mm)
+
+// Les trois sortes : [largeur, épaisseur de la pièce, nombre, nom]
+sortes = [[11, 1, cartes_micro, "MICRO SD"], [24, 2.1, cartes_sd, "SD"], [12, 4.5, cles_usb, "USB"]];
+function lw(s) = s[0] + 2 * jeu;               // le logement : sa longueur (la largeur de la pièce)…
+function le(s) = max(s[1] + 2 * jeu, 3);       // …et sa largeur (l'épaisseur de la pièce), 3 au moins
+// Une rangée : les logements en travers (leur longueur le long de Y), au pas de leur largeur plus l'écart.
+function rangee(s) = s[2] * (le(s) + ecart) - ecart;
+L = max(max(rangee(sortes[0]), rangee(sortes[1])), rangee(sortes[2])) + 30;
+function hr(s) = lw(s) + 18;                   // la hauteur d'une rangée : le logement, le nom dessous
+H = hr(sortes[0]) + hr(sortes[1]) + hr(sortes[2]) + 8;
+si (profondeur > 9)
+    echo("La fraise Ø3 creuse 9 mm au plus.");
+planche([L + 2 * rognure, H + 2 * rognure, epaisseur]);
+o = [rognure, rognure];
+b = rect(o, [L, H], 6);
+nommer(#b, "bloc");
+pour (k = [0 : 2]) {
+    s = sortes[k];
+    y0 = 4 + (k == 0 ? 0 : hr(sortes[0])) + (k == 2 ? hr(sortes[1]) : 0);
+    x0 = (L - rangee(s)) / 2;
+    pour (i = [0 : s[2] - 1]) {
+        r = rect(o + [x0 + i * (le(s) + ecart), y0 + 14], [le(s), lw(s)], 1.45);
+        nommer(#r, k == 0 ? "fente microSD" : (k == 1 ? "fente SD" : "logement USB"));
+    }
+    M = mesure_texte(s[3], 10, "Hershey Sans1") / 10;
+    t = texte(o + [L / 2 - 5 * (M[2] + M[3]) / 2, y0 + 4], 5, s[3], police = "Hershey Sans1");
+    nommer(#t, "nom");
+}
+
+// ── L'USINAGE, déclaré ──
+usinage("gravure", "nom", outil = "Pointe V 90", profondeur = 0.5, nom = "Noms");
+usinage("poche", "fente microSD", outil = "Fraise droite Ø3", profondeur = profondeur, passe = 1.5, nom = "Fentes microSD");
+usinage("poche", "fente SD", outil = "Fraise droite Ø3", profondeur = profondeur, passe = 1.5, nom = "Fentes SD");
+usinage("poche", "logement USB", outil = "Fraise droite Ø3", profondeur = profondeur, passe = 1.5, nom = "Logements USB");
+usinage("contour", "bloc", outil = "Fraise droite Ø6", cote = "exterieur", profondeur = epaisseur, passe = 3,
+        onglets = 3, onglet_long = 8, onglet_haut = 2, nom = "Bloc");
